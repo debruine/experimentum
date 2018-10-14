@@ -10,7 +10,7 @@ PAGE COLORS
     $saturation = "0%";
     $bgcolor = 'hsl(' . THEME_HUE . ",{$saturation},90%)"; // very light theme
     $text = '#222';                     // (very dark grey)
-    $theme = 'hsl(' . THEME_HUE . ",{$saturation},20%)"; // dark theme
+    $theme = 'hsl(' . THEME_HUE . ",{$saturation},10%)"; // dark theme
     $highlight = 'hsl(' . THEME_HUE . ",{$saturation},30%)"; // bright theme
     $text_on_theme = 'white';
     $shade = 'hsl(' . THEME_HUE . ",{$saturation},75%)"; // light theme
@@ -141,13 +141,13 @@ html, body {height: 100%;}
     /* border-bottom: <?= $border ?>; */
     <?= shadow(); ?>
     margin-bottom: 1em;
-    box-shadow: 0 2px 0 0px var(--rainbow-red),
-                0 4px 0 0px var(--rainbow-orange),
+    box-shadow: 0 1.5px 0 0px var(--rainbow-purple),
+                0 3px 0 0px var(--rainbow-blue),
+                0 4.5px 0 0px var(--rainbow-green),
                 0 6px 0 0px var(--rainbow-yellow),
-                0 8px 0 0px var(--rainbow-green),
-                0 10px 0 0px var(--rainbow-blue),
-                0 12px 0 0px var(--rainbow-purple),
-                0 14px 1px 0px rgba(0,0,0,.5);
+                0 7.5px 0 0px var(--rainbow-orange),
+                0 9px 0 0px var(--rainbow-red),
+                0 9.5px 1px 0px rgba(0,0,0,.5);
 }
 
 #header.minimal {
@@ -313,13 +313,13 @@ a:hover.fb_button, a:hover.fb_button_rtl {
     color: <?= $text_on_theme ?>;
     text-align: center;
     <?= shadow(); ?>
-    box-shadow: 0 -2px 0 0px var(--rainbow-red),
-            0 -4px 0 0px var(--rainbow-orange),
-            0 -6px 0 0px var(--rainbow-yellow),
-            0 -8px 0 0px var(--rainbow-green),
-            0 -10px 0 0px var(--rainbow-blue),
-            0 -12px 0 0px var(--rainbow-purple),
-            0 -14px 1px 0px rgba(0,0,0,.5);
+    box-shadow: 0 -1.5px 0 0px var(--rainbow-purple),
+                0 -3px 0 0px var(--rainbow-blue),
+                0 -4.5px 0 0px var(--rainbow-green),
+                0 -6px 0 0px var(--rainbow-yellow),
+                0 -7.5px 0 0px var(--rainbow-orange),
+                0 -9px 0 0px var(--rainbow-red),
+                0 -9.5px 1px 0px rgba(0,0,0,.5);
 }
 
 #footer a, #footer a:visited, th a, th a:visited, tr.radiorow_values a, tr.radiorow_values a:visited { 
