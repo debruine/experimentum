@@ -1,0 +1,143 @@
+<?php
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
+
+/****************************************************
+ * Get Project Info
+ ***************************************************/
+ 
+if (count($_GET) == 1) {
+    $keys = array_keys($_GET);
+    $projectname = $keys[0];
+    if (in_array($_SESSION['status'], array('student', 'researcher', 'admin'))) {
+        $myproject = new myQuery('SELECT * FROM project WHERE url="' . $projectname . '"');
+    } else {
+        $myproject = new myQuery('SELECT * FROM project WHERE status="active" AND url="' . $projectname . '"');
+    }
+    
+    // check if a project was returned or exit
+    if ($myproject->get_num_rows() == 0) {
+        header('Location: /');
+        exit;
+    }
+    
+    $_SESSION['project'] = $projectname;
+    $project = $myproject->get_one_array();
+    
+    $exclusions = array();
+    if ($_SESSION['age'] > 0) {
+        $exclusions['exp'][]    = '(exp.lower_age <= ' . ($_SESSION['age']) . ' OR exp.lower_age IS NULL)'; 
+        $exclusions['quest'][]  = '(quest.lower_age <= ' . ($_SESSION['age']) . ' OR quest.lower_age IS NULL)';
+        $exclusions['sets'][]   = '(sets.lower_age <= ' . ($_SESSION['age']) . ' OR sets.lower_age IS NULL)';
+        $exclusions['exp'][]    = '(exp.upper_age >= ' . ($_SESSION['age']) . ' OR exp.upper_age IS NULL)';
+        $exclusions['quest'][]  = '(quest.upper_age >= ' . ($_SESSION['age']) . ' OR quest.upper_age IS NULL)';
+        $exclusions['sets'][]   = '(sets.upper_age >= ' . ($_SESSION['age']) . ' OR sets.upper_age IS NULL)';
+    } else {
+        // only show items with no age limits for people without an age
+        $exclusions['exp'][]    = 'exp.lower_age IS NULL AND exp.upper_age IS NULL';
+        $exclusions['quest'][]  = 'quest.lower_age IS NULL AND quest.upper_age IS NULL';
+        $exclusions['sets'][]   = 'sets.lower_age IS NULL AND sets.upper_age IS NULL';
+    }
+    
+    if ($_SESSION['sex'] == 'male') {
+        $exclusions['exp'][]    = '(exp.sex!="female")';
+        $exclusions['quest'][]  = '(quest.sex!="female")';
+        $exclusions['sets'][]   = '(sets.sex!="female")';
+    } else if ($_SESSION['sex'] == 'female') {
+        $exclusions['exp'][]    = '(exp.sex!="male")';
+        $exclusions['quest'][]  = '(quest.sex!="male")';
+        $exclusions['sets'][]   = '(sets.sex!="male")';
+    }
+    
+    $myitems = new myQuery('SELECT item_type, item_id, icon,
+                            IF(item_type="exp", exp.name, 
+                                IF(item_type="quest", quest.name, 
+                                    IF(item_type="set", sets.name, "Mystery Item"))) as name,
+                            IF(item_type="exp", exp.status, 
+                                IF(item_type="quest", quest.status, 
+                                    IF(item_type="set", sets.status, NULL))) as the_status,
+                            IF(item_type="exp", exp.lower_age, 
+                                IF(item_type="quest", quest.lower_age, 
+                                    IF(item_type="set", sets.lower_age, NULL))) as the_lower_age,
+                            IF(item_type="exp", exp.upper_age, 
+                                IF(item_type="quest", quest.upper_age, 
+                                    IF(item_type="set", sets.upper_age, NULL))) as the_upper_age       
+                            FROM project_items as p
+                            LEFT JOIN exp ON (exp.id=item_id) AND item_type="exp" AND ' . implode(' AND ', $exclusions['exp']) . '
+                            LEFT JOIN quest ON (quest.id=item_id) AND item_type="quest" AND ' . implode(' AND ', $exclusions['quest']) . '
+                            LEFT JOIN sets ON (sets.id=item_id) AND item_type="set" AND ' . implode(' AND ', $exclusions['sets']) . '
+                            WHERE p.project_id=' . $project['id'] . '
+                            ORDER BY item_n');
+                        
+    $items = $myitems->get_assoc();
+} else {
+    location('/');
+    exit;
+}
+
+
+/****************************************************/
+/* !Display Page */
+/***************************************************/   
+
+$title = loc($project['name']);
+
+$buttonwidth = count($items) * 11;
+$styles = array(
+    '#fb-login' => 'display: none;',
+    '#logres' => 'max-width: 22em; margin: 1em auto;',
+    '.bigbuttons li a.registerbutton' => 'background-image: url(/images/linearicons/pencil?c=FFF);',
+    '.bigbuttons li a.loginbutton' => 'background-image: url(/images/linearicons/lock?c=FFF);',
+    '#itembuttons' => "margin: 1em auto; max-width: {$buttonwidth}em;"
+);
+$page = new page($title);
+$page->set_logo(true);
+$page->set_menu(false);
+
+$page->displayHead($styles);
+$page->displayBody();
+
+echo '<p>' . $project['intro'] . '</p>' . ENDLINE;
+
+if (!empty($_SESSION['status'])) {
+    // participant is logged in
+    echo '<ul class="bigbuttons" id="itembuttons">';
+    $url = array(
+        'exp'   => '/exp/exp',      
+        'quest' => '/quest/q',
+        'set'   => '/include/scripts/set'
+    );
+    foreach ($items as $i) {
+            printf('<li id="%s_%s" class="%s"><a class="%s" href="%s?id=%s" style="%s">%s</a></li>' . ENDLINE,
+                $i['item_type'],
+                $i['item_id'],
+                ifEmpty($i['the_status'], 'hide'),
+                $i['item_type'],
+                $url[$i['item_type']],
+                $i['item_id'],
+                (!empty($i['icon'])) ? "background-image: url({$i['icon']}?c=FFF)" : "",
+                ifEmpty($i['name'], "Hidden: age or sex <span class='corner'>" . $i['item_type'] . "_" . $i['item_id'] . "</span>")
+            );
+            
+            if ($i['the_status'] != 'hide') $itemList[] = '"' . $i['item_type'] . '_' . $i['item_id'] . '"';
+        }
+    echo '</ul>';
+} else {
+    // participant is not logged in yet
+    ?>
+    
+    <p>Please login or register if you do not yet have an account.</p>
+    
+    <ul class="bigbuttons" id="logres">
+        <li><a class="registerbutton" href="/consent">Register</a></li>
+        <li><a class="loginbutton" href="javascript: startLogin();">Login</a></li>
+    </ul>
+    
+    
+    <?php
+}
+
+
+$page->displayFooter();
+
+?>

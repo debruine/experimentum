@@ -1,0 +1,6 @@
+# robots.txt for http://exp.psy.gla.ac.uk
+
+User-agent: *
+Disallow: /stimuli/
+Disallow: /include/
+Disallow: /res/
