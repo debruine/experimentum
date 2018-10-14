@@ -4,7 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
 auth(array('student', 'researcher', 'admin'));
 
-$status_changer = ($_SESSION['status'] >= 7) ? "statusChanger(5, 'sets');" : "";
+$status_changer = ($_SESSION['status'] == 'admin') ? "statusChanger(5, 'sets');" : "";
 
 $title = array(
 	'/res/' => 'Researchers',

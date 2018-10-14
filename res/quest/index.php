@@ -31,9 +31,9 @@ if (array_key_exists('owner', $_GET)) {
 $howmany = new myQuery("SELECT COUNT(*) as c FROM quest LEFT JOIN access USING (id) WHERE access.type='quest' AND access.user_id='{$access_user}'");
 
 if ($_GET['status'] == "all" || $howmany->get_one() < 50) {
-	$visible_statuses = "'test', 'lab', 'active', 'inactive'";
+	$visible_statuses = "'test', 'active', 'inactive'";
 	$_GET['status'] = "all";
-} else if (in_array($_GET['status'], array("test", "lab", "active", "inactive"))) { 
+} else if (in_array($_GET['status'], array("test", "active", "inactive"))) { 
 	$visible_statuses = "'" . $_GET['status'] . "'";
 } else {
 	$visible_statuses = "'test'";
@@ -75,12 +75,10 @@ $owner->set_options($ownerlist);
 $owner->set_null(false);
 $owner->set_eventHandlers(array('onchange' => 'changePage()'));
 
-
 $status = new select('status', 'status', $_GET['status']);
 $status->set_options(array(
 	"all" => "all", 
 	"test" => "test", 
-	"lab" => "lab", 
 	"active" => "active", 
 	"inactive" => "inactive"
 ));
