@@ -34,7 +34,7 @@ if (array_key_exists('owner', $_GET)) {
 $howmany = new myQuery("SELECT COUNT(*) as c FROM exp LEFT JOIN access USING (id) WHERE access.type='exp' AND access.user_id='{$access_user}'");
 
 if ($_GET['status'] == "all" || $howmany->get_one() < 50) {
-    $visible_statuses = "'test', active', 'inactive'";
+    $visible_statuses = "'test', 'active', 'inactive'";
     $_GET['status'] = "all";
 } else if (in_array($_GET['status'], array("test", "active", "inactive"))) { 
     $visible_statuses = "'" . $_GET['status'] . "'";
