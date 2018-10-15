@@ -31,7 +31,7 @@ echo 'Memory limit: ' . ini_get('memory_limit');
 // session Variables
 $_SESSION['debug'] = true;
 echo "<h2>\$_SESSION Variables</h2>\n";
-echo session_id();
+
 htmlArray($_SESSION);
 
 

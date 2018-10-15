@@ -109,6 +109,9 @@ CREATE TABLE `project` (
   `status` enum('active','inactive','test') DEFAULT 'test',
   `labnotes` text DEFAULT NULL,
   `create_date` date DEFAULT NULL,
+  `sex` enum('both','male','female') DEFAULT 'both',
+  `lower_age` tinyint(2) unsigned DEFAULT NULL,
+  `upper_age` tinyint(2) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

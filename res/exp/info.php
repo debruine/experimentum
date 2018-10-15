@@ -21,7 +21,7 @@ $styles = array(
     '#image_table .trial' => 'border-top: 1px solid grey;',
     "select" => "max-width: 25em",
     "#infotable td" => "min-width: 25%;",
-    "#infotable tr.even" => "background: rgba(0,0,0,0);",
+    "#infotable > tbody> tr.even" => "background: rgba(0,0,0,0);",
     '#expinfo, #infotable' => 'margin-bottom: 1em; width: 100%;'
 );
 
@@ -122,12 +122,11 @@ foreach($owners as $id => $name) {
 }
 
 // get status changer for admins
-if ($_SESSION['status'] >= 7) {
+if ($_SESSION['status'] == 'admin') {
     $status_chooser = new select('status', 'status', $expdata['status']);
     $status_chooser->set_null(false);
     $status_chooser->set_options(array(
         'test' => 'test',
-        'lab' => 'lab',
         'active' => 'active',
         'inactive' => 'inactive'
     ));
@@ -295,7 +294,7 @@ $page->displayBody();
             <input id='owner-add-input' type='text' > (<a id='owner-add'>add</a>)
             <?php } ?>
         </td></tr>
-    <tr><td>Labnotes:</td> <td><pre><?= ifEmpty($expdata['labnotes'], 'Please add labnotes') ?></pre></td></tr>
+    <tr><td>Labnotes:</td> <td><pre><?= ifEmpty($expdata['labnotes'], '<span class="ui-state-error">Please add labnotes</span>') ?></pre></td></tr>
     <?php
         if (count($setslist) > 0) {
             echo "<tr><td>In Sets:</td> <td>";

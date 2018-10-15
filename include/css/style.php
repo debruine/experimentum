@@ -756,8 +756,9 @@ form > .buttons:first-child {
 
 button.tinybutton {
     font-size: 70% !important;
-    padding: 0px !important;
+    padding: 3px !important;
     border-width: 2px;
+    border-radius: 5px;
     <?= shadow('1px','1px','2px') ?>
 }
 
@@ -915,12 +916,10 @@ tr.chosen1 img {
 /***** Tables *****/
 
 tbody tr.odd, li.odd {
-    background: #BFD0D9;
     background-color: hsl(<?= THEME_HUE ?>,0%,80%);
 }
 
 tbody tr.even, li.even {
-    background: #DFE8EC;
     background-color: hsl(<?= THEME_HUE ?>,0%,90%);
 }
 
@@ -1175,15 +1174,15 @@ td.anchor {
     height: 44px;
     text-align: center;
     font-size: 70%;
-    line-height: 44px;
-    border: 3px solid white;
+    line-height: 40px;
+    border: 1px solid white;
     background-color: <?= $highlight ?>;
     <?= roundCorners('25px') ?>
     <?= shadow('2px','2px','4px') ?>
 }
 
 .helpbutton:hover, .helpbutton:active {
-    background-color: hsl(<?= THEME_HUE ?>,100%,40%);
+    background-color: var(--rainbow-red);
 }
 
 .helpbutton:active {
@@ -1223,34 +1222,6 @@ table.fb_chart {
 .graph5 { background-color: #06C; }
 .graph6 { background-color: #00C; }
 .graph7 { background-color: #609; }
-
-/*-------------------------------------------------
-PSYCHOMORPH STYLES
--------------------------------------------------*/
-
-#taglist a { 
-    padding: 0 3px; 
-    cursor:pointer;
-}
-
-.tagcloud {
-    font-size: 20px;
-    overflow:auto;
-    float:none;
-    margin:20px auto 10px auto;
-}
-
-.tagcloud li {
-    display: inline; 
-    padding: 0; 
-    height: 20px;
-}
-
-.tagcloud a {
-    border: none; 
-    padding: 0 2px;
-}
-
 
 /*-------------------------------------------------
 EXPERIMENT STYLES

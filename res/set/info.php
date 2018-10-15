@@ -546,7 +546,7 @@ $page->displayBody();
                         cells[7].innerHTML = parts[6];
                         cells[8].innerHTML = parts[7];
                     } else {
-                        alert(data);
+                        //alert(data);
                     }
                 }
             });

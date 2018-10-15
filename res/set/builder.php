@@ -176,22 +176,14 @@ $set_table['set_type']->set_options(array(
     'one_equal' => 'One of (equal)'
 ));
 
-// set up limits: sex, sexpref, lower_age, upper_age
+// set up limits: sex, lower_age, upper_age
 $sex = new select('sex', 'sex', $set_info['sex']);
 $sex->set_options(array(
-    'both' => 'Both sexes',
+    'both' => 'All genders',
     'male' => 'Men only',
     'female' => 'Women only'
 ));
 $sex->set_null(false);
-$sexpref = new select('sexpref', 'sexpref', $set_info['sexpref']);
-$sexpref->set_options(array(
-    'NULL' => 'any',
-    'men' => 'men',
-    'women' => 'women',
-    'either' => 'bisexuals'
-));
-$sexpref->set_null(false);
 $lower_age = new selectnum('lower_age', 'lower_age', $set_info['lower_age']);
 $lower_age->set_options(array('NULL'=>'any'), 0, 100);
 $lower_age->set_null(false);
@@ -200,8 +192,7 @@ $upper_age->set_options(array('NULL'=>'any'), 0, 100);
 $upper_age->set_null(false);
 $ci = $sex->get_element() . 
     ' aged ' . $lower_age->get_element() . 
-    ' to ' . $upper_age->get_element() . 
-    ' who prefer ' . $sexpref->get_element();
+    ' to ' . $upper_age->get_element();
 $set_table['limits'] = new formElement('limits','limits');
 $set_table['limits']->set_question('Limited to');
 $set_table['limits']->set_custom_input($ci);

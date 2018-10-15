@@ -108,9 +108,9 @@ echo '<button id="new_quest">New Questionnaire</button></div>';
 echo $my->get_result_as_table(true, true);
 
 $new_quest_buttons = array(
-	"builder" => "Mixed",
-	"builder?ranking" => "Ranking",
-	"builder?radiopage" => "Radiopage",
+	"builder" => "Mixed (different question types)",
+	"builder?radiopage" => "Radiopage (response options across top)",
+	"builder?ranking" => "Ranking (order a list of items)"
 );
 
 ?>
@@ -145,7 +145,7 @@ $new_quest_buttons = array(
 			autoOpen: false,
 			show: "scale",
 			hide: "scale",
-			width: "25em",
+			width: "35em",
 			modal: true,
 		});
 		

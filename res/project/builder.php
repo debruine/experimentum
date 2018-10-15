@@ -52,7 +52,7 @@ if (isset($_GET['checkurl'])) {
     
     $id = my_clean($_GET['id']);
     if (is_numeric($id) & $id>0) {
-        $q = new myQuery("SELECT id AS project_id, name as 'project_name', res_name, url, intro, labnotes, status FROM project WHERE id='{$id}'");
+        $q = new myQuery("SELECT id AS project_id, name as 'project_name', res_name, url, intro, sex, lower_age, upper_age, labnotes, status FROM project WHERE id='{$id}'");
         
         if ($q->get_num_rows() == 0) { header('Location: /res/project/'); }
         $project_info = $q->get_assoc(0);
@@ -105,15 +105,25 @@ if (array_key_exists('save', $_GET)) {
         }
     }
     
-    $q = new myQuery(sprintf('REPLACE INTO project (id, name, res_name, status, url, intro, labnotes, create_date) 
-                            VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
+    $proj_query = sprintf('REPLACE INTO project (id, name, res_name, status, url, 
+                              intro, labnotes, sex, lower_age, upper_age, create_date) 
+                            VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
                             $clean['project_id'],
                             $clean['project_name'],
                             $clean['res_name'],
                             ifEmpty($status, 'test'),
                             $clean['url'],
                             $clean['intro'],
-                            $clean['labnotes']));
+                            $clean['sex'],
+                            $clean['lower_age'],
+                            $clean['upper_age'],
+                            $clean['labnotes']);
+    
+    $proj_query = str_replace('""', 'NULL', $proj_query);
+    $proj_query = str_replace('"NULL"', 'NULL', $proj_query);
+    
+    $q = new myQuery($proj_query);
+    
     
     // get new set ID if a new set
     if ('NULL' == $clean['project_id']) $clean['project_id'] = $q->get_insert_id();
@@ -130,10 +140,12 @@ if (array_key_exists('save', $_GET)) {
         $item_n = $n+1;
         $i = explode('_', $item);
         $icon = ($project_icons[$n] == 'undefined') ? 'NULL' : "'{$project_icons[$n]}'";
-        $icon = str_replace("theme/", "white/", $icon);
         $item_query[] = "('{$clean['project_id']}', '{$i[0]}', '{$i[1]}', '{$item_n}', {$icon})";
     }
-    $q = new myQuery('INSERT INTO project_items (project_id, item_type, item_id, item_n, icon) VALUES ' . implode(',', $item_query));
+    
+    if (count($item_query)) {
+        $q = new myQuery('INSERT INTO project_items (project_id, item_type, item_id, item_n, icon) VALUES ' . implode(',', $item_query));
+    }
     
     // add to access list
     $q = new myQuery("REPLACE INTO access (type, id, user_id) VALUES ('project', {$clean['project_id']}, {$_SESSION['user_id']})");
@@ -170,6 +182,27 @@ $url->set_placeholder('shortname');
 
 $intro = new textarea('intro', 'intro', $project_info['intro']);
 $intro->set_dimensions(400, 40, true, 40, 300);
+
+// set up limits: sex, lower_age, upper_age
+$sex = new select('sex', 'sex', $project_info['sex']);
+$sex->set_options(array(
+    'both' => 'All genders',
+    'male' => 'Men only',
+    'female' => 'Women only'
+));
+$sex->set_null(false);
+$lower_age = new selectnum('lower_age', 'lower_age', $project_info['lower_age']);
+$lower_age->set_options(array('NULL'=>'any'), 0, 100);
+$lower_age->set_null(false);
+$upper_age = new selectnum('upper_age', 'upper_age', $project_info['upper_age']);
+$upper_age->set_options(array('NULL'=>'any'), 0, 100);
+$upper_age->set_null(false);
+$ci = $sex->get_element() . 
+    ' aged ' . $lower_age->get_element() . 
+    ' to ' . $upper_age->get_element();
+$limits = new formElement('limits','limits');
+$limits->set_question('Limited to');
+$limits->set_custom_input($ci);
 
 $labnotes = new textarea('labnotes', 'labnotes', $project_info['labnotes']);
 $labnotes->set_dimensions(400, 40, true, 40, 300);
@@ -236,13 +269,6 @@ $page->displayBody();
         <button id='save-project'>Save</button>
         <button id='delete-project'>Delete</button>
         <button id='go-project'>Go</button>
-        
-        <span id="typeChanger">View Items: 
-            <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label> 
-            <input type="radio" id="viewQuest" name="typeChanger"><label for="viewQuest">Quest</label> 
-            <input type="radio" id="viewSets" name="typeChanger"><label for="viewSets">Sets</label> 
-            <input type="radio" id="viewIcons" name="typeChanger"><label for="viewIcons">Icons</label>
-        </span>
     </div>
     
     <div>
@@ -250,11 +276,22 @@ $page->displayBody();
         URL: <?= $url->get_element() ?> 
     </div>
     
+    <div>
+        Limited to: <?= $limits->get_element() ?>
+    </div>
+    
     <div class='toolbar-line'>
         Intro: <?= $intro->get_element() ?> 
         Labnotes: <?= $labnotes->get_element() ?>
     </div>
 </div>
+
+<span id="typeChanger">View Items: 
+            <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label> 
+            <input type="radio" id="viewQuest" name="typeChanger"><label for="viewQuest">Quest</label> 
+            <input type="radio" id="viewSets" name="typeChanger"><label for="viewSets">Sets</label> 
+            <input type="radio" id="viewIcons" name="typeChanger"><label for="viewIcons">Icons</label>
+        </span>
 
 <div class="setlists" id="projectList">
     <h2>Project List</h2>
@@ -388,6 +425,9 @@ $j(function() {
                         $j('#res_name').serialize() + '&' +
                         $j('#url').serialize() + '&' +
                         $j('#intro').serialize() + '&' +
+                        $j('#sex').serialize() + '&' +
+                        $j('#lower_age').serialize() + '&' +
+                        $j('#upper_age').serialize() + '&' +
                         $j('#labnotes').serialize() + '&' +
                         'project_items=' + setitems.substring(1) + '&' +
                         'project_icons=' + icons.substring(1);

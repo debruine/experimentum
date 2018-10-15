@@ -4,6 +4,113 @@
 
 jQuery.noConflict(); var $j = jQuery;
 
+var KEYCODE = {
+    'backspace' : 8,
+    'tab' : 9,
+    'enter' : 13,
+    'shift' : 16,
+    'ctrl' : 17,
+    'cmd' : 224,
+    'alt' : 18,
+    'pause_break' : 19,
+    'caps_lock' : 20,
+    'esc' : 27,
+    'space' : 32,
+    'page_up' : 33,
+    'page_down' : 34,
+    'end' : 35,
+    'home' : 36,
+    'left_arrow' : 37,
+    'up_arrow' : 38,
+    'right_arrow' : 39,
+    'down_arrow' : 40,
+    'insert' : 45,
+    'delete' : 46,
+    '0' : 48,
+    '1' : 49,
+    '2' : 50,
+    '3' : 51,
+    '4' : 52,
+    '5' : 53,
+    '6' : 54,
+    '7' : 55,
+    '8' : 56,
+    '9' : 57,
+    'equal' : 61,
+    'plus' : 61,
+    'minus' : 173,
+    'underscore' : 173,
+    'a' : 65,
+    'b' : 66,
+    'c' : 67,
+    'd' : 68,
+    'e' : 69,
+    'f' : 70,
+    'g' : 71,
+    'h' : 72,
+    'i' : 73,
+    'j' : 74,
+    'k' : 75,
+    'l' : 76,
+    'm' : 77,
+    'n' : 78,
+    'o' : 79,
+    'p' : 80,
+    'q' : 81,
+    'r' : 82,
+    's' : 83,
+    't' : 84,
+    'u' : 85,
+    'v' : 86,
+    'w' : 87,
+    'x' : 88,
+    'y' : 89,
+    'z' : 90,
+    'left_window' : 91,
+    'right_window' : 92,
+    'select_key' : 93,
+    '0n' : 96,
+    '1n' : 97,
+    '2n' : 98,
+    '3n' : 99,
+    '4n' : 100,
+    '5n' : 101,
+    '6n' : 102,
+    '7n' : 103,
+    '8n' : 104,
+    '9n' : 105,
+    'multiply' : 106,
+    'add' : 107,
+    'subtract' : 109,
+    'decimal_point' : 110,
+    'divide' : 111,
+    'f1' : 112,
+    'f2' : 113,
+    'f3' : 114,
+    'f4' : 115,
+    'f5' : 116,
+    'f6' : 117,
+    'f7' : 118,
+    'f8' : 119,
+    'f9' : 120,
+    'f10' : 121,
+    'f11' : 122,
+    'f12' : 123,
+    'num_lock' : 144,
+    'scroll_lock' : 145,
+    'semicolon' : 186,
+    'equal_sign' : 187,
+    'comma' : 188,
+    'dash' : 189,
+    'period' : 190,
+    'forward_slash' : 191,
+    'grave_accent' : 192,
+    'open_bracket' : 219,
+    'backslash' : 220,
+    'closebracket' : 221,
+    'single_quote' : 222
+};
+
 /****************************************************/
 /* !onLoad items                                    */
 /****************************************************/
@@ -92,6 +199,46 @@ $j(function() {
     /*$j("#header").click( function() {
         $j("#header").toggleClass('minimal');
     });*/
+ /*   
+    $j(document).keydown(function(e) {
+        var navKeys,  // list of keycodes for navigation (except when in input boxes)
+            funcKeys; // list of keycodes for text functions (except when in input boxes)
+    
+        navKeys = [
+            KEYCODE.left_arrow,
+            KEYCODE.right_arrow,
+            KEYCODE.down_arrow,
+            KEYCODE.up_arrow,
+            KEYCODE.delete,
+            KEYCODE.backspace
+        ];
+    
+        funcKeys = [
+            KEYCODE.x,
+            KEYCODE.c,
+            KEYCODE.v,
+            KEYCODE.a
+        ];
+    
+        if (    (    $j('.ui-dialog').is(':visible')
+                     || $j('input:focus').length
+                     || $j('textarea:focus').length
+                ) &&
+                (    ((e.ctrlKey || e.metaKey) && ( funcKeys.indexOf(e.which) !== -1 ))
+                     || (navKeys.indexOf(e.which) !== -1)
+                )
+    
+            ) {
+            // do not override cut/paste/copy/select all keyboard shortcuts
+            // and delete/arrow functions when dialog windows are open
+            // or on the login page or an input/textarea is focussed
+            return true; 
+        } else if (e.which == KEYCODE.a) {                                      // !cmd-a
+            $j('#select_all').click();
+        }
+        e.preventDefault();
+    });
+*/
 });
 
 /****************************************************/
@@ -265,19 +412,6 @@ function narrowTable(tbl, searchText) {
     stripe(tbl);
 }
 
-function radioChange(img, name, myvalue) {
-    alert('This function is deprecated.');
-/*
-    $j("#" + name).val(myvalue);
-    $j('#' + name + '_row td img.radio').attr("src", '/images/icons/my/radio_unselected');
-    $j('#' + name + '_row td img.radio').attr("alt", 'o');
-    img.src = '/images/icons/my/radio_selected';
-    img.alt = 'x';
-    
-    $j("#" + name + "_row").removeClass('emptyAlert');
-*/
-}
-
 
 // Limit the text field to only numbers (no decimals)
 function formatInt(input) {
@@ -434,6 +568,64 @@ function postIt(url, data){
     }
 
     $j('#jQueryPostItForm').submit();
+}
+
+function folderize(json, appendElement) {
+    
+    appendElement   .unbind('click')                    // remove folderize function
+                    .parent('ul').find('li.folder').addClass('closed'); // close all folders at and below this level
+    appendElement   .removeClass('closed')              // open folder, since you just clicked on it
+                    .find('span').click( function() {   // add a folder opening function when clicked   
+                        $j(this).parent().removeClass('closed') // open this folder on click
+                                .siblings('li').addClass('closed') // close sibling folders
+                                .find('li').addClass('closed'); // close all folders below this level
+                    });
+    
+    var theFolder = $j('<ul />').css('margin-left', appendElement.width()+10);
+
+    $j.each(json, function(folder, contents) {
+        var theItem = $j('<li />');
+
+        if (contents.length > 1) {
+            // contents are an image name
+            var splitName = contents.split('/');
+            var shortName = splitName[splitName.length - 1];
+            
+            theItem .html('<span>' + shortName + '</span>')
+                    .attr('url', contents)
+                    .addClass('image')
+                    .click( function() {
+                        $j('#imagebox img').attr('src', $j(this).attr('url'));
+                        $j('#imagebox #imageurl').html($j(this).attr('url'));
+                        
+                        $j('li.image.selected').removeClass('selected');
+                        $j(this).addClass('selected');
+                        $j(this).siblings('li').addClass('closed').find('li').addClass('closed');
+                    });
+        } else {
+            // contents are more files/folders
+            
+            var splitName = folder.split('/');
+            var shortName = splitName[splitName.length - 1];
+            
+            theItem .html('<span>' + shortName + '</span>')
+                    .addClass('folder closed')
+                    .data('contents', contents)
+                    .click( function() { 
+                        folderize($j(this).data('contents'), $j(this)); 
+                    });
+        }
+        
+        theFolder.append( theItem );
+    });
+
+    appendElement.append( theFolder );
+    $j('#finder > ul').css('margin-left', 0); // fix first ul
+}
+
+function sizeToViewport() {
+    var new_height = $j(window).height() - $j('#finder').offset().top - $j('#footer').height()-30;
+    $j('#finder').height(new_height);
 }
 
 -->

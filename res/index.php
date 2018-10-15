@@ -86,6 +86,15 @@ $page->displayBody();
 <div id="dash"><?= $dash ?></div>
 <?= linkList($links, 'bigbuttons', 'ul', $class) ?>
 
+<p class="fullwidth" style="clear:both;">You can make new experiments or questionnaires at the 
+    <a href="/res/exp/">Experiment</a>  or <a href="/res/quest/">Questionnaire</a> lists above. 
+    Chain them together by making new set at the <a href="/res/set/builder">Set Builder</a>.
+    Make a project page with the <a href="/res/project/builder">Project Builder</a> 
+    so you can direct participants to your project with a custom URL. 
+    Browse our <a href="/res/stimuli/browse">open-access stimuli</a> or
+    <a href="/res/stimuli/upload">upload your own stimuli</a>.
+</p>
+
 
 <script>
     $j(function() {

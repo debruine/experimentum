@@ -391,6 +391,13 @@ foreach ($trials as $trial) {
 </div>
 
 <div id="image_chooser">
+    <!--
+    <div id="imagebox">
+        <div id='imageurl'></div>
+        <img />
+    </div>
+    <div id="finder"></div>
+    -->
     <ul id="img_list"></ul>
 </div>
 
@@ -428,6 +435,8 @@ foreach ($trials as $trial) {
     function imgname(src) {
         var name = src.replace('/stimuli', '');
         name = name.replace('.jpg', '');
+        name = name.replace('.gif', '');
+        name = name.replace('.png', '');
         name = name.replace('.ogg', '');
         name = name.replace('.mp3', '');
         return name;
@@ -673,13 +682,12 @@ foreach ($trials as $trial) {
         
         // make current option unclickable so you dont keep searching
         if (imgToggle == 0) {
-            $j('#image_toggle').html("<a href='javascript:toggleImages(1);'>images</a>");
-            $j('#list_toggle').html('list');
+            //$j('#image_toggle').html("<a href='javascript:toggleImages(1);'>images</a>");
+            //$j('#list_toggle').html('list');
             $j('#trial_builder').addClass('list');
-            
-        } else {
-            $j('#list_toggle').html("<a href='javascript:toggleImages(0);'>list</a>");
-            $j('#image_toggle').html('images');
+        } else if (imgToggle == 1)  {
+            //$j('#list_toggle').html("<a href='javascript:toggleImages(0);'>list</a>");
+            //$j('#image_toggle').html('images');
             $j('#trial_builder').removeClass('list');
         }
         
@@ -743,6 +751,30 @@ foreach ($trials as $trial) {
         }); 
         
     }
+
+/*
+    $j(function() {
+        window.onresize = sizeToViewport;
+        $j('#finder').hide();
+        
+        // get directory structure via ajax
+        $j.ajax({
+            url: '/res/scripts/browse?dir=/stimuli/', 
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                //$j('#finder').html(JSON.stringify(data));
+                folderize(data, $j('#finder'));
+                
+                // hide loading animation and show finder
+                $j('#msg').hide();
+                $j('#finder').show();
+                sizeToViewport();
+            }
+        });
+    });
+*/
+
 </script>
 
 <!-- enable instant edits -->
