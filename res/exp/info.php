@@ -487,7 +487,7 @@ foreach ($trials as $t) {
         $j('#function_buttonset').buttonset();
     
         $j( "#view-exp" ).click(function() {
-            window.location = '/exp/exp?id=<?= $expdata['id'] ?>';
+            window.location = '/exp?id=<?= $expdata['id'] ?>';
         });
         $j( "#edit-exp" ).click(function() {
             window.location = '/res/exp/builder?id=<?= $expdata['id'] ?>';

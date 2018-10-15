@@ -265,9 +265,9 @@ class experiment {
                 $version = rand(1, $maxversion);
             }
         
-            //header('Location: /exp/slideshow?id=' . $this->id . '&v=' . $version); 
+            //header('Location: /slideshow?id=' . $this->id . '&v=' . $version); 
             //exit;
-            $adapt_nopre = '/exp/slideshow?id=' . $this->id . '&v=' . $version;
+            $adapt_nopre = '/slideshow?id=' . $this->id . '&v=' . $version;
         }
         
         // continue button
@@ -1409,7 +1409,7 @@ class exp_adaptation extends exp_buttons {
             
                         '                $j.get(url, function(r) {' . ENDLINE .
                         '                    // send to feedback page' . ENDLINE .
-                        '                    window.location.href="/feedback/fb?type=exp&id=<?php echo $exp_id; ?>";' . ENDLINE .
+                        '                    window.location.href="/fb?type=exp&id=<?php echo $exp_id; ?>";' . ENDLINE .
                         '                });' . ENDLINE .
                         '            }' . ENDLINE .
                         '        }' . ENDLINE .

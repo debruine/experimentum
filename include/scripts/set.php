@@ -95,9 +95,9 @@ function get_set_items($id) {
     
     foreach ($items as $item) {
         if ($item['item_type'] == 'exp') {
-            $item_list[] = '/exp/exp?id=' . $item['item_id'];
+            $item_list[] = '/exp?id=' . $item['item_id'];
         } else if ($item['item_type'] == 'quest') {
-            $item_list[] = '/quest/q?id=' . $item['item_id'];
+            $item_list[] = '/quest?id=' . $item['item_id'];
         } else if ($item['item_type'] == 'set') {
             get_set_items($item['item_id']); // recurses if item is another set
         }
@@ -117,7 +117,7 @@ if (   !empty($fb['feedback_general'])
     || !empty($fb['feedback_query'])
     || !empty($fb['chart_id'])
     || !empty($fb['forward'])   ) {
-    $item_list[] = '/feedback/fb?type=sets&id=' . $_GET['id'];
+    $item_list[] = '/fb?type=sets&id=' . $_GET['id'];
 }
 
 if (array_key_exists("test", $_GET)) {

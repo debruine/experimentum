@@ -325,7 +325,7 @@ class page {
 		if (LOGGEDIN) {
 ?>
 		<li id='header_username'>
-			<a href='/my/'><?= ifEmpty($_SESSION['username'], 'My account') ?></a>
+			<a href='/my'><?= ifEmpty($_SESSION['username'], 'My account') ?></a>
 		</li>
 		<li id='logout'><a href='javascript: logout();'><?= loc("Logout") ?></a></li>
 <?php		
@@ -373,13 +373,13 @@ class page {
 				'/feedback/'    	=> 'feedback',
 				'/faq'			=> 'faq',
 				'/res/'			=> 'res',
-				'/my/'			=> 'my'
+				'/my'			=> 'my'
 			);
 			
 			$res_list = array('student','researcher','admin');
 			$status_list = array('test','guest','registered','student','researcher','admin');
 			if (in_array($_SESSION['status'], $res_list)) $menuList['/res/'] = 'Researchers';
-			if (in_array($_SESSION['status'], $status_list)) $menuList['/my/'] = 'My Account';
+			if (in_array($_SESSION['status'], $status_list)) $menuList['/my'] = 'My Account';
 			
 			$menu .= '	<ul>' . ENDLINE;
 			foreach($menuList as $url => $item) {

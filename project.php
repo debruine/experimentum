@@ -103,8 +103,8 @@ if (!empty($_SESSION['status'])) {
     // participant is logged in
     echo '<ul class="bigbuttons" id="itembuttons">';
     $url = array(
-        'exp'   => '/exp/exp',      
-        'quest' => '/quest/q',
+        'exp'   => '/exp',      
+        'quest' => '/quest',
         'set'   => '/include/scripts/set'
     );
     foreach ($items as $i) {

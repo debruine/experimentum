@@ -407,7 +407,7 @@ $page->displayBody();
             window.location = '/include/scripts/set?id=<?= $setdata['id'] ?>';
         });
         $j( "#fb-set" ).click(function() {
-            window.location = '/feedback/fb?type=sets&id=<?= $setdata['id'] ?>';
+            window.location = '/fb?type=sets&id=<?= $setdata['id'] ?>';
         });
         $j( "#edit-set" ).click(function() {
             window.location = '/res/set/builder?id=<?= $setdata['id'] ?>';

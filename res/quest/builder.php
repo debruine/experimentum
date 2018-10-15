@@ -417,8 +417,8 @@ $infoTable->set_questionList($info);
 $infoTable->set_method('post');
 $infoTable->set_buttons(array(
     'Save Questionnaire' => 'saveQuestionnaire();',
-    'View Questionnaire' => 'window.open("/quest/q?id=" + $j("#id").val());',
-    'View Feedback Page' => 'window.open("/feedback/fb?type=quest&id=" + $j("#id").val());',
+    'View Questionnaire' => 'window.open("/quest?id=" + $j("#id").val());',
+    'View Feedback Page' => 'window.open("/fb?type=quest&id=" + $j("#id").val());',
     'Reset' => 'window.location.href=window.location.href;'
 ));
 $infoTable->set_button_location('bottom');
@@ -1356,10 +1356,10 @@ foreach ($questions as $n => $q) {
                     title: 'Questionnaire Updated',
                     width: 500,
                     buttons: {
-                        'Go to Questionnaire': function() { window.location='/quest/q?id=' + parseInt(r[0]); },
+                        'Go to Questionnaire': function() { window.location='/quest?id=' + parseInt(r[0]); },
                         'Keep Editing': function() { window.location='/res/quest/builder?id=' + parseInt(r[0]); }
                     },
-                    close: function() { window.location='/quest/q?id=' + parseInt(r[0]); }
+                    close: function() { window.location='/quest?id=' + parseInt(r[0]); }
                 });
             }
         });

@@ -11,12 +11,18 @@ $title = array(
 );
 
 $styles = array(
-    '#myInformation_form'           => 'float:left; width: 30%; margin:0',
+    '#myInformation_form'           => 'float:left; width: 35%; margin:0',
     '.setlists'                     => 'font-size:85%; float:right; width: 30%; margin:1em 0 1em 1em;',
-    '.setlists h2'                  => 'padding:0',
+    '.setlists h2, .setlists h3'    => 'padding:0',
     '.setlists ul, .setlists ol'    => 'height:400px; overflow:auto;',
     '.setlists ul'                  => 'box-shadow: 2px 2px 4px rgba(0,0,0,.5);',
     '.setlists li'                  => 'border:1px solid grey; padding:2px;',
+    '.setlists li .status'          => 'display: inline-block; width:1.2em; height:1.2em; 
+                                        border-radius: 0 .5em; float: right; 
+                                        text-align: center; line-height: 1.2em; font-size:100%',
+    '.setlists li.active .status'   => 'background-color: hsla(120,100%,50%, 50%);',
+    '.setlists li.inactive .status' => 'background-color: hsla(120,0%,50%, 50%);',
+    '.setlists li.test .status'     => 'background-color: hsla(0,100%,50%, 50%);',
     '.setlists li:hover'            => 'color:hsl(0, 100%, 40%); cursor:default;',
     '.setlists li+li'               => 'border-top:0;',
     '#new_set'                      => '',
@@ -227,21 +233,27 @@ $form_table->set_questionList($table_setup);
 $q = new myQuery('SELECT id, res_name, status FROM sets ORDER BY id');
 $sets = $q->get_assoc();
 foreach ($sets as $s) {
-    $set_list[] = "<li title='set_{$s['id']}'>{$s['id']}: {$s['res_name']}</li>" . ENDLINE;
+    $abr = ucwords(substr($s['status'], 0,1));
+    $set_list[] = "<li title='set_{$s['id']}'>{$s['id']}: {$s['res_name']}
+                    <span class='status'>{$abr}</span></li>" . ENDLINE;
 }
 
 $q->set_query('SELECT id, res_name, status FROM exp ORDER BY id');
 $exps = $q->get_assoc();
 $exp_list = array();
 foreach ($exps as $s) {
-    $exp_list[] = "<li title='exp_{$s['id']}'>{$s['id']}: {$s['res_name']}</li>" . ENDLINE;
+    $abr = ucwords(substr($s['status'], 0,1));
+    $exp_list[] = "<li title='exp_{$s['id']}'>{$s['id']}: {$s['res_name']}
+                    <span class='status'>{$abr}</span></li>" . ENDLINE;
 }
 
 $q->set_query('SELECT id, res_name, status FROM quest ORDER BY id');
 $quests = $q->get_assoc();
 $quest_list = array();
 foreach ($quests as $s) {
-    $quest_list[] = "<li title='quest_{$s['id']}'>{$s['id']}: {$s['res_name']}</li>" . ENDLINE;
+    $abr = ucwords(substr($s['status'], 0,1));
+    $quest_list[] = "<li title='quest_{$s['id']}'>{$s['id']}: {$s['res_name']}
+                        <span class='status'>{$abr}</span></li>" . ENDLINE;
 }
 
 
@@ -263,9 +275,9 @@ $page->displayBody();
     <button id='info-set'>Info</button>
     
     <span id="typeChanger">View Items: 
-        <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label> 
-        <input type="radio" id="viewQuest" name="typeChanger"><label for="viewQuest">Quest</label> 
-        <input type="radio" id="viewSets" name="typeChanger"><label for="viewSets">Sets</label> 
+        <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label><input 
+        type="radio" id="viewQuest" name="typeChanger"><label for="viewQuest">Quest</label><input 
+        type="radio" id="viewSets" name="typeChanger"><label for="viewSets">Sets</label> 
     </span>
 </div>
 
@@ -273,6 +285,7 @@ $page->displayBody();
 
 <div class="setlists" id="expView">
     <h2>Experiments</h2>
+    <h3 class="note">Click to add to Set List</h3>
     <input type='text' class='search' onkeyup='search(this.value, "exp");' />
     <ul id="exp">
         <?= implode('', $exp_list) ?>
@@ -281,6 +294,7 @@ $page->displayBody();
 
 <div class="setlists" id="questView">
     <h2>Questionnaires</h2>
+    <h3 class="note">Click to add to Set List</h3>
     <input type='text' class='search' onkeyup='search(this.value, "quest");' />
     <ul id="quest">
         <?= implode('', $quest_list) ?>
@@ -289,6 +303,7 @@ $page->displayBody();
 
 <div class="setlists" id="setView"> 
     <h2>Sets</h2>
+    <h3 class="note">Click to add to Set List</h3>
     <input type='text' class='search' onkeyup='search(this.value, "set");' />   
     <ul id="set">
         <?= implode('', $set_list) ?>
@@ -297,6 +312,7 @@ $page->displayBody();
 
 <div class="setlists">
     <h2>Set List</h2>
+    <h3 class="note">Double-click to remove</h3>
     <ol id="new_set">
         <?= implode('', $item_list) ?>
     </ol>

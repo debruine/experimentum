@@ -346,7 +346,7 @@ $page->displayBody();
         $j('#function_buttonset').buttonset();
     
         $j( "#view-quest" ).click(function() {
-            window.location = '/quest/q?id=<?= $questdata['id'] ?>';
+            window.location = '/quest?id=<?= $questdata['id'] ?>';
         });
         $j( "#edit-quest" ).click(function() {
             window.location = '/res/quest/builder?id=<?= $questdata['id'] ?>';

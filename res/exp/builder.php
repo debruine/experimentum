@@ -451,7 +451,7 @@ $info['feedback_query']->set_dimensions(500, 50, true, 50, 0, 0);
 $submit_buttons = array('Save' => 'saveExperiment();');
 if (validID($exp_id)) {
     //$submit_buttons['Save as new'] = 'saveNew();';
-    $submit_buttons['Feedback Page'] = 'window.open("/feedback/fb?type=exp&id=" + $j("#id").val());';
+    $submit_buttons['Feedback Page'] = 'window.open("/fb?type=exp&id=" + $j("#id").val());';
     $submit_buttons['Edit Trials'] = 'editTrials()';
 }
 $submit_buttons['Reset'] = 'window.location.href=window.location.href;';

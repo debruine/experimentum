@@ -37,7 +37,7 @@ $page->displayBody();
 
 <h2><a href="#">Can I change my password or information?</a></h2>
 <div>
-<p>Yes. Just click on <a href="/my/">My Account</a>. You can change your username 
+<p>Yes. Just click on <a href="/my">My Account</a>. You can change your username 
 to any unused name. This will not affect the experiments you&#39;ve already done. 
 The form allows you to change your password or your password retrival question 
 and answer. You can also change your birthdate or sex if you entered them 
@@ -51,7 +51,7 @@ are very important to our scientific research.</p>
 <p>Yes. Just fill out this <a href="password.php">password retrieval form</a>. 
 You will have to correctly answer your password retrieval question.</p>
 <p>If you have not yet set your password retrieval question and answer, you can 
-    do so at <a href="/my/">My Account</a> if you are logged in. Unfortunately, 
+    do so at <a href="/my">My Account</a> if you are logged in. Unfortunately, 
     this won&#39;t help if you can&#39;t remember your password. You can e-mail 
     us with your username and IP address and we can see what we can do. Otherwise, 
     you may just have to register using a different username.</p>

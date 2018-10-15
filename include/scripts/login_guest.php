@@ -28,9 +28,9 @@ $newpage = '';
 if (array_key_exists('url', $clean)) {
 	$newpage = urldecode($clean['url']);
 } else if (array_key_exists('exp', $clean)) {
-	$newpage = '/exp/exp?id=' . $clean['exp'];
+	$newpage = '/exp?id=' . $clean['exp'];
 } else if (array_key_exists('quest', $clean)) {
-	$newpage = '/quest/q?id=' . $clean['quest'];
+	$newpage = '/quest?id=' . $clean['quest'];
 } else if (array_key_exists('set', $clean)) {
 	$newpage = '/include/scripts/set?id=' . $clean['set'];
 } else if (array_key_exists('project', $clean)) {

@@ -6,6 +6,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 unset($_SESSION['set_list']);
 unset($_SESSION['set_item_number']);
 unset($_SESSION['project']);
+unset($_SESSION['session']);
 
 /****************************************************/
 /* !Display Page */

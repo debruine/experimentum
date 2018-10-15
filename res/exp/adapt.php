@@ -385,7 +385,7 @@ foreach ($trials as $trial) {
 		$j( "#image_toggle" ).click(function() { toggleImages(1); });
 		
 		$j('#start-exp').button().click( function() {
-			window.location = '/exp/exp?id=<?= $exp_id ?>';
+			window.location = '/exp?id=<?= $exp_id ?>';
 		});
 		
 		$j('#edit-exp').button().click( function() {
@@ -488,7 +488,7 @@ foreach ($trials as $trial) {
 			width: 350,
 			modal: true,
 			buttons: {
-				'Start Exp': function() { window.location = '/exp/exp?id=<?= $exp_id ?>'; },
+				'Start Exp': function() { window.location = '/exp?id=<?= $exp_id ?>'; },
 				'Exp Info': function() { window.location = '/res/exp/info?id=<?= $exp_id ?>'; },
 			}
 		});

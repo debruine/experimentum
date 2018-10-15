@@ -11,12 +11,11 @@ $title = array(
 );
 
 $styles = array(
-    '#myInformation_form'           => 'float:left; width: 30%; margin:0',
+    '#myInformation_form'           => 'float:left; width: 35%; margin:0',
     '.setlists'                     => 'font-size:85%; float:right; width: 30%; margin:1em 0 1em 1em;',
-    '#projectList'                  => 'float: left;',
     '#iconView li'                  => 'height: 45px; width: 45px; background: '. THEME .' no-repeat center center; float:left; margin: 2px; border: 1px solid white; overflow: hidden; color: rgba(0,0,0,0);',
     '#projectList li'               => 'min-height: 30px; padding-right: 30px; background-position: right center; background-repeat: no-repeat;',
-    '.setlists h2'                  => 'padding:0',
+    '.setlists h2, .setlists h3'    => 'padding:0',
     '.setlists ul, .setlists ol'    => 'height:400px; overflow:auto;',
     '.setlists li'                  => 'border:1px solid grey; padding:2px;',
     '.setlists li .status'          => 'display: inline-block; width:1.2em; height:1.2em; 
@@ -312,24 +311,18 @@ $page->displayBody();
     <button id='go-project'>Go</button>
     
     <span id="typeChanger">View Items: 
-        <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label> 
-        <input type="radio" id="viewQuest" name="typeChanger"><label for="viewQuest">Quest</label> 
-        <input type="radio" id="viewSets" name="typeChanger"><label for="viewSets">Sets</label> 
-        <input type="radio" id="viewIcons" name="typeChanger"><label for="viewIcons">Icons</label>
+        <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label><input 
+        type="radio" id="viewQuest" name="typeChanger"><label for="viewQuest">Quest</label><input 
+        type="radio" id="viewSets" name="typeChanger"><label for="viewSets">Sets</label><input 
+        type="radio" id="viewIcons" name="typeChanger"><label for="viewIcons">Icons</label>
     </span>
 </div>
 
 <?= $form_table->print_form() ?>
 
-<div class="setlists" id="projectList">
-    <h2>Project List</h2>
-    <ol id="new_set">
-        <?= implode('', $item_list) ?>
-    </ol>
-</div>
-
 <div class="setlists" id="iconView">
     <h2>Icons</h2>
+    <h3 class="note">Drag to an item in the Project List</h3>
     <input type='text' class='search' onkeyup='search(this.value, "icons");' />
     <ul id="icons">
         <?= implode('', $icon_list) ?>
@@ -338,6 +331,7 @@ $page->displayBody();
 
 <div class="setlists"  id="expView">
     <h2>Experiments</h2>
+    <h3 class="note">Click to add to Project List</h3>
     <input type='text' class='search' onkeyup='search(this.value, "exp");' />
     <ul id="exp">
         <?= implode('', $exp_list) ?>
@@ -346,6 +340,7 @@ $page->displayBody();
 
 <div class="setlists" id="questView">
     <h2>Questionnaires</h2> 
+    <h3 class="note">Click to add to Project List</h3>
     <input type='text' class='search' onkeyup='search(this.value, "quest");' />
     <ul id="quest">
         <?= implode('', $quest_list) ?>
@@ -354,10 +349,19 @@ $page->displayBody();
 
 <div class="setlists" id="setView"> 
     <h2>Sets</h2>
+    <h3 class="note">Click to add to Project List</h3>
     <input type='text' class='search' onkeyup='search(this.value, "set");' />   
     <ul id="set">
         <?= implode('', $set_list) ?>
     </ul>
+</div>
+
+<div class="setlists" id="projectList">
+    <h2>Project List</h2>
+    <h3 class="note">Double-click to remove</h3>
+    <ol id="new_set">
+        <?= implode('', $item_list) ?>
+    </ol>
 </div>
 
 

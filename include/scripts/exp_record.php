@@ -89,9 +89,9 @@
 	
 	if ($maxversion > 0 && $version == 0) {
 		$version = rand(1, $maxversion);
-		echo '/exp/slideshow?id=' . $id . '&v=' . $version; 
+		echo '/slideshow?id=' . $id . '&v=' . $version; 
 	} else {
-		echo '/feedback/fb?type=exp&id=' . $id;
+		echo '/fb?type=exp&id=' . $id;
 	}
 	
 	exit;
