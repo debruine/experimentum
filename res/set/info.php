@@ -234,9 +234,9 @@ $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
 foreach($ownerlisting as $res) {
     $user_id = $res['user_id'];
-    $lastname = htmlspecialchars($res['lastname']);
-    $firstname = htmlspecialchars($res['firstname']);
-    $initials = htmlspecialchars($res['initials']);
+    $lastname = htmlspecialchars($res['lastname'], ENT_QUOTES);
+    $firstname = htmlspecialchars($res['firstname'], ENT_QUOTES);
+    $initials = htmlspecialchars($res['initials'], ENT_QUOTES);
     $email = htmlentities($res['email'], ENT_QUOTES);
     
     $ownerlist[] = "\n{ value: '{$user_id}', name: '{$lastname} {$initials}', label: '{$firstname} {$lastname} {$email}' }";
