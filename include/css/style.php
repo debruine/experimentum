@@ -135,7 +135,7 @@ html, body {height: 100%;}
     clear:both;
     float:left;
     width: 100%;
-    padding: 10px 0 15px;
+    padding: 10px 0 0px;
     background-color: <?= $theme ?>;
     color: <?= $text_on_theme ?>;
     /* border-bottom: <?= $border ?>; */
@@ -149,13 +149,6 @@ html, body {height: 100%;}
                 0 9px 0 0px var(--rainbow-red),
                 0 9.5px 1px 0px rgba(0,0,0,.5);
 }
-
-#header.minimal {
-    padding-bottom: 10px;
-    font-size: 75%;
-}
-
-#header.minimal .fb_profile_pic { display: none; }
 
 #breadcrumb { 
     float: left; 
@@ -187,23 +180,11 @@ ul#login_info {
     position:relative; /* for fb_profile_pic positioning */
 }
 
-div.fb_profile_pic {
-    vertical-align: text-top;
-    width:50px;
-    height:50px;
-    position: absolute;
-    left:-50px;
-    top:0;
-    background: no-repeat center center;
-}
 
 
 #login_info li { 
-    /*display: block; 
-    float: left;*/
     margin: 0 0 5px 0;
     padding: 0 .5em 0 .5em;
-    /*white-space: nowrap;*/
 }
 
 ul#login_info li label { display: block; text-align: left; }
@@ -230,18 +211,7 @@ ul#login_info li input { display: block; text-align: left; }
     margin: 1em auto;
 }
 
-/* Facebook Connect button styles */
 
-#fb-login {
-    height: 2em;
-    width: 10em;
-    overflow: hidden;
-}
-
-a:hover.fb_button, a:hover.fb_button_rtl {
-    text-decoration: none;
-    border: none;
-}
 
 .users_online {
     font-size: x-small; 
@@ -302,8 +272,8 @@ a:hover.fb_button, a:hover.fb_button_rtl {
 
 #footer {
     position: relative;
-    margin-top: -55px;              /* negative value of footer height */
-    height: 55px;                   /* footer height */
+    margin-top: -40px;              /* negative value of footer height */
+    height: 40px;                   /* footer height */
     clear:both;
     float:left;
     width:100%;
@@ -1496,11 +1466,6 @@ MOBILE STYLES
         display: block; 
     }
     
-    .fb_profile_pic { 
-        display: none; 
-        left: 0;
-    }
-    
     .helpbutton {
         left: 0;
         top: 4em;
@@ -1517,7 +1482,7 @@ MOBILE STYLES
     }
     
     #header {
-        margin-bottom: 0;
+        /*margin-bottom: 0;*/
     }
     
     #menu {

@@ -195,10 +195,7 @@ $j(function() {
     
     // format all horizontal radiobuttons
     $j("ul.radio").buttonset();
-        
-    /*$j("#header").click( function() {
-        $j("#header").toggleClass('minimal');
-    });*/
+
  /*   
     $j(document).keydown(function(e) {
         var navKeys,  // list of keycodes for navigation (except when in input boxes)
