@@ -112,8 +112,9 @@ CREATE TABLE `project` (
   `sex` enum('both','male','female') DEFAULT 'both',
   `lower_age` tinyint(2) unsigned DEFAULT NULL,
   `upper_age` tinyint(2) unsigned DEFAULT NULL,
+  `blurb` text DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
+  UNIQUE KEY `url` (`url`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
@@ -301,7 +302,7 @@ CREATE TABLE `login` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `ip` (`ip`)
-) ENGINE=MyISAM AUTO_INCREMENT=770419 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `access`;
@@ -325,17 +326,15 @@ CREATE TABLE `dashboard` (
 
 
 DROP TABLE IF EXISTS `countries`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `countries` (
   `id` char(2) DEFAULT NULL,
   `country` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 LOCK TABLES `countries` WRITE;
 INSERT INTO `countries` VALUES 
 ('AF','Afghanistan'),
-('AX','Ã…land Islands'),
+('AX','Åland Islands'),
 ('AL','Albania'),
 ('DZ','Algeria'),
 ('AS','American Samoa'),
@@ -388,10 +387,10 @@ INSERT INTO `countries` VALUES
 ('CD','Congo (Democratic Republic of the)'),
 ('CK','Cook Islands'),
 ('CR','Costa Rica'),
-('CI','CÃ´te d\'Ivoire'),
+('CI','Côte d\'Ivoire'),
 ('HR','Croatia'),
 ('CU','Cuba'),
-('CW','CuraÃ§ao'),
+('CW','Curaçao'),
 ('CY','Cyprus'),
 ('CZ','Czechia'),
 ('DK','Denmark'),
@@ -514,11 +513,11 @@ INSERT INTO `countries` VALUES
 ('PT','Portugal'),
 ('PR','Puerto Rico'),
 ('QA','Qatar'),
-('RE','RÃ©union'),
+('RE','Réunion'),
 ('RO','Romania'),
 ('RU','Russian Federation'),
 ('RW','Rwanda'),
-('BL','Saint BarthÃ©lemy'),
+('BL','Saint Barthélemy'),
 ('SH','Saint Helena, Ascension and Tristan da Cunha'),
 ('KN','Saint Kitts and Nevis'),
 ('LC','Saint Lucia'),

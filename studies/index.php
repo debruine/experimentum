@@ -24,7 +24,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
     $excList = implode(' AND ', $exclusions);
     
     // get data from projects where user is not excluded due to age, sex
-    $q = new myQuery('SELECT id, name, url
+    $q = new myQuery('SELECT id, name, url, blurb
                         FROM project
                         WHERE status="active" AND ' . $excList . ' 
                         GROUP BY project.id
@@ -37,6 +37,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
     $expList  = '<table class="expTable query sortable">' . ENDLINE;
     $expList .= '   <thead><tr>' . ENDLINE;
     $expList .= tag('Study Name', 'th');
+    $expList .= tag('Description', 'th');
     $expList .= '   </tr></thead><tbody>' . ENDLINE;
     
     $idList = array();
@@ -45,10 +46,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
         
         $expList .= sprintf('   <tr id="row_%d">
         <td><a class="explink" href="/project?%s">%s</a></td>
+        <td>%s</td>
     </tr>'. ENDLINE,
             $qL['id'],
             $qL['url'],
-            $qL['name']
+            $qL['name'],
+            $qL['blurb']
         );
     }
     $expList .= '</tbody></table>' . ENDLINE;

@@ -11,14 +11,21 @@ $title = array(
 );
 
 $styles = array(
-    '.setlists'                     => 'font-size:85%; float:right; width: 49%;',
+    '#myInformation_form'           => 'float:left; width: 30%; margin:0',
+    '.setlists'                     => 'font-size:85%; float:right; width: 30%; margin:1em 0 1em 1em;',
     '#projectList'                  => 'float: left;',
     '#iconView li'                  => 'height: 45px; width: 45px; background: '. THEME .' no-repeat center center; float:left; margin: 2px; border: 1px solid white; overflow: hidden; color: rgba(0,0,0,0);',
     '#projectList li'               => 'min-height: 30px; padding-right: 30px; background-position: right center; background-repeat: no-repeat;',
     '.setlists h2'                  => 'padding:0',
     '.setlists ul, .setlists ol'    => 'height:400px; overflow:auto;',
     '.setlists li'                  => 'border:1px solid grey; padding:2px;',
-    '.setlists li:hover'            => 'color:hsl(0, 100%, 40%); cursor:default;',
+    '.setlists li .status'          => 'display: inline-block; width:1.2em; height:1.2em; 
+                                        border-radius: 0 .5em; float: right; 
+                                        text-align: center; line-height: 1.2em; font-size:150%',
+    '.setlists li.active .status'   => 'background-color: hsla(120,100%,50%, 50%);',
+    '.setlists li.inactive .status' => 'background-color: hsla(120,0%,50%, 50%);',
+    '.setlists li.test .status'     => 'background-color: hsla(0,100%,50%, 50%);',
+    '.setlists li:hover'            => 'color: white;background-color:hsl(0, 0%, 40%); cursor:default;',
     '.setlists li+li'               => 'border-top:0;',
     '#new_set'                      => '',
     '#new_set li'                   => 'list-style-position: outside; margin-left:30px; cursor: ns-resize;',
@@ -34,7 +41,8 @@ $styles = array(
 $project_info = array(
     'project_id' => 'NULL',
     'intro' => 'The introduction to the page. This can be just a short paragraph or include images and html.',
-    'labnotes' => ''
+    'labnotes' => '',
+    'blurb' => 'A short 1-line description of the project'
 );
 
 $item_list = array();
@@ -52,7 +60,10 @@ if (isset($_GET['checkurl'])) {
     
     $id = my_clean($_GET['id']);
     if (is_numeric($id) & $id>0) {
-        $q = new myQuery("SELECT id AS project_id, name as 'project_name', res_name, url, intro, sex, lower_age, upper_age, labnotes, status FROM project WHERE id='{$id}'");
+        $q = new myQuery("SELECT id AS project_id, name as 'project_name', 
+                          res_name, url, intro, sex, lower_age, upper_age, 
+                          blurb, labnotes, status 
+                          FROM project WHERE id='{$id}'");
         
         if ($q->get_num_rows() == 0) { header('Location: /res/project/'); }
         $project_info = $q->get_assoc(0);
@@ -106,18 +117,19 @@ if (array_key_exists('save', $_GET)) {
     }
     
     $proj_query = sprintf('REPLACE INTO project (id, name, res_name, status, url, 
-                              intro, labnotes, sex, lower_age, upper_age, create_date) 
-                            VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
+                              intro, labnotes, sex, lower_age, upper_age, blurb, create_date) 
+                            VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
                             $clean['project_id'],
                             $clean['project_name'],
                             $clean['res_name'],
                             ifEmpty($status, 'test'),
                             $clean['url'],
                             $clean['intro'],
+                            $clean['labnotes'],
                             $clean['sex'],
                             $clean['lower_age'],
                             $clean['upper_age'],
-                            $clean['labnotes']);
+                            $clean['blurb']);
     
     $proj_query = str_replace('""', 'NULL', $proj_query);
     $proj_query = str_replace('"NULL"', 'NULL', $proj_query);
@@ -166,66 +178,96 @@ if (array_key_exists('save', $_GET)) {
  * Project Table
  ***************************************************/
  
-$project_id = new hiddenInput('project_id', 'project_id', $project_info['project_id']);
+$input_width = 250;
 
-$project_name = new input('project_name', 'project_name', $project_info['project_name']);
-$project_name->set_width(400);
-$project_name->set_placeholder('Title for Participants');
+$table_setup = array();
+ 
+$table_setup['project_id'] = new hiddenInput('project_id', 'project_id', $project_info['project_id']);
 
-$res_name = new input('res_name', 'res_name', $project_info['res_name']);
-$res_name->set_width(300);
-$res_name->set_placeholder('Name for Researchers');
+$table_setup['project_name'] = new input('project_name', 'project_name', $project_info['project_name']);
+$table_setup['project_name']->set_width($input_width);
+$table_setup['project_name']->set_placeholder('Title for Participants');
+$table_setup['project_name']->set_question('Title for Participants');
 
-$url = new input('url', 'url', $project_info['url']);
-$url->set_width(100);
-$url->set_placeholder('shortname');
+$table_setup['res_name'] = new input('res_name', 'res_name', $project_info['res_name']);
+$table_setup['res_name']->set_width($input_width);
+$table_setup['res_name']->set_placeholder('Name for Researchers');
+$table_setup['res_name']->set_question('Title for Researchers');
 
-$intro = new textarea('intro', 'intro', $project_info['intro']);
-$intro->set_dimensions(400, 40, true, 40, 300);
+$table_setup['url'] = new input('url', 'url', $project_info['url']);
+$table_setup['url']->set_width($input_width);
+$table_setup['url']->set_placeholder('shortname');
+$table_setup['url']->set_question('URL');
 
-// set up limits: sex, lower_age, upper_age
-$sex = new select('sex', 'sex', $project_info['sex']);
-$sex->set_options(array(
+$table_setup['blurb'] = new textarea('blurb', 'blurb', $project_info['blurb']);
+$table_setup['blurb']->set_dimensions($input_width, 40, true, 40, 300);
+$table_setup['blurb']->set_question('Blurb');
+
+$table_setup['intro'] = new textarea('intro', 'intro', $project_info['intro']);
+$table_setup['intro']->set_dimensions($input_width, 40, true, 40, 300);
+$table_setup['intro']->set_question('Intro');
+
+$table_setup['sex'] = new select('sex', 'sex', $project_info['sex']);
+$table_setup['sex']->set_options(array(
     'both' => 'All genders',
     'male' => 'Men only',
     'female' => 'Women only'
 ));
-$sex->set_null(false);
+$table_setup['sex']->set_null(false);
+$table_setup['sex']->set_question("Show to");
+
+// set up age limits
 $lower_age = new selectnum('lower_age', 'lower_age', $project_info['lower_age']);
 $lower_age->set_options(array('NULL'=>'any'), 0, 100);
 $lower_age->set_null(false);
 $upper_age = new selectnum('upper_age', 'upper_age', $project_info['upper_age']);
 $upper_age->set_options(array('NULL'=>'any'), 0, 100);
 $upper_age->set_null(false);
-$ci = $sex->get_element() . 
-    ' aged ' . $lower_age->get_element() . 
-    ' to ' . $upper_age->get_element();
-$limits = new formElement('limits','limits');
-$limits->set_question('Limited to');
-$limits->set_custom_input($ci);
+$ci = $lower_age->get_element() . ' to ' . $upper_age->get_element();
+$table_setup['limits'] = new formElement('limits','limits');
+$table_setup['limits']->set_question('Age limits');
+$table_setup['limits']->set_custom_input($ci);
 
-$labnotes = new textarea('labnotes', 'labnotes', $project_info['labnotes']);
-$labnotes->set_dimensions(400, 40, true, 40, 300);
+$table_setup['labnotes'] = new textarea('labnotes', 'labnotes', $project_info['labnotes']);
+$table_setup['labnotes']->set_dimensions($input_width, 40, true, 40, 300);
+$table_setup['labnotes']->set_question('Labnotes');
+
+// set up table
+$form_table = new formTable();
+$form_table->set_table_id('myInformation');
+$form_table->set_title('Project Information');
+$form_table->set_action('');
+$form_table->set_questionList($table_setup);
+
 
 $q = new myQuery('SELECT id, res_name, name, status FROM sets ORDER BY id');
 $sets = $q->get_assoc();
 $set_list = array();
 foreach ($sets as $s) {
-    $set_list[] = "<li title='set_{$s['id']}'>{$s['id']}: {$s['res_name']}<br />{$s['name']}</li>" . ENDLINE;
+    $abr = ucwords(substr($s['status'], 0,1));
+    $set_list[] = "<li title='set_{$s['id']}' class='{$s['status']}'>
+                        {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span><br />
+                        {$s['name']}</li>" . ENDLINE;
 }
 
 $q->set_query('SELECT id, res_name, name, status FROM exp ORDER BY id');
 $exps = $q->get_assoc();
 $exp_list = array();
 foreach ($exps as $s) {
-    $exp_list[] = "<li title='exp_{$s['id']}'>{$s['id']}: {$s['res_name']}<br />{$s['name']}</li>" . ENDLINE;
+    $abr = ucwords(substr($s['status'], 0,1));
+    $exp_list[] = "<li title='exp_{$s['id']}' class='{$s['status']}'>
+                        {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span><br />
+                        {$s['name']}</li>" . ENDLINE;
 }
 
 $q->set_query('SELECT id, res_name, name, status FROM quest ORDER BY id');
 $quests = $q->get_assoc();
 $quest_list = array();
 foreach ($quests as $s) {
-    $quest_list[] = "<li title='quest_{$s['id']}'>{$s['id']}: {$s['res_name']}<br />{$s['name']}</li>" . ENDLINE;
+    $abr = ucwords(substr($s['status'], 0,1));
+    $quest_list[] = "<li title='quest_{$s['id']}' class='{$s['status']}'>
+                        {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span><br />
+                        {$s['name']}</li>" . ENDLINE;
 }
 
 $basedirs = array(
@@ -263,35 +305,19 @@ $page->displayBody();
 ?>
 
 <div class='toolbar'>
-    <div class='toolbar-line'>
-        Project Name: <?= $project_name->get_element() ?> 
-        <?= $project_id->print_formLine() ?>
-        <button id='save-project'>Save</button>
-        <button id='delete-project'>Delete</button>
-        <button id='go-project'>Go</button>
-    </div>
+    <button id='save-project'>Save</button>
+    <button id='delete-project'>Delete</button>
+    <button id='go-project'>Go</button>
     
-    <div>
-        Researcher Name: <?= $res_name->get_element() ?>
-        URL: <?= $url->get_element() ?> 
-    </div>
-    
-    <div>
-        Limited to: <?= $limits->get_element() ?>
-    </div>
-    
-    <div class='toolbar-line'>
-        Intro: <?= $intro->get_element() ?> 
-        Labnotes: <?= $labnotes->get_element() ?>
-    </div>
+    <span id="typeChanger">View Items: 
+        <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label> 
+        <input type="radio" id="viewQuest" name="typeChanger"><label for="viewQuest">Quest</label> 
+        <input type="radio" id="viewSets" name="typeChanger"><label for="viewSets">Sets</label> 
+        <input type="radio" id="viewIcons" name="typeChanger"><label for="viewIcons">Icons</label>
+    </span>
 </div>
 
-<span id="typeChanger">View Items: 
-            <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label> 
-            <input type="radio" id="viewQuest" name="typeChanger"><label for="viewQuest">Quest</label> 
-            <input type="radio" id="viewSets" name="typeChanger"><label for="viewSets">Sets</label> 
-            <input type="radio" id="viewIcons" name="typeChanger"><label for="viewIcons">Icons</label>
-        </span>
+<?= $form_table->print_form() ?>
 
 <div class="setlists" id="projectList">
     <h2>Project List</h2>
@@ -394,14 +420,22 @@ $j(function() {
     
     $j('#url').change( function() {
         var nonWord = $j('#url').val().replace(/^\w+$/, '');
+        
+        $j('#url').removeClass('ui-state-error');
     
         if (nonWord != '') {
-            $j('<div />').html('<i>' + $j('#url').val() + '</i> is not a valid URL. Please make sure there are no spaces or symbols.').dialog({modal:true});
+            $j('<div />').html('<i>' + $j('#url').val() + 
+                              '</i> is not a valid URL. Please make sure there are no spaces or symbols.')
+                         .dialog({modal:true});
+            $j('#url').addClass('ui-state-error');
         } else {
             // check if short url is unique
             var url = '/res/project/builder?checkurl=' + $j('#url').val() + '&id=' + $j('#project_id').val();
             $j.get(url, function(data) {
-                if (data != '') { $j('<div />').html(data).dialog({modal:true}); }
+                if (data != '') { 
+                    $j('<div />').html(data).dialog({modal:true}); 
+                    $j('#url').addClass('ui-state-error');
+                }
             });
         }
     });
@@ -489,7 +523,7 @@ $j(function() {
         tolerance: "pointer",
         //hoverClass: "drop_hover",
         drop: function( event, ui ) {
-            $j(this).css('background-image', 'url(' + $j(ui.draggable).attr('title').replace('white/','theme/') + ')');
+            $j(this).css('background-image', 'url(' + $j(ui.draggable).attr('title') + ')');
             $j(this).attr('icon', $j(ui.draggable).attr('title'));
         }
     });
@@ -520,6 +554,7 @@ function add(item) {
     newItem.innerHTML = type + '_' + name;
     newItem.title = id;
     newItem.ondblclick = Function('deleteItem(this)');
+    newItem.className = item.className;
     
     $j('#new_set').append(newItem);
     $j('#new_set').sortable({

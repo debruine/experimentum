@@ -154,75 +154,75 @@ if (array_key_exists('save', $_GET)) {
  
 $input_width = 250;
 
-$set_table = array();
+$table_setup = array();
  
-$set_table['set_id'] = new hiddenInput('set_id', 'set_id', $set_info['set_id']);
+$table_setup['set_id'] = new hiddenInput('set_id', 'set_id', $set_info['set_id']);
 
-$set_table['res_name'] = new input('res_name', 'res_name', $set_info['res_name']);
-$set_table['res_name']->set_width($input_width);
-$set_table['res_name']->set_question('Name for Researchers');
+$table_setup['res_name'] = new input('res_name', 'res_name', $set_info['res_name']);
+$table_setup['res_name']->set_width($input_width);
+$table_setup['res_name']->set_question('Name for Researchers');
 
-$set_table['set_name'] = new input('set_name', 'set_name', $set_info['set_name']);
-$set_table['set_name']->set_width($input_width);
-$set_table['set_name']->set_question('Name for Participants');
+$table_setup['set_name'] = new input('set_name', 'set_name', $set_info['set_name']);
+$table_setup['set_name']->set_width($input_width);
+$table_setup['set_name']->set_question('Name for Participants');
 
-$set_table['set_type'] = new select('set_type', 'set_type', $set_info['set_type']);
-$set_table['set_type']->set_null(false);
-$set_table['set_type']->set_question('Type');
-$set_table['set_type']->set_options(array(
+$table_setup['set_type'] = new select('set_type', 'set_type', $set_info['set_type']);
+$table_setup['set_type']->set_null(false);
+$table_setup['set_type']->set_question('Type');
+$table_setup['set_type']->set_options(array(
     'fixed' => 'Fixed Order',
     'random' => 'Random Order',
     'one_random' => 'One of (random)',
     'one_equal' => 'One of (equal)'
 ));
 
-// set up limits: sex, lower_age, upper_age
-$sex = new select('sex', 'sex', $set_info['sex']);
-$sex->set_options(array(
+$table_setup['sex'] = new select('sex', 'sex', $project_info['sex']);
+$table_setup['sex']->set_options(array(
     'both' => 'All genders',
     'male' => 'Men only',
     'female' => 'Women only'
 ));
-$sex->set_null(false);
-$lower_age = new selectnum('lower_age', 'lower_age', $set_info['lower_age']);
+$table_setup['sex']->set_null(false);
+$table_setup['sex']->set_question("Show to");
+
+// set up age limits
+$lower_age = new selectnum('lower_age', 'lower_age', $project_info['lower_age']);
 $lower_age->set_options(array('NULL'=>'any'), 0, 100);
 $lower_age->set_null(false);
-$upper_age = new selectnum('upper_age', 'upper_age', $set_info['upper_age']);
+$upper_age = new selectnum('upper_age', 'upper_age', $project_info['upper_age']);
 $upper_age->set_options(array('NULL'=>'any'), 0, 100);
 $upper_age->set_null(false);
-$ci = $sex->get_element() . 
-    ' aged ' . $lower_age->get_element() . 
-    ' to ' . $upper_age->get_element();
-$set_table['limits'] = new formElement('limits','limits');
-$set_table['limits']->set_question('Limited to');
-$set_table['limits']->set_custom_input($ci);
+$ci = $lower_age->get_element() . ' to ' . $upper_age->get_element();
+$table_setup['limits'] = new formElement('limits','limits');
+$table_setup['limits']->set_question('Age limits');
+$table_setup['limits']->set_custom_input($ci);
 
-$set_table['labnotes'] = new textarea('labnotes', 'labnotes', $set_info['labnotes']);
-$set_table['labnotes']->set_question('Labnotes');
-$set_table['labnotes']->set_dimensions($input_width, 18, true, 18, 300);
+$table_setup['labnotes'] = new textarea('labnotes', 'labnotes', $set_info['labnotes']);
+$table_setup['labnotes']->set_question('Labnotes');
+$table_setup['labnotes']->set_dimensions($input_width, 18, true, 18, 300);
 
-$set_table['feedback_general'] = new textarea('feedback_general', 'feedback_general', $set_info['feedback_general']);
-$set_table['feedback_general']->set_question('General Feedback');
-$set_table['feedback_general']->set_dimensions($input_width, 50, true, 50, 0, 0);
+$table_setup['feedback_general'] = new textarea('feedback_general', 'feedback_general', $set_info['feedback_general']);
+$table_setup['feedback_general']->set_question('General Feedback');
+$table_setup['feedback_general']->set_dimensions($input_width, 50, true, 50, 0, 0);
 
-$set_table['feedback_specific'] = new textarea('feedback_specific', 'feedback_specific', $set_info['feedback_specific']);
-$set_table['feedback_specific']->set_question('Specific Feedback');
-$set_table['feedback_specific']->set_dimensions($input_width, 50, true, 50, 0, 0);
+$table_setup['feedback_specific'] = new textarea('feedback_specific', 'feedback_specific', $set_info['feedback_specific']);
+$table_setup['feedback_specific']->set_question('Specific Feedback');
+$table_setup['feedback_specific']->set_dimensions($input_width, 50, true, 50, 0, 0);
 
-$set_table['feedback_query'] = new textarea('feedback_query', 'feedback_query', $set_info['feedback_query']);
-$set_table['feedback_query']->set_question('Feedback Query');
-$set_table['feedback_query']->set_dimensions($input_width, 50, true, 50, 0, 0);
+$table_setup['feedback_query'] = new textarea('feedback_query', 'feedback_query', $set_info['feedback_query']);
+$table_setup['feedback_query']->set_question('Feedback Query');
+$table_setup['feedback_query']->set_dimensions($input_width, 50, true, 50, 0, 0);
 
-$set_table['forward'] = new textarea('forward', 'forward', $set_info['forward']);
-$set_table['forward']->set_question('Forward URL');
-$set_table['forward']->set_dimensions($input_width, 50, true, 50, 0, 0);
+$table_setup['forward'] = new textarea('forward', 'forward', $set_info['forward']);
+$table_setup['forward']->set_question('Forward URL');
+$table_setup['forward']->set_dimensions($input_width, 50, true, 50, 0, 0);
 
-// set up set table
-$setTable = new formTable();
-$setTable->set_table_id('myInformation');
-$setTable->set_title('Set Information');
-$setTable->set_action('');
-$setTable->set_questionList($set_table);
+// set up table
+$form_table = new formTable();
+$form_table->set_table_id('myInformation');
+$form_table->set_title('Set Information');
+$form_table->set_action('');
+$form_table->set_questionList($table_setup);
 
 $q = new myQuery('SELECT id, res_name, status FROM sets ORDER BY id');
 $sets = $q->get_assoc();
@@ -269,7 +269,7 @@ $page->displayBody();
     </span>
 </div>
 
-<?= $setTable->print_form() ?>
+<?= $form_table->print_form() ?>
 
 <div class="setlists" id="expView">
     <h2>Experiments</h2>
