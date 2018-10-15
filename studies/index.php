@@ -63,7 +63,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 
 $title = loc('Studies');
 $page = new page($title);
-$page->set_logo(true);
 $page->set_menu(true);
 
 $page->displayHead();

@@ -73,7 +73,6 @@ if (array_key_exists('tables', $_GET)) {
 /***************************************************/
 
 $page = new page($title);
-$page->set_logo(true);
 $page->set_menu(true);
 
 $page->displayHead($styles);

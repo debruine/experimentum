@@ -154,7 +154,6 @@ html, body {height: 100%;}
     float: left; 
     text-align: left; 
     font-size: 1.2em;
-    /*width: 65%; */
     padding: 0 0 0 20px; 
     margin: 0;
     color: <?= $text_on_theme ?>;
@@ -170,17 +169,10 @@ ul#login_info {
     font-size: smaller;
     float: right;
     height: 50px;
-    /*width: 30%;*/
     text-align: right;
     padding: 0 20px 0 0;
     margin: 0;
 }
-
-#header_username {
-    position:relative; /* for fb_profile_pic positioning */
-}
-
-
 
 #login_info li { 
     margin: 0 0 5px 0;
@@ -292,12 +284,20 @@ ul#login_info li input { display: block; text-align: left; }
                 0 -9.5px 1px 0px rgba(0,0,0,.5);
 }
 
-#footer a, #footer a:visited, th a, th a:visited, tr.radiorow_values a, tr.radiorow_values a:visited { 
+#footer a, #footer a:visited, 
+th a, 
+th a:visited, 
+tr.radiorow_values a, 
+tr.radiorow_values a:visited { 
     color: <?= $text_on_theme ?>; 
     border-color: <?= $text_on_theme ?>;
 }
 
-#footer a:hover, #footer a:active, th a:hover,th a:active, tr.radiorow_values a:hover, tr.radiorow_values a:active { 
+#footer a:hover, 
+#footer a:active, 
+th a:hover,th a:active, 
+tr.radiorow_values a:hover, 
+tr.radiorow_values a:active { 
     background-color: <?= $text_on_theme ?>; 
     color: <?= $theme ?>; 
 }
@@ -317,13 +317,8 @@ tr.radiorow_values a {
 
 /***** RIGHT COLUMN MENU *****/
 
-#menu ul, #menu #fb_facepile, #menu #fb_rec, #menu #google_ad {
+#menu ul {
     width:220px;
-}
-
-#menu #google_ad {
-    height: 200px;
-    margin-top: 1em;
 }
 
 #menu > ul, #dash { 
@@ -391,7 +386,7 @@ li.my         { background-image: url("/images/linearicons/user?c=FFFFFF"); }
 
 #menu a { 
     border:none;
-    font-weight:bold;
+    font-weight:400;
 }
 #menu a:link, #menu a:visited { 
     color:#FFF;

@@ -21,7 +21,6 @@ if (3 < $_SESSION['status']) {
     $styles['.bigbuttons li.hide'] = 'display: block;';
 }
 $page = new page($title);
-$page->set_logo(true);
 $page->set_menu(true);
 
 $page->displayHead($styles);

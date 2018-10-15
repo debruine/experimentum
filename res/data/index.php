@@ -191,7 +191,6 @@ $s->set_method('post');
 /***************************************************/
  
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);

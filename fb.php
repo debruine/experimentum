@@ -157,11 +157,10 @@ if (is_numeric($_GET['id'])
 /***************************************************/
  
 $title = array(
-    '/feedback/' => 'Feedback',
-    '' => $fbdata['name']
+    'Feedback',
+    $fbdata['name']
 );
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead();

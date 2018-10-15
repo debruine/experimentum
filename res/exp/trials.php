@@ -284,7 +284,6 @@ $styles['#trial_builder.list + #image_chooser'] = 'margin-left: ' . ($tablewidth
 /***************************************************/
 
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);

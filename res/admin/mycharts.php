@@ -317,7 +317,6 @@ $examples->set_options(array(
 /***************************************************/
 
 $page = new page($title);
-$page->set_logo(true);
 $page->set_menu(false);
 
 $page->displayHead($styles);

@@ -15,7 +15,6 @@ $styles = array(".samedata" => "text-align: center;");
 
 
 $page = new page($title);
-$page->set_logo(true);
 $page->set_menu(false);
 
 $page->displayHead($styles);

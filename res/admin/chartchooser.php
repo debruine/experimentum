@@ -68,7 +68,6 @@ $owner->set_eventHandlers(array('onchange' => 'setOwner(this.value)'));
 /***************************************************/
 
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);

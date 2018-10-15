@@ -313,7 +313,6 @@ $types = array(
 /***************************************************/
 
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);
@@ -333,25 +332,25 @@ $page->displayBody();
     </div>
 </div>
 
-<dl> 
-    <dt>Name:</dt> <dd><?= $setdata['name'] ?></dd>
-    <dt>Type:</dt> <dd><?= $types[$setdata['type']] ?></dd>
-    <dt>Restrictions:</dt> <dd><?= $setdata['sex'] ?> who prefer <?= is_null($setdata['sexpref']) ? 'unspecified sex' : $setdata['sexpref'] ?>, 
+<table> 
+    <tr><td>Name:</td><td><?= $setdata['name'] ?></td></tr>
+    <tr><td>Type:</td><td><?= $types[$setdata['type']] ?></td></tr>
+    <tr><td>Restrictions:</td><td><?= $setdata['sex'] ?> 
         ages <?= is_null($setdata['lower_age']) ? 'any' : $setdata['lower_age'] ?> 
-        to <?= is_null($setdata['upper_age']) ? 'any' : $setdata['upper_age'] ?> years</dd>
-    <dt>Labnotes:</dt> <dd><?= ifEmpty($setdata['labnotes'], '<span class="potential-error">Please add labnotes</span>') ?></dd>
-    <dt>Created on:</dt> <dd><?= $setdata['create_date'] ?></dd>
-    <dt>Owners:<br><?php if ($_SESSION['status'] != 'student') { echo '<button class="tinybutton"  id="owner-change">Change</button>'; } ?></dt> 
-        <dd>
+        to <?= is_null($setdata['upper_age']) ? 'any' : $setdata['upper_age'] ?> years</td></tr>
+    <tr><td>Labnotes:</td><td><?= ifEmpty($setdata['labnotes'], '<span class="potential-error">Please add labnotes</span>') ?></td></tr>
+    <tr><td>Created on:</td><td><?= $setdata['create_date'] ?></td></tr>
+    <tr><td>Owners:<br><?php if ($_SESSION['status'] != 'student') { echo '<button class="tinybutton"  id="owner-change">Change</button>'; } ?></td> 
+        <td>
             <ul id='owner-edit'>
                 <?= $owner_edit ?>
             </ul>
             <?php if ($_SESSION['status'] != 'student') { ?>
             <input id='owner-add-input' type='text' > (<a id='owner-add'>add</a>)
             <?php } ?>
-        </dd>
-    <dt>Feedback:</dt> <dd><?= $setdata['feedback_general'] ?><br /><?= $setdata['feedback_specific'] ?></dd>
-</dl>
+        </td></tr>
+    <tr><td>Feedback:</td><td><?= $setdata['feedback_general'] ?><br /><?= $setdata['feedback_specific'] ?></td></tr>
+</table>
 
 <table id="setitems">
     <thead>

@@ -93,7 +93,6 @@ $formTable->set_submit_text('Upload');
 /***************************************************/
 
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);

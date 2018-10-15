@@ -162,7 +162,6 @@ $styles = array(
 );
 
 $page = new page($title);
-$page->set_logo(true);
 $page->set_menu(true);
 
 $page->displayHead($styles);
@@ -171,6 +170,8 @@ $page->displayBody();
 echo '<p class="alert" id="response" style="display:none;" onclick="this.toggle()"></p>' , ENDLINE;
 
 $q->print_form();
+
+echo '<h3>This website requires cookies to allow you to log in.<br>Registering indicates you agree to this.</h3>';
 
 /****************************************************
  * Javascripts for this page

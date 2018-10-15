@@ -83,7 +83,6 @@ if (array_key_exists('search', $_GET)) {
 /***************************************************/
 
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);

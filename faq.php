@@ -16,7 +16,6 @@ $styles = array(
 
 $title = loc('FAQ');
 $page = new page($title);
-$page->set_logo(true);
 $page->set_menu(true);
 
 $page->displayHead($styles);
@@ -30,26 +29,35 @@ $page->displayBody();
 
 <div id="faq">
 
-<h2><a href="#">Who runs Experimentum?</a></h2>
+<h2><a href="#">Who runs this website?</a></h2>
 <div>
 <p>The University of Glasgow School of Psychology and Institute of Neuroscience and Psychology.</p>
+</div>
+
+<h2><a href="#">How do you use cookies?</a></h2>
+<div>
+<p>We save one &ldquo;cookie&rdquo; to your browser when you visit our site. This 
+    tracks your session; we need it so you don't have to log in on every single 
+    page. It is only ever used on our website and only contains a session number 
+    that our server uses to confirm your login. We are committed to using cookies 
+    fairly and in accordance with your privacy rights.</p>
 </div>
 
 <h2><a href="#">Can I change my password or information?</a></h2>
 <div>
 <p>Yes. Just click on <a href="/my">My Account</a>. You can change your username 
-to any unused name. This will not affect the experiments you&#39;ve already done. 
-The form allows you to change your password or your password retrival question 
-and answer. You can also change your birthdate or sex if you entered them 
-incorrectly when registering. Having accurate information about your age and sex 
-are very important to our scientific research.</p>
+    to any unused name. This will not affect the experiments you&#39;ve already done. 
+    The form allows you to change your password or your password retrieval question 
+    and answer. You can also change your birthdate or sex if you entered them 
+    incorrectly when registering. Having accurate information about your age and sex 
+    are very important to our scientific research.</p>
 </div>
 
 
 <h2><a href="#">Can I retrieve my password if I forgot it?</a></h2>
 <div>	
 <p>Yes. Just fill out this <a href="password.php">password retrieval form</a>. 
-You will have to correctly answer your password retrieval question.</p>
+    You will have to correctly answer your password retrieval question.</p>
 <p>If you have not yet set your password retrieval question and answer, you can 
     do so at <a href="/my">My Account</a> if you are logged in. Unfortunately, 
     this won&#39;t help if you can&#39;t remember your password. You can e-mail 
@@ -68,9 +76,9 @@ You will have to correctly answer your password retrieval question.</p>
 
 <h2><a href="#">Do I need a particular browser to view your website?</a></h2>
 <div>
-<p>No. We have worked hard to make sure that Experimentum is accessible to 
+<p>No. We have worked hard to make sure that this website is accessible to 
     all people using visual browsers (we are working on better support for 
-    audio-only browsers to access the parts of Experimentum that do not 
+    audio-only browsers to access the parts of this website that do not 
     require the viewing of images). If the website looks strange in your 
     favourite browser, please e-mail us and let us know. If you are looking for 
     a new web browser, <a href="http://www.getfirefox.com/">FireFox</a> is an 
@@ -84,13 +92,10 @@ You will have to correctly answer your password retrieval question.</p>
     which prevents you having to load a new web page for every trial and greatly 
     speeds up the experiments. It also allows us to collect more accurate data on 
     how long the experiments take.</p>
-<p>Our JavaScript does not pose a security risk, will never produce pop-ups, and 
-    is not used to take any information from your computer or save any files to 
-    your computer.</p>
 </div>
 
 
-<h2><a href="#">Can Experimentum host my experiment?</a></h2>
+<h2><a href="#">Can you host my experiment?</a></h2>
 <div>
 <p>Sorry, we cannot host your experiments unless you are a member of the 
     University of Glasgow School of Psychology.</p>

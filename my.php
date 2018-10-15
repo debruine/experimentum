@@ -84,7 +84,7 @@ $query = new myQuery('SELECT user.*,
 
 $mydata = $query->get_assoc(0);
 
-$login_info = sprintf(loc('You first registered at Experimentum on %s and have logged in %d times.'),
+$login_info = sprintf(loc('You first registered on %s and have logged in %d times.'),
     $mydata['regdate'],
     $mydata['logins']
 );
@@ -167,9 +167,8 @@ $q->set_button_location('bottom');
 /* !Display Page */
 /***************************************************/
 
-$title = array('./' => loc('My Account'));
+$title = array('/my' => loc('My Account'));
 $page = new page($title);
-$page->set_logo(true);
 $page->set_menu(true);
 
 $page->displayHead();

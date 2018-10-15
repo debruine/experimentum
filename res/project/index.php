@@ -29,7 +29,7 @@ $my = new myQuery('SELECT CONCAT("<span class=\'fav",
         IF(d.id IS NOT NULL, " heart", ""), 
         "\' id=\'dash", p.id, "\'>",
         IF(d.id IS NOT NULL, "+", "-"), 
-        "</span>") as "Favs",CONCAT("<a href=\'builder?id=", p.id, "\'>", p.id, "</a>") as "ID", 
+        "</span>") as "Favs",CONCAT("<a href=\'info?id=", p.id, "\'>", p.id, "</a>") as "ID", 
 	p.res_name AS "Name",
 	CONCAT("<span class=\'labnotes\'>", labnotes, "</span>") as "Labnotes", 
 	status, 
@@ -62,7 +62,6 @@ $owner->set_eventHandlers(array('onchange' => 'setOwner(this.value)'));
 /***************************************************/
 
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);

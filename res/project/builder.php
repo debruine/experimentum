@@ -297,7 +297,6 @@ foreach ($basedirs as $section => $basedir) {
 /***************************************************/
 
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);
@@ -307,8 +306,9 @@ $page->displayBody();
 
 <div class='toolbar'>
     <button id='save-project'>Save</button>
-    <button id='delete-project'>Delete</button>
-    <button id='go-project'>Go</button>
+    <button id='info-project'>Info</button>
+    <!--<button id='delete-project'>Delete</button>
+    <button id='go-project'>Go</button>-->
     
     <span id="typeChanger">View Items: 
         <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label><input 
@@ -448,6 +448,10 @@ $j(function() {
     
     $j('#go-project').button().click( function() { 
         if ($j('#url').val() != '') { window.location='/project?' + $j('#url').val(); }
+    });
+    
+    $j('#info-project').button().click( function() { 
+        if ($j('#project_id').val() != '') { window.location='/res/project/info?id=' + $j('#project_id').val(); }
     });
     
     $j('#save-project').button().click( function() { 

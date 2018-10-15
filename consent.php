@@ -6,7 +6,6 @@ $_SESSION['return_to'] = $_SERVER['HTTP_REFERER'];
 
 $title = loc('Informed Consent');
 $page = new page($title);
-$page->set_logo(true);
 $page->set_menu(true);
 
 $page->displayHead();

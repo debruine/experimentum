@@ -15,7 +15,7 @@ if (!$expC->check_exists()) { header('Location: /'); exit; }
 
 if (!$expC->check_eligible()) { 
 	if (in_array($_SESSION['status'], array('student', 'researcher', 'admin'))) {
-		$ineligible = "<p class='ui-state-error'>You would not be able to see this study because of your age, sex, or sexual preference if you were a non-researcher.</p>";
+		$ineligible = "<p class='ui-state-error'>You would not be able to see this study because of your age or sex if you were a non-researcher.</p>";
 	} else {
 		header('Location: /fb?ineligible&type=exp&id=' . $exp_id); exit;
 	}
@@ -25,16 +25,12 @@ if (!$expC->check_eligible()) {
 /* !Display Page */
 /***************************************************/
 
-$title = array(
-	'/exp/' => loc('Experiments'),
-	//$exp->get_name()
-);
+$title = array();
 
 $styles = array(
 );
 
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);

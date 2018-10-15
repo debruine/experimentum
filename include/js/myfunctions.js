@@ -148,6 +148,7 @@ $j(function() {
         show: "scale",
         hide: "scale",
         modal: true,
+        width: 400,
         position: ['center', 'center'],
         buttons: {
             "Login" : function() { login(); },
@@ -160,6 +161,7 @@ $j(function() {
         show: "scale",
         hide: "scale",
         modal: true,
+        width: 400,
         position: ['center', 'center'],
         buttons: {
             "Login" : function() { login(); }
@@ -276,10 +278,6 @@ function textarea_expand(ta, min, max) {
 function logout() {
     console.log('logging out');
     $j.get("/include/scripts/logout", function (response) {
-        //FB.logout(function(response) {
-          // user is now logged out of facebook
-        //});
-
         window.location = window.location;
     });
 }
@@ -377,12 +375,6 @@ function guestLogin(project_id) {
     });
 }
 
-function facebook_data() {
-    $j.get('/include/scripts/facebook_data', function(data) {
-        // do nothing unless there is a return
-        if (data) alert(data);
-    });
-}   
 
 /****************************************************/
 /* ! QUESTIONNAIRE FUNCTIONS                        */

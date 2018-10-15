@@ -9,7 +9,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 /***************************************************/
 
 $page = new page('Debug');
-$page->set_logo(true);
 $page->set_menu(false);
 
 $page->displayHead();

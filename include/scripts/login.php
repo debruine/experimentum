@@ -10,7 +10,7 @@ $user_id = ifEmpty($clean['u']);
 $passcode = ifEmpty($clean['p']);
 
 if (!empty($user_id) && !empty($passcode)) {
-	// auto-login or login from facebook
+	// auto-login
 	$query = new myQuery("SELECT '' FROM user  
 		WHERE user.user_id='$user_id' AND LEFT(MD5(regdate),10)='$passcode'
 		LIMIT 1");

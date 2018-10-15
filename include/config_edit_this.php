@@ -11,19 +11,22 @@
 	define('THEME_HUE', '280');  // theme hue 
 	define('THEME', 'hsl('. THEME_HUE . ',100%,20%)'); // theme colour 
 	
+	define('SITETITLE', '** CHANGE TO TITLE OF YOUR WEBSITE **');
+    define('FOOTERTEXT', '** CHANGE TO TEXT FOR THE WEBSITE FOOTER **');
+	
 	/*** Localisation ***/
 	
 	date_default_timezone_set('Europe/London');
 	
-	/*** reduced error reporting ***/
+	/*** error reporting ***/
 	
 	// error_reporting(E_ALL & ~E_NOTICE); // for debugging
 	error_reporting(E_ERROR); // for runnning
 	
 	/*** MySQL Variables ***/
 	
-	define('MYSQL_DB', '**CHANGE TO MY DATABSE NAME**');
-	define('MYSQL_HOST', '**CHANGE TO MY HOST**');
+	define('MYSQL_DB', '**CHANGE TO YOUR DATABASE NAME**');
+	define('MYSQL_HOST', '**CHANGE TO YOUR HOST**');
 	if (in_array($_SESSION['status'], array("student", "researcher", "admin"))) {
     	    // login for researchers (has permission to add and drop tables)
         define('MYSQL_USER', '**CHANGE TO MY ADMIN USERNAME**');

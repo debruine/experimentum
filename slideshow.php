@@ -32,17 +32,13 @@ $version_question = $q->get_one();
 /* !Display Page */
 /***************************************************/
 
-$title = array(
-	'/exp/' => loc('Experiments'),
-	//$exp->get_name()
-);
+$title = array();
 
 $styles = array(
 	'#question' => 'text-align: center;'
 );
 
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);

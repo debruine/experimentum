@@ -242,7 +242,6 @@ $timechart = 'SELECT @percentile:=t1.val FROM (SELECT @rownum:=@rownum+1 as row_
 
 
 $page = new page($title);
-$page->set_logo(false);
 $page->set_menu(false);
 
 $page->displayHead($styles);

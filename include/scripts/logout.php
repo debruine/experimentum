@@ -8,6 +8,12 @@ $query = new myQuery("UPDATE login SET logoutime=NOW()
 	AND logoutime IS NULL 
 	ORDER BY id DESC LIMIT 1");
 	
-session_destroy();
+//remove PHPSESSID from browser
+if ( isset( $_COOKIE[session_name()] ) ) {
+    setcookie( session_name(), "", time()-3600, "/" );
+}
+
+$_SESSION = array(); //clear session from globals
+session_destroy(); //clear session from disk
 	
 ?>

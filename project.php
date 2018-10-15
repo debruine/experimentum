@@ -91,7 +91,6 @@ $styles = array(
     '#itembuttons' => "margin: 1em auto; max-width: {$buttonwidth}em;"
 );
 $page = new page($title);
-$page->set_logo(true);
 $page->set_menu(false);
 
 $page->displayHead($styles);
