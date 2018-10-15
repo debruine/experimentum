@@ -15,8 +15,8 @@ $styles = array(
     "#setitems td+td+td+td+td" => "text-align: right;",
     "#setitems td" => "border-left: 1px dotted grey;",
     "#setitems tr" => "border-right: 1px dotted grey;",
-    "span.set_nest" => "display: inline-block; width: 20px; height: 20px; background: transparent no-repeat center center url(/images/icons/glyphish/xtras/xtras-theme/07-arrow-southeast);",
-    "span.set_nest.hide_set"    => "background-image: url(/images/icons/glyphish/xtras/xtras-theme/02-arrow-east);",
+    "span.set_nest" => "display: inline-block; width: 20px; height: 20px; background: transparent no-repeat center center url(/images/linearicons/arrow-down?c=F00);",
+    "span.set_nest.hide_set"    => "background-image: url(/images/linearicons/arrow-right?c=000);",
     ".potential-error" => "color: hsl(0, 100%, 40%);"
 );
 

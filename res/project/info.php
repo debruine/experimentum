@@ -15,8 +15,8 @@ $styles = array(
     "#setitems td+td+td+td+td" => "text-align: right;",
     "#setitems td" => "border-left: 1px dotted grey;",
     "#setitems tr" => "border-right: 1px dotted grey;",
-    "span.set_nest" => "display: inline-block; width: 20px; height: 20px; background: transparent no-repeat center center url(/images/icons/glyphish/xtras/xtras-theme/07-arrow-southeast);",
-    "span.set_nest.hide_set"    => "background-image: url(/images/icons/glyphish/xtras/xtras-theme/02-arrow-east);",
+    "span.set_nest" => "display: inline-block; width: 20px; height: 20px; background: transparent no-repeat center center url(/images/linearicons/arrow-down?c=F00);",
+    "span.set_nest.hide_set"    => "background-image: url(/images/linearicons/arrow-right?c=000);",
     ".potential-error" => "color: hsl(0, 100%, 40%);"
 );
 
@@ -257,7 +257,7 @@ foreach($owners as $id => $name) {
 $subset = 0.25;
 $items_for_data = array();
 
-function generate_set($id, $class="") {
+function generate_project($id, $class="") {
     global $subset, $items_for_data;
 
     $myitems = new myQuery("SELECT item_type, item_id, 
@@ -304,6 +304,54 @@ function generate_set($id, $class="") {
     }
     return $itemlist;
 }
+
+function generate_set($id, $class="") {
+    global $subset, $items_for_data;
+
+    $myitems = new myQuery("SELECT item_type, item_id, 
+    IF(item_type='exp', exp.res_name, 
+        IF(item_type='quest', quest.res_name, 
+            IF(item_type='set', sets.res_name,'No such item'))) as name,
+    IF(item_type='exp', exp.status, 
+        IF(item_type='quest', quest.status, 
+            IF(item_type='set', sets.status,'No such item'))) as status,
+    IF(item_type='exp', CONCAT(exp.exptype, '-', exp.subtype,  IF(exp.design='between', '<br /><span class=\"potential-error\">between</span>', ': w/in')), 
+        IF(item_type='quest', quest.questtype, 
+            IF(item_type='set', sets.type,'No such item'))) as type  
+    FROM set_items 
+    LEFT JOIN exp ON item_type='exp' AND exp.id=item_id
+    LEFT JOIN quest ON item_type='quest' AND quest.id=item_id
+    LEFT JOIN sets ON item_type='set' AND sets.id=item_id
+    WHERE set_id=$id ORDER BY item_n");
+    $items = $myitems->get_assoc();
+    
+    $itemlist = '';
+    
+    foreach ($items as $item) {
+        $table = $item['item_type'] . '_' . $item['item_id'];
+        $status_check = ($item['status'] == 'active') ? '' : 'potential-error';
+        
+        $itemlist .= "<tr id='$table' class='$class'><td style='padding-left: {$subset}em'>";
+        
+        if ($item['item_type'] == 'set') {
+            $itemlist .= "<span class='set_nest'></span>";
+        }
+        
+        $itemlist .= "<a href='/res/{$item['item_type']}/info?id={$item['item_id']}'>$table</a></td><td>{$item['name']}</td><td class='{$status_check}'>{$item['status']}</td><td>{$item['type']}</td>";
+
+        if ($item['item_type'] == 'set') {
+            $itemlist .= "<td colspan='100'></td></tr>\n";
+            $subset += 1;
+            $itemlist .= generate_set($item['item_id'], $class . ' ' . $table);
+            $subset -= 1;
+        } else {
+            $items_for_data[] = $table;
+            $itemlist .= "<td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>\n";
+        }
+    }
+    return $itemlist;
+}
+
     
 /****************************************************/
 /* !Display Page */
@@ -367,7 +415,7 @@ $page->displayBody();
     </thead>
     <tbody>
         <?php 
-            echo generate_set($proj_id);
+            echo generate_project($proj_id);
         ?>
     </tbody>
     <tfoot>

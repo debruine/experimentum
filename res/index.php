@@ -110,9 +110,8 @@ $page->displayBody();
                 var isValid = Math.floor(n) == n && $j.isNumeric(n) && n>0;
                 if (isValid) {
                     var theType = $j(this).data('type');
-                    var theSub = (theType == 'project') ? 'builder' : 'info';
                     
-                    location.href = '/res/' + theType + '/' + theSub + '?id=' + n;
+                    location.href = '/res/' + theType + '/info?id=' + n;
                 } else {
                     this.value = '';
                 }

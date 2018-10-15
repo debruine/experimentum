@@ -378,6 +378,7 @@ tr.radiorow_values a {
 
 li.home       { background-image: url("/images/linearicons/home?c=FFFFFF"); }
 li.exp        { background-image: url("/images/linearicons/chart-bars?c=FFFFFF"); }
+li.set        { background-image: url("/images/linearicons/layers?c=FFFFFF"); }
 li.project    { background-image: url("/images/linearicons/briefcase?c=FFFFFF"); }
 li.quest      { background-image: url("/images/linearicons/list?c=FFFFFF"); }
 li.faq        { background-image: url("/images/linearicons/star?c=FFFFFF"); }
