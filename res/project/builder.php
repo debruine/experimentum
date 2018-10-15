@@ -21,7 +21,7 @@ $styles = array(
     '.setlists li'                  => 'border:1px solid grey; padding:2px;',
     '.setlists li .status'          => 'display: inline-block; width:1.2em; height:1.2em; 
                                         border-radius: 0 .5em; float: right; 
-                                        text-align: center; line-height: 1.2em; font-size:150%',
+                                        text-align: center; line-height: 1.2em; font-size:100%',
     '.setlists li.active .status'   => 'background-color: hsla(120,100%,50%, 50%);',
     '.setlists li.inactive .status' => 'background-color: hsla(120,0%,50%, 50%);',
     '.setlists li.test .status'     => 'background-color: hsla(0,100%,50%, 50%);',
@@ -82,7 +82,12 @@ if (isset($_GET['checkurl'])) {
             WHERE p.project_id='$id' ORDER BY item_n");
         foreach ($q->get_assoc() as $item) {
             $icon = $item['icon'];
-            $item_list[] = "<li ondblclick='deleteItem(this)' style='background-image: url({$icon})' icon='{$item['icon']}' title='{$item['type']}_{$item['id']}'>{$item['type']}_{$item['id']}: {$item['res_name']}<br />{$item['name']}</li>";
+            $item_list[] = "<li ondblclick='deleteItem(this)' 
+                                style='background-image: url({$icon})' 
+                                icon='{$item['icon']}' 
+                                title='{$item['type']}_{$item['id']}'>
+                                {$item['type']}_{$item['id']}: 
+                                {$item['res_name']}</li>";
         }
     }
     
@@ -246,8 +251,7 @@ $set_list = array();
 foreach ($sets as $s) {
     $abr = ucwords(substr($s['status'], 0,1));
     $set_list[] = "<li title='set_{$s['id']}' class='{$s['status']}'>
-                        {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span><br />
-                        {$s['name']}</li>" . ENDLINE;
+                        {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span></li>" . ENDLINE;
 }
 
 $q->set_query('SELECT id, res_name, name, status FROM exp ORDER BY id');
@@ -256,8 +260,7 @@ $exp_list = array();
 foreach ($exps as $s) {
     $abr = ucwords(substr($s['status'], 0,1));
     $exp_list[] = "<li title='exp_{$s['id']}' class='{$s['status']}'>
-                        {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span><br />
-                        {$s['name']}</li>" . ENDLINE;
+                        {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span></li>" . ENDLINE;
 }
 
 $q->set_query('SELECT id, res_name, name, status FROM quest ORDER BY id');
@@ -266,8 +269,7 @@ $quest_list = array();
 foreach ($quests as $s) {
     $abr = ucwords(substr($s['status'], 0,1));
     $quest_list[] = "<li title='quest_{$s['id']}' class='{$s['status']}'>
-                        {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span><br />
-                        {$s['name']}</li>" . ENDLINE;
+                        {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span></li>" . ENDLINE;
 }
 
 $basedirs = array(
@@ -453,17 +455,9 @@ $j(function() {
             setitems = setitems + ';' + $j(this).attr('title');
             icons = icons + ';' + $j(this).attr('icon');
         });
-        
-        var serial =    $j('#project_id').serialize() + '&' +
-                        $j('#project_name').serialize() + '&' +
-                        $j('#res_name').serialize() + '&' +
-                        $j('#url').serialize() + '&' +
-                        $j('#intro').serialize() + '&' +
-                        $j('#sex').serialize() + '&' +
-                        $j('#lower_age').serialize() + '&' +
-                        $j('#upper_age').serialize() + '&' +
-                        $j('#labnotes').serialize() + '&' +
-                        'project_items=' + setitems.substring(1) + '&' +
+                        
+        var serial =    $j('#myInformation_form').serialize() + 
+                        '&project_items=' + setitems.substring(1) + '&' +
                         'project_icons=' + icons.substring(1);
         
         $j.ajax({
