@@ -74,7 +74,7 @@ if (array_key_exists('save', $_GET)) {
         VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", 
         "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", 
         "%s", "%s", "%s","%s", 
-        "%s", "%s", "%s", "%s", 
+        "%s", "%s", "%s", 
         "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
         (validID($clean['id'])) ? $clean['id'] : 'NULL',
         $clean['i_title'], 

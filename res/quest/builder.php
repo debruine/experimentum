@@ -68,9 +68,14 @@ if (array_key_exists('save', $_GET)) {
     // update quest table
     if (!validID($clean['id'])) {
         $query = sprintf('INSERT INTO quest 
-            (name, res_name, questtype, quest_order, instructions, feedback_query, feedback_specific, feedback_general, 
-            labnotes, sex, lower_age, upper_age, password, blurb, create_date)  
-            VALUES ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
+            (name, res_name, questtype, quest_order, 
+            instructions, feedback_query, feedback_specific, feedback_general, 
+            labnotes, sex, lower_age, upper_age, 
+            password, blurb, create_date)  
+            VALUES ("%s", "%s", "%s", "%s", 
+                    "%s", "%s", "%s", "%s", 
+                    "%s", "%s", "%s", "%s", 
+                    "%s", "%s", NOW())',
             $clean['title'], 
             $clean['res_name'], 
             $clean['questtype'], 
@@ -151,8 +156,10 @@ if (array_key_exists('save', $_GET)) {
     $query = new myQuery("DELETE FROM question WHERE quest_id=" . $quest_id);
     $query = new myQuery("DELETE FROM options WHERE quest_id=" . $quest_id);
     foreach ($cleanq as $i => $q) {
-        $question_update_query = sprintf('REPLACE INTO question (quest_id, id, n, name, question, type, maxlength, low_anchor, high_anchor) 
-                                        VALUES ("%s", %s, %s, "%s", "%s", "%s", %s, "%s", "%s")' . ENDLINE,
+        $question_update_query = sprintf('REPLACE INTO question (quest_id, id, n, name, question, 
+                                                                 type, maxlength, low_anchor, high_anchor) 
+                                          VALUES ("%s", %s, %s, "%s", "%s", 
+                                                  "%s", %s, "%s", "%s")' . ENDLINE,
             $quest_id,
             $q['newQ']=='true' ? 'NULL' : $q['id'],
             intval($q['n']),
@@ -199,9 +206,13 @@ if (array_key_exists('save', $_GET)) {
     $make_new_table = false;
     $table_exists = new myQuery('SHOW TABLES WHERE Tables_in_exp="quest_' . $quest_id . '"');
     if (1 == $table_exists->get_num_rows()) {
-        $total_participants = new myQuery('SELECT user_id AS c FROM quest_' . $quest_id . ' LEFT JOIN user USING (user_id) WHERE status="guest" OR status="registered"');
+        $total_participants = new myQuery('SELECT user_id AS c FROM quest_' . $quest_id . 
+            ' LEFT JOIN user USING (user_id) WHERE status="guest" OR status="registered"');
         if (0 < $total_participants->get_num_rows()) {
-            echo '<p class="ui-state-error">There are ' . number_format($total_participants->get_num_rows()) . ' non-researcher participants in this questionnaire, so a new table was not saved. If you have changed the number or type of questions in the questionnaire, you will need to ask Lisa to update the table for you.<p>';
+            echo '<p class="ui-state-error">There are ' . number_format($total_participants->get_num_rows()) . 
+                ' non-researcher participants in this questionnaire, so a new table was not saved. 
+                If you have changed the number or type of questions in the questionnaire, 
+                you will need to ask Lisa to update the table for you.<p>';
         } else {
             $make_new_table = true;
             $drop_exp_table = new myQuery('DROP TABLE IF EXISTS quest_' . $quest_id);
@@ -1341,9 +1352,7 @@ foreach ($questions as $n => $q) {
             'quest': myInfo,
             'radiorow': radioRowOptions
         };
-        
-        //$('<div />').html(qInfo.toSource()).dialog({width: 800});
-    
+            
         $.ajax({
             url: './builder?save',
             type: 'POST',
@@ -1351,15 +1360,7 @@ foreach ($questions as $n => $q) {
             success: function(data) {
                 r = data.split(";");
                 $('#quest_id').val(parseInt(r[0]));
-                $('<div />').html(r[1]).dialog({
-                    title: 'Questionnaire Updated',
-                    width: 500,
-                    buttons: {
-                        'Go to Questionnaire': function() { window.location='/quest?id=' + parseInt(r[0]); },
-                        'Keep Editing': function() { window.location='/res/quest/builder?id=' + parseInt(r[0]); }
-                    },
-                    close: function() { window.location='/quest?id=' + parseInt(r[0]); }
-                });
+                window.location='/res/quest/info?id=' + parseInt(r[0]);
             }
         });
     }

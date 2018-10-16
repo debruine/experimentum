@@ -49,8 +49,12 @@ if (array_key_exists('id', $_GET)) {
     
     $id = my_clean($_GET['id']);
     if (is_numeric($id) & $id>0) {
-        $q = new myQuery("SELECT id AS set_id, type as 'set_type', res_name, name as 'set_name', labnotes, sex, lower_age, upper_age,
-                            feedback_general, feedback_specific, feedback_query, forward, chart_id FROM sets WHERE id='{$id}'");
+        $q = new myQuery("SELECT id AS set_id, type as 'set_type', 
+                            res_name, name as 'set_name', labnotes, 
+                            sex, lower_age, upper_age,
+                            feedback_general, feedback_specific, 
+                            feedback_query, forward 
+                            FROM sets WHERE id='{$id}'");
         $set_info = $q->get_assoc(0);
         
         $q->set_query("SELECT item_type as type, item_id as id, 
@@ -97,10 +101,15 @@ if (array_key_exists('save', $_GET)) {
         }
     }
     
-    $set_query = sprintf('REPLACE INTO sets (id, name, res_name, status, type, labnotes, 
-            sex, lower_age, upper_age,
-            feedback_general, feedback_specific, feedback_query, forward, chart_id, create_date) 
-            VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", %s, NOW())',
+    $set_query = sprintf('REPLACE INTO sets (
+            id, name, res_name, status, 
+            type, labnotes, sex, lower_age, 
+            upper_age, feedback_general, feedback_specific, feedback_query, 
+            forward, create_date) 
+            VALUES (%s, "%s", "%s", "%s", 
+                    "%s", "%s", "%s", "%s", 
+                    "%s", "%s", "%s", "%s", 
+                    "%s", NOW())',
             check_null($clean['set_id'], 'id'),
             $clean['set_name'],
             $clean['res_name'],
@@ -113,8 +122,7 @@ if (array_key_exists('save', $_GET)) {
             $clean['feedback_general'],
             $clean['feedback_specific'],
             $clean['feedback_query'],
-            $clean['forward'],
-            check_null($clean['chart_id'], 'id')
+            $clean['forward']
     );
     
     $set_query = str_replace('""', 'NULL', $set_query);
@@ -402,67 +410,9 @@ $(function() {
         change: function(event, ui) { stripeList('#new_set'); }
     });
     
-/*
-    $('#delete-set').button().click( function() {
-        $( "<div/>").html("Do you really want to delete this set?").dialog({
-            title: "Delete Set",
-            position: ['center', 100],
-            modal: true,
-            buttons: {
-                Cancel: function() {
-                    $( this ).dialog( "close" );
-                },
-                "Delete": function() {
-                    $( this ).dialog( "close" );
-                    $.ajax({
-                        url: '?delete',
-                        type: 'POST',
-                        data: $('#set_id').serialize(),
-                        success: function(data) {
-                            if (data == 'deleted') {
-                                window.location = '/res/set/';
-                            } else {
-                                $('<div />').html(data).dialog();
-                            }
-                        }
-                    });
-                },
-            }
-        }); 
-    });
-*/
-    
     sizeToViewport();
     
     window.onresize = sizeToViewport;
-    
-    $('<div />').hide().insertAfter($('#chart_id')).attr('id', "graph_container").css({
-            'width': "100%",
-            'height': "200px",
-            'margin': '0',
-            'background-color': 'white'
-        });
-        
-        $('#chart_id').change( function() {
-            if ($(this).val() == 'NULL' || $(this).val() == '0') {
-                $('#graph_container').hide();
-                return;
-            }
-            $('#graph_container').html('').show().css('background', 'white url("/images/loaders/loading.gif") center center no-repeat');
-
-            $.ajax({
-                type: 'GET',
-                url: '/include/scripts/chart?id=' + $(this).val(),
-                success: function(data) {
-                    //alert(JSON.stringify(data));
-                    $('#graph_container').css('background', 'white');
-                    chart = new Highcharts.Chart(data);
-                },
-                dataType: 'json'
-            });
-        });
-        
-        if ($('#chart_id').val() > 0) $('#chart_id').trigger('change');
 });
 
 
