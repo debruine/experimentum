@@ -3,17 +3,15 @@
     header("Content-Type: text/css");
 
 /*-------------------------------------------------
-CSS for all pages in my php_practice webpage
-
 PAGE COLORS 
 -------------------------------------------------*/
-    $saturation = "0%";
-    $bgcolor = 'hsl(' . THEME_HUE . ",{$saturation},90%)"; // very light theme
+    $saturation = "70";
+    $bgcolor = 'hsl(' . THEME_HUE . ",0%,90%)"; // very light grey
     $text = '#222';                     // (very dark grey)
-    $theme = 'hsl(' . THEME_HUE . ",{$saturation},10%)"; // dark theme
-    $highlight = 'hsl(' . THEME_HUE . ",{$saturation},30%)"; // bright theme
+    $theme = 'hsl(' . THEME_HUE . ",0%,10%)"; // dark grey
+    $highlight = 'hsl(' . THEME_HUE . ",{$saturation}%,30%)"; // bright theme
     $text_on_theme = 'white';
-    $shade = 'hsl(' . THEME_HUE . ",{$saturation},75%)"; // light theme
+    $shade = 'hsl(' . THEME_HUE . ",{$saturation}%,75%)"; // light theme
     $border_color = 'white';
     
     $border = '3px solid ' . $border_color;
@@ -35,12 +33,12 @@ FONTS
 -------------------------------------------------*/
 
 :root {
-    --rainbow-red: hsl(0,100%,30%); 
-    --rainbow-orange: hsl(30,100%,35%);
-    --rainbow-yellow: hsl(50,100%,35%);
-    --rainbow-green: hsl(120,100%,25%);
-    --rainbow-blue: hsl(200,100%,30%);
-    --rainbow-purple: hsl(280,100%,30%);
+    --rainbow-red: hsl(0,<?= $saturation ?>%,30%); 
+    --rainbow-orange: hsl(30,<?= $saturation ?>%,35%);
+    --rainbow-yellow: hsl(50,<?= $saturation ?>%,35%);
+    --rainbow-green: hsl(120,<?= $saturation ?>%,25%);
+    --rainbow-blue: hsl(200,<?= $saturation ?>%,30%);
+    --rainbow-purple: hsl(280,<?= $saturation ?>%,30%);
 }
 
 @font-face{
@@ -323,6 +321,7 @@ tr.radiorow_values a {
 
 #menu > ul, #dash { 
     float: none; 
+    background-color: <?= $theme ?>;
     border: <?= $border ?>;
     <?= $round_corners ?>
     <?= shadow() ?>
@@ -332,14 +331,9 @@ tr.radiorow_values a {
     width: 220px;
 }
 
-#menu > ul {
-    background-color: <?= $theme ?>;
-}
-
 #dash { 
     float: left;
     margin: 0em 0.5em 0.5em 0;
-    background-color: hsl(0,100%,20%);
 }
 
 #myfavs { min-height: 20em; }
