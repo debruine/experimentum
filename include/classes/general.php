@@ -374,18 +374,12 @@ class page {
             
             $menu .= '  <ul>' . ENDLINE;
             foreach($menuList as $url => $item) {
-                if ($url . 'index.php' == $_SERVER['PHP_SELF'] || $url == $_SERVER['PHP_SELF']) {
-                    $menu .= sprintf("      <li class='this_section %s'><a href='javascript: return false;'>%s</a></li>\n", 
-                        $menuClasses[$url],
-                        str_replace(' ', '&nbsp;', $item));
-                } else {
-                    $menu .= sprintf("      <li class='%s %s'><a href='%s'>%s</a></li>\n", 
-                        $menuClasses[$url],
-                        (strpos($_SERVER['PHP_SELF'], $url) === false || $url == '/') ? '' : ' class="this_section"',
-                        $url, 
-                        str_replace(' ', '&nbsp;', $item)
-                    );
-                }
+                $menu .= sprintf("      <li class='%s %s'><a href='%s'>%s</a></li>\n", 
+                    $menuClasses[$url],
+                    (strpos($_SERVER['PHP_SELF'], $url) === false || $url == '/') ? '' : ' class="this_section"',
+                    $url, 
+                    str_replace(' ', '&nbsp;', $item)
+                );
             }
             $menu .= '  </ul>' . ENDLINE;
             $menu .= '</nav> <!-- end of menu -->' . ENDLINE;
