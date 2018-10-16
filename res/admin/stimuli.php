@@ -109,26 +109,26 @@ $page->displayBody();
 
 <script>
 
-$j(function() {
-    $j('#subfolders').change(function() {
-        if ($j(this).val() != '') {
-            //alert($j(this).val());
-            updateImages($j(this).val());
+$(function() {
+    $('#subfolders').change(function() {
+        if ($(this).val() != '') {
+            //alert($(this).val());
+            updateImages($(this).val());
         }
     });
 });
 
 function updateImages(url) {
-    $j('#number_updated').html('Checking ' + url);
-    $j('#updated').html('');
-    $j.ajax({
+    $('#number_updated').html('Checking ' + url);
+    $('#updated').html('');
+    $.ajax({
         url: 'stimuli',
         type: 'POST',
         data: 'dir=' + encodeURIComponent(url),
         success: function(data) {
             var split = data.split("***");
-            $j('#updated').html(split[0]);
-            $j('#number_updated').html(split[1]);
+            $('#updated').html(split[0]);
+            $('#number_updated').html(split[1]);
         }
     });
 }

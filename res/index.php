@@ -96,20 +96,20 @@ $page->displayBody();
 
 
 <script>
-    $j(function() {
-        $j("#dash").prependTo('ul.bigbuttons');
+    $(function() {
+        $("#dash").prependTo('ul.bigbuttons');
         
-        $j('.bigbuttons a.exp').closest('li').append('<input data-type="exp" />');
-        $j('.bigbuttons a.quest').closest('li').append('<input data-type="quest" />');
-        $j('.bigbuttons a.set').closest('li').append('<input data-type="set" />');
-        $j('.bigbuttons a.project').closest('li').append('<input data-type="project" />');
+        $('.bigbuttons a.exp').closest('li').append('<input data-type="exp" />');
+        $('.bigbuttons a.quest').closest('li').append('<input data-type="quest" />');
+        $('.bigbuttons a.set').closest('li').append('<input data-type="set" />');
+        $('.bigbuttons a.project').closest('li').append('<input data-type="project" />');
         
-        $j('.bigbuttons input').keydown( function(e) {
+        $('.bigbuttons input').keydown( function(e) {
             if (e.which == 13) {
                 var n = this.value;
-                var isValid = Math.floor(n) == n && $j.isNumeric(n) && n>0;
+                var isValid = Math.floor(n) == n && $.isNumeric(n) && n>0;
                 if (isValid) {
-                    var theType = $j(this).data('type');
+                    var theType = $(this).data('type');
                     
                     location.href = '/res/' + theType + '/info?id=' + n;
                 } else {

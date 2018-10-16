@@ -51,23 +51,23 @@ $page->displayBody();
 <!--*************************************************-->
 
 <script>
-	$j(function() {
+	$(function() {
 	
 <?php
 	$waittime = 0;
 	foreach($myimagelist as $myimages) {
 		if (!empty($myimages['left_img'])) {
-			echo sprintf("		setTimeout(\"\$j('#left_img').attr('src', '%s');\", %d);\n", 
+			echo sprintf("		setTimeout(\"\$('#left_img').attr('src', '%s');\", %d);\n", 
 				$myimages['left_img'], $waittime);
 			$left_img_count++;
 		}
 		if (!empty($myimages['center_img'])) {
-			echo sprintf("		setTimeout(\"\$j('#center_img').attr('src', '%s');\", %d);\n", 
+			echo sprintf("		setTimeout(\"\$('#center_img').attr('src', '%s');\", %d);\n", 
 				$myimages['center_img'], $waittime);
 			$center_img_count++;
 		}
 		if (!empty($myimages['right_img'])) {
-			echo sprintf("		setTimeout(\"\$j('#right_img').attr('src', '%s');\", %d);\n", 
+			echo sprintf("		setTimeout(\"\$('#right_img').attr('src', '%s');\", %d);\n", 
 				$myimages['right_img'], $waittime);
 			$right_img_count++;
 		}

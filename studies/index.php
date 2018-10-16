@@ -79,12 +79,12 @@ echo $expList;
 <script src="/include/js/sorttable.js"></script>
 <script>
 
-    $j(function() {
+    $(function() {
     
         <?php if (empty($_SESSION['user_id'])) { ?>
         
-        $j('a.explink').each( function() {
-            $j(this).replaceWith($j(this).text());
+        $('a.explink').each( function() {
+            $(this).replaceWith($(this).text());
         });
         
         <?php } ?>

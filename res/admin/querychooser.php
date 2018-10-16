@@ -99,21 +99,21 @@ echo $my->get_result_as_table(true, true);
 </div>
 
 <script>
-	$j(function() {
+	$(function() {
 		// set up main button functions
-		$j( "#newQuery" ).button().click(function() {
+		$( "#newQuery" ).button().click(function() {
 			window.location.href='/res/data/index?id=0';
 		});
 		
-		$j('table.query td a').each( function() {
-			var row = $j(this).closest('tr').find('td+td+td');
-			var anchor = $j(this).attr('href');
+		$('table.query td a').each( function() {
+			var row = $(this).closest('tr').find('td+td+td');
+			var anchor = $(this).attr('href');
 			row.click( function() {
 				window.location = anchor;
 			});
 		});
 		
-		$j('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
+		$('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
 		
 		dashboard_checkboxes('query'); // function defined in myfunctions.js
 	});

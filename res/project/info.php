@@ -446,34 +446,34 @@ $page->displayBody();
 <!--**************************************************-->
 
 <script>
-    $j(function() {
-        $j('#function_buttonset').buttonset();
+    $(function() {
+        $('#function_buttonset').buttonset();
         
-        $j( "#view-project" ).click(function() {
+        $( "#view-project" ).click(function() {
             window.location = '/project?=<?= $projdata['url'] ?>';
         });
-        $j( "#fb-project" ).click(function() {
+        $( "#fb-project" ).click(function() {
             window.location = '/fb?type=project&id=<?= $projdata['id'] ?>';
         });
-        $j( "#edit-project" ).click(function() {
+        $( "#edit-project" ).click(function() {
             window.location = '/res/project/builder?id=<?= $projdata['id'] ?>';
         });
-        $j( "#delete-project" ).click( function() {
-            $j( "<div/>").html("Do you really want to delete this project?").dialog({
+        $( "#delete-project" ).click( function() {
+            $( "<div/>").html("Do you really want to delete this project?").dialog({
                 title: "Delete Project",
                 position: ['center', 100],
                 modal: true,
                 buttons: {
                     Cancel: function() {
-                        $j( this ).dialog( "close" );
+                        $( this ).dialog( "close" );
                     },
                     "Delete": function() {
-                        $j( this ).dialog( "close" );
-                        $j.get("?delete&id=<?= $projdata['id'] ?>", function(data) {
+                        $( this ).dialog( "close" );
+                        $.get("?delete&id=<?= $projdata['id'] ?>", function(data) {
                             if (data == 'deleted') {
                                 window.location = '/res/project/';
                             } else {
-                                $j('<div title="Problem with Deletion" />').html(data).dialog();
+                                $('<div title="Problem with Deletion" />').html(data).dialog();
                             }
                         });
                     },
@@ -481,23 +481,23 @@ $page->displayBody();
             });
         });
         
-        $j( "#duplicate-project" ).click( function() {
-            $j( "<div/>").html("Do you really want to duplicate this project?").dialog({
+        $( "#duplicate-project" ).click( function() {
+            $( "<div/>").html("Do you really want to duplicate this project?").dialog({
                 title: "Duplicate Project",
                 position: ['center', 100],
                 modal: true,
                 buttons: {
                     Cancel: function() {
-                        $j( this ).dialog( "close" );
+                        $( this ).dialog( "close" );
                     },
                     "Duplicate": function() {
-                        $j( this ).dialog( "close" );
-                        $j.get("?duplicate&id=<?= $projdata['id'] ?>", function(data) {
+                        $( this ).dialog( "close" );
+                        $.get("?duplicate&id=<?= $projdata['id'] ?>", function(data) {
                             var resp = data.split(':');
                             if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
                                 window.location = '/res/project/info?id=' + resp[1];
                             } else {
-                                $j('<div title="Problem with Duplication" />').html(data).dialog();
+                                $('<div title="Problem with Duplication" />').html(data).dialog();
                             }
                         });
                     },
@@ -505,11 +505,11 @@ $page->displayBody();
             });
         });
         
-        $j( "#status" ).css('fontWeight', 'normal').change( function() {
-            var $sel = $j(this);
+        $( "#status" ).css('fontWeight', 'normal').change( function() {
+            var $sel = $(this);
             $sel.css('color', 'red');
 
-            $j.ajax({
+            $.ajax({
                 url: '/res/scripts/status',
                 type: 'POST',
                 data: {
@@ -527,11 +527,11 @@ $page->displayBody();
             });
         });
         
-        $j('span.set_nest').click( function() {
-            var toggle_class = $j(this).closest('tr').attr('id');
-            $j('tr.' + toggle_class).toggle();
+        $('span.set_nest').click( function() {
+            var toggle_class = $(this).closest('tr').attr('id');
+            $('tr.' + toggle_class).toggle();
             stripe('#setitems tbody');
-            $j(this).toggleClass("hide_set");
+            $(this).toggleClass("hide_set");
         });
         
         var items = ["<?= implode('","', $items_for_data) ?>"];
@@ -545,8 +545,8 @@ $page->displayBody();
             median: 0,
             upper: 0
         };
-        $j.each(items, function(idx, item) {
-            $j.ajax({
+        $.each(items, function(idx, item) {
+            $.ajax({
                 url: '?data&item=' + item,
                 type: 'GET',
                 success: function(data) {
@@ -562,19 +562,19 @@ $page->displayBody();
                         totals.median += parseInt(parts[6]*10);
                         totals.upper += parseInt(parts[7]*10);
                         
-                        $j('#total_people').html(totals.people + " (" + totals.peopled + ")");
-                        $j('#total_men').html(totals.men + " (" + totals.mend + ")");
-                        $j('#total_women').html(totals.women + " (" + totals.womend + ")");
+                        $('#total_people').html(totals.people + " (" + totals.peopled + ")");
+                        $('#total_men').html(totals.men + " (" + totals.mend + ")");
+                        $('#total_women').html(totals.women + " (" + totals.womend + ")");
                         
                         if (<?= (substr($projdata['type'],0,3)=='one') ? 'true' : 'false' ?>) {
-                            $j('#total_median').html(parseInt(totals.median/items.length)/10 + ' min');
-                            $j('#total_upper').html(parseInt(totals.upper/items.length)/10 + ' min');
+                            $('#total_median').html(parseInt(totals.median/items.length)/10 + ' min');
+                            $('#total_upper').html(parseInt(totals.upper/items.length)/10 + ' min');
                         } else {
-                            $j('#total_median').html(totals.median/10 + ' min');
-                            $j('#total_upper').html(totals.upper/10 + ' min');
+                            $('#total_median').html(totals.median/10 + ' min');
+                            $('#total_upper').html(totals.upper/10 + ' min');
                         }
                         
-                        var cells = $j('#' + item + ' td');
+                        var cells = $('#' + item + ' td');
                         
                         cells[4].innerHTML = parts[0] + " (" + parts[3] + ")";
                         cells[5].innerHTML = parts[1] + " (" + parts[4] + ")";
@@ -588,50 +588,50 @@ $page->displayBody();
             });
         });
         
-        $j('html').on("click", ".owner-delete", function() {
-            if ($j(this).text() == 'delete') {
-                $j(this).text('undelete');
-                $j(this).prev().addClass('delete-owner');
+        $('html').on("click", ".owner-delete", function() {
+            if ($(this).text() == 'delete') {
+                $(this).text('undelete');
+                $(this).prev().addClass('delete-owner');
             } else {
-                $j(this).text('delete');
-                $j(this).prev().removeClass('delete-owner');
+                $(this).text('delete');
+                $(this).prev().removeClass('delete-owner');
             }
         });
         
-        $j('button.tinybutton').button();
+        $('button.tinybutton').button();
         
-        $j('#owner-add-input').autocomplete({
+        $('#owner-add-input').autocomplete({
             source: [<?= implode(",", $ownerlist) ?>],
             focus: function( event, ui ) {
-                $j(this).val(ui.item.name);
+                $(this).val(ui.item.name);
                 return false;
             },
             select: function( event, ui ) {
-                $j(this).val(ui.item.name).data('id', ui.item.value);
+                $(this).val(ui.item.name).data('id', ui.item.value);
                 return false;
             }
         }).data('id', 0);
         
-        $j( "#owner-add" ).click( function() {
-            var owner_id = $j('#owner-add-input').data('id');
+        $( "#owner-add" ).click( function() {
+            var owner_id = $('#owner-add-input').data('id');
             
             if (owner_id == '' || owner_id == 0) { return false; }
             
-            if ($j('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
-                var new_owner = "<li><span class='new-owner'>" + $j('#owner-add-input').val() + 
+            if ($('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
+                var new_owner = "<li><span class='new-owner'>" + $('#owner-add-input').val() + 
                                 "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
-                $j('#owner-edit').append(new_owner);
+                $('#owner-edit').append(new_owner);
             } else {
                 growl("You can't add a duplicate owner.");
             }
-            $j('#owner-add-input').val('').data('id','');
+            $('#owner-add-input').val('').data('id','');
         });
         
-        $j( "#owner-change" ).click( function() {
+        $( "#owner-change" ).click( function() {
             var to_add = [];
             var to_delete = [];
-            $j('#owner-edit .owner-delete').each( function() {
-                var $this = $j(this);
+            $('#owner-edit .owner-delete').each( function() {
+                var $this = $(this);
                 
                 if ($this.text() == "delete") {
                     to_add.push($this.attr('owner-id'));
@@ -645,7 +645,7 @@ $page->displayBody();
                 return false;
             }
             
-            $j.ajax({
+            $.ajax({
                 url: '/res/scripts/owners',
                 type: 'POST',
                 data: {
@@ -658,8 +658,8 @@ $page->displayBody();
                     if (data) {
                         growl("Something went wrong");
                     } else {
-                        $j('#owner-edit .delete-owner').closest('li').remove();
-                        $j('#owner-edit span').removeClass('new-owner');
+                        $('#owner-edit .delete-owner').closest('li').remove();
+                        $('#owner-edit span').removeClass('new-owner');
                     }
                 }
             });

@@ -56,11 +56,11 @@ $page->displayBody();
 <p id="feedback"></p>
 
 <script>
-	$j('#update_codes').button().click( function() {
-		$j("#feedback").html('<img src="/images/loaders/loading.gif">');
+	$('#update_codes').button().click( function() {
+		$("#feedback").html('<img src="/images/loaders/loading.gif">');
 	
-		$j.post('functions.php', { 'function': 'update_codes' },  function(feedback) {
-			$j("#feedback").html( feedback );
+		$.post('functions.php', { 'function': 'update_codes' },  function(feedback) {
+			$("#feedback").html( feedback );
 			stripe('tbody');
 		});
 	});

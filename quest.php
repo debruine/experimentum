@@ -93,23 +93,23 @@ $q->print_form();
 
 <script>
 
-	$j(function() {
+	$(function() {
 
 		// cancel empty alert on change for select field
-		$j('#qTable select, #qTable input, #qTable textarea').change( function() {
-			if ($j(this).val() != "NULL") {
-				$j(this).closest('#qTable > tbody > tr').removeClass('emptyAlert');
+		$('#qTable select, #qTable input, #qTable textarea').change( function() {
+			if ($(this).val() != "NULL") {
+				$(this).closest('#qTable > tbody > tr').removeClass('emptyAlert');
 			}
 		});
 		
 		/* !specific questionnaire functions */
 		
 		// partner Q (quest_7) hide partner-specific questions from people without a partner
-		$j('#qTable #q20_1').click( function() {
-			$j('#q21_row, #q22_row, #q23_row, #q24_row, #q25_row, #q26_row, #q27_row, #q28_row').show();
+		$('#qTable #q20_1').click( function() {
+			$('#q21_row, #q22_row, #q23_row, #q24_row, #q25_row, #q26_row, #q27_row, #q28_row').show();
 		});
-		$j('#qTable #q20_0').click( function() {
-			$j('#q21_row, #q22_row, #q23_row, #q24_row, #q25_row, #q26_row, #q27_row, #q28_row').hide();
+		$('#qTable #q20_0').click( function() {
+			$('#q21_row, #q22_row, #q23_row, #q24_row, #q25_row, #q26_row, #q27_row, #q28_row').hide();
 		});
 	
 	});
@@ -119,35 +119,35 @@ $q->print_form();
 	
 		// check for empty questions
 		var fields = {};
-		$j.each($j('#maincontent form').serializeArray(), function(index,value) {
+		$.each($('#maincontent form').serializeArray(), function(index,value) {
 			fields[value.name] = value.value;
 		});
 		
 		var emptyFields = 0;
 		// look through visible questionnaire rows (only rows that have id and not ranking rows) for empty variables
-		$j('#qTable > tbody > tr[id]:not(.ranking):visible').each( function(i) {
-			$j(this).removeClass('emptyAlert');
-			var qid = $j(this).attr('id').replace('_row','');
+		$('#qTable > tbody > tr[id]:not(.ranking):visible').each( function(i) {
+			$(this).removeClass('emptyAlert');
+			var qid = $(this).attr('id').replace('_row','');
 
 			if (fields[qid] == '' || fields[qid] == null || fields[qid] == 'NULL') {
-				$j(this).addClass('emptyAlert');
+				$(this).addClass('emptyAlert');
 				emptyFields++;
 			}
 		});
 		if (emptyFields > 0) {
-			$j('#dialog-confirm').dialog({
+			$('#dialog-confirm').dialog({
 				resizable: false,
 				modal: true,
 				title: "Missing Data",
 				show: 'fade',
 				buttons: {
 					"Submit with missing info": function() {
-						$j(this).dialog("close");
+						$(this).dialog("close");
 						
 						recordAnswers();
 					},
 					"Go back to questionnaire": function() {
-						$j(this).dialog("close");
+						$(this).dialog("close");
 					}
 				}
 			});	 
@@ -157,10 +157,10 @@ $q->print_form();
 	}
 	
 	function recordAnswers() {
-		var theData = $j('#maincontent form').serialize();
+		var theData = $('#maincontent form').serialize();
 		
 		// record answers
-		$j.ajax({
+		$.ajax({
 			type: 'POST',
 			url: '/quest?submit',
 			data: theData,
@@ -169,7 +169,7 @@ $q->print_form();
 				if (parsedResponse[0] == 'url') {
 					window.location.href=parsedResponse[1];
 				} else {
-					$j('<div />').html(response).dialog();
+					$('<div />').html(response).dialog();
 				}
 			}
 		});

@@ -98,13 +98,13 @@ echo $my->get_result_as_table(true, true);
 </div>
 
 <script type="text/javascript">
-	$j(function() {
+	$(function() {
 		// set up main button functions
-		$j( "#newChart" ).button().click(function() {
+		$( "#newChart" ).button().click(function() {
 			window.location.href='/res/data/mycharts?id=0';
 		});
 		
-		$j('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
+		$('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
 		
 		dashboard_checkboxes('chart'); // function defined in myfunctions.js
 	});

@@ -139,13 +139,13 @@ $page->displayBody();
 
 <script>
 
-	$j(function() {
+	$(function() {
 		// add functions to buttons
-		$j( "#image_list_toggle" ).buttonset();
-		$j( "#list_toggle" ).click(function() { toggleImages(0); });
-		$j( "#image_toggle" ).click(function() { toggleImages(1); });
+		$( "#image_list_toggle" ).buttonset();
+		$( "#list_toggle" ).click(function() { toggleImages(0); });
+		$( "#image_toggle" ).click(function() { toggleImages(1); });
 
-		$j( "#image_inspector" ).hide();
+		$( "#image_inspector" ).hide();
 	});
 
 	
@@ -158,14 +158,14 @@ $page->displayBody();
 		
 		// make current option unclickable
 		if (imgToggle == 0) {
-			$j('#image_toggle').html("<a href='javascript:toggleImages(1);'>images</a>");
-			$j('#list_toggle').html('list')
+			$('#image_toggle').html("<a href='javascript:toggleImages(1);'>images</a>");
+			$('#list_toggle').html('list')
 		} else {
-			$j('#list_toggle').html("<a href='javascript:toggleImages(0);'>list</a>");
-			$j('#image_toggle').html('images');
+			$('#list_toggle').html("<a href='javascript:toggleImages(0);'>list</a>");
+			$('#image_toggle').html('images');
 		}
 		
-		showImages($j('#image_search').val(), 50);
+		showImages($('#image_search').val(), 50);
 	}
 
 	function showImages(s, max_images) {
@@ -177,80 +177,80 @@ $page->displayBody();
 		var url = encodeURI('search?search=' + s);
 		
 		// retrieve image list asynchronously
-		$j.get(url, function(resp) {
+		$.get(url, function(resp) {
 				if (resp.substr(0,5) == "error") {
 					alert(resp);
 				} else {
-					$j( "#image_inspector" ).hide();
-					$j('#img_list').empty();
+					$( "#image_inspector" ).hide();
+					$('#img_list').empty();
 					var id_path = resp.split(";");
 					var len = id_path.length;
 					var plus = '';
 					if (len == 2000) { plus = '+'; }
 					
-					$j('#images_found').html(len + plus + '&nbsp;images&nbsp;found');
+					$('#images_found').html(len + plus + '&nbsp;images&nbsp;found');
 					
 					for (var i = 0; i<len; ++i ){
 						var img = id_path[i].split(":");
 						if (imgToggle == 1) {
 							if (img[2]=="audio") {
 								var shortpath = img[1].split("/");
-								$j('#img_list').append('<li id="img' + img[0] + '" title="' + img[1] + '"><audio controls="controls" src="' + img[1] + '.ogg" /></audio> ' + shortpath[(shortpath.length - 1)] + '<br /></li>');
+								$('#img_list').append('<li id="img' + img[0] + '" title="' + img[1] + '"><audio controls="controls" src="' + img[1] + '.ogg" /></audio> ' + shortpath[(shortpath.length - 1)] + '<br /></li>');
 							} else {
-								$j('#img_list').append('<li id="img' + img[0] + '" title="' + img[1] + '"><img src="' + img[1] + '" /></li>');
+								$('#img_list').append('<li id="img' + img[0] + '" title="' + img[1] + '"><img src="' + img[1] + '" /></li>');
 							}
 							
 							if (i >= max_images) {
-								$j('#img_list').append('<a href="javascript:showImages($j(\'#image_search\').val(),'+(max_images+50)+')">View more...</a>');
+								$('#img_list').append('<a href="javascript:showImages($(\'#image_search\').val(),'+(max_images+50)+')">View more...</a>');
 								break;
 								
 							}
 						} else {
 							var shortname = img[1].replace('/images/stimuli', '');
-							$j('#img_list').append('<li id="img' + img[0] + '" title="' + img[1] + '"><a>' + shortname + '</a></li>');
+							$('#img_list').append('<li id="img' + img[0] + '" title="' + img[1] + '"><a>' + shortname + '</a></li>');
 						}
 					}
 					
 					// make sure each li displays correctly
-					if (imgToggle == 1) $j('#img_list li').css('display','inline');
-					if (imgToggle == 0) $j('#img_list li').css('display','block');
+					if (imgToggle == 1) $('#img_list li').css('display','inline');
+					if (imgToggle == 0) $('#img_list li').css('display','block');
 					
 					// add click function to each image
-					$j('#img_list li').click( function() { 
-						var id = $j(this).attr('id').replace('img', ''); 
+					$('#img_list li').click( function() { 
+						var id = $(this).attr('id').replace('img', ''); 
 						
 						// getimage information
 						
-						$j.get('search?id=' + id, function(data) { 
+						$.get('search?id=' + id, function(data) { 
 							var imagedata = data.split(";^;");
 							if (imagedata[6] == "image") {
-								$j( "#feature_image" ).attr('src', imagedata[0]).show();
-								$j( "#feature_audio" ).hide();
+								$( "#feature_image" ).attr('src', imagedata[0]).show();
+								$( "#feature_audio" ).hide();
 							} else if (imagedata[6] == "audio") {
-								$j( "#feature_audio" ).attr('src', imagedata[0]).show();
-								$j( "#feature_image" ).hide();
+								$( "#feature_audio" ).attr('src', imagedata[0]).show();
+								$( "#feature_image" ).hide();
 							}
-							$j( "#image_path" ).html(imagedata[0]);
-							$j( "#image_imageset" ).html(imagedata[1]);
-							$j( "#image_description" ).html(imagedata[2]);
-							$j( "#image_sex" ).html(imagedata[3]);
-							$j( "#image_transform" ).html(imagedata[4]);
-							$j( "#image_percent" ).html(imagedata[5]);
-							$j( "#image_type" ).html(imagedata[6]);
-							$j( "#image_race" ).html(imagedata[7]);
+							$( "#image_path" ).html(imagedata[0]);
+							$( "#image_imageset" ).html(imagedata[1]);
+							$( "#image_description" ).html(imagedata[2]);
+							$( "#image_sex" ).html(imagedata[3]);
+							$( "#image_transform" ).html(imagedata[4]);
+							$( "#image_percent" ).html(imagedata[5]);
+							$( "#image_type" ).html(imagedata[6]);
+							$( "#image_race" ).html(imagedata[7]);
 							
 							var explist = imagedata[8].split(",");
-							$j( "#image_exps" ).empty();
+							$( "#image_exps" ).empty();
 							if (explist.length > 0) {
 								for (i=0; i<explist.length; i++) {
-									$j( "#image_exps" ).append("<a href='/res/exp/info?id=" + explist[i] + "'>" + explist[i] + "</a>");
+									$( "#image_exps" ).append("<a href='/res/exp/info?id=" + explist[i] + "'>" + explist[i] + "</a>");
 									if (i+1 < explist.length) {
-										$j( "#image_exps" ).append(", ");
+										$( "#image_exps" ).append(", ");
 									}
 								}
 							}
 
-							$j( "#image_inspector" ).show();
+							$( "#image_inspector" ).show();
 						});
 						
 					});

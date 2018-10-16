@@ -154,18 +154,18 @@ $page->displayBody();
 	var past = 'Year';
 	var chart;
 	
-	$j(function() {
+	$(function() {
 	
-		$j('#interval_chooser').buttonset().change( function() {
-			getData(show, $j('input[name="interval"]:checked').val(), past);
+		$('#interval_chooser').buttonset().change( function() {
+			getData(show, $('input[name="interval"]:checked').val(), past);
 		});
 		
-		$j('#display_chooser').buttonset().change( function() {
-			getData($j('input[name="display"]:checked').val(), interval, past);
+		$('#display_chooser').buttonset().change( function() {
+			getData($('input[name="display"]:checked').val(), interval, past);
 		});
 		
-		$j('#past_chooser').buttonset().change( function() {
-			getData(show, interval, $j('input[name="past"]:checked').val());
+		$('#past_chooser').buttonset().change( function() {
+			getData(show, interval, $('input[name="past"]:checked').val());
 		});
 		
 		
@@ -234,8 +234,8 @@ $page->displayBody();
 		show = s;
 		interval = interv;
 		past = p;
-		$j('#graph_container').html('').css('background', 'url(/images/stuff/loading.gif) no-repeat center center');
-		$j.get('./usage?show=' + show + '&interval=' + interval + '&past=' + past, function(response) {
+		$('#graph_container').html('').css('background', 'url(/images/stuff/loading.gif) no-repeat center center');
+		$.get('./usage?show=' + show + '&interval=' + interval + '&past=' + past, function(response) {
 			data = response.split(",");
 			allData = [];
 			for (i=0; i<data.length; i++) {

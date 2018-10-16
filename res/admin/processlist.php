@@ -57,7 +57,7 @@ echo "</tbody></table>";
 
 <script>
 
-$j(function() {
+$(function() {
 });
 
 </script>

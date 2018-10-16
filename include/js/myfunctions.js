@@ -1,9 +1,5 @@
 <!--
 
-/* NO PROTOTYPE */
-
-jQuery.noConflict(); var $j = jQuery;
-
 var KEYCODE = {
     'backspace' : 8,
     'tab' : 9,
@@ -115,7 +111,7 @@ var KEYCODE = {
 /* !onLoad items                                    */
 /****************************************************/
 
-$j(function() {
+$(function() {
     // remove console functions if they are undefined (old IE)
     if (typeof console === "undefined") {
         console = { 
@@ -130,12 +126,12 @@ $j(function() {
     stripe('tbody');
     
     // set up help dialog box
-    if ($j('#help').length > 0) {
-        $j('<div />')
+    if ($('#help').length > 0) {
+        $('<div />')
             .html('help')
             .addClass('helpbutton')
-            .insertAfter($j('#login_info'))
-            .click( function() { $j('#help').dialog({show: "scale",
+            .insertAfter($('#login_info'))
+            .click( function() { $('#help').dialog({show: "scale",
                 hide: "scale",
                 width: 650,
                 position: ['center', 50]
@@ -143,7 +139,7 @@ $j(function() {
     }
     
     // set up loginBox dialog
-    $j('#loginbox').dialog({
+    $('#loginbox').dialog({
         autoOpen: false,
         show: "scale",
         hide: "scale",
@@ -156,7 +152,7 @@ $j(function() {
             //"Participate without an account" : function() { window.location.href="/consent?guest"; },
         }
     });
-    $j('#guestloginbox').dialog({
+    $('#guestloginbox').dialog({
         autoOpen: false,
         show: "scale",
         hide: "scale",
@@ -169,7 +165,7 @@ $j(function() {
     });
     
     // set up loginError dialog
-    $j('#login_error_header').dialog({
+    $('#login_error_header').dialog({
         autoOpen: false,
         show: "scale",
         hide: "scale",
@@ -178,28 +174,28 @@ $j(function() {
     });
     
     // give button styles to all inputs in a buttons div
-    $j('.buttons input, .buttons a, .buttons button').button();
+    $('.buttons input, .buttons a, .buttons button').button();
     
     // format all datepicker types
-    $j( ".datepicker[yearrange][mindate][maxdate]" ).each( function() {
-        var minmax = $j(this).attr('yearrange').split(':');
+    $( ".datepicker[yearrange][mindate][maxdate]" ).each( function() {
+        var minmax = $(this).attr('yearrange').split(':');
         var yearscovered = parseInt(minmax[1]) - parseInt(minmax[0]);
     
-        $j(this).datepicker({
+        $(this).datepicker({
             dateFormat: "yy-mm-dd",
-            yearRange: $j(this).attr('yearrange'),
-            minDate: $j(this).attr('mindate'),
-            maxDate: $j(this).attr('maxdate'),
+            yearRange: $(this).attr('yearrange'),
+            minDate: $(this).attr('mindate'),
+            maxDate: $(this).attr('maxdate'),
             changeMonth: true,
             changeYear: (yearscovered>1) ? true : false
         });
     });
     
     // format all horizontal radiobuttons
-    $j("ul.radio").buttonset();
+    $("ul.radio").buttonset();
 
  /*   
-    $j(document).keydown(function(e) {
+    $(document).keydown(function(e) {
         var navKeys,  // list of keycodes for navigation (except when in input boxes)
             funcKeys; // list of keycodes for text functions (except when in input boxes)
     
@@ -219,9 +215,9 @@ $j(function() {
             KEYCODE.a
         ];
     
-        if (    (    $j('.ui-dialog').is(':visible')
-                     || $j('input:focus').length
-                     || $j('textarea:focus').length
+        if (    (    $('.ui-dialog').is(':visible')
+                     || $('input:focus').length
+                     || $('textarea:focus').length
                 ) &&
                 (    ((e.ctrlKey || e.metaKey) && ( funcKeys.indexOf(e.which) !== -1 ))
                      || (navKeys.indexOf(e.which) !== -1)
@@ -233,7 +229,7 @@ $j(function() {
             // or on the login page or an input/textarea is focussed
             return true; 
         } else if (e.which == KEYCODE.a) {                                      // !cmd-a
-            $j('#select_all').click();
+            $('#select_all').click();
         }
         e.preventDefault();
     });
@@ -246,20 +242,20 @@ $j(function() {
 
 // load pages for iPhone
 function loadPage(url) {
-    $j('body').append('<div id="progress">Loading...</div>');
+    $('body').append('<div id="progress">Loading...</div>');
     if (url == undefined) {
-        $j('wrap').load('/index #wrap', hijackLinks);
+        $('wrap').load('/index #wrap', hijackLinks);
     } else {
-        $j('wrap').load(url + ' #wrap', hijackLinks);
+        $('wrap').load(url + ' #wrap', hijackLinks);
     }
 }
 
 function hijackLinks() {
-    $j('#wrap a[href]').click( function(e) {
+    $('#wrap a[href]').click( function(e) {
         e.preventDefault();
         loadPage(e.target.href);
     });
-    $j('#progress').remove();
+    $('#progress').remove();
 }
 
 // change the height of a textarea to fit the amount of text in it
@@ -277,45 +273,45 @@ function textarea_expand(ta, min, max) {
 
 function logout() {
     console.log('logging out');
-    $j.get("/include/scripts/logout", function (response) {
+    $.get("/include/scripts/logout", function (response) {
         window.location = window.location;
     });
 }
 
 function startLogin() {
-    $j("#loginbox").dialog("open");
-    $j("#login_username").focus();
+    $("#loginbox").dialog("open");
+    $("#login_username").focus();
 }
 
 function login() {
-    var un = $j("#login_username").val();
-    var pw = $j("#login_password").val();
+    var un = $("#login_username").val();
+    var pw = $("#login_password").val();
     console.log('logging in ' + un);
     
     if (un != "" && pw != "") {
         
         var url = "/include/scripts/login?username=" + un + "&password=" + pw;
         
-        $j("#login_error").hide();
+        $("#login_error").hide();
         
-        $j.get(url, function(data) {
+        $.get(url, function(data) {
             if (data == "login") {
-                $j("#login_error").hide();
+                $("#login_error").hide();
                 window.location.reload(false);
             } else {
                 var parsedResponse = data.split(":");
                 if (parsedResponse[0] == "username") {
-                    $j("#login_username").focus();
-                    $j("#login_username").select();
-                    $j("#login_error").html( parsedResponse[1] ).show();
+                    $("#login_username").focus();
+                    $("#login_username").select();
+                    $("#login_error").html( parsedResponse[1] ).show();
                 } else if (parsedResponse[0] == "password") {
-                    $j("#login_password").focus();
-                    $j("#login_password").select();
-                    $j("#login_error").html( parsedResponse[1] ).show();
+                    $("#login_password").focus();
+                    $("#login_password").select();
+                    $("#login_error").html( parsedResponse[1] ).show();
                 } else if (parsedResponse[0] == "newpage") {
                     window.location = parsedResponse[1];
                 } else {
-                    $j("#login_error").html( data ).show();
+                    $("#login_error").html( data ).show();
                 }
             }
         });
@@ -323,34 +319,34 @@ function login() {
 }
 
 function login() {
-    var un = $j("#login_username").val();
-    var pw = $j("#login_password").val();
+    var un = $("#login_username").val();
+    var pw = $("#login_password").val();
     console.log('logging in ' + un);
     
     if (un != "" && pw != "") {
         
         var url = "/include/scripts/login?username=" + un + "&password=" + pw;
         
-        $j("#login_error").hide();
+        $("#login_error").hide();
         
-        $j.get(url, function(data) {
+        $.get(url, function(data) {
             if (data == "login") {
-                $j("#login_error").hide();
+                $("#login_error").hide();
                 window.location.reload(false);
             } else {
                 var parsedResponse = data.split(":");
                 if (parsedResponse[0] == "username") {
-                    $j("#login_username").focus();
-                    $j("#login_username").select();
-                    $j("#login_error").html( parsedResponse[1] ).show();
+                    $("#login_username").focus();
+                    $("#login_username").select();
+                    $("#login_error").html( parsedResponse[1] ).show();
                 } else if (parsedResponse[0] == "password") {
-                    $j("#login_password").focus();
-                    $j("#login_password").select();
-                    $j("#login_error").html( parsedResponse[1] ).show();
+                    $("#login_password").focus();
+                    $("#login_password").select();
+                    $("#login_error").html( parsedResponse[1] ).show();
                 } else if (parsedResponse[0] == "newpage") {
                     window.location = parsedResponse[1];
                 } else {
-                    $j("#login_error").html( data ).show();
+                    $("#login_error").html( data ).show();
                 }
             }
         });
@@ -360,16 +356,16 @@ function login() {
 function guestLogin(project_id) {
     var url ="/include/scripts/login_guest";
     
-    $j.get(url, function(data) {
+    $.get(url, function(data) {
         if (data == "login") {
-            $j("#login_error_header").dialog("close").css('background', 'none');
+            $("#login_error_header").dialog("close").css('background', 'none');
             window.location.reload(false);
         } else {
             var parsedResponse = data.split(":");
             if (parsedResponse[0] == "newpage") {
                 window.location = parsedResponse[1];
             } else {
-                $j("#login_error_header").html( data ).css('background', 'none').dialog("open");;
+                $("#login_error_header").html( data ).css('background', 'none').dialog("open");;
             }
         }
     });
@@ -381,8 +377,8 @@ function guestLogin(project_id) {
 /****************************************************/
 
 function stripe(e) {
-    $j(e).children(":visible:odd").addClass("odd").removeClass("even");
-    $j(e).children(":visible:even").addClass("even").removeClass("odd");
+    $(e).children(":visible:odd").addClass("odd").removeClass("even");
+    $(e).children(":visible:even").addClass("even").removeClass("odd");
 }
 
 function stripeAllTables() {
@@ -390,11 +386,11 @@ function stripeAllTables() {
 }
 
 function narrowTable(tbl, searchText) {
-    $j(tbl).children(':not(.nosearch)').each( function() {
-        if ($j(this).html().toLowerCase().indexOf(searchText.toLowerCase()) != -1) {
-            $j(this).show();
+    $(tbl).children(':not(.nosearch)').each( function() {
+        if ($(this).html().toLowerCase().indexOf(searchText.toLowerCase()) != -1) {
+            $(this).show();
         } else {
-            $j(this).hide();
+            $(this).hide();
         }
     });
     
@@ -417,33 +413,33 @@ function formatInt(input) {
 }
 
 function setOriginalValues(table_id) {
-    $j('#' + table_id + ' textarea, #' + table_id + ' input, #' + table_id + ' select').each( function(i) {
-        $j(this).attr('original_value', $j(this).val())
+    $('#' + table_id + ' textarea, #' + table_id + ' input, #' + table_id + ' select').each( function(i) {
+        $(this).attr('original_value', $(this).val())
                 .removeClass('unsaved')
                 .bind( "change keypress", function() {
-                    if ($j(this).val() != $j(this).attr('original_value')) {
-                        $j(this).addClass('unsaved');
+                    if ($(this).val() != $(this).attr('original_value')) {
+                        $(this).addClass('unsaved');
                     } else { 
-                        $j(this).removeClass('unsaved');
+                        $(this).removeClass('unsaved');
                     }
                 });
                 /*
                 .dblclick( function() {
-                    var inputElement = $j(this);
+                    var inputElement = $(this);
                     
                     if (inputElement.val() != inputElement.attr('original_value')) {
-                        $j('<div />').html('Revert to original value?').dialog({
+                        $('<div />').html('Revert to original value?').dialog({
                             modal: true,
                             position: ['center', 100],
                             buttons: {
                                 "Cancel": function() {
-                                    $j(this).dialog('close');
+                                    $(this).dialog('close');
                                 },
                                 "Revert": function() {
                                     inputElement.val(inputElement.attr('original_value'));
                                     inputElement.removeClass('unsaved');
                                     inputElement.trigger('change');
-                                    $j(this).dialog('close');
+                                    $(this).dialog('close');
                                 }
                             }
                         });
@@ -456,7 +452,7 @@ function setOriginalValues(table_id) {
 
 function growl(title, interval, pos) {
     pos = pos || "center";
-    var growlDialog = $j('<div />').attr('title', title).dialog({
+    var growlDialog = $('<div />').attr('title', title).dialog({
         hide: "fade",
         position: pos
     }).fadeOut(0);
@@ -470,25 +466,25 @@ function growl(title, interval, pos) {
 
 // set up dashboard checkboxes in lists
 function dashboard_checkboxes(type) {
-    $j(".fav").each( function() {
-        $j(this).click( function() {
-            var dash_id = $j(this).attr("id").replace("dash", "");
+    $(".fav").each( function() {
+        $(this).click( function() {
+            var dash_id = $(this).attr("id").replace("dash", "");
             
-            if ($j(this).hasClass("heart")) {
+            if ($(this).hasClass("heart")) {
                 // remove from dashboard
-                $j.get('/res/scripts/dashboard?delete&type=' + type + '&id=' + dash_id, function(data) { if (data != '') alert(data); });
+                $.get('/res/scripts/dashboard?delete&type=' + type + '&id=' + dash_id, function(data) { if (data != '') alert(data); });
                 
                 // change hidden label to - for sorting
-                $j(this).removeClass("heart").text("-");
+                $(this).removeClass("heart").text("-");
             } else {
                 // add to dashboard
-                $j.get('/res/scripts/dashboard?add&type=' + type + '&id=' + dash_id, function(data) { if (data != '') alert(data); });
+                $.get('/res/scripts/dashboard?add&type=' + type + '&id=' + dash_id, function(data) { if (data != '') alert(data); });
                 
                 // change hidden label to + for sorting
-                $j(this).addClass("heart").text('+');
+                $(this).addClass("heart").text('+');
             }
             
-            $j(this).blur(); // prevents icon getting stuck in focus state
+            $(this).blur(); // prevents icon getting stuck in focus state
         });
     });
 }
@@ -498,18 +494,18 @@ function statusChanger(column, theType) {
     var status_menu = '<select class="status_changer"><option value="test">test</option><option value="active">active</option><option value="inactive">inactive</option></select>';
     
     
-    $j('table.query tbody tr').each( function(i) {
-        var status_cell = $j(this).find('td:nth-child(' + column + ')');
-        var the_id = $j(this).find('td:nth-child(2)').find('a').html();
+    $('table.query tbody tr').each( function(i) {
+        var status_cell = $(this).find('td:nth-child(' + column + ')');
+        var the_id = $(this).find('td:nth-child(2)').find('a').html();
         var the_status = status_cell.html();
         status_cell.wrapInner('<span />').find('span').click(function() {
-            $j('select.status_changer').hide().prev('span').show();
-            $j(this).hide().next('select').show();
+            $('select.status_changer').hide().prev('span').show();
+            $(this).hide().next('select').show();
         });
         status_cell.append(status_menu);
         status_cell.find('select').hide().val(the_status).change(function() {
-            var $sel = $j(this);
-            $j.ajax({
+            var $sel = $(this);
+            $.ajax({
                 url: '/res/scripts/status',
                 type: 'POST',
                 data: {
@@ -542,21 +538,21 @@ function getUrlVars() {
 
 function postIt(url, data){
 
-    $j('body').append($j('<form/>', {
+    $('body').append($('<form/>', {
       id: 'jQueryPostItForm',
       method: 'POST',
       action: url
     }));
 
     for(var i in data){
-      $j('#jQueryPostItForm').append($j('<input/>', {
+      $('#jQueryPostItForm').append($('<input/>', {
         type: 'hidden',
         name: i,
         value: data[i]
       }));
     }
 
-    $j('#jQueryPostItForm').submit();
+    $('#jQueryPostItForm').submit();
 }
 
 function folderize(json, appendElement) {
@@ -565,15 +561,15 @@ function folderize(json, appendElement) {
                     .parent('ul').find('li.folder').addClass('closed'); // close all folders at and below this level
     appendElement   .removeClass('closed')              // open folder, since you just clicked on it
                     .find('span').click( function() {   // add a folder opening function when clicked   
-                        $j(this).parent().removeClass('closed') // open this folder on click
+                        $(this).parent().removeClass('closed') // open this folder on click
                                 .siblings('li').addClass('closed') // close sibling folders
                                 .find('li').addClass('closed'); // close all folders below this level
                     });
     
-    var theFolder = $j('<ul />').css('margin-left', appendElement.width()+10);
+    var theFolder = $('<ul />').css('margin-left', appendElement.width()+10);
 
-    $j.each(json, function(folder, contents) {
-        var theItem = $j('<li />');
+    $.each(json, function(folder, contents) {
+        var theItem = $('<li />');
 
         if (contents.length > 1) {
             // contents are an image name
@@ -584,12 +580,12 @@ function folderize(json, appendElement) {
                     .attr('url', contents)
                     .addClass('image')
                     .click( function() {
-                        $j('#imagebox img').attr('src', $j(this).attr('url'));
-                        $j('#imagebox #imageurl').html($j(this).attr('url'));
+                        $('#imagebox img').attr('src', $(this).attr('url'));
+                        $('#imagebox #imageurl').html($(this).attr('url'));
                         
-                        $j('li.image.selected').removeClass('selected');
-                        $j(this).addClass('selected');
-                        $j(this).siblings('li').addClass('closed').find('li').addClass('closed');
+                        $('li.image.selected').removeClass('selected');
+                        $(this).addClass('selected');
+                        $(this).siblings('li').addClass('closed').find('li').addClass('closed');
                     });
         } else {
             // contents are more files/folders
@@ -601,7 +597,7 @@ function folderize(json, appendElement) {
                     .addClass('folder closed')
                     .data('contents', contents)
                     .click( function() { 
-                        folderize($j(this).data('contents'), $j(this)); 
+                        folderize($(this).data('contents'), $(this)); 
                     });
         }
         
@@ -609,12 +605,12 @@ function folderize(json, appendElement) {
     });
 
     appendElement.append( theFolder );
-    $j('#finder > ul').css('margin-left', 0); // fix first ul
+    $('#finder > ul').css('margin-left', 0); // fix first ul
 }
 
 function sizeToViewport() {
-    var new_height = $j(window).height() - $j('#finder').offset().top - $j('#footer').height()-30;
-    $j('#finder').height(new_height);
+    var new_height = $(window).height() - $('#finder').offset().top - $('#footer').height()-30;
+    $('#finder').height(new_height);
 }
 
 -->

@@ -98,15 +98,15 @@ $page->displayBody();
 
 <script>
 
-$j(function() {
+$(function() {
 
-	$j('#show_totals').button().click(function() {
-		var theDate = $j('#date').val();
+	$('#show_totals').button().click(function() {
+		var theDate = $('#date').val();
 		
-		$j('#completed_tables').html("<img src='/images/loader/circle_column_theme' />")
+		$('#completed_tables').html("<img src='/images/loader/circle_column_theme' />")
 							   .load('stats?tables&date=' + theDate, function() {
 									stripe('#completed_tables tbody');
-									$j('#show_comp_tables').hide();
+									$('#show_comp_tables').hide();
 								});
 	});
 });

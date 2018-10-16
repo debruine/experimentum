@@ -323,52 +323,52 @@ $page->displayBody();
 <script>
     var chart;
 
-    $j(function() {
+    $(function() {
         if (<?= ifEmpty($data['total_c'], 0) ?> > 0) {
             // get time graph
-            $j('#time_container').css('background', 'url("/images/loaders/loading.gif") center center no-repeat');
-            $j.ajax({
+            $('#time_container').css('background', 'url("/images/loaders/loading.gif") center center no-repeat');
+            $.ajax({
                 type: 'POST',
                 url: '/include/scripts/chart',
                 data: 'query_text=' + encodeURIComponent('<?= $timechart ?>'),
                 success: function(data) {
                     //alert(JSON.stringify(data));
-                    $j('#time_container').css('background', 'none');
+                    $('#time_container').css('background', 'none');
                     chart = new Highcharts.Chart(data);
                 },
                 dataType: 'json'
             }); 
         } else {
-            $j('#time_container').hide();
+            $('#time_container').hide();
         }
         
-        $j('#function_buttonset').buttonset();
+        $('#function_buttonset').buttonset();
     
-        $j( "#view-quest" ).click(function() {
+        $( "#view-quest" ).click(function() {
             window.location = '/quest?id=<?= $questdata['id'] ?>';
         });
-        $j( "#edit-quest" ).click(function() {
+        $( "#edit-quest" ).click(function() {
             window.location = '/res/quest/builder?id=<?= $questdata['id'] ?>';
         });
-        $j( "#data-quest" ).click(function() {
+        $( "#data-quest" ).click(function() {
             window.location = '/res/data/index?quest_id=<?= $questdata['id'] ?>';
         });
-        $j( "#delete-quest" ).click( function() {
-            $j( "<div/>").html("Do you really want to delete this questionnaire?").dialog({
+        $( "#delete-quest" ).click( function() {
+            $( "<div/>").html("Do you really want to delete this questionnaire?").dialog({
                 title: "Delete questionnaire",
                 position: ['center', 100],
                 modal: true,
                 buttons: {
                     Cancel: function() {
-                        $j( this ).dialog( "close" );
+                        $( this ).dialog( "close" );
                     },
                     "Delete": function() {
-                        $j( this ).dialog( "close" );
-                        $j.get("/res/scripts/delete_quest?id=<?= $questdata['id'] ?>", function(data) {
+                        $( this ).dialog( "close" );
+                        $.get("/res/scripts/delete_quest?id=<?= $questdata['id'] ?>", function(data) {
                             if (data == 'deleted') {
                                 window.location = '/res/quest/';
                             } else {
-                                $j('<div title="Problem with Deletion" />').html(data).dialog();
+                                $('<div title="Problem with Deletion" />').html(data).dialog();
                             }
                         });
                     },
@@ -376,23 +376,23 @@ $page->displayBody();
             });
         });
         
-        $j( "#duplicate-quest" ).click( function() {
-            $j( "<div/>").html("Do you really want to duplicate this questionnaire?").dialog({
+        $( "#duplicate-quest" ).click( function() {
+            $( "<div/>").html("Do you really want to duplicate this questionnaire?").dialog({
                 title: "Duplicate Questionnaire",
                 position: ['center', 100],
                 modal: true,
                 buttons: {
                     Cancel: function() {
-                        $j( this ).dialog( "close" );
+                        $( this ).dialog( "close" );
                     },
                     "Duplicate": function() {
-                        $j( this ).dialog( "close" );
-                        $j.get("?duplicate&id=<?= $questdata['id'] ?>", function(data) {
+                        $( this ).dialog( "close" );
+                        $.get("?duplicate&id=<?= $questdata['id'] ?>", function(data) {
                             var resp = data.split(':');
                             if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
                                 window.location = '/res/quest/info?id=' + resp[1];
                             } else {
-                                $j('<div title="Problem with Duplication" />').html(data).dialog();
+                                $('<div title="Problem with Duplication" />').html(data).dialog();
                             }
                         });
                     },
@@ -400,11 +400,11 @@ $page->displayBody();
             });
         });
         
-        $j( "#status" ).css('fontWeight', 'normal').change( function() {
-            var $sel = $j(this);
+        $( "#status" ).css('fontWeight', 'normal').change( function() {
+            var $sel = $(this);
             $sel.css('color', 'red');
 
-            $j.ajax({
+            $.ajax({
                 url: '/res/scripts/status',
                 type: 'POST',
                 data: {
@@ -422,59 +422,59 @@ $page->displayBody();
             });
         });
         
-        $j('#gosets').click( function() {
-            var s = $j('#insets').val();
+        $('#gosets').click( function() {
+            var s = $('#insets').val();
             window.location.href = "/res/set/info?id=" + s;
         });
         
-        $j('#goqueries').click( function() {
-            var q = $j('#inqueries').val();
+        $('#goqueries').click( function() {
+            var q = $('#inqueries').val();
             window.location.href = "/res/data/?id=" + q;
         });
               
-        $j('html').on("click", ".owner-delete", function() {
-            if ($j(this).text() == 'delete') {
-                $j(this).text('undelete');
-                $j(this).prev().addClass('delete-owner');
+        $('html').on("click", ".owner-delete", function() {
+            if ($(this).text() == 'delete') {
+                $(this).text('undelete');
+                $(this).prev().addClass('delete-owner');
             } else {
-                $j(this).text('delete');
-                $j(this).prev().removeClass('delete-owner');
+                $(this).text('delete');
+                $(this).prev().removeClass('delete-owner');
             }
         });
         
-        $j('button.tinybutton').button();
+        $('button.tinybutton').button();
         
-        $j('#owner-add-input').autocomplete({
+        $('#owner-add-input').autocomplete({
             source: [<?= implode(",", $ownerlist) ?>],
             focus: function( event, ui ) {
-                $j(this).val(ui.item.name);
+                $(this).val(ui.item.name);
                 return false;
             },
             select: function( event, ui ) {
-                $j(this).val(ui.item.name).data('id', ui.item.value);
+                $(this).val(ui.item.name).data('id', ui.item.value);
                 return false;
             }
         }).data('id', 0);
         
-        $j( "#owner-add" ).click( function() {
-            var owner_id = $j('#owner-add-input').data('id');
+        $( "#owner-add" ).click( function() {
+            var owner_id = $('#owner-add-input').data('id');
             
             if (owner_id == '' || owner_id == 0) { return false; }
             
-            if ($j('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
-                var new_owner = "<li><span class='new-owner'>" + $j('#owner-add-input').val() + "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
-                $j('#owner-edit').append(new_owner);
+            if ($('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
+                var new_owner = "<li><span class='new-owner'>" + $('#owner-add-input').val() + "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
+                $('#owner-edit').append(new_owner);
             } else {
                 growl("You can't add a duplicate owner.");
             }
-            $j('#owner-add-input').val('').data('id','');
+            $('#owner-add-input').val('').data('id','');
         });
         
-        $j( "#owner-change" ).click( function() {
+        $( "#owner-change" ).click( function() {
             var to_add = [];
             var to_delete = [];
-            $j('#owner-edit .owner-delete').each( function() {
-                var $this = $j(this);
+            $('#owner-edit .owner-delete').each( function() {
+                var $this = $(this);
                 
                 if ($this.text() == "delete") {
                     to_add.push($this.attr('owner-id'));
@@ -488,7 +488,7 @@ $page->displayBody();
                 return false;
             }
             
-            $j.ajax({
+            $.ajax({
                 url: '/res/scripts/owners',
                 type: 'POST',
                 data: {
@@ -501,8 +501,8 @@ $page->displayBody();
                     if (data) {
                         growl("Something went wrong");
                     } else {
-                        $j('#owner-edit .delete-owner').closest('li').remove();
-                        $j('#owner-edit span').removeClass('new-owner');
+                        $('#owner-edit .delete-owner').closest('li').remove();
+                        $('#owner-edit span').removeClass('new-owner');
                     }
                 }
             });

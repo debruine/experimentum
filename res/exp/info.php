@@ -464,58 +464,58 @@ foreach ($trials as $t) {
 <script>
     var chart;
 
-    $j(function() {
+    $(function() {
         // get time graph
         if (<?= ifEmpty($data['total_c'],'0') ?> > 0) {
-            $j('#time_container').css('background', 'url("/images/loaders/loading.gif") center center no-repeat');
-            $j.ajax({
+            $('#time_container').css('background', 'url("/images/loaders/loading.gif") center center no-repeat');
+            $.ajax({
                 type: 'POST',
                 url: '/include/scripts/chart',
                 data: 'query_text=' + encodeURIComponent('<?= $timechart ?>'),
                 success: function(data) {
                     //alert(JSON.stringify(data));
-                    $j('#time_container').css('background', 'none');
+                    $('#time_container').css('background', 'none');
                     chart = new Highcharts.Chart(data);
                 },
                 dataType: 'json'
             });    
         } else {
-            $j('#time_container').hide();
+            $('#time_container').hide();
         }
         
-        $j('#function_buttonset').buttonset();
+        $('#function_buttonset').buttonset();
     
-        $j( "#view-exp" ).click(function() {
+        $( "#view-exp" ).click(function() {
             window.location = '/exp?id=<?= $expdata['id'] ?>';
         });
-        $j( "#edit-exp" ).click(function() {
+        $( "#edit-exp" ).click(function() {
             window.location = '/res/exp/builder?id=<?= $expdata['id'] ?>';
         });
-        $j( "#edit-trials" ).click(function() {
+        $( "#edit-trials" ).click(function() {
             window.location = '/res/exp/trials?id=<?= $expdata['id'] ?>';
         });
-        $j( "#edit-adapt" ).click(function() {
+        $( "#edit-adapt" ).click(function() {
             window.location = '/res/exp/adapt?id=<?= $expdata['id'] ?>';
         });
-        $j( "#data-exp" ).click(function() {
+        $( "#data-exp" ).click(function() {
             window.location = '/res/data/?exp_id=<?= $expdata['id'] ?>';
         });
-        $j( "#delete-exp" ).click( function() {
-            $j( "<div/>").html("Do you really want to delete this experiment?").dialog({
+        $( "#delete-exp" ).click( function() {
+            $( "<div/>").html("Do you really want to delete this experiment?").dialog({
                 title: "Delete Experiment",
                 position: ['center', 100],
                 modal: true,
                 buttons: {
                     Cancel: function() {
-                        $j( this ).dialog( "close" );
+                        $( this ).dialog( "close" );
                     },
                     "Delete": function() {
-                        $j( this ).dialog( "close" );
-                        $j.get("/res/scripts/delete_exp?id=<?= $expdata['id'] ?>", function(data) {
+                        $( this ).dialog( "close" );
+                        $.get("/res/scripts/delete_exp?id=<?= $expdata['id'] ?>", function(data) {
                             if (data == 'deleted') {
                                 window.location = '/res/exp/';
                             } else {
-                                $j('<div title="Problem with Deletion" />').html(data).dialog();
+                                $('<div title="Problem with Deletion" />').html(data).dialog();
                             }
                         });
                     },
@@ -523,23 +523,23 @@ foreach ($trials as $t) {
             });
         });
         
-        $j( "#duplicate-exp" ).click( function() {
-            $j( "<div/>").html("Do you really want to duplicate this experiment?").dialog({
+        $( "#duplicate-exp" ).click( function() {
+            $( "<div/>").html("Do you really want to duplicate this experiment?").dialog({
                 title: "Duplicate Experiment",
                 position: ['center', 100],
                 modal: true,
                 buttons: {
                     Cancel: function() {
-                        $j( this ).dialog( "close" );
+                        $( this ).dialog( "close" );
                     },
                     "Duplicate": function() {
-                        $j( this ).dialog( "close" );
-                        $j.get("?duplicate&id=<?= $expdata['id'] ?>", function(data) {
+                        $( this ).dialog( "close" );
+                        $.get("?duplicate&id=<?= $expdata['id'] ?>", function(data) {
                             var resp = data.split(':');
                             if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
                                 window.location = '/res/exp/info?id=' + resp[1];
                             } else {
-                                $j('<div title="Problem with Duplication" />').html(data).dialog();
+                                $('<div title="Problem with Duplication" />').html(data).dialog();
                             }
                         });
                     },
@@ -547,21 +547,21 @@ foreach ($trials as $t) {
             });
         });
             
-        $j( "#image_list_toggle" ).buttonset();
-        $j( "#list_toggle" ).click(function() { 
-            $j('#image_table').hide();
-            $j('#trial_table').show();
+        $( "#image_list_toggle" ).buttonset();
+        $( "#list_toggle" ).click(function() { 
+            $('#image_table').hide();
+            $('#trial_table').show();
         });
-        $j( "#image_toggle" ).click(function() { 
-            $j('#image_table').show();
-            $j('#trial_table').hide();
+        $( "#image_toggle" ).click(function() { 
+            $('#image_table').show();
+            $('#trial_table').hide();
         });
         
-        $j( "#status" ).css('fontWeight', 'normal').change( function() {
-            var $sel = $j(this);
+        $( "#status" ).css('fontWeight', 'normal').change( function() {
+            var $sel = $(this);
             $sel.css('color', 'red');
 
-            $j.ajax({
+            $.ajax({
                 url: '/res/scripts/status',
                 type: 'POST',
                 data: {
@@ -579,61 +579,61 @@ foreach ($trials as $t) {
             });
         });
         
-        $j('#trial_table').hide();
+        $('#trial_table').hide();
         
-        $j('#gosets').click( function() {
-            var s = $j('#insets').val();
+        $('#gosets').click( function() {
+            var s = $('#insets').val();
             window.location.href = "/res/set/info?id=" + s;
         });
         
-        $j('#goqueries').click( function() {
-            var q = $j('#inqueries').val();
+        $('#goqueries').click( function() {
+            var q = $('#inqueries').val();
             window.location.href = "/res/data/?id=" + q;
         });
         
-        $j('html').on("click", ".owner-delete", function() {
-            if ($j(this).text() == 'delete') {
-                $j(this).text('undelete');
-                $j(this).prev().addClass('delete-owner');
+        $('html').on("click", ".owner-delete", function() {
+            if ($(this).text() == 'delete') {
+                $(this).text('undelete');
+                $(this).prev().addClass('delete-owner');
             } else {
-                $j(this).text('delete');
-                $j(this).prev().removeClass('delete-owner');
+                $(this).text('delete');
+                $(this).prev().removeClass('delete-owner');
             }
         });
         
-        $j('button.tinybutton').button();
+        $('button.tinybutton').button();
         
-        $j('#owner-add-input').autocomplete({
+        $('#owner-add-input').autocomplete({
             source: [<?= implode(",", $ownerlist) ?>],
             focus: function( event, ui ) {
-                $j(this).val(ui.item.name);
+                $(this).val(ui.item.name);
                 return false;
             },
             select: function( event, ui ) {
-                $j(this).val(ui.item.name).data('id', ui.item.value);
+                $(this).val(ui.item.name).data('id', ui.item.value);
                 return false;
             }
         }).data('id', 0);
         
-        $j( "#owner-add" ).click( function() {
-            var owner_id = $j('#owner-add-input').data('id');
+        $( "#owner-add" ).click( function() {
+            var owner_id = $('#owner-add-input').data('id');
             
             if (owner_id == '' || owner_id == 0) { return false; }
             
-            if ($j('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
-                var new_owner = "<li><span class='new-owner'>" + $j('#owner-add-input').val() + "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
-                $j('#owner-edit').append(new_owner);
+            if ($('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
+                var new_owner = "<li><span class='new-owner'>" + $('#owner-add-input').val() + "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
+                $('#owner-edit').append(new_owner);
             } else {
                 growl("You can't add a duplicate owner.");
             }
-            $j('#owner-add-input').val('').data('id','');
+            $('#owner-add-input').val('').data('id','');
         });
         
-        $j( "#owner-change" ).click( function() {
+        $( "#owner-change" ).click( function() {
             var to_add = [];
             var to_delete = [];
-            $j('#owner-edit .owner-delete').each( function() {
-                var $this = $j(this);
+            $('#owner-edit .owner-delete').each( function() {
+                var $this = $(this);
                 
                 if ($this.text() == "delete") {
                     to_add.push($this.attr('owner-id'));
@@ -647,7 +647,7 @@ foreach ($trials as $t) {
                 return false;
             }
             
-            $j.ajax({
+            $.ajax({
                 url: '/res/scripts/owners',
                 type: 'POST',
                 data: {
@@ -660,8 +660,8 @@ foreach ($trials as $t) {
                     if (data) {
                         growl(data);
                     } else {
-                        $j('#owner-edit .delete-owner').closest('li').remove();
-                        $j('#owner-edit span').removeClass('new-owner');
+                        $('#owner-edit .delete-owner').closest('li').remove();
+                        $('#owner-edit span').removeClass('new-owner');
                     }
                 }
             });

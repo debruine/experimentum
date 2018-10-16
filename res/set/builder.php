@@ -338,54 +338,54 @@ $page->displayBody();
 
 <script>
 
-$j(function() {
+$(function() {
     stripeList('#new_set');
     stripeList('#exp');
     stripeList('#quest');
     stripeList('#set');
 
-    $j('#questView').hide();
-    $j('#setView').hide();
+    $('#questView').hide();
+    $('#setView').hide();
     
-    $j('#typeChanger').buttonset();
+    $('#typeChanger').buttonset();
 
-    $j('#viewExp').click( function() {
-        $j('#expView').show();
-        $j('#questView').hide();
-        $j('#setView').hide();
+    $('#viewExp').click( function() {
+        $('#expView').show();
+        $('#questView').hide();
+        $('#setView').hide();
     });
     
-    $j('#viewQuest').click( function() {
-        $j('#expView').hide();
-        $j('#questView').show();
-        $j('#setView').hide();
+    $('#viewQuest').click( function() {
+        $('#expView').hide();
+        $('#questView').show();
+        $('#setView').hide();
     });
     
-    $j('#viewSets').click( function() {
-        $j('#expView').hide();
-        $j('#questView').hide();
-        $j('#setView').show();
+    $('#viewSets').click( function() {
+        $('#expView').hide();
+        $('#questView').hide();
+        $('#setView').show();
     });
     
     
     
-    $j('.setlists ul li').click(function() { add(this); });
+    $('.setlists ul li').click(function() { add(this); });
     
-    $j('#info-set').button().click( function() { 
-        window.location = '/res/set/info?id=' + $j('#set_id').val();
+    $('#info-set').button().click( function() { 
+        window.location = '/res/set/info?id=' + $('#set_id').val();
     });
     
-    $j('#save-set').button().click( function() { 
+    $('#save-set').button().click( function() { 
         // serialize the new set order
         var setitems = '';
         
-        $j('#new_set li').each( function(e) {
-            setitems = setitems + ';' + $j(this).attr('title');
+        $('#new_set li').each( function(e) {
+            setitems = setitems + ';' + $(this).attr('title');
         });
         
-        var serial =    $j('#myInformation_form').serialize() + '&set_items=' + setitems.substring(1);
+        var serial =    $('#myInformation_form').serialize() + '&set_items=' + setitems.substring(1);
     
-        $j.ajax({
+        $.ajax({
             url: './builder?save',
             type: 'POST',
             data: serial,
@@ -393,37 +393,37 @@ $j(function() {
                 if (data == "Set Saved") {
                     growl("Set Saved", 500);
                 } else {
-                    $j('<div />').html(data).dialog();
+                    $('<div />').html(data).dialog();
                 }
             }
         });
     });
     
-    $j('#new_set').sortable({
+    $('#new_set').sortable({
         change: function(event, ui) { stripeList('#new_set'); }
     });
     
 /*
-    $j('#delete-set').button().click( function() {
-        $j( "<div/>").html("Do you really want to delete this set?").dialog({
+    $('#delete-set').button().click( function() {
+        $( "<div/>").html("Do you really want to delete this set?").dialog({
             title: "Delete Set",
             position: ['center', 100],
             modal: true,
             buttons: {
                 Cancel: function() {
-                    $j( this ).dialog( "close" );
+                    $( this ).dialog( "close" );
                 },
                 "Delete": function() {
-                    $j( this ).dialog( "close" );
-                    $j.ajax({
+                    $( this ).dialog( "close" );
+                    $.ajax({
                         url: '?delete',
                         type: 'POST',
-                        data: $j('#set_id').serialize(),
+                        data: $('#set_id').serialize(),
                         success: function(data) {
                             if (data == 'deleted') {
                                 window.location = '/res/set/';
                             } else {
-                                $j('<div />').html(data).dialog();
+                                $('<div />').html(data).dialog();
                             }
                         }
                     });
@@ -437,41 +437,41 @@ $j(function() {
     
     window.onresize = sizeToViewport;
     
-    $j('<div />').hide().insertAfter($j('#chart_id')).attr('id', "graph_container").css({
+    $('<div />').hide().insertAfter($('#chart_id')).attr('id', "graph_container").css({
             'width': "100%",
             'height': "200px",
             'margin': '0',
             'background-color': 'white'
         });
         
-        $j('#chart_id').change( function() {
-            if ($j(this).val() == 'NULL' || $j(this).val() == '0') {
-                $j('#graph_container').hide();
+        $('#chart_id').change( function() {
+            if ($(this).val() == 'NULL' || $(this).val() == '0') {
+                $('#graph_container').hide();
                 return;
             }
-            $j('#graph_container').html('').show().css('background', 'white url("/images/loaders/loading.gif") center center no-repeat');
+            $('#graph_container').html('').show().css('background', 'white url("/images/loaders/loading.gif") center center no-repeat');
 
-            $j.ajax({
+            $.ajax({
                 type: 'GET',
-                url: '/include/scripts/chart?id=' + $j(this).val(),
+                url: '/include/scripts/chart?id=' + $(this).val(),
                 success: function(data) {
                     //alert(JSON.stringify(data));
-                    $j('#graph_container').css('background', 'white');
+                    $('#graph_container').css('background', 'white');
                     chart = new Highcharts.Chart(data);
                 },
                 dataType: 'json'
             });
         });
         
-        if ($j('#chart_id').val() > 0) $j('#chart_id').trigger('change');
+        if ($('#chart_id').val() > 0) $('#chart_id').trigger('change');
 });
 
 
 function sizeToViewport() {
-    var ul_height = $j(window).height() - $j('ul#exp').offset().top - $j('#footer').height()-30;
-    var ol_height = $j(window).height() - $j('ol#new_set').offset().top - $j('#footer').height()-30;
-    $j('.setlists ul').height(ul_height);
-    $j('.setlists ol').height(ol_height);
+    var ul_height = $(window).height() - $('ul#exp').offset().top - $('#footer').height()-30;
+    var ol_height = $(window).height() - $('ol#new_set').offset().top - $('#footer').height()-30;
+    $('.setlists ul').height(ul_height);
+    $('.setlists ol').height(ol_height);
 }
 
 function deleteItem(item) {
@@ -489,8 +489,8 @@ function add(item) {
     newItem.title = id;
     newItem.ondblclick = Function('deleteItem(this)');
     
-    $j('#new_set').append(newItem);
-    $j('#new_set').sortable({
+    $('#new_set').append(newItem);
+    $('#new_set').sortable({
         change: function(event, ui) { stripeList('#new_set'); }
     });
     
@@ -498,16 +498,16 @@ function add(item) {
 }
 
 function stripeList(list) {
-    $j(list + ' > li:visible:odd').addClass("odd").removeClass("even");
-    $j(list + ' > li:visible:even').addClass("even").removeClass("odd");
+    $(list + ' > li:visible:odd').addClass("odd").removeClass("even");
+    $(list + ' > li:visible:even').addClass("even").removeClass("odd");
 }
 
 function search(find, list) {
-    $j('#' + list + ' li').each( function(li) {
-        $j(this).hide();
+    $('#' + list + ' li').each( function(li) {
+        $(this).hide();
         
-        if ($j(this).html().toLowerCase().indexOf(find.toLowerCase()) != -1) {
-            $j(this).show();
+        if ($(this).html().toLowerCase().indexOf(find.toLowerCase()) != -1) {
+            $(this).show();
         }
         
         

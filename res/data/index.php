@@ -221,39 +221,39 @@ $page->displayBody();
 
 <script>
 
-    $j(function() {
+    $(function() {
         setOriginalValues('myQuery');
 
         // set up main button functions
 
-        $j( ".showData" ).button().click(function() { 
-            if ($j('#query').val() == '') return false;
-            $j('#data_table').html('<img src="/images/loaders/loading.gif" style="display: block; margin: 0 auto;" />');
-            $j.ajax({
+        $( ".showData" ).button().click(function() { 
+            if ($('#query').val() == '') return false;
+            $('#data_table').html('<img src="/images/loaders/loading.gif" style="display: block; margin: 0 auto;" />');
+            $.ajax({
                 url: './?show',
                 type: 'POST',
-                data: $j('#myQuery_form').serialize(),
+                data: $('#myQuery_form').serialize(),
                 success: function(data) {
-                    $j('#data_table').html(data);
+                    $('#data_table').html(data);
                     stripe('#data_table tbody');
                     
-                    var theHeight = $j(window).height() - $j('#data_table').offset().top - 30 - $j('#footer').height();
-                    $j('#data_table').css({
+                    var theHeight = $(window).height() - $('#data_table').offset().top - 30 - $('#footer').height();
+                    $('#data_table').css({
                         'height': theHeight
                     });
                     console.log(theHeight);
                 }
             });
         });
-        $j( ".downloadCSV" ).button().click(function() { downloadCSV(); });
+        $( ".downloadCSV" ).button().click(function() { downloadCSV(); });
 
         <?= $default ?> 
     });
     
     function downloadCSV() {
-        if ($j('#query').val() == '') return false;
-        $j('#csv').val(true);
-        $j('#myQuery_form').submit();
+        if ($('#query').val() == '') return false;
+        $('#csv').val(true);
+        $('#myQuery_form').submit();
     }
 
 </script>

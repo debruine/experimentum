@@ -389,38 +389,38 @@ $page->displayBody();
 	var chart;
 	
 	/* !    Load Functions */
-	$j(function() {
+	$(function() {
 		getData();
 
 		setOriginalValues('myChartSettings');
 		//setOriginalValues('query_container');
 		
 		<?php if (!MOBILE) { ?>
-		$j('#myChartSettings_form').addClass('drags').draggable({handle: 'thead', stack: '.drags'});
-		$j('#autoSettings_form').addClass('drags').draggable({handle: 'thead', stack: '.drags'}); 
-		$j('#query_container').addClass('drags').draggable({handle: '.title', stack: '.drags'}).resizable();
-		$j('#graph_container_container').addClass('drags').draggable({handle: '.title', stack: '.drags'}).resizable({
-			stop: function() { $j('#graph_container').show(); getData(); },
-			start: function() { $j('#graph_container').hide(); }
+		$('#myChartSettings_form').addClass('drags').draggable({handle: 'thead', stack: '.drags'});
+		$('#autoSettings_form').addClass('drags').draggable({handle: 'thead', stack: '.drags'}); 
+		$('#query_container').addClass('drags').draggable({handle: '.title', stack: '.drags'}).resizable();
+		$('#graph_container_container').addClass('drags').draggable({handle: '.title', stack: '.drags'}).resizable({
+			stop: function() { $('#graph_container').show(); getData(); },
+			start: function() { $('#graph_container').hide(); }
 		});
 		<?php } ?>
 		
-		$j('.toolbar button').button();
+		$('.toolbar button').button();
 		
 		/* !        deleteChart */
-		$j('#deleteChart').click( function() {
+		$('#deleteChart').click( function() {
 			var doublecheck = confirm("Delete this chart?");
 			
 			if (doublecheck) {
-				$j.ajax({
+				$.ajax({
 					url: './mycharts?delete',
 					type: 'POST',
-					data: $j('#id').serialize(),
+					data: $('#id').serialize(),
 					success: function(data) {
 						if ('deleted' == data) {
 							window.location.href='/res/data/chartchooser';
 						} else {
-							$j('<div />').attr('title', 'Chart was not deleted').html(data).dialog();;
+							$('<div />').attr('title', 'Chart was not deleted').html(data).dialog();;
 						}
 					}
 				});
@@ -430,22 +430,22 @@ $page->displayBody();
 		});
 		
 		/* !        addScore */
-		$j('<button />').html('Get').button().appendTo($j('#score_row td.question')).click( function() {
+		$('<button />').html('Get').button().appendTo($('#score_row td.question')).click( function() {
 			var score_id, score_type;
-			if ($j('#exp').val() != 'NULL') {
-				score_id = $j('#exp').val();
+			if ($('#exp').val() != 'NULL') {
+				score_id = $('#exp').val();
 				score_type='exp';
-			} else if ($j('#quest').val() != 'NULL') {
-				score_id = $j('#quest').val();
+			} else if ($('#quest').val() != 'NULL') {
+				score_id = $('#quest').val();
 				score_type='quest';
-			} else if ($j('#econ').val() != 'NULL') {
-				score_id = $j('#econ').val();
+			} else if ($('#econ').val() != 'NULL') {
+				score_id = $('#econ').val();
 				score_type='econ';
 			}
 
-			var url = '/res/scripts/get_all_dv?id=' + score_id + '&type=' + score_type + '&' + $j('#test').serialize();
-			$j.get(url, function(data) {
-				$j('<div />').html('Copy the equation below to insert into the query.<div class="ui-state-highlight">' + data + '</div>').dialog({
+			var url = '/res/scripts/get_all_dv?id=' + score_id + '&type=' + score_type + '&' + $('#test').serialize();
+			$.get(url, function(data) {
+				$('<div />').html('Copy the equation below to insert into the query.<div class="ui-state-highlight">' + data + '</div>').dialog({
 					title: 'Score for ' + score_type + '_' + score_id,
 					width: 500
 				});
@@ -455,85 +455,85 @@ $page->displayBody();
 		});
 		
 		// only one on exp, quest and econ can be set at a time
-		$j('#exp').change( function() { if ($j(this).val() > 0) { $j('#quest').val('NULL'); $j('#econ').val('NULL'); } } );
-		$j('#quest').change( function() { if ($j(this).val() > 0) { $j('#exp').val('NULL'); $j('#econ').val('NULL'); } } );
-		$j('#econ').change( function() { if ($j(this).val() > 0) { $j('#quest').val('NULL'); $j('#exp').val('NULL'); } } );
+		$('#exp').change( function() { if ($(this).val() > 0) { $('#quest').val('NULL'); $('#econ').val('NULL'); } } );
+		$('#quest').change( function() { if ($(this).val() > 0) { $('#exp').val('NULL'); $('#econ').val('NULL'); } } );
+		$('#econ').change( function() { if ($(this).val() > 0) { $('#quest').val('NULL'); $('#exp').val('NULL'); } } );
 		
 		/* !        newChart */
-		$j('#newChart').click(function() { window.location = "mycharts"; });
+		$('#newChart').click(function() { window.location = "mycharts"; });
 		
 		/* !        redrawChart */
-		$j('#redrawChart').click(function() { getData(); });
+		$('#redrawChart').click(function() { getData(); });
 			
 		/* !        saveNew */
-		$j('#saveNew').click(function() {
-			$j('#id').val('');
-			$j('#saveChart').trigger('click');
+		$('#saveNew').click(function() {
+			$('#id').val('');
+			$('#saveChart').trigger('click');
 		});
 		
 		/* !        saveChart */
-		$j('#saveChart').click(function() {
-			if ($j('#name').val() == '') {
-				$j('<div />').html('The chart must have a name.').dialog();
-				$j('#name').focus();
+		$('#saveChart').click(function() {
+			if ($('#name').val() == '') {
+				$('<div />').html('The chart must have a name.').dialog();
+				$('#name').focus();
 				return false;
 			}
 	
-			$j.ajax({
+			$.ajax({
 				type: 'POST',
 				url: './mycharts?save',
-				data: $j('#id, #name, #query_text, #notes').serialize(),
+				data: $('#id, #name, #query_text, #notes').serialize(),
 				dataType: 'html',
 				success: function(data) {
 					var parsedData = data.split(':');
 					if (parsedData[0] == 'id') {
-						$j('#id').val(parsedData[1]);
+						$('#id').val(parsedData[1]);
 						//growl('Query Saved');
-						//$j('#id').val(parsedData[1]);
+						//$('#id').val(parsedData[1]);
 						window.location = '?id=' + parsedData[1];
 					} else {
-						$j('<div />').html(data).dialog();
+						$('<div />').html(data).dialog();
 					}
 				}
 			});	
 		});
 
-		$j('#examples').change( function() {
-			$j('#query_text').val(exampleQueryText[$j(this).val()]);
-			$j('#myChartSettings_form')[0].reset();
+		$('#examples').change( function() {
+			$('#query_text').val(exampleQueryText[$(this).val()]);
+			$('#myChartSettings_form')[0].reset();
 			
 			getData();
 			setOriginalValues('myChartSettings');
 			//setOriginalValues('query_container');
 		});
 		
-		$j('#title, #chart_type, #xlabel, #ylabel').change( function() {
-			var theRegex = new RegExp('"[^"]+" as ' + $j(this).attr('id'));
-			var new_query = $j('#query_text').val().replace(theRegex, '"' + $j(this).val() + '" as ' + $j(this).attr('id'));
+		$('#title, #chart_type, #xlabel, #ylabel').change( function() {
+			var theRegex = new RegExp('"[^"]+" as ' + $(this).attr('id'));
+			var new_query = $('#query_text').val().replace(theRegex, '"' + $(this).val() + '" as ' + $(this).attr('id'));
 			
-			if (new_query == $j('#query_text').val()) {
+			if (new_query == $('#query_text').val()) {
 				// query didn't change, so insert the line
 				theRegex = new RegExp('\\sFROM(?![\\s\\S]*FROM)');
-				new_query = $j('#query_text').val().replace(theRegex, ',' + "\n" + '"' + $j(this).val() + '" as ' + $j(this).attr('id') + "\n" + 'FROM');
+				new_query = $('#query_text').val().replace(theRegex, ',' + "\n" + '"' + $(this).val() + '" as ' + $(this).attr('id') + "\n" + 'FROM');
 			}
-			$j('#query_text').val(new_query);
+			$('#query_text').val(new_query);
 			
-			if ($j('#query_text').val() != '') { getData(); }
+			if ($('#query_text').val() != '') { getData(); }
 		});
 		
-		$j('#xmin, #xmax, #xticks, #ymin, #ymax, #yticks').change( function() {
-			var theValue = ($j(this).val() == '') ? 'NULL' : $j(this).val();
-			var theRegex = new RegExp('[-+]?[0-9]*\.?[0-9]+ as ' + $j(this).attr('id'));
-			var new_query = $j('#query_text').val().replace(theRegex, theValue + ' as ' + $j(this).attr('id'));
+		$('#xmin, #xmax, #xticks, #ymin, #ymax, #yticks').change( function() {
+			var theValue = ($(this).val() == '') ? 'NULL' : $(this).val();
+			var theRegex = new RegExp('[-+]?[0-9]*\.?[0-9]+ as ' + $(this).attr('id'));
+			var new_query = $('#query_text').val().replace(theRegex, theValue + ' as ' + $(this).attr('id'));
 			
-			if (new_query == $j('#query_text').val()) {
+			if (new_query == $('#query_text').val()) {
 				// query didn't change, so insert the line
 				theRegex = new RegExp('\\sFROM(?![\\s\\S]*FROM)');
-				new_query = $j('#query_text').val().replace(theRegex, ',' + "\n" + theValue + ' as ' + $j(this).attr('id') + "\n" + 'FROM');
+				new_query = $('#query_text').val().replace(theRegex, ',' + "\n" + theValue + ' as ' + $(this).attr('id') + "\n" + 'FROM');
 			}
-			$j('#query_text').val(new_query);
+			$('#query_text').val(new_query);
 			
-			if ($j('#query_text').val() != '') { getData(); }
+			if ($('#query_text').val() != '') { getData(); }
 		});
 		
 	});
@@ -542,16 +542,16 @@ $page->displayBody();
 
 	/* !    getData() */
 	function getData() {
-		if ($j('#id').val() > 0 || $j('#query_text').val() != '') {
-			$j('#graph_container').html('').css('background', 'url("/images/loaders/loading.gif") center center no-repeat');
+		if ($('#id').val() > 0 || $('#query_text').val() != '') {
+			$('#graph_container').html('').css('background', 'url("/images/loaders/loading.gif") center center no-repeat');
 	
-			$j.ajax({
+			$.ajax({
 				type: 'POST',
-				url: '/include/scripts/chart?id=' + $j('#id').val(),
-				data: $j('#query_text').serialize(),
+				url: '/include/scripts/chart?id=' + $('#id').val(),
+				data: $('#query_text').serialize(),
 				success: function(data) {
 					//alert(JSON.stringify(data));
-					$j('#graph_container').css('background', 'none');
+					$('#graph_container').css('background', 'none');
 					chart = new Highcharts.Chart(data);
 				},
 				error: function() {

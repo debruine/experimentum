@@ -148,9 +148,9 @@ $new_exp_buttons = array(
 
 <script>
     
-    $j(function() {
-        $j( "#new_exp" ).button().click(function() { $j( "#dialog-typechooser" ).dialog( "open" ); });  
-        $j( "#dialog-typechooser" ).dialog({
+    $(function() {
+        $( "#new_exp" ).button().click(function() { $( "#dialog-typechooser" ).dialog( "open" ); });  
+        $( "#dialog-typechooser" ).dialog({
             autoOpen: false,
             show: "scale",
             hide: "scale",
@@ -158,7 +158,7 @@ $new_exp_buttons = array(
             modal: true,
         });
         
-        $j('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
+        $('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
         
         dashboard_checkboxes('exp'); // function defined in myfunctions.js
         
@@ -168,8 +168,8 @@ $new_exp_buttons = array(
     
     
     function changePage() {
-        var owner = $j('#owner').val();
-        var status = $j('#status').val();
+        var owner = $('#owner').val();
+        var status = $('#status').val();
         window.location.href = "./?owner=" + owner + "&status=" + status;
     }
 

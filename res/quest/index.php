@@ -138,9 +138,9 @@ $new_quest_buttons = array(
 <!--*************************************************-->
 
 <script>
-	$j(function() {
-		$j( "#new_quest" ).button().click(function() { $j( "#dialog-typechooser" ).dialog( "open" ); });	
-		$j( "#dialog-typechooser" ).dialog({
+	$(function() {
+		$( "#new_quest" ).button().click(function() { $( "#dialog-typechooser" ).dialog( "open" ); });	
+		$( "#dialog-typechooser" ).dialog({
 			autoOpen: false,
 			show: "scale",
 			hide: "scale",
@@ -148,7 +148,7 @@ $new_quest_buttons = array(
 			modal: true,
 		});
 		
-		$j('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
+		$('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
 		
 		dashboard_checkboxes('quest'); // function defined in myfunctions.js
 		
@@ -157,8 +157,8 @@ $new_quest_buttons = array(
 	});
 	
 	function changePage() {
-		var owner = $j('#owner').val();
-		var status = $j('#status').val();
+		var owner = $('#owner').val();
+		var status = $('#status').val();
 		window.location.href = "./?owner=" + owner + "&status=" + status;
 	}
 </script>

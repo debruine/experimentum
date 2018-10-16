@@ -122,8 +122,8 @@ $page->displayBody();
 
 <script>
 	
-	$j(function() {
-		$j('#faq').accordion({ 
+	$(function() {
+		$('#faq').accordion({ 
 			autoHeight: false,
 			active: false
 		});

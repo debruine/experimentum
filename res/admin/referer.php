@@ -89,7 +89,7 @@ $page->displayBody();
 	var interval = 7;
 	var chart;
 	
-	$j(function() {
+	$(function() {
 		getData(interval);
 	});
 	
@@ -145,8 +145,8 @@ $page->displayBody();
 	
 	function getData(interv) {
 		interval = interv;
-		$j('#graph_container').css('background', 'url(/images/stuff/loading.gif) no-repeat center center');
-		$j.ajax({
+		$('#graph_container').css('background', 'url(/images/stuff/loading.gif) no-repeat center center');
+		$.ajax({
 			url: './referer?interval=' + interval,
 			type: 'GET',
 			dataType: 'json',

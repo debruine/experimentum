@@ -88,9 +88,9 @@ $page->displayBody();
 	var chart;
 	var interval = 7;
 	
-	$j(function() {
-		$j('#interval_chooser').buttonset().change( function() {
-			getData($j('input[name="interval"]:checked').val());
+	$(function() {
+		$('#interval_chooser').buttonset().change( function() {
+			getData($('input[name="interval"]:checked').val());
 		});
 		
 		getData(interval);
@@ -152,8 +152,8 @@ $page->displayBody();
 	
 	function getData(interv) {
 		interval = interv;
-		//$j('#graph_container').css('background', 'url(/images/stuff/loading.gif) no-repeat center center');
-		$j.get('./browsers?interval=' + interval, function(response) {
+		//$('#graph_container').css('background', 'url(/images/stuff/loading.gif) no-repeat center center');
+		$.get('./browsers?interval=' + interval, function(response) {
 			data = response.split(",");
 			allData = [];
 			for (i=1; i<data.length; i++) {

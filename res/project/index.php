@@ -96,10 +96,10 @@ echo $my->get_result_as_table(true, true);
 
 <script>
 	
-	$j(function() {
-		$j( "#new_project" ).button().click(function() { window.location.href = 'builder'; });
+	$(function() {
+		$( "#new_project" ).button().click(function() { window.location.href = 'builder'; });
 		
-		$j('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
+		$('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
 		
 		dashboard_checkboxes('project'); // function defined in myfunctions.js
 		

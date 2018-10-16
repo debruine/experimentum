@@ -381,94 +381,94 @@ $page->displayBody();
 
 <script>
 
-$j(function() {
+$(function() {
 
     stripeList('#new_set');
     stripeList('#exp');
     stripeList('#quest');
     stripeList('#set');
     
-    $j('#questView').hide();
-    $j('#setView').hide();
-    $j('#iconView').hide();
+    $('#questView').hide();
+    $('#setView').hide();
+    $('#iconView').hide();
     
-    $j('#typeChanger').buttonset();
+    $('#typeChanger').buttonset();
 
-    $j('#viewExp').click( function() {
-        $j('#expView').show();
-        $j('#questView').hide();
-        $j('#setView').hide();
-        $j('#iconView').hide();
+    $('#viewExp').click( function() {
+        $('#expView').show();
+        $('#questView').hide();
+        $('#setView').hide();
+        $('#iconView').hide();
     });
     
-    $j('#viewQuest').click( function() {
-        $j('#expView').hide();
-        $j('#questView').show();
-        $j('#setView').hide();
-        $j('#iconView').hide();
+    $('#viewQuest').click( function() {
+        $('#expView').hide();
+        $('#questView').show();
+        $('#setView').hide();
+        $('#iconView').hide();
     });
     
-    $j('#viewSets').click( function() {
-        $j('#expView').hide();
-        $j('#questView').hide();
-        $j('#setView').show();
-        $j('#iconView').hide();
+    $('#viewSets').click( function() {
+        $('#expView').hide();
+        $('#questView').hide();
+        $('#setView').show();
+        $('#iconView').hide();
     });
     
-    $j('#viewIcons').click( function() {
-        $j('#expView').hide();
-        $j('#questView').hide();
-        $j('#setView').hide();
-        $j('#iconView').show();
+    $('#viewIcons').click( function() {
+        $('#expView').hide();
+        $('#questView').hide();
+        $('#setView').hide();
+        $('#iconView').show();
     });
 
-    $j('.setlists ul li').click(function() { add(this); });
+    $('.setlists ul li').click(function() { add(this); });
     
-    $j('#url').change( function() {
-        var nonWord = $j('#url').val().replace(/^\w+$/, '');
+    $('#url').change( function() {
+        var nonWord = $('#url').val().replace(/^\w+$/, '');
         
-        $j('#url').removeClass('ui-state-error');
+        $('#url').removeClass('ui-state-error');
     
         if (nonWord != '') {
-            $j('<div />').html('<i>' + $j('#url').val() + 
+            $('<div />').html('<i>' + $('#url').val() + 
                               '</i> is not a valid URL. Please make sure there are no spaces or symbols.')
                          .dialog({modal:true});
-            $j('#url').addClass('ui-state-error');
+            $('#url').addClass('ui-state-error');
         } else {
             // check if short url is unique
-            var url = '/res/project/builder?checkurl=' + $j('#url').val() + '&id=' + $j('#project_id').val();
-            $j.get(url, function(data) {
+            var url = '/res/project/builder?checkurl=' + $('#url').val() + '&id=' + $('#project_id').val();
+            $.get(url, function(data) {
                 if (data != '') { 
-                    $j('<div />').html(data).dialog({modal:true}); 
-                    $j('#url').addClass('ui-state-error');
+                    $('<div />').html(data).dialog({modal:true}); 
+                    $('#url').addClass('ui-state-error');
                 }
             });
         }
     });
     
-    $j('#go-project').button().click( function() { 
-        if ($j('#url').val() != '') { window.location='/project?' + $j('#url').val(); }
+    $('#go-project').button().click( function() { 
+        if ($('#url').val() != '') { window.location='/project?' + $('#url').val(); }
     });
     
-    $j('#info-project').button().click( function() { 
-        if ($j('#project_id').val() != '') { window.location='/res/project/info?id=' + $j('#project_id').val(); }
+    $('#info-project').button().click( function() { 
+        if ($('#project_id').val() != '') { window.location='/res/project/info?id=' + $('#project_id').val(); }
     });
     
-    $j('#save-project').button().click( function() { 
+    $('#save-project').button().click( function() { 
         // serialize the new project order
         var setitems = '';
         var icons = '';
         
-        $j('#new_set li').each( function(e) {
-            setitems = setitems + ';' + $j(this).attr('title');
-            icons = icons + ';' + $j(this).attr('icon');
+        $('#new_set li').each( function(e) {
+            setitems = setitems + ';' + $(this).attr('title');
+            icons = icons + ';' + $(this).attr('icon');
         });
                         
-        var serial =    $j('#myInformation_form').serialize() + 
+        var serial =    $('#myInformation_form').serialize() + 
                         '&project_items=' + setitems.substring(1) + '&' +
                         'project_icons=' + icons.substring(1);
         
-        $j.ajax({
+        $.ajax({
             url: './builder?save',
             type: 'POST',
             data: serial,
@@ -476,34 +476,34 @@ $j(function() {
                 var resp = data.split(':');
                 if (resp[0] == 'saved') {
                     growl('Project Saved', 500);
-                    $j('#project_id').val(resp[1]);
+                    $('#project_id').val(resp[1]);
                 } else {
-                    $j('<div />').html(data).dialog();
+                    $('<div />').html(data).dialog();
                 }
             }
         });
     });
     
-    $j('#delete-project').button().click( function() {
-        $j( "<div/>").html("Do you really want to delete this project?").dialog({
+    $('#delete-project').button().click( function() {
+        $( "<div/>").html("Do you really want to delete this project?").dialog({
             title: "Delete Project",
             position: ['center', 100],
             modal: true,
             buttons: {
                 Cancel: function() {
-                    $j( this ).dialog( "close" );
+                    $( this ).dialog( "close" );
                 },
                 "Delete": function() {
-                    $j( this ).dialog( "close" );
-                    $j.ajax({
+                    $( this ).dialog( "close" );
+                    $.ajax({
                         url: '?delete',
                         type: 'POST',
-                        data: $j('#project_id').serialize(),
+                        data: $('#project_id').serialize(),
                         success: function(data) {
                             if (data == 'deleted') {
                                 window.location = '/res/project';
                             } else {
-                                $j('<div />').html(data).dialog();
+                                $('<div />').html(data).dialog();
                             }
                         }
                     });
@@ -512,21 +512,21 @@ $j(function() {
         }); 
     });
     
-    $j('#new_set').sortable({
+    $('#new_set').sortable({
         change: function(event, ui) { stripeList('#new_set'); }
     });
     
-    $j('#iconView li').draggable({
+    $('#iconView li').draggable({
         helper: "clone",
         cursorAt: { top: 15, left: 15 }
     });
     
-    $j('#new_set li').droppable({
+    $('#new_set li').droppable({
         tolerance: "pointer",
         //hoverClass: "drop_hover",
         drop: function( event, ui ) {
-            $j(this).css('background-image', 'url(' + $j(ui.draggable).attr('title') + ')');
-            $j(this).attr('icon', $j(ui.draggable).attr('title'));
+            $(this).css('background-image', 'url(' + $(ui.draggable).attr('title') + ')');
+            $(this).attr('icon', $(ui.draggable).attr('title'));
         }
     });
     
@@ -536,10 +536,10 @@ $j(function() {
 });
 
 function sizeToViewport() {
-    var ul_height = $j(window).height() - $j('ul#exp').offset().top - $j('#footer').height()-30;
-    var ol_height = $j(window).height() - $j('ol#new_set').offset().top - $j('#footer').height()-30;
-    $j('.setlists ul').height(ul_height);
-    $j('.setlists ol').height(ol_height);
+    var ul_height = $(window).height() - $('ul#exp').offset().top - $('#footer').height()-30;
+    var ol_height = $(window).height() - $('ol#new_set').offset().top - $('#footer').height()-30;
+    $('.setlists ul').height(ul_height);
+    $('.setlists ol').height(ol_height);
 }
 
 function deleteItem(item) {
@@ -558,17 +558,17 @@ function add(item) {
     newItem.ondblclick = Function('deleteItem(this)');
     newItem.className = item.className;
     
-    $j('#new_set').append(newItem);
-    $j('#new_set').sortable({
+    $('#new_set').append(newItem);
+    $('#new_set').sortable({
         change: function(event, ui) { stripeList('#new_set'); }
     });
     
-    $j('#new_set li').droppable({
+    $('#new_set li').droppable({
         tolerance: "pointer",
         //hoverClass: "drop_hover",
         drop: function( event, ui ) {
-            $j(this).css('background-image', 'url(' + $j(ui.draggable).attr('title') + ')');
-            $j(this).attr('icon', $j(ui.draggable).attr('title'));
+            $(this).css('background-image', 'url(' + $(ui.draggable).attr('title') + ')');
+            $(this).attr('icon', $(ui.draggable).attr('title'));
         }
     });
     
@@ -576,16 +576,16 @@ function add(item) {
 }
 
 function stripeList(list) {
-    $j(list + ' > li:visible:odd').addClass("odd").removeClass("even");
-    $j(list + ' > li:visible:even').addClass("even").removeClass("odd");
+    $(list + ' > li:visible:odd').addClass("odd").removeClass("even");
+    $(list + ' > li:visible:even').addClass("even").removeClass("odd");
 }
 
 function search(find, list) {
-    $j('#' + list + ' li').each( function(li) {
-        $j(this).hide();
+    $('#' + list + ' li').each( function(li) {
+        $(this).hide();
         
-        if ($j(this).html().toLowerCase().indexOf(find.toLowerCase()) != -1) {
-            $j(this).show();
+        if ($(this).html().toLowerCase().indexOf(find.toLowerCase()) != -1) {
+            $(this).show();
         }
         
         

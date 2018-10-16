@@ -397,7 +397,7 @@ $total_images->set_type('number');
 $randomx = new input('randomx', 'randomx', $eInfo['randomx']);
 $randomx->set_width(50);
 $randomx->set_type('number');
-$randomx->set_eventHandlers(array('onchange' => '$j(\'#randomx_top\').html(this.value);'));
+$randomx->set_eventHandlers(array('onchange' => '$(\'#randomx_top\').html(this.value);'));
 $ci = "Show " . $randomx->get_element() . ' of ' . $total_images->get_element() . ' total images';
 $info['images'] = new formElement('images','images');
 $info['images']->set_question("Images");
@@ -451,7 +451,7 @@ $info['feedback_query']->set_dimensions(500, 50, true, 50, 0, 0);
 $submit_buttons = array('Save' => 'saveExperiment();');
 if (validID($exp_id)) {
     //$submit_buttons['Save as new'] = 'saveNew();';
-    $submit_buttons['Feedback Page'] = 'window.open("/fb?type=exp&id=" + $j("#id").val());';
+    $submit_buttons['Feedback Page'] = 'window.open("/fb?type=exp&id=" + $("#id").val());';
     $submit_buttons['Edit Trials'] = 'editTrials()';
 }
 $submit_buttons['Reset'] = 'window.location.href=window.location.href;';
@@ -500,22 +500,22 @@ switch ($eInfo['exptype']) {
     case 'xafc': break;
     case 'jnd':
         $text .= '  <tr class="input_interface">' . ENDLINE;
-        $text .= '      <td><span class="editText" id="label4" onchange="$j(\'#label4b\').html($j(\'#label4_field\').val());">' 
+        $text .= '      <td><span class="editText" id="label4" onchange="$(\'#label4b\').html($(\'#label4_field\').val());">' 
                         . $eInfo['label4'] . '</span></td>' . ENDLINE;
-        $text .= '      <td><span class="editText" id="label3" onchange="$j(\'#label3b\').html($j(\'#label3_field\').val());">' 
+        $text .= '      <td><span class="editText" id="label3" onchange="$(\'#label3b\').html($(\'#label3_field\').val());">' 
                         . $eInfo['label3'] . '</span></td>' . ENDLINE;
-        $text .= '      <td><span class="editText" id="label2" onchange="$j(\'#label2b\').html($j(\'#label2_field\').val());">' 
+        $text .= '      <td><span class="editText" id="label2" onchange="$(\'#label2b\').html($(\'#label2_field\').val());">' 
                         . $eInfo['label2'] . '</span></td>' . ENDLINE;
-        $text .= '      <td><span class="editText" id="label1" onchange="$j(\'#label1b\').html($j(\'#label1_field\').val());">' 
+        $text .= '      <td><span class="editText" id="label1" onchange="$(\'#label1b\').html($(\'#label1_field\').val());">' 
                         . $eInfo['label1'] . '</span></td>' . ENDLINE;
         $text .= '      <td id="center_col" style="display:none;"></td>' . ENDLINE;
-        $text .= '      <td><span class="editText" id="label1b" onchange="$j(\'#label1\').html($j(\'#label1b_field\').val());">' 
+        $text .= '      <td><span class="editText" id="label1b" onchange="$(\'#label1\').html($(\'#label1b_field\').val());">' 
                         . $eInfo['label1'] . '</span></td>' . ENDLINE;
-        $text .= '      <td><span class="editText" id="label2b" onchange="$j(\'#label2\').html($j(\'#label2b_field\').val());">' 
+        $text .= '      <td><span class="editText" id="label2b" onchange="$(\'#label2\').html($(\'#label2b_field\').val());">' 
                         . $eInfo['label2'] . '</span></td>' . ENDLINE;
-        $text .= '      <td><span class="editText" id="label3b" onchange="$j(\'#label3\').html($j(\'#label3b_field\').val());">' 
+        $text .= '      <td><span class="editText" id="label3b" onchange="$(\'#label3\').html($(\'#label3b_field\').val());">' 
                         . $eInfo['label3'] . '</span></td>' . ENDLINE;
-        $text .= '      <td><span class="editText" id="label4b" onchange="$j(\'#label4\').html($j(\'#label4b_field\').val());">' 
+        $text .= '      <td><span class="editText" id="label4b" onchange="$(\'#label4\').html($(\'#label4b_field\').val());">' 
                         . $eInfo['label4'] . '</span></td>' . ENDLINE;
         $text .= '  </tr>' . ENDLINE;
         break;
@@ -719,18 +719,18 @@ Trial x of <span id="randomx_top"><?= $eInfo['randomx'] ?></span>
     
     var defaultTime = 4000;
     
-    $j(function() {
+    $(function() {
     
         setOriginalValues('myInformation'); 
         
-        $j('#generic_fb').css('font-size', '70%').button().click(function() {
-            $j('#feedback_specific').val('<?= $fb_specifics[$eInfo['exptype']] ?>');
-            $j('#feedback_query').val("SELECT <?= $fb_queries[$eInfo['exptype']] ?> \n FROM exp_<?= $eInfo['id'] ?> GROUP BY NULL");
+        $('#generic_fb').css('font-size', '70%').button().click(function() {
+            $('#feedback_specific').val('<?= $fb_specifics[$eInfo['exptype']] ?>');
+            $('#feedback_query').val("SELECT <?= $fb_queries[$eInfo['exptype']] ?> \n FROM exp_<?= $eInfo['id'] ?> GROUP BY NULL");
             return false;
         });
         
         // initialise countdown slider for motivation interface
-        $j( "#countdown" ).slider({
+        $( "#countdown" ).slider({
             orientation: "vertical",
             range: "min",
             min: 0,
@@ -738,97 +738,97 @@ Trial x of <span id="randomx_top"><?= $eInfo['randomx'] ?></span>
             value: defaultTime
         });
         
-        $j('#delete-button').click( function() {
+        $('#delete-button').click( function() {
             // remove a button from the buttons interface if there are more than 1 left
-            if ($j('div.buttons .button-wrapper').length > 1) {
-                $j('div.buttons .button-wrapper:last').remove();
-                $j('div.buttons .button-dv:last').remove();
+            if ($('div.buttons .button-wrapper').length > 1) {
+                $('div.buttons .button-wrapper:last').remove();
+                $('div.buttons .button-dv:last').remove();
             } else {
                 growl('You must have at least 1 button');
             }
             return false;
         });
         
-        $j('#add-button').click( function() {
+        $('#add-button').click( function() {
             // add a button to the buttons interface
-            var button_n = $j('div.buttons .button-wrapper').length + 1;
-            $j('div.buttons .button-wrapper:last').after("\n<span class='editText button-dv' id='button-dv" + button_n + "'>" + button_n + "</span><span class='button-wrapper'><span class='editText' id='button" + button_n + "'>" + button_n + "</span></span>");
+            var button_n = $('div.buttons .button-wrapper').length + 1;
+            $('div.buttons .button-wrapper:last').after("\n<span class='editText button-dv' id='button-dv" + button_n + "'>" + button_n + "</span><span class='button-wrapper'><span class='editText' id='button" + button_n + "'>" + button_n + "</span></span>");
             editbox_init();
             return false;
         });
         
-        $j('#total_images').change( function() {
-            if (this.value > 300 && $j('#subtype').val() != 'large_n') { 
-                $j('#subtype').val('large_n');
+        $('#total_images').change( function() {
+            if (this.value > 300 && $('#subtype').val() != 'large_n') { 
+                $('#subtype').val('large_n');
                 alert('Subtype must be Large N or total images must be <300'); 
             }
         });
-        $j('#subtype').change(function() {
-            if ($j('#total_images').val() > 300 && this.value != 'large_n') {
+        $('#subtype').change(function() {
+            if ($('#total_images').val() > 300 && this.value != 'large_n') {
                 alert('Subtype must be Large N or total images must be <300'); 
-                $j('#total_images').val(300);
+                $('#total_images').val(300);
             }
         });
                 
-        $j('#nImageChanger').buttonset();
+        $('#nImageChanger').buttonset();
         
-        $j('#add_image').click( function() {
+        $('#add_image').click( function() {
             if (nImages <= maxImages) { 
                 nImages++;
                 viewImages();
                 
-                $j('#delete_image').button('enable');
-                if (nImages == maxImages) $j(this).button('disable');
+                $('#delete_image').button('enable');
+                if (nImages == maxImages) $(this).button('disable');
             } else {
-                $j('<div />').html("You can't show more than " + maxImages + " images.")
-                             .dialog({ buttons: { "OK": function() {$j(this).dialog('close');} } });
+                $('<div />').html("You can't show more than " + maxImages + " images.")
+                             .dialog({ buttons: { "OK": function() {$(this).dialog('close');} } });
             }
             return false;
         });
         
-        $j('#delete_image').click( function() {
+        $('#delete_image').click( function() {
             if (nImages > minImages) { 
                 nImages--;
                 viewImages();
                 
-                $j('#add_image').button('enable');
-                if (nImages == minImages) $j(this).button('disable');
+                $('#add_image').button('enable');
+                if (nImages == minImages) $(this).button('disable');
             } else {
-                $j('<div />').html("You must show at least " + minImages + " image(s).")
-                             .dialog({ buttons: { "OK": function() {$j(this).dialog('close');} } });
+                $('<div />').html("You must show at least " + minImages + " image(s).")
+                             .dialog({ buttons: { "OK": function() {$(this).dialog('close');} } });
             }
             return false;
         });
         
         // disable image buttons is at max or min
-        if (nImages == minImages) $j('#delete_image').button('disable');
-        if (nImages == maxImages) $j('#add_image').button('disable');
+        if (nImages == minImages) $('#delete_image').button('disable');
+        if (nImages == maxImages) $('#add_image').button('disable');
         
-    }); // end of $j(function(){})
+    }); // end of $(function(){})
     
 
     function viewImages() {
-        if ($j('table.xafc').length > 0 || $j('table.sort').length > 0) {
-            $j('#center_image').html('');
+        if ($('table.xafc').length > 0 || $('table.sort').length > 0) {
+            $('#center_image').html('');
             for (var i = 0; i < nImages; i++) {
-                $j('#center_image').append('<img src="/stimuli/blankface"/>');
+                $('#center_image').append('<img src="/stimuli/blankface"/>');
             }
-            $j('td.xafc img').css('width', (100/nImages)-2 + '%').css('min-width', '18%');
+            $('td.xafc img').css('width', (100/nImages)-2 + '%').css('min-width', '18%');
         } else if (nImages == 1) {
-            $j('#left_image').hide();
-            $j('#center_image').show();
-            if ($j('#center_col')) $j('#center_col').show();
-            $j('#right_image').hide();
+            $('#left_image').hide();
+            $('#center_image').show();
+            if ($('#center_col')) $('#center_col').show();
+            $('#right_image').hide();
         } else if (nImages == 2) {
-            $j('#left_image').show();
-            $j('#center_image').hide();
-            if ($j('#center_col')) $j('#center_col').hide();
-            $j('#right_image').show();
+            $('#left_image').show();
+            $('#center_image').hide();
+            if ($('#center_col')) $('#center_col').hide();
+            $('#right_image').show();
         } else if (nImages == 3) {
-            $j('#left_image').show();
-            $j('#center_image').show();
-            if ($j('#center_col')) $j('#center_col').show();
-            $j('#right_image').show();
+            $('#left_image').show();
+            $('#center_image').show();
+            if ($('#center_col')) $('#center_col').show();
+            $('#right_image').show();
         }
     }
     
@@ -839,28 +839,28 @@ Trial x of <span id="randomx_top"><?= $eInfo['randomx'] ?></span>
     }
     
     function saveNew() {
-        $j('#id').val('');
+        $('#id').val('');
         saveExperiment();
     }
 
     function saveExperiment() {
         var formData = [];
-        $j('input.instantedit').each( function() {
-            $j(this).val(unescape($j(this).val()));
+        $('input.instantedit').each( function() {
+            $(this).val(unescape($(this).val()));
         });
         
-        $j('#maincontent form').each( function(e) {
-            formData[formData.length] = $j(this).serialize(false);
+        $('#maincontent form').each( function(e) {
+            formData[formData.length] = $(this).serialize(false);
         });
     
-        $j.ajax({
+        $.ajax({
             url: './builder?save',
             type: 'POST',
             data: formData[0] + '&' + formData[1] + '&nImages=' + nImages,
             success: function(data) {
                 parsedResponse = data.split(':');
                 if (parsedResponse[0] == 'id') {
-                    $j('#id').val(parsedResponse[1]);
+                    $('#id').val(parsedResponse[1]);
                     editTrials();
                 } else {
                     alert(data);
@@ -874,17 +874,17 @@ Trial x of <span id="randomx_top"><?= $eInfo['randomx'] ?></span>
         var cdisplay = '';
         var rdisplay = '';
         
-        if ($j('td.xafc img').length) { 
-            cdisplay = $j('td.xafc img').length; 
-        } else if ($j('td.sort img').length) { 
-            cdisplay = $j('td.sort img').length; 
+        if ($('td.xafc img').length) { 
+            cdisplay = $('td.xafc img').length; 
+        } else if ($('td.sort img').length) { 
+            cdisplay = $('td.sort img').length; 
         } else {
-            if ($j('#left_image').length > 0 && $j('#left_image').css('display') != 'none') { ldisplay = 'l'; }
-            if ($j('#center_image').length > 0 && $j('#center_image').css('display') != 'none') { cdisplay = 'c'; }
-            if ($j('#right_image').length > 0 && $j('#right_image').css('display') != 'none') { rdisplay = 'r'; }
+            if ($('#left_image').length > 0 && $('#left_image').css('display') != 'none') { ldisplay = 'l'; }
+            if ($('#center_image').length > 0 && $('#center_image').css('display') != 'none') { cdisplay = 'c'; }
+            if ($('#right_image').length > 0 && $('#right_image').css('display') != 'none') { rdisplay = 'r'; }
         }
         
-        window.location = "trials?id=" + $j("#id").val() + "&images=" + ldisplay + cdisplay + rdisplay;
+        window.location = "trials?id=" + $("#id").val() + "&images=" + ldisplay + cdisplay + rdisplay;
     }
 </script>
 

@@ -86,14 +86,14 @@ $page->displayBody();
 <!--*************************************************-->
 
 <script>
-    $j(function() {
+    $(function() {
         
         // narrow-down search as you type
-        $j('#search').keyup( function() { narrowTable('.gallery', this.value); } );
+        $('#search').keyup( function() { narrowTable('.gallery', this.value); } );
         
         // get url of icon when clicked
-        $j('.gallery div').click( function() {
-            alert($j(this).attr('title'));
+        $('.gallery div').click( function() {
+            alert($(this).attr('title'));
         });
     });
 </script>

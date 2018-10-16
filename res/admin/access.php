@@ -199,35 +199,35 @@ foreach ($access as $a) {
 
 <script>
 
-$j(function() {
+$(function() {
 	
-	$j('#reset').button().click( function() {
+	$('#reset').button().click( function() {
 		location.reload();
 		/*
-		$j('#access, #researchers').show();
-		$j('#access_search, #res_search').val('');
+		$('#access, #researchers').show();
+		$('#access_search, #res_search').val('');
 		stripe('.lists ul');
-		$j('#mytrash').hide();
-		$j('#active_item').text('');
+		$('#mytrash').hide();
+		$('#active_item').text('');
 		*/
 	});
 
 	stripe('.lists ul');
 
-	$j('#res_search').keyup( function() { narrowTable('#researchers ul', this.value); } );
-	$j('#access_search').keyup( function() { narrowTable('#access ul', this.value); } );
+	$('#res_search').keyup( function() { narrowTable('#researchers ul', this.value); } );
+	$('#access_search').keyup( function() { narrowTable('#access ul', this.value); } );
 	
-	$j('#researchers li').click( function() {
-		$j('#researchers').hide();
-		$j('#access').show();
-		$j('#access_search').val('');
-		$j('#active_item').html($j(this).html());
+	$('#researchers li').click( function() {
+		$('#researchers').hide();
+		$('#access').show();
+		$('#access_search').val('');
+		$('#active_item').html($(this).html());
 		
-		$j('#access li').hide();
-		var userid = $j(this).attr('userid');
-		$j('#access li[users*=";'+userid+';"]').show();
+		$('#access li').hide();
+		var userid = $(this).attr('userid');
+		$('#access li[users*=";'+userid+';"]').show();
 		stripe('.lists ul');
-		$j('#mytrash').show().attr('userid', userid).removeAttr('theID'). removeAttr('theType');
+		$('#mytrash').show().attr('userid', userid).removeAttr('theID'). removeAttr('theType');
 	}).draggable({
 		helper: 'clone',
 	}).droppable({
@@ -236,10 +236,10 @@ $j(function() {
 		drop: function(e, ui) { 
 			var type = ui.draggable.attr('theType');
 			var id = ui.draggable.attr('theID');
-			var userid = $j(this).attr('userid');
-			var user = $j(this);
+			var userid = $(this).attr('userid');
+			var user = $(this);
 			
-			$j.get('access?add&type='+type+'&user_id='+userid+'&id='+id, function(data) {
+			$.get('access?add&type='+type+'&user_id='+userid+'&id='+id, function(data) {
 				if (data == 'added') { 
 					// increment user's number of items
 					var oldN = user.find('.n').text();
@@ -252,38 +252,38 @@ $j(function() {
 				} else if (data == 'duplicate') {
 					// do nothing
 				} else {
-					$j('<div />').html(data).dialog(); 
+					$('<div />').html(data).dialog(); 
 				}
 				stripe('.lists ul');
 			});
 		}
 	});	
 	
-	$j('#access li').click( function() {
-		$j('#access').hide();
-		$j('#researchers').show();
-		$j('#res_search').val('');
-		$j('#active_item').html($j(this).html());
+	$('#access li').click( function() {
+		$('#access').hide();
+		$('#researchers').show();
+		$('#res_search').val('');
+		$('#active_item').html($(this).html());
 		
-		$j('#researchers li').hide();
-		var users = $j(this).attr('users').split(':');
-		$j.each(users, function(i,v) {
-			$j('#researchers li[userid="'+v+'"]').show();
+		$('#researchers li').hide();
+		var users = $(this).attr('users').split(':');
+		$.each(users, function(i,v) {
+			$('#researchers li[userid="'+v+'"]').show();
 		});
 		stripe('.lists ul');
-		$j('#mytrash').show().attr('theType', $j(this).attr('theType')).attr('theID', $j(this).attr('theID')). removeAttr('userid');
+		$('#mytrash').show().attr('theType', $(this).attr('theType')).attr('theID', $(this).attr('theID')). removeAttr('userid');
 	}).draggable({
 		helper: 'clone',
 	}).droppable({
 		hoverClass: 'acceptDrop',
 		tolerance: 'pointer',
 		drop: function(e, ui) { 
-			var type = $j(this).attr('theType');
-			var id = $j(this).attr('theID');
+			var type = $(this).attr('theType');
+			var id = $(this).attr('theID');
 			var userid = ui.draggable.attr('userid');
-			var item = $j(this);
+			var item = $(this);
 			
-			$j.get('access?add&type='+type+'&user_id='+userid+'&id='+id, function(data) {
+			$.get('access?add&type='+type+'&user_id='+userid+'&id='+id, function(data) {
 				if (data == 'added') { 
 					// increment user's number of items
 					var oldN = ui.draggable.find('.n').text();
@@ -296,30 +296,30 @@ $j(function() {
 				} else if (data == 'duplicate') {
 					// do nothing
 				} else {
-					$j('<div />').html(data).dialog(); 
+					$('<div />').html(data).dialog(); 
 				}
 				stripe('.lists ul');
 			});
 		}
 	});
 	
-	$j('#mytrash').droppable({
+	$('#mytrash').droppable({
 		//scope: '#access li, #researcher li',
 		hoverClass: 'acceptTrash',
 		tolerance: 'touch',
 		drop: function(e, ui) { 
-			var type = $j(this).attr('theType') ? $j(this).attr('theType') : ui.draggable.attr('theType');
-			var id = $j(this).attr('theID') ? $j(this).attr('theID') : ui.draggable.attr('theID');
-			var userid = $j(this).attr('userid') ? $j(this).attr('userid') : ui.draggable.attr('userid');
+			var type = $(this).attr('theType') ? $(this).attr('theType') : ui.draggable.attr('theType');
+			var id = $(this).attr('theID') ? $(this).attr('theID') : ui.draggable.attr('theID');
+			var userid = $(this).attr('userid') ? $(this).attr('userid') : ui.draggable.attr('userid');
 			
-			$j.get('access?delete&type='+type+'&user_id='+userid+'&id='+id, function(data) {
+			$.get('access?delete&type='+type+'&user_id='+userid+'&id='+id, function(data) {
 				if (data == 'deleted') { 
-					var oldN = $j('#active_item').find('.n').text();
+					var oldN = $('#active_item').find('.n').text();
 					var newN = parseInt(oldN) - 1;
-					$j('#active_item').find('.n').text(newN);
+					$('#active_item').find('.n').text(newN);
 					ui.draggable.hide();
 				} else {
-					$j('<div />').html(data).dialog(); 
+					$('<div />').html(data).dialog(); 
 				}
 				stripe('.lists ul');
 			});
@@ -333,8 +333,8 @@ $j(function() {
 
 
 function sizeToViewport() {
-	var ul_height = $j(window).height() - $j('#researchers ul').offset().top - $j('#footer').height()-40;
-	$j('#maincontent ul').height(ul_height);
+	var ul_height = $(window).height() - $('#researchers ul').offset().top - $('#footer').height()-40;
+	$('#maincontent ul').height(ul_height);
 }
 	
 </script>

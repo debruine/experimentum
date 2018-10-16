@@ -116,29 +116,29 @@ $page->displayBody();
 
 <script>
 
-    $j(function() { 
-        $j('input[name^=uploads]').attr('multiple', 'multiple')
+    $(function() { 
+        $('input[name^=uploads]').attr('multiple', 'multiple')
             .after('<ul id="uploadlist"></ul>')
             .change( function() {
             var selectedfiles = document.getElementById('uploads[]').files;
-            $j('#filenumber').html(selectedfiles.length);
+            $('#filenumber').html(selectedfiles.length);
             
-            $j('#uploadlist').html('');
+            $('#uploadlist').html('');
             for (var i = 0; i < selectedfiles.length; ++i) {
                 var name = selectedfiles.item(i).name;
-                $j('#uploadlist').append('<li>' + name + '</li>');
+                $('#uploadlist').append('<li>' + name + '</li>');
             }
         });
     
-        $j.ajax({
+        $.ajax({
             url: '/res/scripts/browse?dir=/stimuli/uploads/<?= $_SESSION['user_id'] ?>/', 
             type: 'GET',
             dataType: 'json',
             success: function(data) {
-                folderize(data, $j('#finder'));
+                folderize(data, $('#finder'));
                 
                 // hide loading animation and show finder
-                $j('#finder').show();
+                $('#finder').show();
                 sizeToViewport();
             }
         });

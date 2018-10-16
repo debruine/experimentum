@@ -103,26 +103,26 @@ $page->displayBody();
 
 <script>
 
-	$j('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
+	$('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
 	
-	$j('#upload').button().click( function() {
-		var entries = $j('#new_entries').val().trim();
-		$j('#new_entries').val('');
+	$('#upload').button().click( function() {
+		var entries = $('#new_entries').val().trim();
+		$('#new_entries').val('');
 		
 		if (entries == '') { return false; }
 		
 		var e_rows = entries.split("\n");
 		var problems = '';
-		var $table = $j("<table />");
+		var $table = $("<table />");
 		$table.append("<thead><tr><td>user_id</td><td>type</td><td>id</td><td>self</td><td>other</td></tr></thead>");
 		
-		$j.each(e_rows, function(i, r) {
+		$.each(e_rows, function(i, r) {
 			var e_cols = r.trim().split("\t");
 			if (e_cols.length != 5) {
 				problems += "Row " + (i+1) + " has " + e_cols.length + " columns<br/>";
 			} else {
-				var $tr = $j('<tr />');
-				$j.each(e_cols, function(j,c) {
+				var $tr = $('<tr />');
+				$.each(e_cols, function(j,c) {
 					$tr.append("<td>" + c + "</td>");
 				});
 				$table.append($tr);
@@ -130,24 +130,24 @@ $page->displayBody();
 		});
 		
 		if (problems != '') {
-			$j('<div />').dialog().html(problems);
+			$('<div />').dialog().html(problems);
 		} else {
-			$j('<div />').append($table).dialog({
+			$('<div />').append($table).dialog({
 				title: "Add " + e_rows.length + " New Entries?",
 				modal: true,
 				buttons: {
-					Cancel: function() { $j(this).dialog("close"); },
+					Cancel: function() { $(this).dialog("close"); },
 					"Add": {
 						text: 'Add',
 						click: function() {
-							$j(this).dialog("close");
+							$(this).dialog("close");
 							
-							$j.ajax({
+							$.ajax({
 								type: 'POST',
 								url: "/res/admin/yoke", 
 								data: { new_entries: entries }, 
 								success: function(data) {
-									$j("<div />").append(data).dialog();
+									$("<div />").append(data).dialog();
 								}
 							});
 						}
@@ -157,19 +157,19 @@ $page->displayBody();
 		}
 	});
 	
-	$j('table.query button').button({text: false, icons: {primary: "ui-icon-pencil"}}).click( function() {
-		// alert('Editing ' + $j(this).attr('user_id') + ' for ' + $j(this).attr('type') + '_' + $j(this).attr('id'));
+	$('table.query button').button({text: false, icons: {primary: "ui-icon-pencil"}}).click( function() {
+		// alert('Editing ' + $(this).attr('user_id') + ' for ' + $(this).attr('type') + '_' + $(this).attr('id'));
 		
-		var $row = $j(this).closest('tr');
+		var $row = $(this).closest('tr');
 		var $self = $row.find('td:nth-last-child(2)');
 		var $other = $row.find('td:last');
 		
 		if ($row.hasClass('editing')) { 
 			$row.removeClass('editing');
-			$j(this).button("option", "icons", {primary: "ui-icon-pencil"});
+			$(this).button("option", "icons", {primary: "ui-icon-pencil"});
 		} else {
 			$row.addClass('editing');
-			$j(this).button("option", "icons", {primary: "ui-icon-disk"});
+			$(this).button("option", "icons", {primary: "ui-icon-disk"});
 			
 			var origself = $self.text();
 			var origother = $other.text();

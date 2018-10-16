@@ -43,13 +43,13 @@ $page->displayBody();
 
 <script>
 
-$j(function() {
+$(function() {
     window.onresize = sizeToViewport;
-    $j('#finder').hide();
+    $('#finder').hide();
     
-    $j('#select_all').button().click(function() {
+    $('#select_all').button().click(function() {
         console.log("select_all");
-        var $finder = $j('#finder');
+        var $finder = $('#finder');
         if ($finder.is(':visible')) {
             // (un)select all files in the open folder
             var $openFolder = $finder.find('li.folder')
@@ -70,17 +70,17 @@ $j(function() {
     });
     
     // get directory structure via ajax
-    $j.ajax({
+    $.ajax({
         url: '/res/scripts/browse?dir=/stimuli/', 
         type: 'GET',
         dataType: 'json',
         success: function(data) {
-            //$j('#finder').html(JSON.stringify(data));
-            folderize(data, $j('#finder'));
+            //$('#finder').html(JSON.stringify(data));
+            folderize(data, $('#finder'));
             
             // hide loading animation and show finder
-            $j('#msg').hide();
-            $j('#finder').show();
+            $('#msg').hide();
+            $('#finder').show();
             sizeToViewport();
         }
     });

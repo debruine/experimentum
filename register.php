@@ -181,20 +181,20 @@ echo '<h3>This website requires cookies to allow you to log in.<br>Registering i
 
 <script>
     
-    $j(function() {
+    $(function() {
     
         // add username availability check-as-you-type
-        $j('input[name="username"]').keyup(function() {
-            var username = $j('input[name="username"]').val();
+        $('input[name="username"]').keyup(function() {
+            var username = $('input[name="username"]').val();
             if (username.length < 4) {
-                $j('#username_row .question small').html('must be at least 4 characters');
+                $('#username_row .question small').html('must be at least 4 characters');
             } else {
-                $j.get('/register?username=' + username, function(data) {
+                $.get('/register?username=' + username, function(data) {
                 
                     if (data == 'taken') {
-                        $j('#username_row .question small').html(username + ' is already taken');
+                        $('#username_row .question small').html(username + ' is already taken');
                     } else if (data == 'free') {
-                        $j('#username_row .question small').html(username + ' is available');
+                        $('#username_row .question small').html(username + ' is available');
                     } else {
                         alert(data);
                     }
@@ -203,39 +203,39 @@ echo '<h3>This website requires cookies to allow you to log in.<br>Registering i
         });
         
         // password length check-as-you-type (5+ chars)
-        $j('#password').keyup(function() { password_check(); });
-        $j('#password2').keyup(function() { password_check(); });
+        $('#password').keyup(function() { password_check(); });
+        $('#password2').keyup(function() { password_check(); });
         
     });
     
     function password_check() {
-        if ($j('#password').val().length >= 5 && $j('#password').val() == $j('#password2').val()) {
+        if ($('#password').val().length >= 5 && $('#password').val() == $('#password2').val()) {
             // passwords are long enough and match
-            $j('#password_row .question small').html('');
-            $j('#password2_row .question small').html('');
+            $('#password_row .question small').html('');
+            $('#password2_row .question small').html('');
         } else {
-            if ($j('#password').val().length < 5) {
+            if ($('#password').val().length < 5) {
                 // password isn't long enough
-                $j('#password_row .question small').html('must be at least 5 characters');
+                $('#password_row .question small').html('must be at least 5 characters');
             } else {
-                $j('#password_row .question small').html('');
+                $('#password_row .question small').html('');
             }
-            if ($j('#password').val() != $j('#password2').val()) {
+            if ($('#password').val() != $('#password2').val()) {
                 // passwords don't match
-                $j('#password2_row .question small').html('passwords do not match');
+                $('#password2_row .question small').html('passwords do not match');
             } else {
-                $j('#password2_row .question small').html('');
+                $('#password2_row .question small').html('');
             }
         }
     }
     
     // register account
     function register() {
-        var theData = $j('#myInformation_form').serialize();
+        var theData = $('#myInformation_form').serialize();
         if (theData.indexOf("sex=") == -1) {
             growl('You must select a sex.');
         } else {
-            $j.ajax({
+            $.ajax({
                 url: '?register',
                 type: 'POST',
                 data: theData,
@@ -252,11 +252,11 @@ echo '<h3>This website requires cookies to allow you to log in.<br>Registering i
     
     function trans() {
         // add transgender questions
-        $j('#sex_row .question').html('Assigned sex at birth<small><a href="javascript: notrans();">Back</a></small>');
-        $j('#sex').buttonset("destroy");
-        $j('#sex').append("<li><input type='radio' name='sex' value='intersex' id='sex_intersex' /> <label for='sex_intersex'>intersex</label></li>");
-        $j('#sex').buttonset();
-        $j('#sex_row').after('<tr id="gender_row"><td class="question">Current gender<small>Please be as specific as you want</small></td><td><input type="text" id="gender" name="gender" maxlength="255" autocomplete="off" style="width:<?= $input_width ?>px" /></td></tr>');
+        $('#sex_row .question').html('Assigned sex at birth<small><a href="javascript: notrans();">Back</a></small>');
+        $('#sex').buttonset("destroy");
+        $('#sex').append("<li><input type='radio' name='sex' value='intersex' id='sex_intersex' /> <label for='sex_intersex'>intersex</label></li>");
+        $('#sex').buttonset();
+        $('#sex_row').after('<tr id="gender_row"><td class="question">Current gender<small>Please be as specific as you want</small></td><td><input type="text" id="gender" name="gender" maxlength="255" autocomplete="off" style="width:<?= $input_width ?>px" /></td></tr>');
         
         stripe('#myInformation tbody');
 
@@ -264,11 +264,11 @@ echo '<h3>This website requires cookies to allow you to log in.<br>Registering i
     }
     
     function notrans() {
-        $j('#sex_row .question').html('Sex<small><a href="javascript: trans();">Click here if these options don&#39;t apply to you</a></small>');
-        $j('#sex').buttonset("destroy");
-        $j('#sex li:last').remove();
-        $j('#sex').buttonset();
-        $j('#gender_row').remove();
+        $('#sex_row .question').html('Sex<small><a href="javascript: trans();">Click here if these options don&#39;t apply to you</a></small>');
+        $('#sex').buttonset("destroy");
+        $('#sex li:last').remove();
+        $('#sex').buttonset();
+        $('#gender_row').remove();
         
         stripe('#myInformation tbody');
     }

@@ -328,37 +328,37 @@ class experiment {
         $text =         '<script>' . ENDLINE;
         
         if (array_key_exists('go', $_GET)) { 
-            $text .=     '    $j(function() { beginExp(); });' . ENDTAG; 
+            $text .=     '    $(function() { beginExp(); });' . ENDTAG; 
         }
 
         // get image loader
         if ($this->stimuli_type == 'image' && !array_key_exists('go', $_GET) && count($this->trials) > 0) {
-            $text .=     '    $j("#image_loader img").one("load", function() {' . ENDLINE .
-                        '        console.log($j(this).attr("src") + " loaded");' . ENDLINE .
-                        '        var ils = $j("#image_loader span");' . ENDLINE .
+            $text .=     '    $("#image_loader img").one("load", function() {' . ENDLINE .
+                        '        console.log($(this).attr("src") + " loaded");' . ENDLINE .
+                        '        var ils = $("#image_loader span");' . ENDLINE .
                         '        var n = parseInt(ils.text());' . ENDLINE .
                         '        if (n - 1 <= 0) {' . ENDLINE .
-                        '            $j("#image_loader").hide();' . ENDLINE .
-                        '            $j("#continue_button").show();' . ENDLINE .
+                        '            $("#image_loader").hide();' . ENDLINE .
+                        '            $("#continue_button").show();' . ENDLINE .
                         '        } else {' . ENDLINE .
                         '            ils.text(n-1);' . ENDLINE .
                         '        }' . ENDLINE .
                         '    }).each(function() {' . ENDLINE .
-                        '        if(this.complete) $j(this).load();' . ENDLINE .
+                        '        if(this.complete) $(this).load();' . ENDLINE .
                         '      });' . ENDTAG;
         } else {
-            $text .=     '    $j("#image_loader").hide();' . ENDLINE .
-                        '    $j("#continue_button").show();' . ENDTAG ;
+            $text .=     '    $("#image_loader").hide();' . ENDLINE .
+                        '    $("#continue_button").show();' . ENDTAG ;
         }
         
         $text .=         '    function beginExp() {' . ENDLINE .
                         '        console.log("beginExp()");'. ENDLINE .
                         '        trial = 0;' . ENDLINE . // added to stop skipping first trial if the begin button is pushed twice
-                        '        $j("#instructions").hide();' . ENDLINE .
-                        '        $j("#continue_button").hide();' . ENDLINE .
-                        '        $j("#experiment").show();' . ENDLINE .
-                        '        $j("#recording").hide();' . ENDLINE .
-                        '        $j("#header").hide();' . ENDLINE .
+                        '        $("#instructions").hide();' . ENDLINE .
+                        '        $("#continue_button").hide();' . ENDLINE .
+                        '        $("#experiment").show();' . ENDLINE .
+                        '        $("#recording").hide();' . ENDLINE .
+                        '        $("#header").hide();' . ENDLINE .
                         '        nextTrial(0);' . ENDLINE .
                         '    }' . ENDTAG .
                         
@@ -371,26 +371,26 @@ class experiment {
             $text .=     '    var playing = false;' . ENDLINE .
                         '    var theAudioContainer = null;' . ENDTAG .
     
-                        '    $j("#experiment .audio span.play").click( function() {' . ENDLINE .
+                        '    $("#experiment .audio span.play").click( function() {' . ENDLINE .
                         '        if (playing == false) {' . ENDLINE .
                         '            playing = true;' . ENDLINE .
-                        '            theAudioContainer = $j(this).closest(".audio");' . ENDLINE .
+                        '            theAudioContainer = $(this).closest(".audio");' . ENDLINE .
                         '            theAudioContainer.addClass("playing");' . ENDLINE .
-                        '            $j(this).text("PLAYING");' . ENDLINE .
+                        '            $(this).text("PLAYING");' . ENDLINE .
                         '            var thePlayer = document.getElementById( theAudioContainer.attr("id") + "_player" );' . ENDLINE .
                         '            thePlayer.play();' . ENDLINE .
                         '        }' . ENDLINE .
                         '    });' . ENDTAG .
     
-                        '    $j("#experiment audio").bind("ended", function() {' . ENDLINE .
+                        '    $("#experiment audio").bind("ended", function() {' . ENDLINE .
                         '        playing=false; ' . ENDLINE .
-                        '        $j(this).closest("div.audio")' . ENDLINE . 
+                        '        $(this).closest("div.audio")' . ENDLINE . 
                         '                .removeClass("playing unplayed")' . ENDLINE . 
                         '                .addClass("played").find("span.play").text("PLAYED");' . ENDLINE .
         
                         '        // show choose if all played' . ENDLINE .
-                        '        if ($j("#experiment .audio.unplayed").length == 0) {' . ENDLINE .
-                        '            $j("#experiment .audio span.choose").show();' . ENDLINE .
+                        '        if ($("#experiment .audio.unplayed").length == 0) {' . ENDLINE .
+                        '            $("#experiment .audio span.choose").show();' . ENDLINE .
                         '        }' . ENDLINE .
                         '    });' . ENDTAG;
         }
@@ -441,10 +441,10 @@ class experiment {
         // next trial function
         $text .=           '    function nextTrial(r) {' . ENDLINE .
                            '        console.log("nextTrial(" + r + ")");'. ENDLINE .
-                           '        $j(".input_interface input").removeClass("ui-state-active").removeClass("ui-state-hover");' . ENDLINE;
+                           '        $(".input_interface input").removeClass("ui-state-active").removeClass("ui-state-hover");' . ENDLINE;
         
         if ($this->stimuli_type == 'audio') {
-            $text .=       '        if ($j("#experiment .audio.unplayed").length > 0) {' . ENDLINE .
+            $text .=       '        if ($("#experiment .audio.unplayed").length > 0) {' . ENDLINE .
                            '            alert("You must listen to all sounds before continuing");' . ENDLINE .
                            '            return false;' . ENDLINE .
                            '        }' . ENDTAG;
@@ -463,13 +463,13 @@ class experiment {
         $text .=           '        }' . ENDTAG .
 
                            '        trial++;' . ENDLINE .
-                           '        $j("#rating").val("").focus();' . ENDTAG .
+                           '        $("#rating").val("").focus();' . ENDTAG .
         
                            '        if (trial == trialOrder.length) {' . ENDLINE .
                            '            // hide experiment interface' . ENDLINE .
-                           '            $j("#experiment").hide();' . ENDLINE .
-                           '            $j("#recording").show();' . ENDLINE .
-                           '            $j("#header").show();' . ENDLINE;
+                           '            $("#experiment").hide();' . ENDLINE .
+                           '            $("#recording").show();' . ENDLINE .
+                           '            $("#header").show();' . ENDLINE;
                            
         if ($this->subtype != "large_n") {                                              
             $text .=    '            // record to database' . ENDLINE .    
@@ -484,7 +484,7 @@ class experiment {
                            '                starttime: starttime' . ENDLINE .
                            '            };' . ENDTAG .
                 
-                           '            $j.ajax({' . ENDLINE .
+                           '            $.ajax({' . ENDLINE .
                            '                type: "POST",' . ENDLINE .
                            '                async: false,' . ENDLINE .
                            '                url: "/include/scripts/exp_record", ' . ENDLINE .
@@ -524,7 +524,7 @@ class experiment {
                            '            d.done = true;' . ENDLINE . 
                            '        }' . ENDLINE .
                            
-                           '        $j.ajax({' . ENDLINE .
+                           '        $.ajax({' . ENDLINE .
                            '            type: "POST",' . ENDLINE .
                            '            async: true,' . ENDLINE .
                            '            url: "/include/scripts/large_n_record", ' . ENDLINE .
@@ -584,54 +584,54 @@ class experiment {
         $text = '// set up next trial' . ENDLINE;
         if ($this->stimuli_type == 'image') {
             $text .= '
-                if ($j("#center_image").length > 0) $j("#center_image").attr("src", center_image[trialOrder[trial]]);
+                if ($("#center_image").length > 0) $("#center_image").attr("src", center_image[trialOrder[trial]]);
                 if (side[trialOrder[trial]] == 1) {
-                    if ($j("#left_image").length > 0) $j("#left_image").attr("src", left_image[trialOrder[trial]]);
-                    if ($j("#right_image").length > 0) $j("#right_image").attr("src", right_image[trialOrder[trial]]);
+                    if ($("#left_image").length > 0) $("#left_image").attr("src", left_image[trialOrder[trial]]);
+                    if ($("#right_image").length > 0) $("#right_image").attr("src", right_image[trialOrder[trial]]);
                 } else {
-                    if ($j("#left_image").length > 0) $j("#left_image").attr("src", right_image[trialOrder[trial]]);
-                    if ($j("#right_image").length > 0) $j("#right_image").attr("src", left_image[trialOrder[trial]]);
+                    if ($("#left_image").length > 0) $("#left_image").attr("src", right_image[trialOrder[trial]]);
+                    if ($("#right_image").length > 0) $("#right_image").attr("src", left_image[trialOrder[trial]]);
                 }' . ENDLINE;
         }  else if ($this->stimuli_type == 'audio') {
             $text .= '
-                if ($j("#center_image").length > 0) {
-                    $j("#center_image_player").html("")
-                        .append( $j("<source />").attr("src", center_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
-                        .append( $j("<source />").attr("src", center_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
+                if ($("#center_image").length > 0) {
+                    $("#center_image_player").html("")
+                        .append( $("<source />").attr("src", center_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
+                        .append( $("<source />").attr("src", center_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
                 }
                 if (side[trialOrder[trial]] == 1) {
-                    if ($j("#left_image").length > 0) {
-                        $j("#left_image_player").html("")
-                            .append( $j("<source />").attr("src", left_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
-                            .append( $j("<source />").attr("src", left_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
+                    if ($("#left_image").length > 0) {
+                        $("#left_image_player").html("")
+                            .append( $("<source />").attr("src", left_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
+                            .append( $("<source />").attr("src", left_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
                     }
-                    if ($j("#right_image").length > 0) {
-                        $j("#right_image_player").html("")
-                            .append( $j("<source />").attr("src", right_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
-                            .append( $j("<source />").attr("src", right_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
+                    if ($("#right_image").length > 0) {
+                        $("#right_image_player").html("")
+                            .append( $("<source />").attr("src", right_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
+                            .append( $("<source />").attr("src", right_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
                     }
                 } else {
-                    if ($j("#left_image").length > 0) {
-                        $j("#left_image_player").html("")
-                            .append( $j("<source />").attr("src", right_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
-                            .append( $j("<source />").attr("src", right_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
+                    if ($("#left_image").length > 0) {
+                        $("#left_image_player").html("")
+                            .append( $("<source />").attr("src", right_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
+                            .append( $("<source />").attr("src", right_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
                     }
-                    if ($j("#right_image").length > 0) {
-                        $j("#right_image_player").html("")
-                            .append( $j("<source />").attr("src", left_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
-                            .append( $j("<source />").attr("src", left_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
+                    if ($("#right_image").length > 0) {
+                        $("#right_image_player").html("")
+                            .append( $("<source />").attr("src", left_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
+                            .append( $("<source />").attr("src", left_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
                     }
                 }
-                $j(".audio").removeClass("played").removeClass("playing").addClass("unplayed").find("span.play").text("PLAY");
-                $j("audio").load();
-                $j("#experiment .audio span.choose").hide();
+                $(".audio").removeClass("played").removeClass("playing").addClass("unplayed").find("span.play").text("PLAY");
+                $("audio").load();
+                $("#experiment .audio span.choose").hide();
                 playing = false;
             ' . ENDLINE;
         }
         
         $text .= '
-            if ($j("#question").length > 0 && typeof(question) !== "undefined") $j("#question").html(question[trialOrder[trial]]);
-            $j("#trial_n").html(trial);
+            if ($("#question").length > 0 && typeof(question) !== "undefined") $("#question").html(question[trialOrder[trial]]);
+            $("#trial_n").html(trial);
             
             var currentTime = new Date();
             beginTrial = currentTime.getTime();
@@ -702,22 +702,22 @@ class exp_xafc extends experiment {
     function set_up_next_trial() {
         return '// set up next trial
 
-            var xafc_count = $j(".xafc img").length;
+            var xafc_count = $(".xafc img").length;
             for (var n=0; n<xafc_count; n++) {
                 var nextDV = n+1;
-                $j("#xafc_" + side[trialOrder[trial]][n])
+                $("#xafc_" + side[trialOrder[trial]][n])
                     .attr("src", xafc_images[trialOrder[trial]][n])
                     .removeAttr("onclick")
                     .unbind("click")
                     .attr("dv", n+1)
-                    .click(function() { nextTrial($j(this).attr("dv")); });
+                    .click(function() { nextTrial($(this).attr("dv")); });
             }
             
-            if ($j("#question").length > 0 && typeof(question) !== "undefined") {
-                $j("#question").html(question[trialOrder[trial]]);
+            if ($("#question").length > 0 && typeof(question) !== "undefined") {
+                $("#question").html(question[trialOrder[trial]]);
             }
             
-            $j("#trial_n").html(trial);
+            $("#trial_n").html(trial);
             
             var currentTime = new Date();
             beginTrial = currentTime.getTime();
@@ -808,7 +808,7 @@ class exp_tafc extends experiment {
             $text .= '
     var leftKey = "f";
     var rightKey = "j";
-    $j(document).keypress( function(e) {
+    $(document).keypress( function(e) {
         console.log(e.which + " clicked");
         var str = String.fromCharCode(e.which);
         if (e.which == 32 && trial == 0) { 
@@ -877,33 +877,33 @@ class exp_sort extends exp_xafc {
     function record_trial_info() {
         return '
             var resp = [];
-            $j("input.sort_dv").each( function(i) {
-                resp.push($j(this).val());
+            $("input.sort_dv").each( function(i) {
+                resp.push($(this).val());
             });
-            response[trialOrder[trial]] = $j("#n_moves").val() + ":" + resp.join(";");
+            response[trialOrder[trial]] = $("#n_moves").val() + ":" + resp.join(";");
         ';
     }
     
     function set_up_next_trial() {
         return '// set up next trial
         
-            var xafc_count = $j(".sort img").length;
-            var $stimuli_container = $j("#sortable_images");
+            var xafc_count = $(".sort img").length;
+            var $stimuli_container = $("#sortable_images");
             for (var n=0; n<xafc_count; n++) {
-                $j("#sort_" + side[trialOrder[trial]][n])
+                $("#sort_" + side[trialOrder[trial]][n])
                     .attr("src", xafc_images[trialOrder[trial]][n])
                     .attr("dv", n+1);
                 
                 // resort order    
-                $j("#sort_" + (n+1)).appendTo($stimuli_container);
+                $("#sort_" + (n+1)).appendTo($stimuli_container);
                     
-                $j("#hidden_sort_" + (n+1))
+                $("#hidden_sort_" + (n+1))
                     .val(side[trialOrder[trial]][n]);
             }
-            $j("#n_moves").val(0); // reset number of moves
+            $("#n_moves").val(0); // reset number of moves
             
-            if ($j("#question").length > 0 && typeof(question) !== "undefined") $j("#question").html(question[trialOrder[trial]]);
-            $j("#trial_n").html(trial);
+            if ($("#question").length > 0 && typeof(question) !== "undefined") $("#question").html(question[trialOrder[trial]]);
+            $("#trial_n").html(trial);
             
             var currentTime = new Date();
             beginTrial = currentTime.getTime();
@@ -923,16 +923,16 @@ class exp_sort extends exp_xafc {
     function get_javascript_specific() {
         $text = '    console.log("sort-specific javascript");' . ENDLINE;
         $text .= '
-    $j(".input_interface input[type=button]").button();
-    $j("#sortable_images").sortable({
+    $(".input_interface input[type=button]").button();
+    $("#sortable_images").sortable({
         placeholder: "sort_placeholder",
         forcePlaceholderSizeType: true,
         update: function() { 
-            $j("#sortable_images img").each( function(i) {
-                var dv = $j(this).attr("dv");
-                $j("#hidden_sort_" + dv).val((i+1));
+            $("#sortable_images img").each( function(i) {
+                var dv = $(this).attr("dv");
+                $("#hidden_sort_" + dv).val((i+1));
             });
-            $j("#n_moves").val(parseInt($j("#n_moves").val()) + 1);
+            $("#n_moves").val(parseInt($("#n_moves").val()) + 1);
             
         } 
     }).disableSelection();' . ENDLINE;
@@ -967,22 +967,22 @@ class exp_motivation extends experiment {
         
         if ($this->stimuli_type == 'image') {
             $text .= '
-            $j("#center_image").attr("src", center_image[trialOrder[trial]]);'. ENDLINE;
+            $("#center_image").attr("src", center_image[trialOrder[trial]]);'. ENDLINE;
         }  else if ($this->stimuli_type == 'audio') {
                 $text .= '
-            $j("#center_image_player").html("")
-                .append( $j("<source />").attr("src", center_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
-                .append( $j("<source />").attr("src", center_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
+            $("#center_image_player").html("")
+                .append( $("<source />").attr("src", center_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
+                .append( $("<source />").attr("src", center_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
             
-            $j(".audio").removeClass("played").removeClass("playing").addClass("unplayed").find("span.play").text("PLAY");
-            $j("audio").load();
-            $j("#experiment .audio span.choose").hide();
+            $(".audio").removeClass("played").removeClass("playing").addClass("unplayed").find("span.play").text("PLAY");
+            $("audio").load();
+            $("#experiment .audio span.choose").hide();
             playing = false;' . ENDLINE;
         }
         
         $text .= '
-            if ($j("#question").length > 0 && typeof(question) !== "undefined") $j("#question").html(question[trialOrder[trial]]);
-            $j("#trial_n").html(trial);
+            if ($("#question").length > 0 && typeof(question) !== "undefined") $("#question").html(question[trialOrder[trial]]);
+            $("#trial_n").html(trial);
             
             var currentTime = new Date();
             beginTrial = currentTime.getTime();
@@ -1019,11 +1019,11 @@ class exp_motivation extends experiment {
     var upKeyPresses = 0;
     var downKeyPresses = 0;
     
-    $j(function() {
-        $j("img.motivation").hide();
+    $(function() {
+        $("img.motivation").hide();
         
         // initialise countdown slider
-        $j( "#countdown" ).slider({
+        $( "#countdown" ).slider({
             orientation: "vertical",
             range: "min",
             min: 0,
@@ -1032,7 +1032,7 @@ class exp_motivation extends experiment {
         });
         
         // increment on keypresses
-        $j(document).keypress(function(e) {
+        $(document).keypress(function(e) {
             var d = new Date();
             if (countDownActive) {
                 switch(e.which) {
@@ -1070,25 +1070,25 @@ class exp_motivation extends experiment {
     function startCountDown() {
         upKeyPresses = 0;
         downKeyPresses = 0;
-        $j( "#countdown" ).slider("option", "value", defaultTime);
+        $( "#countdown" ).slider("option", "value", defaultTime);
         countDownActive = true;
         currentTime = new Date();
         beginTrial = currentTime.getTime();
-        $j("#spacebar").hide();
-        $j("img.motivation").show();
+        $("#spacebar").hide();
+        $("img.motivation").show();
         refreshIntervalId = setInterval("countDown(-100)", 100);
     }
     
     function countDown(incr) {
-        var currentValue = $j( "#countdown" ).slider("option", "value");
+        var currentValue = $( "#countdown" ).slider("option", "value");
         var newValue = (currentValue + incr > defaultTime) ? defaultTime : currentValue + incr; // make sure you cannot bank time
-        $j( "#countdown" ).slider("option", "value", newValue);
+        $( "#countdown" ).slider("option", "value", newValue);
         
         if (currentValue + incr <= 0) { 
             clearInterval(refreshIntervalId); 
             countDownActive = false;
-            $j("img.motivation").hide();
-            $j("#spacebar").show();
+            $("img.motivation").hide();
+            $("#spacebar").show();
 
             nextTrial({up: upKeyPresses, down: downKeyPresses});
         }
@@ -1255,7 +1255,7 @@ class exp_buttons extends experiment {
 
         // speeded buttons javascript
         if ($this->subtype == 'speeded') {
-            $text .= '        $j(document).keypress( function(e) {' . ENDLINE;
+            $text .= '        $(document).keypress( function(e) {' . ENDLINE;
             $text .= '            if (e.which == 32 && trial == 0) { e.preventDefault(); beginExp(); }' . ENDLINE;
             
             $button_query = new myQuery('SELECT dv, display FROM buttons WHERE exp_id=' . $this->id);
@@ -1319,13 +1319,13 @@ class exp_rating extends exp_buttons {
                         '        }' . ENDLINE .
                         '' . ENDLINE .
                         '        if (keycode == 13) {' . ENDLINE .
-                        '            var response = $j("#rating").val();' . ENDLINE .
+                        '            var response = $("#rating").val();' . ENDLINE .
                         '            if (max==0 && response.length>0) {' . ENDLINE .
                         '                nextTrial("\'" + response + "\'");' . ENDLINE .
                         '            } else if (response>=min && response<=max) {' . ENDLINE .
                         '                nextTrial(response);' . ENDLINE .
                         '            } else {' . ENDLINE .
-                        '                $j("#rating").val("");' . ENDLINE .
+                        '                $("#rating").val("");' . ENDLINE .
                         '            }' . ENDLINE .
                         '            return false;' . ENDLINE .
                         '        } else {' . ENDLINE .
@@ -1358,26 +1358,26 @@ class exp_adaptation extends exp_buttons {
                         '    var running = false;' . ENDLINE .
                         '    var data = [];' . ENDLINE;
         
-        $text .=         '    $j("body").keyup(function(e) {' . ENDLINE .
-                        '        if (e.keyCode == 32 && !running && $j(".input_interface").hasClass("faded")) {' . ENDLINE .
+        $text .=         '    $("body").keyup(function(e) {' . ENDLINE .
+                        '        if (e.keyCode == 32 && !running && $(".input_interface").hasClass("faded")) {' . ENDLINE .
                         '            trial++;' . ENDLINE .
-                        '            $j("#trial_n").text(trial);' . ENDLINE .
+                        '            $("#trial_n").text(trial);' . ENDLINE .
                         '            running = true;' . ENDLINE .         
-                        '            $j("#adapt_img").one("load", function() {' . ENDLINE .
-                        '                $j("#test_img").one("load", function() {' . ENDLINE .
-                        '                    $j("#question").text("What emotion does the second face show?");' . ENDLINE .
-                        '                    setTimeout("\$j(\'#adapt_img\').show();", wait_time);' . ENDLINE .        
+                        '            $("#adapt_img").one("load", function() {' . ENDLINE .
+                        '                $("#test_img").one("load", function() {' . ENDLINE .
+                        '                    $("#question").text("What emotion does the second face show?");' . ENDLINE .
+                        '                    setTimeout("\$(\'#adapt_img\').show();", wait_time);' . ENDLINE .        
                         '                    // after adapt_time, hide the adapt image and set the  test image' . ENDLINE .
-                        '                    setTimeout("\$j(\'#adapt_img\').hide();", wait_time + adapt_time);' . ENDLINE .            
+                        '                    setTimeout("\$(\'#adapt_img\').hide();", wait_time + adapt_time);' . ENDLINE .            
                         '                    // after isi, show the test image' . ENDLINE .
-                        '                    setTimeout("\$j(\'#test_img\').show();", wait_time + adapt_time + isi);' . ENDLINE .            
+                        '                    setTimeout("\$(\'#test_img\').show();", wait_time + adapt_time + isi);' . ENDLINE .            
                         '                    // after test_time, hide the test image and show the response interface' . ENDLINE .
-                        '                    setTimeout("\$j(\'#test_img\').hide(); \$j(\'.input_interface\').removeClass(\'faded\'); running = false;", wait_time + adapt_time + isi + test_time);' . ENDLINE .
+                        '                    setTimeout("\$(\'#test_img\').hide(); \$(\'.input_interface\').removeClass(\'faded\'); running = false;", wait_time + adapt_time + isi + test_time);' . ENDLINE .
                         '                }).each(function() {' . ENDLINE .
-                        '                    if (this.complete) $j(this).trigger("load");' . ENDLINE .
+                        '                    if (this.complete) $(this).trigger("load");' . ENDLINE .
                         '                }).attr("src", test_images[trial]);' . ENDLINE .
                         '            }).each(function() {' . ENDLINE .
-                        '                if (this.complete) $j(this).trigger("load");' . ENDLINE .
+                        '                if (this.complete) $(this).trigger("load");' . ENDLINE .
                         '            }).attr("src", adapt_images[trial]);' . ENDLINE .
                         '        }' . ENDLINE .
                         '    });' . ENDLINE;
@@ -1385,8 +1385,8 @@ class exp_adaptation extends exp_buttons {
         $text .=         '    function nextTrial(dv) {' . ENDLINE .
                         '        if (running == false) {' . ENDLINE .
                         '            // TODO: make buttons unclickable and faded ' . ENDLINE .
-                        '            $j(".input_interface").addClass("faded");' . ENDLINE .
-                        '            $j("#question").text("Press the spacebar to start the next trial");' . ENDLINE .
+                        '            $(".input_interface").addClass("faded");' . ENDLINE .
+                        '            $("#question").text("Press the spacebar to start the next trial");' . ENDLINE .
 
                         '            // record info' . ENDLINE .
                         '            data[trial] = {' . ENDLINE .
@@ -1407,7 +1407,7 @@ class exp_adaptation extends exp_buttons {
                         '                            "&exptype=' . $this->exptype . '" +' . ENDLINE .
                         '                            "&starttime=" + escape(starttime);' . ENDLINE .
             
-                        '                $j.get(url, function(r) {' . ENDLINE .
+                        '                $.get(url, function(r) {' . ENDLINE .
                         '                    // send to feedback page' . ENDLINE .
                         '                    window.location.href="/fb?type=exp&id=<?php echo $exp_id; ?>";' . ENDLINE .
                         '                });' . ENDLINE .

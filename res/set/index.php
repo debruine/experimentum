@@ -101,10 +101,10 @@ echo $my->get_result_as_table(true, true);
 <!--**************************************************-->
 
 <script>
-	$j(function() {
-		$j('#new-set').button().click( function() { window.location.href='/res/set/builder'; });
+	$(function() {
+		$('#new-set').button().click( function() { window.location.href='/res/set/builder'; });
 		
-		$j('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
+		$('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
 		
 		dashboard_checkboxes('set'); // function defined in myfunctions.js
 		

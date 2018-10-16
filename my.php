@@ -189,66 +189,66 @@ echo "<p>$login_info</p>", ENDLINE;
 
 <script>
 
-    $j(function() {
+    $(function() {
         newpwd();
         
-        $j('#response').addClass('ui-state-error').click( function() {
-            $j(this).hide('slide', { direction: 'left' }, 500);
+        $('#response').addClass('ui-state-error').click( function() {
+            $(this).hide('slide', { direction: 'left' }, 500);
         });
     });
 
     function newpwd() {
-        $j('#newpassword_row').toggle();
-        $j('#newpassword2_row').toggle();
-        $j('#newpassword').val('');
-        $j('#newpassword2').val('');
+        $('#newpassword_row').toggle();
+        $('#newpassword2_row').toggle();
+        $('#newpassword').val('');
+        $('#newpassword2').val('');
     }
         
     function updateInfo() {
         // run checks for required information
-        $j('#response').html('Verifying information...').show();
+        $('#response').html('Verifying information...').show();
         
         // set all questions to default black
-        $j('#myInformation tr').css('color', 'black');
+        $('#myInformation tr').css('color', 'black');
         
         // check that all required information is included
         var problem = false;
 
-        if ('' == $j('input[name=sex]').val() || 'NULL' == $j('input[name=sex]').val()) {
+        if ('' == $('input[name=sex]').val() || 'NULL' == $('input[name=sex]').val()) {
             problem = true;
-            $j('#sex_row').css('color', 'red');
-            $j('#response').html('<?= loc('Please fill in all information marked in red'); ?>');
+            $('#sex_row').css('color', 'red');
+            $('#response').html('<?= loc('Please fill in all information marked in red'); ?>');
         }
         
         // check passwords only if one newpasword field is filled in
-        if ('' != $j('#newpassword').val() || '' != $j('#newpassword2').val()) {
+        if ('' != $('#newpassword').val() || '' != $('#newpassword2').val()) {
             // check for matching passwords
-            if ($j('#newpassword').val() != $j('#newpassword2').val()) {
+            if ($('#newpassword').val() != $('#newpassword2').val()) {
                 problem = true;
-                $j('#newpassword_row').css('color', 'red');
-                $j('#newpassword2_row').css('color', 'red');
-                $j('#response').html( '<?= loc('The new passwords do not match'); ?>' );
+                $('#newpassword_row').css('color', 'red');
+                $('#newpassword2_row').css('color', 'red');
+                $('#response').html( '<?= loc('The new passwords do not match'); ?>' );
             }
             // check password length is >4 characters
-            if ($j('#newpassword').val().length < 5 || $j('#newpassword2').val().length < 5) {
+            if ($('#newpassword').val().length < 5 || $('#newpassword2').val().length < 5) {
                 problem = true;
-                $j('#newpassword_row').css('color', 'red');
-                $j('#newpassword2_row').css('color', 'red');
-                $j('#response').html( '<?= loc('Passwords must be more than 4 characters long'); ?>' );
+                $('#newpassword_row').css('color', 'red');
+                $('#newpassword2_row').css('color', 'red');
+                $('#response').html( '<?= loc('Passwords must be more than 4 characters long'); ?>' );
             }
         }
         
         // if username is present and changed, check that the username is not already taken
-        if ($j('#username').length) {
-            $j.ajax({
+        if ($('#username').length) {
+            $.ajax({
                 url: '?check_username',
                 type: 'POST',
-                data: $j('#myInformation_form').serialize(),
+                data: $('#myInformation_form').serialize(),
                 success: function(data) {
                     if ('OK' !== data) {
                         // new username is taken
                         problem = true;
-                        $j('#response').html( '<?= loc('That username is already taken. Please choose another.'); ?>' );
+                        $('#response').html( '<?= loc('That username is already taken. Please choose another.'); ?>' );
                     }
                 }
             });
@@ -258,16 +258,16 @@ echo "<p>$login_info</p>", ENDLINE;
             return false;
         } else {
             // everything is OK, continue with update
-            $j('#response').html('<?= loc('Updating your information...'); ?>');
+            $('#response').html('<?= loc('Updating your information...'); ?>');
             
-            $j.ajax({
+            $.ajax({
                 url: '?update', 
                 type: 'POST',
-                data: $j('#myInformation_form').serialize(),
+                data: $('#myInformation_form').serialize(),
                 success: function(data) {
-                    $j('#response').html( data );
+                    $('#response').html( data );
                     if (data == 'Your information has been updated') {
-                        $j('#header_username a').html($j('#username').val());
+                        $('#header_username a').html($('#username').val());
                     }
                 }
             });

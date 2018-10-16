@@ -335,21 +335,21 @@ foreach ($trials as $trial) {
 		return name;
 	}
 
-	$j(function() {
+	$(function() {
 		
-		$j(".trial_builder img.trialimg, .trial_builder span.imgname").droppable({
+		$(".trial_builder img.trialimg, .trial_builder span.imgname").droppable({
 			tolerance: "pointer",
 			hoverClass: "drop_hover",
 			drop: function( event, ui ) {
-				if ($j(this).hasClass('imgname')) {
-					var theImg = $j(this).prev('img.trialimg');
-					var theSpan = $j(this);
+				if ($(this).hasClass('imgname')) {
+					var theImg = $(this).prev('img.trialimg');
+					var theSpan = $(this);
 				} else {
-					var theSpan = $j(this).next('span.imgname');
-					var theImg = $j(this);
+					var theSpan = $(this).next('span.imgname');
+					var theImg = $(this);
 				}
 			
-				var theSrc = $j(ui.draggable).attr('title');
+				var theSrc = $(ui.draggable).attr('title');
 				
 				theImg.attr({
 					'src': theSrc,
@@ -359,127 +359,127 @@ foreach ($trials as $trial) {
 			}
 		});
 		
-		$j(".trial_builder img.trialimg, .trial_builder span.imgname").dblclick( function() {
-			if ($j(this).hasClass('imgname')) {
-				var coldata = $j(this).prev('img.trialimg').attr('id').split('img_');
+		$(".trial_builder img.trialimg, .trial_builder span.imgname").dblclick( function() {
+			if ($(this).hasClass('imgname')) {
+				var coldata = $(this).prev('img.trialimg').attr('id').split('img_');
 			} else {
-				var coldata = $j(this).attr('id').split('img_');
+				var coldata = $(this).attr('id').split('img_');
 			}
 
 			fill(coldata[0], coldata[1]);
 		});
 		
 		// resize lists to window height
-		$j(window).resize(resizeContent);
+		$(window).resize(resizeContent);
 		resizeContent();
 		
 		// add common path to common_path
 		var common_path = "<?= str_replace('/images/stimuli', '', common_path($imagelist)) ?>";
-		$j("#common_path").html(common_path);
+		$("#common_path").html(common_path);
 		
 
 		// add functions to buttons
-		$j( "#image_list_toggle" ).buttonset();
-		$j( "#list_toggle" ).click(function() { toggleImages(0); });
-		$j( "#image_toggle" ).click(function() { toggleImages(1); });
+		$( "#image_list_toggle" ).buttonset();
+		$( "#list_toggle" ).click(function() { toggleImages(0); });
+		$( "#image_toggle" ).click(function() { toggleImages(1); });
 		
-		$j('#start-exp').button().click( function() {
+		$('#start-exp').button().click( function() {
 			window.location = '/exp?id=<?= $exp_id ?>';
 		});
 		
-		$j('#edit-exp').button().click( function() {
+		$('#edit-exp').button().click( function() {
 			window.location = '/res/exp/builder?id=<?= $exp_id ?>';
 		});
 		
-		$j( "#exp-info" ).button().click( function() {
+		$( "#exp-info" ).button().click( function() {
 			window.location.href='/res/exp/info?id=<?= $exp_id ?>'; 
 		});
 		
-		$j( "#delete-version" ).button({text: false, icons: { primary: 'ui-icon-minusthick' }}).click( function() {
-			$j('.trial_builder:last').remove();
+		$( "#delete-version" ).button({text: false, icons: { primary: 'ui-icon-minusthick' }}).click( function() {
+			$('.trial_builder:last').remove();
 		});
 		
-		$j( "#add-version" ).button({text: false, icons: { primary: 'ui-icon-plusthick' }}).click( function() {
-			var newVersion = $j('.trial_builder:last').clone(true);
+		$( "#add-version" ).button({text: false, icons: { primary: 'ui-icon-plusthick' }}).click( function() {
+			var newVersion = $('.trial_builder:last').clone(true);
 			var n = parseInt(newVersion.find('.version').text());
 			newVersion.find('.version').text(n+1)
 			newVersion.find('*[id*="v' + n + '_"]').each( function() {
-				var newID = $j(this).attr('id').replace('v' + n + '_', 'v' + (n+1) + '_');
-				$j(this).attr('id', newID);
+				var newID = $(this).attr('id').replace('v' + n + '_', 'v' + (n+1) + '_');
+				$(this).attr('id', newID);
 			});
 			newVersion.find('*[name*="v' + n + '_"]').each( function() {
-				var newID = $j(this).attr('name').replace('v' + n + '_', 'v' + (n+1) + '_');
-				$j(this).attr('name', newID);
+				var newID = $(this).attr('name').replace('v' + n + '_', 'v' + (n+1) + '_');
+				$(this).attr('name', newID);
 			});
-			$j('.trial_builder:last').after(newVersion);
+			$('.trial_builder:last').after(newVersion);
 		});
 		
-		$j('#add-delete-version').buttonset();
+		$('#add-delete-version').buttonset();
 		
-		$j( "#delete-image" ).button({text: false, icons: { primary: 'ui-icon-minusthick' }}).click( function() {
-			$j('.trial_builder').each( function() {
-				if ($j(this).find('.trial').length > 1) {
-					$j(this).find('.trial:last').remove();
+		$( "#delete-image" ).button({text: false, icons: { primary: 'ui-icon-minusthick' }}).click( function() {
+			$('.trial_builder').each( function() {
+				if ($(this).find('.trial').length > 1) {
+					$(this).find('.trial:last').remove();
 				}
 			});
 		});
 		
-		$j( "#add-image" ).button({text: false, icons: { primary: 'ui-icon-plusthick' }}).click( function() {
-			$j('.trial_builder').each( function() {
-				var newImg = $j(this).find('.trial:last').clone(true);
-				var n = $j(this).find('.trial').length;
+		$( "#add-image" ).button({text: false, icons: { primary: 'ui-icon-plusthick' }}).click( function() {
+			$('.trial_builder').each( function() {
+				var newImg = $(this).find('.trial:last').clone(true);
+				var n = $(this).find('.trial').length;
 				newImg.attr('id', newImg.attr('id').replace('trial_' + n, 'trial_' + (n+1)));
 				newImg.find('*[id$="_' + n + '"]').each( function() {
-					var newID = $j(this).attr('id').replace('_' + n, '_' + (n+1));
-					$j(this).attr('id', newID);
+					var newID = $(this).attr('id').replace('_' + n, '_' + (n+1));
+					$(this).attr('id', newID);
 				});
 				newImg.find('*[name$="_' + n + '"]').each( function() {
-					var newID = $j(this).attr('name').replace('_' + n, '_' + (n+1));
-					$j(this).attr('name', newID);
+					var newID = $(this).attr('name').replace('_' + n, '_' + (n+1));
+					$(this).attr('name', newID);
 				});
 				newImg.html(newImg.html().replace(n+': ', (n+1) + ': '));
 				
-				$j(this).find('.trial:last').after(newImg);
+				$(this).find('.trial:last').after(newImg);
 			});
 		});
 		
-		$j('#add-delete-image').buttonset();
+		$('#add-delete-image').buttonset();
 		
-		$j( "#save-trials" ).button().click(function() {
+		$( "#save-trials" ).button().click(function() {
 			var dataArray = {};
 	
-			$j('.trial_builder').each( function() {
-				var v = $j(this).find('.version').text();
+			$('.trial_builder').each( function() {
+				var v = $(this).find('.version').text();
 				dataArray[v] = {};
-				dataArray[v]['name'] = $j('#i_v' + v + '_name').val();
-				dataArray[v]['notes'] = $j('#i_v' + v + '_notes').val();
-				dataArray[v]['question'] = $j('#i_v' + v + '_question').val();
+				dataArray[v]['name'] = $('#i_v' + v + '_name').val();
+				dataArray[v]['notes'] = $('#i_v' + v + '_notes').val();
+				dataArray[v]['question'] = $('#i_v' + v + '_question').val();
 				dataArray[v]['trials'] = {};
 				
-				$j(this).find('div.trial').each( function() {
+				$(this).find('div.trial').each( function() {
 					var n = this.id.replace('v' + v + '_trial_', '');			
 					dataArray[v]['trials'][n] = {};
 					
-					dataArray[v]['trials'][n]['exposure'] = $j('#v' + v + '_exposure_' + n).html();
-					if ($j('#v' + v + '_limg_' + n).length > 0) dataArray[v]['trials'][n]['limg'] = $j('#v' + v + '_limg_' + n).attr('title');
-					if ($j('#v' + v + '_cimg_' + n).length > 0) dataArray[v]['trials'][n]['cimg'] = $j('#v' + v + '_cimg_' + n).attr('title');
-					if ($j('#v' + v + '_rimg_' + n).length > 0) dataArray[v]['trials'][n]['rimg'] = $j('#v' + v + '_rimg_' + n).attr('title');
+					dataArray[v]['trials'][n]['exposure'] = $('#v' + v + '_exposure_' + n).html();
+					if ($('#v' + v + '_limg_' + n).length > 0) dataArray[v]['trials'][n]['limg'] = $('#v' + v + '_limg_' + n).attr('title');
+					if ($('#v' + v + '_cimg_' + n).length > 0) dataArray[v]['trials'][n]['cimg'] = $('#v' + v + '_cimg_' + n).attr('title');
+					if ($('#v' + v + '_rimg_' + n).length > 0) dataArray[v]['trials'][n]['rimg'] = $('#v' + v + '_rimg_' + n).attr('title');
 				});
 			});
 			
-			//$j('<div />').html(dataArray.toSource()).dialog({width: 1200});
+			//$('<div />').html(dataArray.toSource()).dialog({width: 1200});
 				
-			$j.ajax({
+			$.ajax({
 				type: 'POST',
 				url: './adapt?save&exp_id=<?= $exp_id ?>',
 				data: dataArray,
 				success: function(response) {
-					$j('#dialog-saver').html(response).dialog('open');
+					$('#dialog-saver').html(response).dialog('open');
 				}
 			});
 		});
 		
-		$j('#dialog-saver').dialog({
+		$('#dialog-saver').dialog({
 			autoOpen: false,
 			show: "scale",
 			hide: "scale",
@@ -492,8 +492,8 @@ foreach ($trials as $trial) {
 			}
 		});
 		
-		$j( "#fill-from-list" ).button().click(function() { $j( "#dialog-form-fill" ).dialog( "open" ); });	
-		$j( "#dialog-form-fill" ).dialog({
+		$( "#fill-from-list" ).button().click(function() { $( "#dialog-form-fill" ).dialog( "open" ); });	
+		$( "#dialog-form-fill" ).dialog({
 			autoOpen: false,
 			show: "scale",
 			hide: "scale",
@@ -502,18 +502,18 @@ foreach ($trials as $trial) {
 			modal: true,
 			buttons: {
 				"Fill Exposure": function() {
-					var rows = $j('#listfill').val().split("\n");
+					var rows = $('#listfill').val().split("\n");
 					var i = 0;
 					
-					$j('.trial_builder *[id*="_exposure_"]').each( function() {
+					$('.trial_builder *[id*="_exposure_"]').each( function() {
 						if (rows.length <= i ) { i = 0; }
-						$j(this).html(rows[i]);
+						$(this).html(rows[i]);
 						i++
 					});
-					$j( this ).dialog( "close" );
+					$( this ).dialog( "close" );
 				},
 				Cancel: function() {
-					$j( this ).dialog( "close" );
+					$( this ).dialog( "close" );
 				}
 			},
 		});
@@ -525,22 +525,22 @@ foreach ($trials as $trial) {
 		var i = 1;
 		// get list of images
 		var imagelist = [];
-		$j('#img_list li').each( function() {
-			imagelist[i] = $j(this).attr('title');
+		$('#img_list li').each( function() {
+			imagelist[i] = $(this).attr('title');
 			i++
 		});
 		
 		if (i == 1) {
-			$j('<div />').html('Search for images by typing part of the image folder name into the search box above.').dialog('open');
+			$('<div />').html('Search for images by typing part of the image folder name into the search box above.').dialog('open');
 			return false;
 		}
 		
 		// add images to the trial builder
 		i = 1;
-		var lastTrial = $j('.trial_builder:first div').length;
+		var lastTrial = $('.trial_builder:first div').length;
 		
 		for (n = start; n <= lastTrial; n++) {
-			var theimage = $j('#' + column + 'img_' + n);
+			var theimage = $('#' + column + 'img_' + n);
 			
 			if (theimage.length == 0) return false; // stop iterating when trials are done
 			if (i >= imagelist.length) i = 1; // restart image list if more trials remain
@@ -554,13 +554,13 @@ foreach ($trials as $trial) {
 	}
 	
 	function resizeContent() {
-		var content_height = $j(window).height() - $j('.trial_builder').offset().top - $j('#footer').height()-30;
-		$j('.trial_builder').height(content_height);
-		$j('#image_chooser').height(content_height);
+		var content_height = $(window).height() - $('.trial_builder').offset().top - $('#footer').height()-30;
+		$('.trial_builder').height(content_height);
+		$('#image_chooser').height(content_height);
 	}
 	
 	function addDraggable() {
-		$j('#img_list li').draggable({
+		$('#img_list li').draggable({
 			helper: "clone",
 			cursorAt: { top: 0, left: 0 }
 		});
@@ -575,13 +575,13 @@ foreach ($trials as $trial) {
 		
 		// make current option unclickable so you dont keep searching
 		if (imgToggle == 0) {
-			$j('#image_toggle').html("<a href='javascript:toggleImages(1);'>images</a>");
-			$j('#list_toggle').html('list');
-			$j('.trial_builder').addClass('list');
+			$('#image_toggle').html("<a href='javascript:toggleImages(1);'>images</a>");
+			$('#list_toggle').html('list');
+			$('.trial_builder').addClass('list');
 		} else {
-			$j('#list_toggle').html("<a href='javascript:toggleImages(0);'>list</a>");
-			$j('#image_toggle').html('images');
-			$j('.trial_builder').removeClass('list');
+			$('#list_toggle').html("<a href='javascript:toggleImages(0);'>list</a>");
+			$('#image_toggle').html('images');
+			$('.trial_builder').removeClass('list');
 		}
 		
 		showImages(50);
@@ -589,52 +589,52 @@ foreach ($trials as $trial) {
 
 	function showImages(max_images) {
 		// exit if no search text is found
-		if ($j('#image_search').val() == "") {
+		if ($('#image_search').val() == "") {
 			return false;
 		}
 	
 		// retrieve image list asynchronously
-		$j.ajax({
+		$.ajax({
 			url: 'trials?search', 
 			type: 'POST',
-			data: $j('#image_search').serialize(),
+			data: $('#image_search').serialize(),
 			success: function(resp) {
 				if (resp.substr(0,5) == "error") {
 					alert(resp);
 				} else {
-					$j('#img_list').empty();
+					$('#img_list').empty();
 					var id_path = resp.split(";");
 					var len = id_path.length;
 					var plus = '';
 					if (len == 2000) { plus = '+'; }
 					
-					$j('#images_found').html(len + plus + '&nbsp;images&nbsp;found');
+					$('#images_found').html(len + plus + '&nbsp;images&nbsp;found');
 					
 					for (var i = 0; i<len; ++i ){
 						var img = id_path[i].split(":");
 						if (imgToggle == 1) {
-							$j('#img_list').append('<li id="img' + img[0] + '" title="' + img[1] + '"><img src="' + img[1] + '" /></li>');
+							$('#img_list').append('<li id="img' + img[0] + '" title="' + img[1] + '"><img src="' + img[1] + '" /></li>');
 							
 							if (i >= max_images) {
-								$j('#img_list').append('<a href="javascript:showImages('+(max_images+50)+')">View more...</a>');
+								$('#img_list').append('<a href="javascript:showImages('+(max_images+50)+')">View more...</a>');
 								break;
 								
 							}
 						} else {
 							var shortname = img[1].replace('/images/stimuli', '');
-							$j('#img_list').append('<li id="img' + img[0] + '" title="' + img[1] + '">' + shortname + '</li>');
+							$('#img_list').append('<li id="img' + img[0] + '" title="' + img[1] + '">' + shortname + '</li>');
 						}
 					}
 					
 					// make sure each li displays correctly and is draggable
-					if (imgToggle == 1) $j('#img_list li').css('display','inline');
+					if (imgToggle == 1) $('#img_list li').css('display','inline');
 					if (imgToggle == 0) {
-						$j('#img_list li').css('display','block');
-						$j('#img_list li:odd').addClass('odd');
-						$j('#img_list li:even').addClass('even');
+						$('#img_list li').css('display','block');
+						$('#img_list li:odd').addClass('odd');
+						$('#img_list li:even').addClass('even');
 					}
 					addDraggable();
-					$j('#img_list').selectable();
+					$('#img_list').selectable();
 				}
 			}
 		});	

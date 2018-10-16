@@ -417,8 +417,8 @@ $infoTable->set_questionList($info);
 $infoTable->set_method('post');
 $infoTable->set_buttons(array(
     'Save Questionnaire' => 'saveQuestionnaire();',
-    'View Questionnaire' => 'window.open("/quest?id=" + $j("#id").val());',
-    'View Feedback Page' => 'window.open("/fb?type=quest&id=" + $j("#id").val());',
+    'View Questionnaire' => 'window.open("/quest?id=" + $("#id").val());',
+    'View Feedback Page' => 'window.open("/fb?type=quest&id=" + $("#id").val());',
     'Reset' => 'window.location.href=window.location.href;'
 ));
 $infoTable->set_button_location('bottom');
@@ -658,42 +658,42 @@ foreach ($questions as $n => $q) {
 
 <script>
 
-    if ($j('#quest_id').val() == '') { $j('#quest_table tbody > tr').addClass('newQ'); }
+    if ($('#quest_id').val() == '') { $('#quest_table tbody > tr').addClass('newQ'); }
     
-    $j('#excel_box thead tr').sortable({
+    $('#excel_box thead tr').sortable({
         revert: true,
         connectWith: ".excel",
         cancel: ".nomove"
     });
     
-    $j('#excel_box thead tr th').dblclick( function() { $j(this).hide(); } );
+    $('#excel_box thead tr th').dblclick( function() { $(this).hide(); } );
     
     // !    Make questionnaire table sortable
-    $j('#quest_table > tbody').sortable({
+    $('#quest_table > tbody').sortable({
         handle: '.move_anchor',
-        start: function() { $j(this).find('td.typechanger').hide(); },
+        start: function() { $(this).find('td.typechanger').hide(); },
         stop: function() { 
-            $j(this).find('td.typechanger').show(); 
+            $(this).find('td.typechanger').show(); 
             stripe('#quest_table > tbody'); 
         }
     });
     
-    $j('.radioanchor').each( function() {
-        var qid = $j(this).attr('id').replace('q','');
-        $j(this).find('.anchor:first').wrapInner($j('<span class="editText" id="low_anchor_' + qid + '" />'));
-        $j(this).find('.anchor:last').wrapInner($j('<span class="editText" id="high_anchor_' + qid + '" />'));
+    $('.radioanchor').each( function() {
+        var qid = $(this).attr('id').replace('q','');
+        $(this).find('.anchor:first').wrapInner($('<span class="editText" id="low_anchor_' + qid + '" />'));
+        $(this).find('.anchor:last').wrapInner($('<span class="editText" id="high_anchor_' + qid + '" />'));
     });
     
-    $j('.view-typechooser span').click( function() {
-        $j(this).hide().siblings('select').show().focus();
+    $('.view-typechooser span').click( function() {
+        $(this).hide().siblings('select').show().focus();
     });
     
-    $j('.view-typechooser select').blur( function() {
-        $j(this).hide().siblings("span").show();
+    $('.view-typechooser select').blur( function() {
+        $(this).hide().siblings("span").show();
     });
     
     function editQuestion(r) {
-        var $input = $j(r).closest('tr').find('td.input');
+        var $input = $(r).closest('tr').find('td.input');
         $input.toggleClass('beingedited');
         
         if ($input.find('input[type="text"].textinput').length > 0) { 
@@ -719,7 +719,7 @@ foreach ($questions as $n => $q) {
                 theRadioAnchor.find('.addRadio').parent('td').remove();
                 theRadioAnchor.find('.subRadio').parent('td').remove();
             } else {
-                var addRadio = $j('<span class="addRadio" />')
+                var addRadio = $('<span class="addRadio" />')
                                 .html('+')
                                 .click( function() {
                                     var lastRadio = theRadioAnchor.find('label:last').parent('td')
@@ -732,7 +732,7 @@ foreach ($questions as $n => $q) {
                                     
                                     newRadio.insertAfter(lastRadio);
                                 });
-                var subRadio = $j('<span class="subRadio" />')
+                var subRadio = $('<span class="subRadio" />')
                                 .html('-')
                                 .click( function() {
                                     if (theRadioAnchor.find('label').length < 3) {
@@ -742,7 +742,7 @@ foreach ($questions as $n => $q) {
                                     }
                                 });
                 
-                theRadioAnchor.find('tr').append($j('<td />').append(addRadio)).prepend($j('<td />').append(subRadio));
+                theRadioAnchor.find('tr').append($('<td />').append(addRadio)).prepend($('<td />').append(subRadio));
             }
         } else if ($input.find('input.datepicker').length > 0) {
             // !        edit datepicker (input.datepicker) 
@@ -751,14 +751,14 @@ foreach ($questions as $n => $q) {
                 var minDate = theDatepicker.datepicker('option', 'minDate');
                 var maxDate = theDatepicker.datepicker('option', 'maxDate');
                 
-                theDatepicker.parent().append($j('<label />').html('Date Range: '));
-                $j('<input />') .attr({ 'type': 'text' })
+                theDatepicker.parent().append($('<label />').html('Date Range: '));
+                $('<input />') .attr({ 'type': 'text' })
                                     .val(minDate)
                                     .addClass('tmp')
                                     .css({'display':'inline', 'float':'none', 'width':'100px'})
                                     .appendTo(theDatepicker.parent());
-                theDatepicker.parent().append($j('<label />').html(' to '));
-                $j('<input />') .attr({ 'type': 'text' })
+                theDatepicker.parent().append($('<label />').html(' to '));
+                $('<input />') .attr({ 'type': 'text' })
                                     .val(maxDate)
                                     .addClass('tmp')
                                     .css({'display':'inline', 'float':'none', 'width':'100px'})
@@ -787,37 +787,37 @@ foreach ($questions as $n => $q) {
             if (!$input.hasClass('beingedited')) {
                 // rebuild select and show it - destroy all inputs
                 theSelect.html('');
-                $j('<option />').attr({'value':'NULL'}).html('').appendTo(theSelect);
+                $('<option />').attr({'value':'NULL'}).html('').appendTo(theSelect);
                 theSelect.parent().find('input').each( function(i) {
-                    optVal = $j(this).val().split(':');
+                    optVal = $(this).val().split(':');
                     if (optVal.length == 2) {
-                        $j('<option />').attr({'value': optVal[0]}).html(optVal[1]).appendTo(theSelect);
+                        $('<option />').attr({'value': optVal[0]}).html(optVal[1]).appendTo(theSelect);
                     }
-                    $j(this).remove();
+                    $(this).remove();
                 });
                 theSelect.show();
             } else {
                 theSelect.find('option').each(function() {
-                    if ($j(this).val() != 'NULL') {
-                        var theVal = $j(this).val() + ':' + $j(this).html();
-                        $j('<input />') .attr({ 'type': 'text' })
+                    if ($(this).val() != 'NULL') {
+                        var theVal = $(this).val() + ':' + $(this).html();
+                        $('<input />') .attr({ 'type': 'text' })
                                         .val(theVal)
                                         .appendTo(theSelect.parent())
                                         .change( function() {
-                                            if ($j(this).val() == '') $j(this).remove();
+                                            if ($(this).val() == '') $(this).remove();
                                         });
                     }
                 });
                 
                 // add blank option at the end. doesn't remove on blanking
-                $j('<input />') .attr({ 'type': 'text', 'placeholder':'n:add an option' })
+                $('<input />') .attr({ 'type': 'text', 'placeholder':'n:add an option' })
                                 .appendTo(theSelect.parent())
                                 .change(function() {
-                                    $j(this).clone(true)
+                                    $(this).clone(true)
                                             .val('')
                                             .attr('placeholder', 'n:add an option')
-                                            .insertAfter($j(this)).focus();
-                                    $j(this).unbind('change');
+                                            .insertAfter($(this)).focus();
+                                    $(this).unbind('change');
                                 });
                 theSelect.hide();
             }
@@ -829,14 +829,14 @@ foreach ($questions as $n => $q) {
                 var minVal = theSelect.find('option:eq(1)').val();
                 var maxVal = theSelect.find('option:last').val();
                 
-                theSelect.parent().append($j('<label />').html('Range: '));
-                $j('<input />') .attr({ 'type': 'text' })
+                theSelect.parent().append($('<label />').html('Range: '));
+                $('<input />') .attr({ 'type': 'text' })
                                     .val(minVal)
                                     .addClass('tmp')
                                     .css({'display':'inline', 'float':'none', 'width':'50px'})
                                     .appendTo(theSelect.parent());
-                theSelect.parent().append($j('<label />').html(' to '));
-                $j('<input />') .attr({ 'type': 'text' })
+                theSelect.parent().append($('<label />').html(' to '));
+                $('<input />') .attr({ 'type': 'text' })
                                     .val(maxVal)
                                     .addClass('tmp')
                                     .css({'display':'inline', 'float':'none', 'width':'50px'})
@@ -848,9 +848,9 @@ foreach ($questions as $n => $q) {
                 var newMax = parseInt(theSelect.parent().find('input.tmp:last').val());
                 theSelect.parent().find('input.tmp, label').remove();
                 theSelect.html('');
-                $j('<option />').attr({'value':'NULL'}).html('').appendTo(theSelect);
+                $('<option />').attr({'value':'NULL'}).html('').appendTo(theSelect);
                 for (var i = newMin; i <= newMax; i++) {
-                    $j('<option />').attr({'value':i}).html(i).appendTo(theSelect);
+                    $('<option />').attr({'value':i}).html(i).appendTo(theSelect);
                 }
                 theSelect.show();
             }
@@ -860,26 +860,26 @@ foreach ($questions as $n => $q) {
             if ($input.hasClass('beingedited')) {
                 var theName = theRadio.attr('id').replace('_options', '');
                 theRadio.find('li').each( function() {
-                    var theVal = $j(this).find('input[type="radio"]').val() + ':' + $j(this).find('span.ui-button-text').html();
+                    var theVal = $(this).find('input[type="radio"]').val() + ':' + $(this).find('span.ui-button-text').html();
                     
-                    $j('<input />') .attr({ 'type': 'text' })
+                    $('<input />') .attr({ 'type': 'text' })
                                     .val(theVal)
                                     .appendTo(theRadio.parent())
                                     .change( function() {
-                                        if ($j(this).val() == '') $j(this).remove();
+                                        if ($(this).val() == '') $(this).remove();
                                     });
                 });
                 
                 // add blank option at the end. doesn't remove on blanking
-                $j('<input />') .attr({ 'type': 'text', 'placeholder':'n:add an option' })
+                $('<input />') .attr({ 'type': 'text', 'placeholder':'n:add an option' })
                                 .appendTo(theRadio.parent())
                                 .change(function() {
-                                    if ($j(this).val() != '') {
-                                        var clone = $j(this).clone(true)
+                                    if ($(this).val() != '') {
+                                        var clone = $(this).clone(true)
                                             .val('')
                                             .attr('placeholder', 'n:add an option')
-                                            .insertAfter($j(this));
-                                        $j(this).unbind('change');
+                                            .insertAfter($(this));
+                                        $(this).unbind('change');
                                         clone.focus();
                                     }
                                 });
@@ -888,71 +888,71 @@ foreach ($questions as $n => $q) {
                 // rebuild radio and show it - destroy all inputs
                 theRadio.html('');
                 theRadio.parent().find('input').each( function(i) {
-                    optVal = $j(this).val().split(':');
+                    optVal = $(this).val().split(':');
                     if (optVal.length == 2) {
-                        var newRadio = $j('<input />')  .attr({ 'value': optVal[0],
+                        var newRadio = $('<input />')  .attr({ 'value': optVal[0],
                                                 'type': 'radio',
                                                 'id': theName + '_' + optVal[0],
                                                 'name': theName });
                                         
-                        var newLabel = $j('<label />')  .attr('for', theName + '_' + optVal[0])
+                        var newLabel = $('<label />')  .attr('for', theName + '_' + optVal[0])
                                         .html(optVal[1]);
                                         
-                        $j('<li />').append(newRadio).append(newLabel).appendTo(theRadio);
+                        $('<li />').append(newRadio).append(newLabel).appendTo(theRadio);
                                         
                     }
-                    $j(this).remove();
+                    $(this).remove();
                 });
                 theRadio.buttonset().show();
             }
         }
     }
 
-    $j(function() {
+    $(function() {
         setOriginalValues('myInformation');
          
         
-        $j("#excel_box tbody").dblclick(function() {
-            var header_cols = $j("#excel_box thead tr th").length;
-            $j("#excel_box tbody").html("<tr><td colspan='" + header_cols + "'><textarea id='excel_paste' onkeyup='excelPaste();'></textarea></td></tr>");
-            $j("#excel_paste").focus();
+        $("#excel_box tbody").dblclick(function() {
+            var header_cols = $("#excel_box thead tr th").length;
+            $("#excel_box tbody").html("<tr><td colspan='" + header_cols + "'><textarea id='excel_paste' onkeyup='excelPaste();'></textarea></td></tr>");
+            $("#excel_paste").focus();
         });
         
         // !    add radiorow option
-        $j('#add-radio-option').button({
+        $('#add-radio-option').button({
             icons: {primary: "ui-icon-plusthick"},
             text: false
         }).click( function() {
             // add last option cell
-            $j('#quest_table tr').each( function() {
-                var lastTD = $j(this).find('> *:last').prev();
+            $('#quest_table tr').each( function() {
+                var lastTD = $(this).find('> *:last').prev();
                 lastTD.clone(true).insertAfter(lastTD);
             });
             
-            var n = $j('tr.radiorow_values input').length;
-            $j('tr.radiorow_values input:last').val(function(i, v) { return parseInt(v) + 1; })
+            var n = $('tr.radiorow_values input').length;
+            $('tr.radiorow_values input:last').val(function(i, v) { return parseInt(v) + 1; })
                                                 .attr('name', 'radiorow_value_' + n)
                                                 .attr('id', 'radiorow_value_' + n);
             
-            $j('tr.radiorow_options span:last').attr('id', 'radiorow_option_' + n)
+            $('tr.radiorow_options span:last').attr('id', 'radiorow_option_' + n)
                                                 .html(n);
             editbox_init();
         });
         
         // !    delete radiorow option
-        $j('#delete-radio-option').button({
+        $('#delete-radio-option').button({
             icons: {primary: "ui-icon-minusthick"},
             text: false
         }).click( function() {
             // count selects in radiorow_values tr
-            var opts = $j('tr.radiorow_values input');
+            var opts = $('tr.radiorow_values input');
             var optN = opts.length;
             
             // quit if < 3 options remain (you can't have < 2 options)
             if (optN > 2) {
-                $j('#quest_table tr').find('> *:last').prev().remove();
+                $('#quest_table tr').find('> *:last').prev().remove();
             } else {
-                $j('<div />').html('You must have at least 2 options').dialog();
+                $('<div />').html('You must have at least 2 options').dialog();
             }
         });
 
@@ -961,36 +961,36 @@ foreach ($questions as $n => $q) {
     
     // !    changeType(qid)
     function changeType(qid) {
-        var typechooser = $j('#type_' + qid);
+        var typechooser = $('#type_' + qid);
         var theType = typechooser.val();
-        var theInput = $j('#q' + qid);
+        var theInput = $('#q' + qid);
         var newInput = null;
             
         if (theType == 'select') { 
             // !        Change to select
-            newInput = $j('<select />')
+            newInput = $('<select />')
                             .attr('id', theInput.attr('id'))
                             .attr('name', theInput.attr('id'));
-            $j('<option />').attr('value', 'NULL').appendTo(newInput);
+            $('<option />').attr('value', 'NULL').appendTo(newInput);
         
             if (theInput.is('ul.radio')) {
                 // convert select to radio buttons
                 theInput.find('input[type=radio]').each( function(i) {
-                    $j('<option />').attr('value', $j(this).attr('value'))
-                                    .html($j(this).next('label').text())
+                    $('<option />').attr('value', $(this).attr('value'))
+                                    .html($(this).next('label').text())
                                     .appendTo(newInput);
 
                 });
             } else {
                 // generic select
-                $j('<option />').attr('value', '1').html('option 1').appendTo(newInput);
-                $j('<option />').attr('value', '2').html('option 2').appendTo(newInput);
+                $('<option />').attr('value', '1').html('option 1').appendTo(newInput);
+                $('<option />').attr('value', '2').html('option 2').appendTo(newInput);
             }
             
             theInput.replaceWith(newInput);
         } else if (theType == 'countries') { 
             // !        Change to countries
-            newInput = $j('<select />')
+            newInput = $('<select />')
                             .attr('id', theInput.attr('id'))
                             .attr('name', theInput.attr('id'))
                             .addClass('countries')
@@ -1000,43 +1000,43 @@ foreach ($questions as $n => $q) {
             // !        Change to selectnum
         
             // convert everything to an empty selectnum
-            newInput = $j('<select class="selectnum" />')   
+            newInput = $('<select class="selectnum" />')   
                             .attr('id', theInput.attr('id'))
                             .attr('name', theInput.attr('id'))
-                            .append($j('<option />').attr('value', 'NULL'))
-                            .append($j('<option />').attr('value', 0).html('0'))
-                            .append($j('<option />').attr('value', 1).html('1'));
+                            .append($('<option />').attr('value', 'NULL'))
+                            .append($('<option />').attr('value', 0).html('0'))
+                            .append($('<option />').attr('value', 1).html('1'));
             
             theInput.replaceWith(newInput);
         } else if (theType == 'radio') { 
             // !        Change to radio
             
-            newInput = $j('<ul class="radio" />').attr('id', theInput.attr('id'));
+            newInput = $('<ul class="radio" />').attr('id', theInput.attr('id'));
             
             if (theInput.is('select:not(.selectnum)')) {
                 // convert select to radio buttons
                 theInput.find('option[value!="NULL"]').each( function(i) {
-                    var newLi = $j('<li />');
-                    $j('<input />') .attr('type', 'radio')
+                    var newLi = $('<li />');
+                    $('<input />') .attr('type', 'radio')
                                     .attr('name', theInput.attr('id'))
-                                    .attr('id', theInput.attr('id') + '_' + $j(this).attr('value'))
-                                    .val($j(this).attr('value'))
+                                    .attr('id', theInput.attr('id') + '_' + $(this).attr('value'))
+                                    .val($(this).attr('value'))
                                     .appendTo(newLi);
-                    $j('<label />').html($j(this).html())
-                                    .attr('for', theInput.attr('id') + '_' + $j(this).attr('value'))
+                    $('<label />').html($(this).html())
+                                    .attr('for', theInput.attr('id') + '_' + $(this).attr('value'))
                                     .appendTo(newLi);
                     newInput.append(newLi);
                 }); 
             } else {
                 // add generic radio options
                 for (var i = 1; i<3; i++) {
-                    var newLi = $j('<li />');
-                    $j('<input />') .attr('type', 'radio')
+                    var newLi = $('<li />');
+                    $('<input />') .attr('type', 'radio')
                                     .attr('name', theInput.attr('id'))
                                     .attr('id', theInput.attr('id') + '_' + i)
                                     .val(i)
                                     .appendTo(newLi);
-                    $j('<label />').html('Option ' + i)
+                    $('<label />').html('Option ' + i)
                                     .attr('for', theInput.attr('id') + '_' + i)
                                     .appendTo(newLi);
                     newInput.append(newLi);
@@ -1049,20 +1049,20 @@ foreach ($questions as $n => $q) {
             // !        Change to radioanchor
             
             // convert everything to a new radioanchor
-            newInput = $j('<table class="radioanchor" />').attr('id', 'q' + qid);
+            newInput = $('<table class="radioanchor" />').attr('id', 'q' + qid);
             var ra = newInput.append('<tbody />').find('tbody').append('<tr />').find('tr');
-            $j('<td />').addClass('anchor').html('<span class="editText" id="low_anchor_'+qid+'">low anchor</span>').appendTo(ra);
+            $('<td />').addClass('anchor').html('<span class="editText" id="low_anchor_'+qid+'">low anchor</span>').appendTo(ra);
             for (var i = 0; i<5; i++) {
-                var rb = $j('<input />').attr('name', 'q' + qid)
+                var rb = $('<input />').attr('name', 'q' + qid)
                                         .attr('id', 'q' + qid + '_' + i)
                                         .attr('type', 'radio');
-                var rl = $j('<label />').html(i)
+                var rl = $('<label />').html(i)
                                         .attr('for', 'q' + qid + '_' + i);
-                var td = $j('<td />').append(rb).append(rl);
+                var td = $('<td />').append(rb).append(rl);
                 td.appendTo(ra);
             }
                             
-            ra.append($j('<td />')
+            ra.append($('<td />')
                                 .addClass('anchor editText')
                                 .html('<span class="editText" id="high_anchor_'+qid+'">high anchor</span>')
                             );      
@@ -1071,7 +1071,7 @@ foreach ($questions as $n => $q) {
             editbox_init();
         } else if (theType == 'datemenu') {     
             // !        Change to datemenu
-            newInput = $j('<input />')
+            newInput = $('<input />')
                         .attr('type', 'text')
                         .attr('id', 'q' + qid)
                         .addClass('datepicker');
@@ -1088,7 +1088,7 @@ foreach ($questions as $n => $q) {
             theInput.replaceWith(newInput);
         } else if (theType == 'text') { 
             // !        Change to text input
-            newInput = $j('<input />')  .attr('type', 'text')
+            newInput = $('<input />')  .attr('type', 'text')
                             .attr('name', theInput.attr('id'))
                             .attr('id', theInput.attr('id'))
                             .attr('maxlength', 255)
@@ -1106,9 +1106,9 @@ foreach ($questions as $n => $q) {
     // !    excelPaste()
     // get pasted data from excel, display it in the table, stripe the table, and show buttons
     function excelPaste() {
-            var data = $j("#excel_paste").val();
+            var data = $("#excel_paste").val();
             
-            $j('#excel_box tbody').html("<tr><td>" +
+            $('#excel_box tbody').html("<tr><td>" +
                 data.replace(/\n+$/i, '').replace(/\n/g, '</td></tr><tr><td>').replace(/\t/g, '</td><td>') +
                 "</td></tr>");
                 
@@ -1118,60 +1118,60 @@ foreach ($questions as $n => $q) {
     // !    addExcel
     // display box to copy Excel into
     function addExcel() {
-        $j("#excel_input").dialog({
+        $("#excel_input").dialog({
             width: 650,
             title: 'Add from Spreadsheet',
             show: 'scale',
             hide: 'scale',
             buttons: {
                 'Add Questions': function() { addQuestionsFromExcel(); },
-                'Reset Headers': function() { $j('#excel_box th').show(); },
-                'Cancel': function() { $j(this).dialog("close"); }
+                'Reset Headers': function() { $('#excel_box th').show(); },
+                'Cancel': function() { $(this).dialog("close"); }
             }
         });
-        $j("#excel_paste").select();
+        $("#excel_paste").select();
     }
     
     // !    addQuestionsFromExcel()
     function addQuestionsFromExcel() {
         var headers = new Array();
-        $j('#excel_box thead tr th:visible').each(function(i) {
-            headers[i] = $j(this).html();
+        $('#excel_box thead tr th:visible').each(function(i) {
+            headers[i] = $(this).html();
         });
         
-        $j('#excel_box tbody tr').each(function() {
+        $('#excel_box tbody tr').each(function() {
 
             var new_q_id = addQuestion();
             var cells = new Array();
             
-            $j(this).children().each(function(i) {
-                cells[i] = $j(this).html();
+            $(this).children().each(function(i) {
+                cells[i] = $(this).html();
             });
             
             // set name
-            if ($j.inArray('name', headers) > -1) {
-                $j("#name_" + new_q_id).html(cells[$j.inArray('name', headers)]);
-                $j("#i_name_" + new_q_id).val(cells[$j.inArray('name', headers)]);
+            if ($.inArray('name', headers) > -1) {
+                $("#name_" + new_q_id).html(cells[$.inArray('name', headers)]);
+                $("#i_name_" + new_q_id).val(cells[$.inArray('name', headers)]);
             }
             
             //set question
-            if ($j.inArray('question', headers) > -1) {
-                $j("#question_" + new_q_id).html(cells[$j.inArray('question', headers)]);
-                $j("#i_question_" + new_q_id).val(cells[$j.inArray('question', headers)]);
+            if ($.inArray('question', headers) > -1) {
+                $("#question_" + new_q_id).html(cells[$.inArray('question', headers)]);
+                $("#i_question_" + new_q_id).val(cells[$.inArray('question', headers)]);
             }
             
             //set type
-            if ($j.inArray('type', headers) > -1 && cells[$j.inArray('type', headers)] != '') {
-                $j("#type_" + new_q_id).val(cells[$j.inArray('type', headers)]);
+            if ($.inArray('type', headers) > -1 && cells[$.inArray('type', headers)] != '') {
+                $("#type_" + new_q_id).val(cells[$.inArray('type', headers)]);
                 changeType(new_q_id);
             }
             
-            var newType = $j("#type_" + new_q_id).val();
-            var theInput = $j('#q' + new_q_id);
+            var newType = $("#type_" + new_q_id).val();
+            var theInput = $('#q' + new_q_id);
             
             // set maxlength
-            if ($j.inArray('maxlength', headers) > -1 && cells[$j.inArray('maxlength', headers)] != '') {
-                var ml = cells[$j.inArray('maxlength', headers)];
+            if ($.inArray('maxlength', headers) > -1 && cells[$.inArray('maxlength', headers)] != '') {
+                var ml = cells[$.inArray('maxlength', headers)];
                 
                 if (newType == 'text') {
                     theInput.attr('maxlength', ml);
@@ -1179,33 +1179,33 @@ foreach ($questions as $n => $q) {
                     // set correct number of radioanchors
                     theInput.find('td:not(.anchor)').remove();
                     for (var i = 0; i < ml; i++) {
-                        var newRadio = $j('<td />')
-                                        .append($j('<input name="q'+new_q_id+'" value="'+i+'" id="q'+new_q_id+'_'+i+'" type="radio" />'))
-                                        .append($j('<label for="q'+new_q_id+'_'+i+'" />').text(i+1));
+                        var newRadio = $('<td />')
+                                        .append($('<input name="q'+new_q_id+'" value="'+i+'" id="q'+new_q_id+'_'+i+'" type="radio" />'))
+                                        .append($('<label for="q'+new_q_id+'_'+i+'" />').text(i+1));
                         theInput.find('td.anchor:last').before(newRadio);
                     }
                 }
             }
             
             // set options
-            if ($j.inArray('options', headers) > -1 && cells[$j.inArray('options', headers)] !='') {
-                var opts = cells[$j.inArray('options', headers)].split(';');
+            if ($.inArray('options', headers) > -1 && cells[$.inArray('options', headers)] !='') {
+                var opts = cells[$.inArray('options', headers)].split(';');
                 
                 if (newType == 'radio') {
                     theInput.find('li').remove(); // clear current contents
                     
-                    $j.each(opts, function(i) {
+                    $.each(opts, function(i) {
                         var opt = opts[i].split(':');
                         var optVal = opt[0].trim();
                         var optDisplay = opt[1].trim();
                     
-                        var newLi = $j('<li />');
-                        $j('<input />') .attr('type', 'radio')
+                        var newLi = $('<li />');
+                        $('<input />') .attr('type', 'radio')
                                         .attr('name', 'q' + new_q_id)
                                         .attr('id', 'q' + new_q_id + '_' + optVal)
                                         .val(optVal)
                                         .appendTo(newLi);
-                        $j('<label />').html(optDisplay)
+                        $('<label />').html(optDisplay)
                                         .attr('for', 'q' + new_q_id + '_' + optVal)
                                         .appendTo(newLi);
                         theInput.append(newLi);
@@ -1214,31 +1214,31 @@ foreach ($questions as $n => $q) {
                 } else if (newType == 'select') {
                     theInput.find('option').remove(); // clear current contents
                 
-                    $j('<option />').attr('value', 'NULL').appendTo(theInput);
+                    $('<option />').attr('value', 'NULL').appendTo(theInput);
                     
-                    $j.each(opts, function(i) {
+                    $.each(opts, function(i) {
                         var opt = opts[i].split(':');
                         var optVal = opt[0].trim();
                         var optDisplay = opt[1].trim();
 
-                        $j('<option />').attr('value', optVal).html(optDisplay).appendTo(theInput);
+                        $('<option />').attr('value', optVal).html(optDisplay).appendTo(theInput);
                     });
                 }
             }
             
             // set low and high anchors
-            if ($j.inArray('low_anchor', headers) > -1 && 
-                $j.inArray('high_anchor', headers) > -1 && 
-                cells[$j.inArray('low_anchor', headers)] != '') {
+            if ($.inArray('low_anchor', headers) > -1 && 
+                $.inArray('high_anchor', headers) > -1 && 
+                cells[$.inArray('low_anchor', headers)] != '') {
                 // set low and high 
-                var newMin = cells[$j.inArray('low_anchor', headers)];
-                var newMax = cells[$j.inArray('high_anchor', headers)];
+                var newMin = cells[$.inArray('low_anchor', headers)];
+                var newMax = cells[$.inArray('high_anchor', headers)];
                     
                 if (newType == 'selectnum') {
                     theInput.html('');
-                    $j('<option />').attr({'value':'NULL'}).html('').appendTo(theInput);
+                    $('<option />').attr({'value':'NULL'}).html('').appendTo(theInput);
                     for (var i = newMin; i <= newMax; i++) {
-                        $j('<option />').attr({'value':i}).html(i).appendTo(theInput);
+                        $('<option />').attr({'value':i}).html(i).appendTo(theInput);
                     }
                 } else if (newType == 'radioanchor') {
                     theInput.find('td.anchor:first input').val(newMin);
@@ -1260,81 +1260,81 @@ foreach ($questions as $n => $q) {
             }
         });
         
-        $j("#excel_box tbody").html('').dblclick();
-        $j("#excel_input").dialog("close");
+        $("#excel_box tbody").html('').dblclick();
+        $("#excel_input").dialog("close");
     }
 
     // !    saveQuestionnaire()
     function saveQuestionnaire() {
         // check that all the inputs are in participant view
         // [TODO] make this automatic or unnecessary 
-        if ($j('#quest_table tr td.input.beingedited').length) {
-            $j('<div />').html('You need to set the questionnaire to participant view before you save it. (Click the edit pencil next to all the yellow items.)').dialog();
+        if ($('#quest_table tr td.input.beingedited').length) {
+            $('<div />').html('You need to set the questionnaire to participant view before you save it. (Click the edit pencil next to all the yellow items.)').dialog();
             return false;
         }
         
-        $j('input.instantedit').each( function() {
-            $j(this).val(unescape($j(this).val()));
+        $('input.instantedit').each( function() {
+            $(this).val(unescape($(this).val()));
         });
         
         var qInfo = [];
         // get specific question info for each question
-        $j('#quest_table > tbody > tr[id^="row_"]').each( function(i) {
-            var theID = parseInt($j(this).attr('id').replace('row_', ''));
-            var theType = $j('#type_' + theID).val();
+        $('#quest_table > tbody > tr[id^="row_"]').each( function(i) {
+            var theID = parseInt($(this).attr('id').replace('row_', ''));
+            var theType = $('#type_' + theID).val();
             var theQ = {
                 id: theID,
                 type: theType,
                 n: i+1,
-                name: $j('#i_name_' + theID).val(),
-                question: $j('#i_question_' + theID).val(),
-                newQ: $j(this).hasClass('newQ') ? true : false
+                name: $('#i_name_' + theID).val(),
+                question: $('#i_question_' + theID).val(),
+                newQ: $(this).hasClass('newQ') ? true : false
             };
             
             if (theType == 'select') {
                 var theOptions = {};
-                $j('#q' + theID + ' option[value!="NULL"]').each( function() {
-                    theOptions[$j(this).val()] = $j(this).text();
+                $('#q' + theID + ' option[value!="NULL"]').each( function() {
+                    theOptions[$(this).val()] = $(this).text();
                 });
                 theQ['options'] = theOptions;
             } else if (theType == 'countries') {
                 // no options needed until default options are added
             } else if (theType == 'radio') {
                 var theOptions = {};
-                $j('input[type=radio][name="q' + theID + '"]').each( function() {
-                    theOptions[$j(this).val()] = $j(this).next('label').find('span.ui-button-text').html();
+                $('input[type=radio][name="q' + theID + '"]').each( function() {
+                    theOptions[$(this).val()] = $(this).next('label').find('span.ui-button-text').html();
                 });
                 theQ['options'] = theOptions;
             } else if (theType == 'datemenu') {
-                theQ['low_anchor'] = $j('#q' + theID).datepicker('option', 'minDate');
-                theQ['high_anchor'] = $j('#q' + theID).datepicker('option', 'maxDate');
+                theQ['low_anchor'] = $('#q' + theID).datepicker('option', 'minDate');
+                theQ['high_anchor'] = $('#q' + theID).datepicker('option', 'maxDate');
             } else if (theType == 'text') {
-                theQ['maxlength'] = $j('#q' + theID).attr('maxlength');
+                theQ['maxlength'] = $('#q' + theID).attr('maxlength');
             } else if (theType == 'selectnum') {
-                theQ['low_anchor'] = $j('select#q' + theID).find('option:eq(1)').val();
-                theQ['high_anchor'] = $j('select#q' + theID).find('option:last').val();
+                theQ['low_anchor'] = $('select#q' + theID).find('option:eq(1)').val();
+                theQ['high_anchor'] = $('select#q' + theID).find('option:last').val();
             } else if (theType == 'radioanchor') {
-                theQ['maxlength'] = $j('#q' + theID + ' td label').length;
-                theQ['low_anchor'] = $j('#i_low_anchor_' + theID).val();
-                theQ['high_anchor'] = $j('#i_high_anchor_' + theID).val();
+                theQ['maxlength'] = $('#q' + theID + ' td label').length;
+                theQ['low_anchor'] = $('#i_low_anchor_' + theID).val();
+                theQ['high_anchor'] = $('#i_high_anchor_' + theID).val();
             }
             
             qInfo[qInfo.length] = theQ;
         });
         
         var radioRowOptions = {};
-        $j('input[id^="i_radiorow_option_"]').each( function() {
-            var n = $j(this).attr('id').replace('i_radiorow_option_', '');
-            var dv = $j('#radiorow_value_' + n).val();
-            radioRowOptions[dv] = $j(this).val();
+        $('input[id^="i_radiorow_option_"]').each( function() {
+            var n = $(this).attr('id').replace('i_radiorow_option_', '');
+            var dv = $('#radiorow_value_' + n).val();
+            radioRowOptions[dv] = $(this).val();
         });
     
         var myInfo = {};
-        $j.each($j('#myInformation_form').serializeArray(), function(index,value) {
+        $.each($('#myInformation_form').serializeArray(), function(index,value) {
             myInfo[value.name] = value.value;
         });
-        myInfo['title'] = $j('#i_title').val();
-        myInfo['instructions'] = $j('#i_instructions').val();
+        myInfo['title'] = $('#i_title').val();
+        myInfo['instructions'] = $('#i_instructions').val();
         
         var submitData = {
             'questions': qInfo,
@@ -1342,16 +1342,16 @@ foreach ($questions as $n => $q) {
             'radiorow': radioRowOptions
         };
         
-        //$j('<div />').html(qInfo.toSource()).dialog({width: 800});
+        //$('<div />').html(qInfo.toSource()).dialog({width: 800});
     
-        $j.ajax({
+        $.ajax({
             url: './builder?save',
             type: 'POST',
             data: submitData,
             success: function(data) {
                 r = data.split(";");
-                $j('#quest_id').val(parseInt(r[0]));
-                $j('<div />').html(r[1]).dialog({
+                $('#quest_id').val(parseInt(r[0]));
+                $('<div />').html(r[1]).dialog({
                     title: 'Questionnaire Updated',
                     width: 500,
                     buttons: {
@@ -1366,35 +1366,35 @@ foreach ($questions as $n => $q) {
     
     // !    addQuestion()
     function addQuestion() {
-        var oldID = parseInt($j('#quest_table > tbody > tr:last').attr('id').replace('row_', ''));
+        var oldID = parseInt($('#quest_table > tbody > tr:last').attr('id').replace('row_', ''));
         //var newID = oldID + 1;
         newID = Math.floor(Math.random()*100000000);
         
         var oldRegex = new RegExp('_' + oldID, 'g');
-        $j('#quest_table > tbody').append($j('#quest_table > tbody > tr:last').clone(true));
-        $j('#quest_table > tbody > tr:last').attr('id', 'row_' + newID).addClass('newQ');
-        $j('#quest_table > tbody > tr:last *[id]').attr('id', function(i, a) { return a.replace(oldID, newID); });
-        $j('#quest_table > tbody > tr:last *[name]').attr('name', function(i, a) { return a.replace(oldID, newID); })
-        $j('#quest_table > tbody > tr:last *[value]').attr('value', function(i, a) { return a.replace(oldID, newID); });
-        $j('#quest_table > tbody > tr:last *[onclick]').attr('onclick', function(i, a) { return a.replace(oldID, newID); });
-        $j('#quest_table > tbody > tr:last *[href]').attr('href', function(i, a) { return a.replace(oldID, newID); });
-        $j('#quest_table > tbody > tr:last *[onchange]').attr('onchange', function(i, a) { return a.replace(oldID, newID); });
-        $j('#quest_table > tbody > tr:last *[for]').attr('for', function(i, a) { return a.replace(oldID, newID); });
-        $j('#quest_table > tbody > tr:last .qid').html(function(i, a) { return a.replace(oldID, newID); });
+        $('#quest_table > tbody').append($('#quest_table > tbody > tr:last').clone(true));
+        $('#quest_table > tbody > tr:last').attr('id', 'row_' + newID).addClass('newQ');
+        $('#quest_table > tbody > tr:last *[id]').attr('id', function(i, a) { return a.replace(oldID, newID); });
+        $('#quest_table > tbody > tr:last *[name]').attr('name', function(i, a) { return a.replace(oldID, newID); })
+        $('#quest_table > tbody > tr:last *[value]').attr('value', function(i, a) { return a.replace(oldID, newID); });
+        $('#quest_table > tbody > tr:last *[onclick]').attr('onclick', function(i, a) { return a.replace(oldID, newID); });
+        $('#quest_table > tbody > tr:last *[href]').attr('href', function(i, a) { return a.replace(oldID, newID); });
+        $('#quest_table > tbody > tr:last *[onchange]').attr('onchange', function(i, a) { return a.replace(oldID, newID); });
+        $('#quest_table > tbody > tr:last *[for]').attr('for', function(i, a) { return a.replace(oldID, newID); });
+        $('#quest_table > tbody > tr:last .qid').html(function(i, a) { return a.replace(oldID, newID); });
         editbox_init();
         stripe('#quest_table > tbody');
-        $j('#quest_table ul.radio').each( function() { $j(this).buttonset(); } );
+        $('#quest_table ul.radio').each( function() { $(this).buttonset(); } );
         
         return newID;
     }
     
     function removeQuestion(r) {
         // make sure at least one question remains for cloning
-        if ($j('#quest_table > tbody tr').length>1) { 
-            $j(r).parents('tr').remove();
+        if ($('#quest_table > tbody tr').length>1) { 
+            $(r).parents('tr').remove();
             stripe('#quest_table > tbody');
         } else {
-            $j('<div />').html('You must have at least one question.').dialog();
+            $('<div />').html('You must have at least one question.').dialog();
         }
     }
      

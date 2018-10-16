@@ -181,79 +181,79 @@ $page->displayBody();
 
 <script>
 
-$j(function() {
-	$j('#userinfo').hide();
-	$j('.buttonset').buttonset();
-	$j('#finduser').click( function() {
-		if ($j('#finduser span').html() == 'reset search') {
-			$j('#id,#code,#username').val('');
-			$j('#userinfo,#show_comp_tables').hide();
-			$j('#finduser span').html('find user');
-			$j('#resetpswd,#changecode').button({disabled: true});
-			$j('#completed_tables').html('');
-			$j('#findcontaining').attr('checked', false);
-			$j('#username, #findcontaining, label[for="findcontaining"]').show();
-			$j('#userlist').remove();
+$(function() {
+	$('#userinfo').hide();
+	$('.buttonset').buttonset();
+	$('#finduser').click( function() {
+		if ($('#finduser span').html() == 'reset search') {
+			$('#id,#code,#username').val('');
+			$('#userinfo,#show_comp_tables').hide();
+			$('#finduser span').html('find user');
+			$('#resetpswd,#changecode').button({disabled: true});
+			$('#completed_tables').html('');
+			$('#findcontaining').attr('checked', false);
+			$('#username, #findcontaining, label[for="findcontaining"]').show();
+			$('#userlist').remove();
 		} else {
-			$j.ajax({
+			$.ajax({
 				url: 'participant?find',
-				data: $j('.usersearch input').serialize(),
+				data: $('.usersearch input').serialize(),
 				type: 'POST',
 				dataType: 'json',
 				success: function(data) {
 					if (data.userlist) {
-						var userlist = $j('<select id="userlist" />');
+						var userlist = $('<select id="userlist" />');
 						
 						var n = 0;
-						$j.each(data, function(user) {
+						$.each(data, function(user) {
 							if (user != 'userlist') {
 								userlist.append('<option value="' + data[user].username + '">'+ data[user].username + '</option>');
 								n++;
 							}
 						});
 						userlist.prepend('<option value="" selected="selected">' + n + ' matching usernames found</option>');
-						$j('#username').after(userlist);
-						$j('#userlist').change( function() {
-							$j('#username').val($j('#userlist').val());
-							$j('#username, #findcontaining, label[for="findcontaining"]').show();
-							$j('#finduser span').html('find user');
-							$j('#finduser').click();
-							$j('#userlist').remove();
+						$('#username').after(userlist);
+						$('#userlist').change( function() {
+							$('#username').val($('#userlist').val());
+							$('#username, #findcontaining, label[for="findcontaining"]').show();
+							$('#finduser span').html('find user');
+							$('#finduser').click();
+							$('#userlist').remove();
 						});
-						$j('#findcontaining').attr('checked', false);
-						$j('#finduser span').html('reset search');
-						$j('#username, #findcontaining, label[for="findcontaining"]').hide();
+						$('#findcontaining').attr('checked', false);
+						$('#finduser span').html('reset search');
+						$('#username, #findcontaining, label[for="findcontaining"]').hide();
 					} else {
-						$j('#id').val(data.user_id);
-						$j('#code').val(data.code);
-						$j('#username').val(data.username);
-						$j('#sex').html(data.sex);
-						$j('#birthdate').html(data.birthday);
-						$j('#status').html(data.status);
+						$('#id').val(data.user_id);
+						$('#code').val(data.code);
+						$('#username').val(data.username);
+						$('#sex').html(data.sex);
+						$('#birthdate').html(data.birthday);
+						$('#status').html(data.status);
 						if (data.p == '') {
-    						$j('#autologin').html('You do not have authorisation to get the autologin for ' + data.status + 's');
+    						$('#autologin').html('You do not have authorisation to get the autologin for ' + data.status + 's');
                         } else {
-						    $j('#autologin').html('<a href="/include/scripts/login?u=' + data.user_id + '&p=' + data.p + '&url=/">http://faceresearch.org/include/scripts/login?u=' + data.user_id + '&p=' + data.p + '&url=/</a>');
+						    $('#autologin').html('<a href="/include/scripts/login?u=' + data.user_id + '&p=' + data.p + '&url=/">http://faceresearch.org/include/scripts/login?u=' + data.user_id + '&p=' + data.p + '&url=/</a>');
 						}
-						$j('#userinfo').show();
-						$j('#resetpswd').button({disabled: false});
-						$j('#changecode').button({disabled: false});
-						$j('#show_comp_tables').show();
-						$j('#finduser span').html('reset search');
+						$('#userinfo').show();
+						$('#resetpswd').button({disabled: false});
+						$('#changecode').button({disabled: false});
+						$('#show_comp_tables').show();
+						$('#finduser span').html('reset search');
 					}
 				}
 			});
 		}
 	});
 	
-	$j('#changestatus').click( function() {
+	$('#changestatus').click( function() {
     	alert('Function under development');
     });
 	
-	$j('#resetpswd').click( function() {
-		$j.ajax({
+	$('#resetpswd').click( function() {
+		$.ajax({
 			url: 'participant?resetpswd',
-			data: $j('#id').serialize(),
+			data: $('#id').serialize(),
 			type: 'POST',
 			success: function(data) {
 				growl(data, 2000);
@@ -261,10 +261,10 @@ $j(function() {
 		});
 	}).button({disabled: true});
 	
-	$j('#changecode').click( function() {
-		$j.ajax({
+	$('#changecode').click( function() {
+		$.ajax({
 			url: 'participant?changecode',
-			data: $j('.usersearch input').serialize(),
+			data: $('.usersearch input').serialize(),
 			type: 'POST',
 			success: function(data) {
 				growl(data, 2000);
@@ -272,15 +272,15 @@ $j(function() {
 		});
 	}).button({disabled: true});
 
-	$j('#show_comp_tables').button().click(function() {
-		$j('#completed_tables').html("<img src='/images/loaders/loading.gif' />").load('participant?tables&user_id=' + $j('#id').val(), function() {
+	$('#show_comp_tables').button().click(function() {
+		$('#completed_tables').html("<img src='/images/loaders/loading.gif' />").load('participant?tables&user_id=' + $('#id').val(), function() {
 			stripe('#completed_tables tbody');
 			
-			$j('#completed_tables table.sortable').each(function() {
-				var t = $j(this).get(0);
+			$('#completed_tables table.sortable').each(function() {
+				var t = $(this).get(0);
 				sorttable.makeSortable(t);
 			});
-			$j('#show_comp_tables').hide();
+			$('#show_comp_tables').hide();
 		});
 	}).hide();
 });

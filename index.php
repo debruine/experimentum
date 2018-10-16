@@ -115,22 +115,22 @@ if (isset($_SESSION['status']) && 0 < $_SESSION['status']) {
 
 <script>
 
-$j(function() {
+$(function() {
     
     itemIDs = [ <?php if (is_array($itemList)) { echo implode(',', $itemList); } ?> ];
     
-    $j.each(itemIDs, function() {
-        var theItem = $j('#' + this);
+    $.each(itemIDs, function() {
+        var theItem = $('#' + this);
         var itemInfo = this.split('_');
         
-        $j.get('/include/scripts/check?' + itemInfo[0] + '&id=' + itemInfo[1], function(responseText){  
+        $.get('/include/scripts/check?' + itemInfo[0] + '&id=' + itemInfo[1], function(responseText){  
             if ('nodisplay' == responseText) {
                 theItem.addClass('hide');
             } else {
                 var parsedResponse = responseText.split(";");
                 if (1 == parsedResponse[0]) {
                     theItem.addClass('done');
-                    theItem.find('a').append($j('<span class="corner">Done</span>'));
+                    theItem.find('a').append($('<span class="corner">Done</span>'));
                 }
             }
         });

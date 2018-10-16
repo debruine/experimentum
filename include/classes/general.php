@@ -273,7 +273,7 @@ class page {
             echo '  <meta name="MobileOptimized" content="width" />' . ENDLINE;
             echo '  <meta name="HandheldFriendly" content="True" />' . ENDLINE;
             echo '  <meta http-equiv="cleartype" content="on" />' . ENDLINE;
-            //echo '    <script>$j(document).ready(function() { loadPage(); alert();});</script>' . ENDLINE;
+            //echo '    <script>$(document).ready(function() { loadPage(); alert();});</script>' . ENDLINE;
         }
 
         echo '</head>', ENDTAG;

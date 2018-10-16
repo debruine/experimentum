@@ -119,13 +119,13 @@ if (is_numeric($_GET['id'])
         $specific_fb .= "</table>\n";
         
         $specific_fb .= '<script>
-    $j(function() {
-        $j.get("' . $url . '", function(data) {
+    $(function() {
+        $.get("' . $url . '", function(data) {
             var response = data.split(";");
             var avgImages = response[0].split(",");
-            $j("#average0").attr("src", "/tomcat/psychomorph/uploads/" + avgImages[0]);
-            $j("#average1").attr("src", "/tomcat/psychomorph/uploads/" + avgImages[1]);
-            $j("#average0,#average1").css("width", "auto");
+            $("#average0").attr("src", "/tomcat/psychomorph/uploads/" + avgImages[0]);
+            $("#average1").attr("src", "/tomcat/psychomorph/uploads/" + avgImages[1]);
+            $("#average0,#average1").css("width", "auto");
         });
     });
 </script>';
@@ -177,8 +177,8 @@ if (!MOBILE) {
 
 <div class="buttons"><button id="home">Back to Home Page</button></div>
 <script>
-    $j(function() {
-        $j('#home').button().click( function() { 
+    $(function() {
+        $('#home').button().click( function() { 
             window.location = '<?= (!empty($_SESSION['project'])) ? '/project?' . $_SESSION['project'] : '/' ?>'; 
         } );
     });
