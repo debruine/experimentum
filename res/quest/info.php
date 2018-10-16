@@ -293,7 +293,7 @@ $page->displayBody();
     <?php if (!empty($questdata['url'])) { ?>
         <tr><td>URL:</td> <td><?= $questdata['url'] ?></td></tr>
     <?php } ?>
-    <tr><td>Restrictions:</td> <td><?= $questdata['sex'] ?> who prefer <?= is_null($questdata['sexpref']) ? 'unspecified sex' : $questdata['sexpref'] ?>, 
+    <tr><td>Restrictions:</td> <td><?= $questdata['sex'] ?> 
         ages <?= is_null($questdata['lower_age']) ? 'any' : $questdata['lower_age'] ?> 
         to <?= is_null($questdata['upper_age']) ? 'any' : $questdata['upper_age'] ?> years</td></tr>
     <tr><td>Instructions:</td> <td><?= $questdata['instructions'] ?></td></tr>

@@ -5,14 +5,6 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 // set up user object and login
 $user = new user();
 $user->set_username('Guest');
-/*
-$user->set_sex($clean['sex']);
-$user->set_sexpref($clean['sexpref']);
-$user->set_lang('en_GB'); // $clean['lang']);
-$user->set_ethnicity($clean['ethnicity']);
-$user->set_birthday(intval($clean['year']), intval($clean['month']), intval($clean['day']));
-
-*/
 $user->set_code($clean['code']);
 $user->set_status('guest');
 $user->register("");

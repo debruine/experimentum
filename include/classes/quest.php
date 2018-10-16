@@ -196,10 +196,9 @@ class questionnaire extends formTable {
 	
 	function check_eligible() {
 		$user_sex = $_SESSION['sex'];
-		$user_sexpref = $_SESSION['sexpref'];
 		$user_age = $_SESSION['age'];
 		
-		$query = new myQuery('SELECT lower_age, upper_age, sex, sexpref FROM quest WHERE id=' . $this->id);
+		$query = new myQuery('SELECT lower_age, upper_age, sex FROM quest WHERE id=' . $this->id);
 		$expinfo = $query->get_one_array();
 		
 		$eligible = true;
@@ -207,7 +206,6 @@ class questionnaire extends formTable {
 		$eligible = $eligible && (is_null($expinfo['lower_age']) || $user_age >= $expinfo['lower_age']);
 		$eligible = $eligible && (is_null($expinfo['upper_age']) || $user_age <= $expinfo['upper_age']);
 		$eligible = $eligible && (is_null($expinfo['sex']) || $expinfo['sex'] == 'both' || $user_sex == $expinfo['sex']);
-		$eligible = $eligible && (is_null($expinfo['sexpref']) || $user_sexpref == $expinfo['sexpref']);
 		
 		return $eligible;
 	}

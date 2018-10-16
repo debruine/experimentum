@@ -49,7 +49,7 @@ if (array_key_exists('id', $_GET)) {
     
     $id = my_clean($_GET['id']);
     if (is_numeric($id) & $id>0) {
-        $q = new myQuery("SELECT id AS set_id, type as 'set_type', res_name, name as 'set_name', labnotes, sex, sexpref, lower_age, upper_age,
+        $q = new myQuery("SELECT id AS set_id, type as 'set_type', res_name, name as 'set_name', labnotes, sex, lower_age, upper_age,
                             feedback_general, feedback_specific, feedback_query, forward, chart_id FROM sets WHERE id='{$id}'");
         $set_info = $q->get_assoc(0);
         
@@ -98,7 +98,7 @@ if (array_key_exists('save', $_GET)) {
     }
     
     $set_query = sprintf('REPLACE INTO sets (id, name, res_name, status, type, labnotes, 
-            sex, sexpref, lower_age, upper_age,
+            sex, lower_age, upper_age,
             feedback_general, feedback_specific, feedback_query, forward, chart_id, create_date) 
             VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", %s, NOW())',
             check_null($clean['set_id'], 'id'),
@@ -108,7 +108,6 @@ if (array_key_exists('save', $_GET)) {
             $clean['set_type'],
             $clean['labnotes'],
             $clean['sex'],
-            $clean['sexpref'],
             $clean['lower_age'],
             $clean['upper_age'],
             $clean['feedback_general'],

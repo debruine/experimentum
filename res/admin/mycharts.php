@@ -664,7 +664,7 @@ $page->displayBody();
 							'WHERE sex="male" OR sex="female"' + "\n" +
 							'GROUP BY sex';
 	
-	// participant sex and sexpref
+	// participant sex 
 	exampleQueryText[3] = 	'CREATE TEMPORARY TABLE tmp_score' + "\n" +
 							'SELECT q6227 + q6228 + q6229 + q6230 + q6231 + q6232 + ' + "\n" +
 							'q6233 + q6234 + q6235 + q6236 + q6237 + q6238 as score' + "\n" +

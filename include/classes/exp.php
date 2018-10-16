@@ -61,7 +61,7 @@
         $user_sex = $_SESSION['sex'];
         $user_age = $_SESSION['age'];
         
-        $query = new myQuery('SELECT lower_age, upper_age, sex, sexpref FROM exp WHERE id=' . $this->id);
+        $query = new myQuery('SELECT lower_age, upper_age, sex FROM exp WHERE id=' . $this->id);
         $expinfo = $query->get_one_array();
         
         $eligible = true;

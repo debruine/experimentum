@@ -340,7 +340,7 @@ $page->displayBody();
     <?php if (!empty($expdata['url'])) { ?>
         <tr><td>URL:</td> <td><?= $expdata['url'] ?></td></tr>
     <?php } ?>
-    <tr><td>Restrictions:</td> <td><?= $expdata['sex'] ?> who prefer <?= is_null($expdata['sexpref']) ? 'unspecified sex' : $expdata['sexpref'] ?>, 
+    <tr><td>Restrictions:</td> <td><?= $expdata['sex'] ?> 
         ages <?= is_null($expdata['lower_age']) ? 'any' : $expdata['lower_age'] ?> 
         to <?= is_null($expdata['upper_age']) ? 'any' : $expdata['upper_age'] ?> years</td></tr>
     <tr><td>Instructions:</td> <td><?= $expdata['instructions'] ?></td></tr>

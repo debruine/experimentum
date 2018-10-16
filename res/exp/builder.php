@@ -69,7 +69,7 @@ if (array_key_exists('save', $_GET)) {
         (id, name, res_name, exptype, subtype, design, trial_order, side,
         instructions, question, label1, label2, label3, label4, rating_range, low_anchor, high_anchor,
         feedback_query, feedback_specific, feedback_general, labnotes, 
-        sex, sexpref, lower_age, upper_age, 
+        sex, lower_age, upper_age, 
         randomx, password, blurb, forward, default_time, increment_time, create_date)  
         VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", 
         "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", 
@@ -98,7 +98,6 @@ if (array_key_exists('save', $_GET)) {
         $clean['feedback_general'], 
         $clean['labnotes'], 
         $clean['sex'],
-        $clean['sexpref'],
         $clean['lower_age'], 
         $clean['upper_age'],
         $clean['randomx'], 
@@ -326,8 +325,7 @@ if (validID($exp_id)) {
         'total_images' => '20',
         'default_time' => '4000',
         'increment_time' => '100',
-        'sex' => 'both',
-        'sexpref' => 'NULL'
+        'sex' => 'both'
     );
 }
 
@@ -403,7 +401,7 @@ $info['images'] = new formElement('images','images');
 $info['images']->set_question("Images");
 $info['images']->set_custom_input($ci);
 
-// set up limits: sex, sexpref, lower_age, upper_age
+// set up limits: sex, lower_age, upper_age
 $sex = new select('sex', 'sex', $eInfo['sex']);
 $sex->set_options(array(
     'both' => 'All genders',

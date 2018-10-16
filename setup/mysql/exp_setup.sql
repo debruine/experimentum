@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS `exp`;
 CREATE TABLE `exp` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT 'Experiment',
   `url` varchar(255) DEFAULT NULL,
   `exptype` enum('2afc','jnd','rating','buttons','xafc','sort','nback','interactive','motivation','other') DEFAULT NULL,
@@ -41,14 +41,13 @@ CREATE TABLE `exp` (
   `increment_time` int(6) unsigned DEFAULT NULL,
   `rating_range` tinyint(3) unsigned DEFAULT NULL,
   `sex` enum('both','male','female') DEFAULT 'both',
-  `sexpref` enum('men','women','either') DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `quest`;
 CREATE TABLE `quest` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT 'Questionnaire',
   `url` varchar(255) DEFAULT NULL,
   `questtype` enum('mixed','radiopage','ranking') DEFAULT NULL,
@@ -69,14 +68,13 @@ CREATE TABLE `quest` (
   `custom_record` enum('false','true') DEFAULT 'false',
   `forward` varchar(255) DEFAULT NULL,
   `chart_id` int(11) DEFAULT NULL,
-  `sexpref` enum('men','women','either') DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `question`;
 CREATE TABLE `question` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `quest_id` int(11) NOT NULL DEFAULT 0,
   `n` int(3) NOT NULL DEFAULT 0,
   `name` varchar(32) DEFAULT NULL,
@@ -98,10 +96,8 @@ CREATE TABLE `question` (
 
 
 DROP TABLE IF EXISTS `project`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `project` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `res_name` varchar(255) DEFAULT NULL,
   `url` varchar(50) DEFAULT NULL,
@@ -115,6 +111,15 @@ CREATE TABLE `project` (
   `blurb` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `url` (`url`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `session`;
+CREATE TABLE `session` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) unsigned NOT NULL,
+  `user_id` int(11) unsigned NOT NULL,
+  `dt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
@@ -135,19 +140,8 @@ CREATE TABLE `sets` (
   `feedback_general` text DEFAULT NULL,
   `forward` varchar(255) DEFAULT NULL,
   `chart_id` int(11) DEFAULT NULL,
-  `sexpref` enum('men','women','either') DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `set_exp`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `set_exp` (
-  `set_id` int(11) DEFAULT NULL,
-  `exp_id` int(11) DEFAULT NULL,
-  `type` enum('exp','quest','econ','set') DEFAULT 'exp',
-  UNIQUE KEY `set_id` (`set_id`,`exp_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `set_items`;
