@@ -10,12 +10,12 @@ unset($_SESSION['set_item_number']);
 $title = loc('Researchers');
 
 $styles = array(
-    '.bigbuttons li a.exp'   => 'background-color: hsl(30,100%,25%);',
-    '.bigbuttons li a.quest'     => 'background-color: hsl(50,100%,25%);',
-    '.bigbuttons li a.set' => 'background-color: hsl(120,100%,15%);',
-    '.bigbuttons li a.project' => 'background-color: hsl(200,100%,20%);',
-    '.bigbuttons li a.stimuli' => 'background-color: hsl(280,100%,20%);',
-    '.bigbuttons li a.admin' => 'background-color: hsl(0,0%,10%);',
+    '.bigbuttons li a.exp:hover'   => 'background-color: var(--rainbow-red);',
+    '.bigbuttons li a.quest:hover' => 'background-color: var(--rainbow-orange);',
+    '.bigbuttons li a.set:hover'   => 'background-color: var(--rainbow-yellow);',
+    '.bigbuttons li a.project:hover' => 'background-color: var(--rainbow-green);',
+    '.bigbuttons li a.stimuli:hover' => 'background-color: var(--rainbow-blue);',
+    '.bigbuttons li a.admin:hover' => 'background-color: var(--rainbow-purple);',
     '.bigbuttons li' => 'position: relative;',
     '.bigbuttons li input' => 'width: 60%; 
                                display: block; 
