@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 $title = array(
     '/res/' => 'Researchers',
@@ -13,10 +13,11 @@ $title = array(
 $styles = array(
     '#trial_builder, #image_chooser' => 'font-size: 80%; overflow:auto;',
     '#trial_builder img' => 'display: inline-block; min-width: 80px; min-height: 30px;',
-    '#trial_builder img.trialimg, #img_list img' => 'width: 80px; border: 1px solid ' . THEME . '; margin: 3px;',
+    '#trial_builder img.trialimg, #img_list img, #trial_builder  #dv span' => 'width: 80px; border: 1px solid ' . THEME . '; margin: 3px;',
     '#trial_builder span.imgname' => 'display: none;',
     '#trial_builder.list img' => 'display: none;',
-    '#trial_builder.list span.imgname' => 'display: inline-block; border: 1px solid ' . THEME . '; min-height: 1em; width: 170px; padding: 5px; margin: 2px;',
+    '#trial_builder.list span.imgname, #trial_builder.list #dv span' => 'display: inline-block; border: 1px solid ' . THEME . '; min-height: 1em; width: 170px; padding: 5px; margin: 2px;',
+    '#dv span' => 'background-color:' . THEME . '; color: white; text-align: center; display: inline-block; ',
     '#img_list img' => 'box-shadow: 2px 2px 4px rgba(0,0,0,.5);',
     '#img_list li:hover' => 'cursor: move;',
     '#img_list li' => 'padding:1px; margin:0; max-width: 30em;',
@@ -35,7 +36,7 @@ $styles = array(
     '.label_list li' => 'padding:0; margin-left: 22px; font-size: 90%;',
     '.trial_icons' => 'float: right;',
     '.trial_icons a' => 'border: none;',
-    'audio' => 'width: 100px; height: 30px; paddint-top: 5px;'
+    'audio' => 'width: 100px; height: 30px; padding-top: 5px;'
 );
 
 function imgname($src) {
@@ -138,6 +139,8 @@ if (array_key_exists('save', $_GET)) {
             $where
         );
         
+        $query = str_replace("{{blank}}", "", $query);
+        
         $q = new myQuery($query);
         
         // add images to xafc table if an xafc or sort type
@@ -145,7 +148,10 @@ if (array_key_exists('save', $_GET)) {
             $xafc = array();
             foreach ($tdata['xafc'] as $i => $path) {
                 $n = $i+1;
-                $q = new myQuery("INSERT INTO xafc (exp_id, trial_n, n, image) SELECT $exp_id, $trial, $n, stimuli.id FROM stimuli WHERE path='$path'");
+                $q = new myQuery("INSERT INTO xafc (exp_id, trial_n, n, image) 
+                                    SELECT $exp_id, $trial, $n, stimuli.id 
+                                    FROM stimuli 
+                                    WHERE path='$path'");
             }
         }   
     }
@@ -164,7 +170,7 @@ $exp_id=$_GET['id'];
 if (!validID($exp_id)) { header('Location: /'); exit; }
 
 // get experiment info
-$query = new myQuery('SELECT res_name, question, label1, randomx, exptype, subtype FROM exp WHERE id=' . $exp_id);
+$query = new myQuery('SELECT res_name, question, label1, total_stim, random_stim, exptype, subtype FROM exp WHERE id=' . $exp_id);
 $exp_info = $query-> get_assoc(0);
 $title[] = $exp_info['res_name'];
 
@@ -177,7 +183,9 @@ $query = new myQuery('SELECT trial_n, name, label1, label2, label3, label4, ques
     LEFT JOIN stimuli AS li ON (li.id=left_img)
     LEFT JOIN stimuli AS ci ON (ci.id=center_img)
     LEFT JOIN stimuli AS ri ON (ri.id=right_img)
-    WHERE exp_id=' . $exp_id . ' ORDER BY trial_n');
+    WHERE exp_id=' . $exp_id . ' 
+    AND trial_n <= ' . $exp_info['total_stim'] . ' 
+    ORDER BY trial_n');
     
 $trials = $query->get_assoc();
 
@@ -186,6 +194,7 @@ if ($exp_info['exptype'] == 'xafc' || $exp_info['exptype'] == 'sort') {
         FROM xafc 
         LEFT JOIN stimuli ON (stimuli.id=xafc.image) 
         WHERE exp_id=' . $exp_id . ' 
+        AND trial_n <= ' . $exp_info['total_stim'] . ' 
         ORDER BY trial_n');
     $xafc_trials = $query->get_assoc();
     foreach ($xafc_trials as $xt) {
@@ -194,13 +203,8 @@ if ($exp_info['exptype'] == 'xafc' || $exp_info['exptype'] == 'sort') {
     }
 }
 
-// get total trials from table
-$total_trials = 0;
-$query = new myQuery('DESC exp_' . $exp_id);
-$fields = $query->get_assoc(false, false, 'Field');
-foreach ($fields as $field) {
-    if (substr($field, 0, 4) == 'side') { $total_trials++; }
-}
+// get total trials
+$total_trials = max(1, $exp_info['total_stim']);
 
 // add more trials if the experiment table holds more trials than the trials table
 if (count($trials) > 0 && count($trials) < $total_trials) {
@@ -215,7 +219,7 @@ if (count($trials) == 0) {
     // no trials exist, set up trials
     $trials = array();
     
-    $maxtrials = max(1,$exp_info['randomx'], $total_trials);
+    $maxtrials = max(1,$exp_info['random_stim'], $total_trials);
     
     for ($i=0; $i<$maxtrials; $i++) {
         $trials[$i] = array(
@@ -291,7 +295,7 @@ $page->displayBody();
 
 ?>
 
-<p class="fullwidth">Images that will get high scores (1 on FC or 4-7 on JND) go on the left. Images that will get low scores (0 on FC or 0-3 on JND) go on the right.</p>
+<hidden name="exp_id" id="exp_id" value="=<?= $exp_id ?>" />
 
 <div class="toolbar">
     <div class="toolbar-line">
@@ -327,7 +331,42 @@ $page->displayBody();
 
 <div id="trial_builder" class="list">
 
+<div id="dv">
+
 <?php
+    
+if (!empty($trials[0]['limg'])) {
+    if ($exp_info['exptype'] == '2afc') {
+        echo '<span>DV = 1</span>' . ENDLINE;
+    } else if ($exp_info['exptype'] == 'jnd') {
+        echo '<span>DV = 4-7</span>' . ENDLINE;
+    }
+}
+
+if (!empty($trials[0]['cimg'])) {
+    if ($exp_info['exptype'] == '2afc') {
+        echo '<span></span>' . ENDLINE;
+    } else if ($exp_info['exptype'] == 'jnd') {
+        echo '<span></span>' . ENDLINE;
+    }
+}
+
+
+if (!empty($trials[0]['rimg'])) {
+    if ($exp_info['exptype'] == '2afc') {
+        echo '<span>DV = 0</span>' . ENDLINE;
+    } else if ($exp_info['exptype'] == 'jnd') {
+        echo '<span>DV = 0-3</span>' . ENDLINE;
+    }
+}
+
+if (!empty($trials[0]['xafc'])) {
+    foreach ($trial['xafc'] as $i => $x) {
+        echo '<span>DV = '.$i.'</span>' . ENDLINE;
+    }
+}
+
+echo '</div>'. ENDLINE;
 
 foreach ($trials as $trial) {
 
@@ -336,15 +375,15 @@ foreach ($trials as $trial) {
     echo '  <p>t' . $trial['trial_n'] . ': <span id="name_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . $trial['name' ] . '</span></p>' . ENDLINE;
     
     if (empty($exp_info['question'])) { 
-        echo '<p>Q' . $trial['trial_n'] . ': <span id="question_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . ifEmpty($trial['question' ], 'Add Trial Question Here') . '</span></p>' . ENDLINE; 
+        echo '<p>Q' . $trial['trial_n'] . ': <span id="question_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . $trial['question' ] . '</span></p>' . ENDLINE; 
     }
     
     if ($exp_info['exptype'] == 'jnd' && empty($exp_info['label1'])) {
         echo '  <ol class="label_list">' . ENDLINE;
-        echo '  <li><span id="label1_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . ifEmpty($trial['label1' ], 'Slightly More XXX') . '</li>' . ENDLINE;
-        echo '  <li><span id="label2_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . ifEmpty($trial['label2' ], 'Somewhat More XXX') . '</li>' . ENDLINE;
-        echo '  <li><span id="label3_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . ifEmpty($trial['label3' ], 'More XXX') . '</li>' . ENDLINE;
-        echo '  <li><span id="label4_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . ifEmpty($trial['label4' ], 'Much More XXX') . '</li>' . ENDLINE;
+        echo '  <li><span id="label1_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . $trial['label1' ] . '</li>' . ENDLINE;
+        echo '  <li><span id="label2_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . $trial['label2' ] . '</li>' . ENDLINE;
+        echo '  <li><span id="label3_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . $trial['label3' ] . '</li>' . ENDLINE;
+        echo '  <li><span id="label4_' . $trial['trial_n'] . '" class="editText" title="Click to edit!">' . $trial['label4' ] . '</li>' . ENDLINE;
         echo '  </ol>' . ENDLINE;
     }
     
@@ -352,21 +391,21 @@ foreach ($trials as $trial) {
     if (!empty($trial['limg'])) { 
         $imagelist[] = $trial['limg']; // add image to master image list
         echo '<img class="trialimg" id="limg_' . $trial['trial_n'] . '" 
-            src="' . (substr($trial['limg'],0,7) == '/audio/' ? '/images/icons/glyphish/icons/icons-theme/264-sound-on@2x' : $trial['limg']) . '" 
+            src="' . (substr($trial['limg'],0,7) == '/audio/' ? '/images/linearicons/rocket.php' : $trial['limg']) . '" 
             title="' . $trial['limg'] . '" />' . ENDLINE .
             '<span class="imgname">' . imgname($trial['limg']) . '</span>' . ENDLINE; 
     }
     if (!empty($trial['cimg'])) { 
         $imagelist[] = $trial['cimg']; // add image to master image list
         echo '<img class="trialimg" id="cimg_' . $trial['trial_n'] . '" 
-            src="' . (substr($trial['cimg'],0,7) == '/audio/' ? '/images/icons/glyphish/icons/icons-theme/264-sound-on@2x' : $trial['cimg']) . '" 
+            src="' . (substr($trial['cimg'],0,7) == '/audio/' ? '/images/linearicons/rocket.php' : $trial['cimg']) . '" 
             title="' . $trial['cimg'] . '" />' . ENDLINE .
             '<span class="imgname">' . imgname($trial['cimg']) . '</span>' . ENDLINE; 
     }
     if (!empty($trial['rimg'])) { 
         $imagelist[] = $trial['rimg']; // add image to master image list
         echo '<img class="trialimg" id="rimg_' . $trial['trial_n'] . '" 
-            src="' . (substr($trial['rimg'],0,7) == '/audio/' ? '/images/icons/glyphish/icons/icons-theme/264-sound-on@2x' : $trial['rimg']) . '" 
+            src="' . (substr($trial['rimg'],0,7) == '/audio/' ? '/images/linearicons/rocket.php' : $trial['rimg']) . '" 
             title="' . $trial['rimg'] . '" />' . ENDLINE .
             '<span class="imgname">' . imgname($trial['rimg']) . '</span>' . ENDLINE; 
     }
@@ -376,7 +415,7 @@ foreach ($trials as $trial) {
             $imagelist[] = $x; // add image to master image list
                 $n = $i+1;
             echo '<img class="trialimg" id="xafc_' . $n . '_img_' . $trial['trial_n'] . '" 
-                src="' . (substr($x,0,7) == '/audio/' ? '/images/icons/glyphish/icons/icons-theme/264-sound-on@2x' : $x) . '" 
+                src="' . (substr($x,0,7) == '/audio/' ? '/images/linearicons/rocket.php' : $x) . '" 
                 title="' . $x . '" />' . ENDLINE .
             '<span class="imgname">' . imgname($x) . '</span>' . ENDLINE; 
         }
@@ -535,10 +574,13 @@ foreach ($trials as $trial) {
                 success: function(response) {
                     <?php if (substr($exp_info['subtype'], 0, 5) == 'adapt') {
                         echo "window.location = 'adapt?id={$exp_id}';";
-                    } else {
-                        //echo "\$('#dialog-saver').html(response).dialog('open');";
-                        echo "growl(response);";
                     } ?>
+                    
+                    if (response == "Trials saved.") {
+                        window.location = 'info?id=<?= $exp_id ?>';
+                    }
+                    
+                    growl(response);
                 }
             });
         });

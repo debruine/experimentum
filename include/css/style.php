@@ -6,7 +6,7 @@
 PAGE COLORS 
 -------------------------------------------------*/
     $saturation = "70";
-    $bgcolor = 'hsl(' . THEME_HUE . ",0%,90%)"; // very light grey
+    $bgcolor = 'hsl(' . THEME_HUE . ",0%,95%)"; // very light grey
     $text = '#222';                     // (very dark grey)
     $theme = 'hsl(' . THEME_HUE . ",0%,10%)"; // dark grey
     $highlight = 'hsl(' . THEME_HUE . ",{$saturation}%,30%)"; // bright theme
@@ -110,7 +110,7 @@ body {
     font-family:"Fira Code", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
     font-size:100%; 
     color:<?= $text ?>;
-    background: <?= $bgcolor ?> url(/images/bg/pw_maze_white/pw_maze_white.png) 0 0 repeat;
+    background-color: <?= $bgcolor ?>;
     width:100%;
 }
 
@@ -403,6 +403,7 @@ h1, h2, h3, h4, h5, h6 {
     clear: both;
     max-width:40em;
     margin: 1em auto;
+    font-weight: 500;
 }
 
 div > h1:first-child, 
@@ -513,15 +514,15 @@ a {
 }
 a:link, a:visited, a:hover, a:active, #menu a:focus {
     text-decoration:none; 
-    border-bottom: .1em solid <?= $theme ?>;
+    border-bottom: .1em solid <?= $highlight ?>;
 }
 a:link { color:#000; }
 a:visited { color:#000; }
 a:hover, a:focus { 
-    color:<?= $theme ?>; 
+    color:<?= $highlight ?>; 
 }
 a:active { 
-    background-color:<?= $theme ?>; 
+    background-color:<?= $highlight ?>; 
     color:<?= $text_on_theme ?>; 
     outline:none;
 }
@@ -533,10 +534,11 @@ a:active {
     padding: 0 .25em;
     color: <?= $text_on_theme ?>;
     text-decoration: underline;
+    border-bottom: none;
 }
 
 #header a:hover, #header a:active, #header a:focus {
-    color:<?= $theme ?>;
+    color:<?= $highlight ?>;
     background-color:<?= $text_on_theme ?>;
     text-decoration: none;
 }
@@ -611,8 +613,25 @@ ul.bigbuttons {
     <?= shadow() ?>
 }
 
-.bigbuttons li.hide, .bigbuttons li.test, .bigbuttons li.inactive {
+.bigbuttons > li:nth-child(1) a:hover { background-color: var(--rainbow-red); }
+.bigbuttons > li:nth-child(2) a:hover { background-color: var(--rainbow-orange); }
+.bigbuttons > li:nth-child(3) a:hover { background-color: var(--rainbow-yellow); }
+.bigbuttons > li:nth-child(4) a:hover { background-color: var(--rainbow-green); }
+.bigbuttons > li:nth-child(5) a:hover { background-color: var(--rainbow-blue); }
+.bigbuttons > li:nth-child(6) a:hover { background-color: var(--rainbow-purple); }
+.bigbuttons > li:nth-child(7) a:hover { background-color: var(--rainbow-red); }
+.bigbuttons > li:nth-child(8) a:hover { background-color: var(--rainbow-orange); }
+.bigbuttons > li:nth-child(9) a:hover { background-color: var(--rainbow-yellow); }
+.bigbuttons > li:nth-child(10) a:hover { background-color: var(--rainbow-green); }
+.bigbuttons > li:nth-child(11) a:hover { background-color: var(--rainbow-blue); }
+.bigbuttons > li:nth-child(12) a:hover { background-color: var(--rainbow-purple); }
+
+.bigbuttons li.hide, .bigbuttons li.test, .bigbuttons li.archive {
     display: none;
+}
+
+.bigbuttons li.hide.res, .bigbuttons li.test.res, .bigbuttons li.archive.res {
+    display: inline-block;
 }
 
 .bigbuttons li.done a {
@@ -625,12 +644,12 @@ ul.bigbuttons {
     background-color: hsl(0, 100%, 30%);
 }
 
-.bigbuttons li.inactive a, .bigbuttons li.test a {
+.bigbuttons li.archive a, .bigbuttons li.test a {
     background-color: #809900;
     background-color: hsl(70, 100%, 30%);
 }
 
-.bigbuttons li.inactive a:hover, .bigbuttons li.test a:hover {
+.bigbuttons li.archive a:hover, .bigbuttons li.test a:hover {
     background-color: #AACC00 !important;
     background-color: hsl(70, 100%, 40%) !important;
 }
@@ -962,6 +981,24 @@ tr + tr.radiorow_options th {
     width: 50%;
 }
 
+.md {
+    max-width: 40em;
+    margin: 0 auto;
+}
+
+.md> ol, .md > ul {
+    padding-left: 3em;
+}
+
+#instructions ol {
+    list-style-position: inside;
+}
+
+#instructions ul {
+    list-style-type: circle;
+    list-style-position: inside;
+}
+
 .instructions {
     font-size: 100%;
     max-width: 795px;
@@ -1207,7 +1244,7 @@ EXPERIMENT STYLES
     background: none;
 }
 
-#experiment #question {
+#experiment #question, #experiment #question p {
     text-align: center;
     padding-bottom: .5em;
     font-size: 125%;
@@ -1302,7 +1339,7 @@ EXPERIMENT STYLES
 }
 
 table.jnd {
-    /* border: 2px solid <?= $theme ?>; */
+    border: 2px solid <?= $theme ?>;
     <?= roundCorners('0') ?>
 }
 
@@ -1313,8 +1350,21 @@ table.jnd {
     min-height: 4em;
     vertical-align: middle;
     padding: .5em .25em;
-    background-color: <?= $shade ?>;
+    background-color:  hsl(0, 0%, 90%);
     -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none;
+}
+
+.jnd .input_interface.jnd3 td { 
+    width: 8.325% !important;
+}
+.jnd .input_interface.jnd3 td.center { 
+    /* centre image in 3-image jnd */
+    width: 33.4% !important;
+}
+
+.jnd .input_interface td:hover {
+     background-color:  hsl(0, 0%, 30%);
+     color: hsl(0, 0%, 100%);
 }
 
 .jnd tr.exp_images td {
@@ -1423,6 +1473,10 @@ table.motivation .ui-slider-handle { display: none; }
     height: 400px;
 }
 
+.ui-tabs-active a {
+    background-color: <?= $highlight ?>;
+    border-bottom: none;
+}
 
 /*-------------------------------------------------
 MOBILE STYLES

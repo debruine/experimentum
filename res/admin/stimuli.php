@@ -1,13 +1,54 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(array('admin'), "/res/");
+auth(array('admin', 'res'), "/res/");
 
 if (array_key_exists('dir', $_POST)) {
-    $all_stim = 0;
+    $all_stim = array();
     $updated_images = 0;
-    echo getImageFolders($_POST['dir']);
-    echo "***{$all_stim} scanned; {$updated_images} updated";
+    getImageFolders($_POST['dir']);
+    ksort($all_stim);
+    
+    foreach ($all_stim as $fullpath => $ext) {
+        switch ($ext) {
+            case "jpg":
+            case "gif":
+            case "png":
+                $type = "image";
+                break;
+            case "ogg":
+                $type = "audio";
+                break;
+            case "m4v":
+                $type = "video";
+                break;
+            case "mp3":
+            case "wav":
+            default:
+                $type = false;
+        }
+        
+        if ($type) {
+            $query = sprintf("INSERT IGNORE INTO stimuli (path, type, size) VALUES ('%s', '%s', '%d')",
+                str_replace(array("../..", ".jpg", ".png", ".ogg", ".gif", ".mp3", ".m4v"), "", $fullpath),
+                $type,
+                filesize($fullpath)
+            );
+            $query = str_replace('\'\'', 'NULL', $query);
+            //echo $query . "\n";
+            $image_update = new myQuery($query);
+            
+            if ($image_update->get_affected_rows() == 1) {
+                echo "    <li>recorded: $fullpath ($type)</li>";
+                $updated_images++;
+            } else {
+                #echo "   *processed: $path\n";
+            }
+        }
+    }
+    
+    
+    echo "***" . count($all_stim) . " scanned; {$updated_images} updated";
     exit;
 }
 
@@ -24,10 +65,9 @@ $title = array(
 
 
 function getImageFolders($path) {
-    global $db, $all_stim, $updated_images;
+    global $all_stim;
 
-    //echo "<li>Opening " . $path . "</li>";
-    $d = dir($path);    
+    $d = dir($path);
     
     while (false !== ($f = $d->read())) {
         if (substr($f, 0, 1) != ".") {
@@ -35,11 +75,7 @@ function getImageFolders($path) {
             if (is_dir($fullpath)) { 
                 getImageFolders($fullpath);
             } else {
-                $all_stim++;
-                
                 $ext = pathinfo($f)['extension'];
-                
-                $extension = substr($fullpath, -4);
                 
                 switch ($ext) {
                     case "jpg":
@@ -60,21 +96,7 @@ function getImageFolders($path) {
                 }
                 
                 if ($type) {
-                    $query = sprintf("INSERT IGNORE INTO stimuli (path, type, size) VALUES ('%s', '%s', '%d')",
-                        str_replace(array("../..", ".jpg", ".png", ".ogg", ".gif", ".mp3", ".m4v"), "", $fullpath),
-                        $type,
-                        filesize($fullpath)
-                    );
-                    $query = str_replace('\'\'', 'NULL', $query);
-                    //echo $query . "\n";
-                    $image_update = new myQuery($query);
-                    
-                    if ($image_update->get_affected_rows() == 1) {
-                        echo "    <li>recorded: $fullpath ($type)</li>";
-                        $updated_images++;
-                    } else {
-                        #echo "   *processed: $path\n";
-                    }
+                    $all_stim[$fullpath] = $ext;
                 }
             }
         }

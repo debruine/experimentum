@@ -1,7 +1,5 @@
 <?php
 
-/* NO PROTOTPE */
-
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 auth(1);
 
@@ -28,6 +26,25 @@ if (array_key_exists('update', $_GET)) {
     
     $clean = my_clean($_POST);
     
+    if (!empty($clean['firstname']) && !empty($clean['lastname']) && !empty($clean['email']) ) {
+        $q = sprintf('REPLACE INTO res (user_id, firstname, lastname, email) VALUES (%d, "%s", "%s", "%s")',
+            $_SESSION['user_id'],
+            $clean['firstname'],
+            $clean['lastname'],
+            $clean['email']
+        );
+        
+        $query = new myQuery($q);
+        
+            
+        if (0 == $query->get_affected_rows()) {
+            echo loc('Something went wrong with the request.<br>');
+        } else if (in_array($_SESSION['status'], $RES_STATUS)) {
+            echo loc('Your researcher information has been updated.<br>');
+        } else {
+            echo loc('Your researcher status request has been sent.<br>');
+        }
+    }
     
     // set password
     $new_password = 'password';
@@ -51,7 +68,7 @@ if (array_key_exists('update', $_GET)) {
     $query = new myQuery($q);
     
     if (0 == $query->get_affected_rows()) {
-        echo loc('No information was changed');
+        echo loc('No account information was changed');
     } else {
         // reset session variables
         $_SESSION['sex']        = $clean['sex'];
@@ -59,8 +76,9 @@ if (array_key_exists('update', $_GET)) {
             $_SESSION['username']   = $clean['username'];   
         }
         
-        echo loc('Your information has been updated');
+        echo loc('Your account information has been updated');
     }
+
     
     session_write_close();
     exit;
@@ -74,9 +92,10 @@ if (array_key_exists('update', $_GET)) {
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
 
 // get my data
-$query = new myQuery('SELECT user.*, 
+$query = new myQuery('SELECT user.*, res.*,
     COUNT(login.id) as logins
     FROM user 
+    LEFT JOIN res USING (user_id)
     LEFT JOIN login USING (user_id)
     WHERE user.user_id=' . $_SESSION['user_id'] .
     ' GROUP BY user.user_id LIMIT 1'
@@ -111,7 +130,7 @@ $input['newpassword2']->set_width(200);
 
 // sex
 $input['sex'] = new select('sex', 'sex', $mydata['sex']);
-$input['sex']->set_question('Sex');
+$input['sex']->set_question('Gender');
 $input['sex']->set_options(array(
 	'male' => loc('male'),
 	'female' => loc('female'),
@@ -122,7 +141,7 @@ $input['sex']->set_options(array(
 // birthday
 $bday_parts = explode('-', $mydata['birthday']);
 $input['birthday'] = new formElement('birthday', 'birthday');
-$input['birthday']->set_question('Birthday <small>Year required for some studies</small>');
+$input['birthday']->set_question('Birthday <small>Year required for some<br>age-restricted studies</small>');
 $year = new selectnum('year','year',$bday_parts[0]);
 $year->set_options(array(0 => "----"), date("Y") - 5, date("Y") - 120);
 $year->set_null(false);
@@ -149,6 +168,24 @@ $day->set_null(false);
 $input['birthday']->set_custom_input( $year->get_element() . ' ' .
                                       $month->get_element() . ' ' .
                                       $day->get_element() );
+                                      
+// firstname
+$input['firstname'] = new input('firstname', 'firstname', $mydata['firstname']);
+$input['firstname']->set_question('First Name');
+$input['firstname']->set_maxlength(100);
+$input['firstname']->set_width(200);
+
+// lastname
+$input['lastname'] = new input('lastname', 'lastname', $mydata['lastname']);
+$input['lastname']->set_question('Last Name');
+$input['lastname']->set_maxlength(100);
+$input['lastname']->set_width(200);
+
+// email
+$input['email'] = new input('email', 'email', $mydata['email']);
+$input['email']->set_question('Email Address');
+$input['email']->set_maxlength(255);
+$input['email']->set_width(200);
 
 
 // set up form table
@@ -158,9 +195,12 @@ $q->set_title('My Information');
 $q->set_action('');
 $q->set_questionList($input);
 $q->set_method('post');
-$q->set_buttons(array(
-    'Update My Information' => 'updateInfo();'
-));
+$buttons = array('Update My Information' => 'updateInfo();');
+if (!in_array($_SESSION['status'], $RES_STATUS)) {
+    $buttons['Request Researcher Status'] = 'requestres();';
+}
+
+$q->set_buttons($buttons);
 $q->set_button_location('bottom');
 
 /****************************************************/
@@ -192,6 +232,14 @@ echo "<p>$login_info</p>", ENDLINE;
     $(function() {
         newpwd();
         
+        if ($('#firstname').val() == "" & 
+            $('#lastname').val() == "" &
+            $('#email').val() == "" ) {
+            $('#firstname_row').hide();
+            $('#lastname_row').hide();
+            $('#email_row').hide();
+        }
+        
         $('#response').addClass('ui-state-error').click( function() {
             $(this).hide('slide', { direction: 'left' }, 500);
         });
@@ -202,6 +250,24 @@ echo "<p>$login_info</p>", ENDLINE;
         $('#newpassword2_row').toggle();
         $('#newpassword').val('');
         $('#newpassword2').val('');
+    }
+    
+    function requestres() {
+        var vis = $('#firstname_row:visible').length;
+        
+        if (!vis) {
+            $('#firstname_row').show();
+            $('#lastname_row').show();
+            $('#email_row').show();
+        } else if ($('#firstname').val() != "" & 
+                   $('#lastname').val() != "" &
+                   $('#email').val() != "" ) {
+            updateInfo();
+        } else {
+            $('#firstname_row').hide();
+            $('#lastname_row').hide();
+            $('#email_row').hide();
+        }
     }
         
     function updateInfo() {

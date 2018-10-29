@@ -8,7 +8,7 @@ $chains = $q->get_assoc();
 $chains = my_clean($chains);
 foreach ($chains as $chain) {
 	// inset data into sets table
-	$q = new myQuery(sprintf("INSERT INTO sets (name, res_name, status, create_date, labnotes, type, feedback_general) VALUES ('%s', '%s', 'inactive', '%s', '%s', '%s', '%s')",
+	$q = new myQuery(sprintf("INSERT INTO sets (name, res_name, status, create_date, labnotes, type, feedback_general) VALUES ('%s', '%s', 'archive', '%s', '%s', '%s', '%s')",
 		$chain['name'],
 		$chain['res_name'],
 		$chain['create_date'],
@@ -49,7 +49,7 @@ foreach ($chains as $chain) {
 				$set_items[] = array_pop($sg);
 			} else {
 				// more than one item in the subgroup, so create a set and add it to set items
-				$setq = new myQuery(sprintf("INSERT INTO sets (name, res_name, status, create_date, labnotes, type) VALUES ('%s', '%s', 'inactive', '%s', '%s', '%s')",
+				$setq = new myQuery(sprintf("INSERT INTO sets (name, res_name, status, create_date, labnotes, type) VALUES ('%s', '%s', 'archive', '%s', '%s', '%s')",
 					$chain['res_name'] . ' subset',
 					$chain['res_name'] . ' subset',
 					$chain['create_date'],

@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 $title = array(
     '/res/' => 'Researchers',
@@ -27,9 +27,12 @@ $styles = array(
     'td.typechanger' => 'position: absolute; margin-right: -200px; width: 210px; text-align: left !important; padding-left: 10px;',
     'td.typechanger span' => 'display: inline-block; height: 28px; width: 28px; border-radius: 14px; float: left; 
                               background: transparent center center no-repeat;',
+    'td.typechanger select' => 'float: left;',
+    '#add-radio-option' => 'font-size: 0;background: transparent center center no-repeat url(/images/linearicons/plus-circle) !important;',
+    '#delete-radio-option' => 'font-size: 0;background: transparent center center no-repeat url(/images/linearicons/circle-minus) !important;',
     'span.view-typechooser' => 'background-image: url(/images/linearicons/cog) !important;',
     'span.edit_question' => 'background-image: url(/images/linearicons/pencil) !important;',
-    'span.delete_question' => 'background-image: url(/images/linearicons/trash) !important;',
+    'span.delete_question' => 'display: inline-block; margin-left: 2em; background-image: url(/images/linearicons/trash) !important;',
     '.view-typechooser select' => 'display: none; position: relative; left: -13em; width: 14em;',
     '.move_anchor' => 'display: inline-block; width: 16px; height: 20px;',
     'form' => 'margin-left: 200px; margin-right: 200px; max-width: none; width: auto;',
@@ -56,12 +59,19 @@ if (array_key_exists('save', $_GET)) {
     $cleanr = my_clean($_POST['radiorow']);
     
     // make sure user has permission to edit this questionnaire
-    if ($_SESSION['status'] < 5) { 
+    if ($_SESSION['status'] == "student") { 
         // students can edit only their own questionnaires
         if (validID($clean['id'])) {
-            $myaccess = new myQuery('SELECT user_id FROM access WHERE type="quest" AND id='.$clean['id']." AND user_id=".$_SESSION['user_id']);
+            $myaccess = new myQuery('SELECT user_id 
+                                     FROM access 
+                                     WHERE type="quest" 
+                                        AND id='.$clean['id']." 
+                                        AND user_id=".$_SESSION['user_id']);
             $checkuser = $myaccess->get_assoc(0);
-            if ($checkuser['user_id'] != $_SESSION['user_id']) { echo 'error;You do not have permission to edit this questionnaire'; exit; }
+            if ($checkuser['user_id'] != $_SESSION['user_id']) { 
+                echo 'error;You do not have permission to edit this questionnaire'; 
+                exit; 
+            }
         }
     }
     
@@ -70,26 +80,22 @@ if (array_key_exists('save', $_GET)) {
         $query = sprintf('INSERT INTO quest 
             (name, res_name, questtype, quest_order, 
             instructions, feedback_query, feedback_specific, feedback_general, 
-            labnotes, sex, lower_age, upper_age, 
-            password, blurb, create_date)  
+            labnotes, sex, lower_age, upper_age, create_date)  
             VALUES ("%s", "%s", "%s", "%s", 
                     "%s", "%s", "%s", "%s", 
-                    "%s", "%s", "%s", "%s", 
-                    "%s", "%s", NOW())',
-            $clean['title'], 
+                    "%s", "%s", "%s", "%s", NOW())',
+            $clean['name'], 
             $clean['res_name'], 
             $clean['questtype'], 
             $clean['quest_order'],  
             $clean['instructions'], 
             $clean['feedback_query'], 
             $clean['feedback_specific'], 
-            $clean['feedback_general'], 
+            $clean['i_feedback_general'], 
             $clean['labnotes'], 
             $clean['sex'], 
             $clean['lower_age'], 
-            $clean['upper_age'],
-            $clean['password'], 
-            $clean['blurb']
+            $clean['upper_age']
         );
     } else {
         $query = sprintf('UPDATE quest SET 
@@ -104,11 +110,9 @@ if (array_key_exists('save', $_GET)) {
             labnotes="%s", 
             sex="%s", 
             lower_age="%s", 
-            upper_age="%s", 
-            password="%s", 
-            blurb="%s" 
+            upper_age="%s" 
             WHERE id="%s"',
-            $clean['title'], 
+            $clean['name'], 
             $clean['res_name'], 
             $clean['questtype'], 
             $clean['quest_order'], 
@@ -120,8 +124,6 @@ if (array_key_exists('save', $_GET)) {
             $clean['sex'],  
             $clean['lower_age'], 
             $clean['upper_age'],
-            $clean['password'], 
-            $clean['blurb'], 
             $clean['id']
         );
     }
@@ -130,6 +132,7 @@ if (array_key_exists('save', $_GET)) {
     $query = str_replace('"NULL"', 'NULL', $query);
     $quest = new myQuery($query);
     
+    
     // set quest_id
     $quest_id = (validID($clean['id'])) ? $clean['id'] : $quest->get_insert_id();
     echo $quest_id . ';Questionnaire table updated: quest_' . $quest_id . ENDLINE;
@@ -137,13 +140,15 @@ if (array_key_exists('save', $_GET)) {
     // update access table
     $update_access = new myQuery('REPLACE INTO access (type, id, user_id) 
                                       VALUES ("quest", '.$quest_id.', '.$_SESSION['user_id'].')');
+                                      
     
     // get radiorow options if radiorow type
-    if ($clean['questtype'] == 'radiopage') {       
+    if ($clean['questtype'] == 'radiopage') {
         $ropt = array();
-        $n = 0;
-        foreach ($cleanr as $v => $d) {
-            $n++;
+        foreach ($cleanr as $opt) {
+            $n = $opt['opt_order'];
+            $v = $opt['value'];
+            $d = $opt['display'];
             $ropt[] = "($quest_id, $n, '$v', '$d')";
         }
         
@@ -178,15 +183,14 @@ if (array_key_exists('save', $_GET)) {
         }
         
         if (is_array($q['options'])) {
-            $n = 1;
             $option_updates = array();
-            foreach ($q['options'] as $opt_value => $opt_display) {
+            foreach ($q['options'] as $opt) {
                 $option_updates[] = sprintf('("%s", "%s", "%s", "%s", "%s")' . ENDLINE,
                     $quest_id,
-                    $q['id'], // may change to n rather than q_id in the future
-                    $n++,
-                    $opt_value,
-                    $opt_display
+                    $q['id'],
+                    $opt['opt_order'],
+                    $opt['value'],
+                    $opt['display']
                 );
             }
 
@@ -198,75 +202,6 @@ if (array_key_exists('save', $_GET)) {
     
     echo '<br />Question and options tables updated'. ENDLINE;
     
-    // update options table (if there are any options to update
-    
-
-    
-    // check if data from non-researchers exists and drop old data table
-    $make_new_table = false;
-    $table_exists = new myQuery('SHOW TABLES WHERE Tables_in_exp="quest_' . $quest_id . '"');
-    if (1 == $table_exists->get_num_rows()) {
-        $total_participants = new myQuery('SELECT user_id AS c FROM quest_' . $quest_id . 
-            ' LEFT JOIN user USING (user_id) WHERE status="guest" OR status="registered"');
-        if (0 < $total_participants->get_num_rows()) {
-            echo '<p class="ui-state-error">There are ' . number_format($total_participants->get_num_rows()) . 
-                ' non-researcher participants in this questionnaire, so a new table was not saved. 
-                If you have changed the number or type of questions in the questionnaire, 
-                you will need to ask Lisa to update the table for you.<p>';
-        } else {
-            $make_new_table = true;
-            $drop_exp_table = new myQuery('DROP TABLE IF EXISTS quest_' . $quest_id);
-        }
-    } else {
-        $make_new_table = true;
-    }
-    
-    if ($make_new_table) {
-        // get experiment data
-        $quest_data = new myQuery('SELECT questtype FROM quest WHERE id=' . $quest_id);
-        $questtype = $quest_data->get_one();
-            
-        // make table to hold questionnaire data
-        $query = "CREATE TABLE quest_$quest_id (";
-        $query .= "id int(11) NOT NULL auto_increment,";
-        $query .= "user_id int(11) DEFAULT NULL,";
-        
-        // add line for each question
-        foreach ($cleanq as $q) {
-            $query .= 'q' . $q['id'] . ' ';
-            if ($clean['questtype'] == 'ranking') { $q['type'] = 'ranking'; }
-            
-            switch ($q['type']) {
-                case 'text':
-                    $query .= 'VARCHAR(' . $q['maxlength'] . ') DEFAULT NULL,';
-                    break;
-                case 'countries':
-                    $query .= 'CHAR(2) DEFAULT NULL,';
-                    break;
-                case 'select':
-                case 'selectnum':
-                case 'radio':
-                case 'radiorow':
-                case 'radiorev':
-                case 'ranking':
-                case 'radioanchor':
-                    $query .= 'INT(3) DEFAULT NULL,';
-                    break;
-                case 'datemenu':
-                    $query .= 'DATE DEFAULT NULL,';
-                    break;
-            }
-        }
-        
-        $query .= "starttime DATETIME,";
-        $query .= "endtime DATETIME,";
-        $query .= "PRIMARY KEY (id),";
-        $query .= "INDEX (user_id)";
-        $query .= ")";
-        
-        $new_table = new myQuery( $query );
-        echo '<br />Table quest_' . $quest_id . ' created';
-    }
     exit;
 }
 
@@ -279,8 +214,16 @@ $quest_id=$_GET['id'];
 $qInfo = array(
     'questtype' => NULL,
     'quest_order' => 'random',
-    'instructions' => 'Click here to set instructions',
-    'name' => 'Name of Questionnaire'
+    'instructions' => '*Click here* to set instructions',
+    'feedback_general' => 'Click here* to edit the **feedback page**. You can use [markdown](https://codepen.io/nmtakay/pen/gscbf) or html to format your feedback page.
+
+## Make a list with numbers or asterisks
+
+1. First item
+2. Second item
+  * sub item
+  * sub item
+3. Third item'
 );
 if (validID($quest_id)) {
     $query = new myQuery('SELECT * FROM quest WHERE id=' . $quest_id);
@@ -361,8 +304,13 @@ $info = array();
 
 $info['id'] = new hiddenInput('id', 'id', $qInfo['id']);
 
+// name for users
+$info['name'] = new input('name', 'name', $qInfo['name']);
+$info['name']->set_question('Name for Users');
+$info['name']->set_width(500);
+
 $info['res_name'] = new input('res_name', 'res_name', $qInfo['res_name']);
-$info['res_name']->set_question('Researcher Name');
+$info['res_name']->set_question('Name for Researchers');
 $info['res_name']->set_width(500);
 
 $info['questtype'] = new hiddenInput('questtype', 'questtype', $qInfo['questtype']);
@@ -405,11 +353,11 @@ $info['labnotes'] = new textarea('labnotes', 'labnotes', $qInfo['labnotes']);
 $info['labnotes']->set_question('Labnotes');
 $info['labnotes']->set_dimensions(500, 50, true, 50, 0, 0);
 
+/*
 $info['feedback_general'] = new textarea('feedback_general', 'feedback_general', $qInfo['feedback_general']);
 $info['feedback_general']->set_question('General Feedback');
 $info['feedback_general']->set_dimensions(500, 50, true, 50, 0, 0);
 
-/*
 $info['feedback_specific'] = new textarea('feedback_specific', 'feedback_specific', $qInfo['feedback_specific']);
 $info['feedback_specific']->set_question("Specific Feedback");
 $info['feedback_specific']->set_dimensions(500, 50, true, 50, 0, 0);
@@ -428,11 +376,9 @@ $infoTable->set_questionList($info);
 $infoTable->set_method('post');
 $infoTable->set_buttons(array(
     'Save Questionnaire' => 'saveQuestionnaire();',
-    'View Questionnaire' => 'window.open("/quest?id=" + $("#id").val());',
-    'View Feedback Page' => 'window.open("/fb?type=quest&id=" + $("#id").val());',
     'Reset' => 'window.location.href=window.location.href;'
 ));
-$infoTable->set_button_location('bottom');
+$infoTable->set_button_location('top');
 
 /****************************************************/
 /* !Display Page */
@@ -444,10 +390,21 @@ $page->set_menu(false);
 $page->displayHead($styles);
 $page->displayBody();
 
+echo $infoTable->print_form();
+
 // !    editable questionnaire
-echo "<form action='' method='post' id='quest_form'>" . ENDLINE;    
-echo "<h1><span id='title' class='editText'>{$qInfo['name']}</span></h1>" . ENDLINE;
-echo "<p class='instructions'><span id='instructions' class='editText'>" . htmlspecialchars($qInfo['instructions']). "</span></p>" . ENDLINE;
+
+echo '<div id="tabs">
+  <ul>
+    <li><a href="#questpage">Questionnaire</a></li>
+    <li><a href="#fbpage">Feedback</a></li>
+  </ul>
+  
+  <div id="questpage">';
+  echo "<form action='' method='post' id='quest_form'>" . ENDLINE;
+
+//echo "<h1><span id='title' class='editText'>{$qInfo['name']}</span></h1>" . ENDLINE;
+echo "<p class='instructions'><span id='instructions' class='editText md'>" . htmlspecialchars($qInfo['instructions']). "</span></p>" . ENDLINE;
 echo "<input type='hidden' name='quest_id' id='quest_id' value='{$quest_id}' />" . ENDLINE;
 
 // !    questionnaire table
@@ -464,15 +421,16 @@ if ($qInfo['questtype'] == 'radiopage') {
             array('opt_order'=>5, 'opt_value'=>5, 'display'=>'much more than average'),
         );
     } else {
-        $query = new myQuery("SELECT opt_order, opt_value, display FROM radiorow_options WHERE quest_id='{$quest_id}' ORDER BY opt_order");
+        $query = new myQuery("SELECT opt_order, opt_value, display 
+                              FROM radiorow_options 
+                              WHERE quest_id='{$quest_id}' 
+                              ORDER BY opt_order");
         $radiorow_options = $query->get_assoc();
     }
     
     $radio_width = round(50/max(count($radiorow_options),1), 1);
     $opt_row = "<tr class='radiorow_options'><th></th>";
-    $val_row = "<tr class='radiorow_values'><td>Option values (must be integers, not shown to participants) --></td></td>";
-    $min = min(array_keys($radiorow_options));
-    $max = max(array_keys($radiorow_options));
+    $val_row = "<tr class='radiorow_values'><td>Option values (not shown to participants) --></td></td>";
     foreach ($radiorow_options as $rr) {
         $opt_row .= "<th style='width:{$radio_width}%' class='input'><span id='radiorow_option_{$rr['opt_order']}' class='editText input'>{$rr['display']}</span></th>";
         $val = new input("radiorow_value_{$rr['opt_order']}", "radiorow_value_{$rr['opt_order']}", $rr['opt_value']);
@@ -482,7 +440,7 @@ if ($qInfo['questtype'] == 'radiopage') {
     
     $opt_row .= "<td class='typechanger'></td>" . ENDLINE;
     $val_row .= "<td class='typechanger'>
-        <span id='add-radio-option' title='Add option to end'>+</span> 
+        <span id='add-radio-option' title='Add option to end'>+</span><br><br>
         <span id='delete-radio-option' title='Delete last option'>-</span>
     </td>" . ENDLINE;
     
@@ -541,6 +499,7 @@ foreach ($questions as $n => $q) {
             $rowrev->set_options(array('radiorow' => 'fwd', 'radiorev' => 'rev'));
             $rowrev->set_null(false);
             $typechooser = $rowrev->get_element();
+            $inputParameters = '';
             break;
         case 'select':
         case 'radio':
@@ -595,6 +554,14 @@ foreach ($questions as $n => $q) {
     <input type='button' onclick='addExcel();' value='Add from Spreadsheet' />
 </div>
 </form>
+</div>
+
+    <div id="fbpage">
+        <p class='instructions'><span id='feedback_general' 
+            class='editText md' 
+            title='Feedback'><?= htmlspecialchars($qInfo['feedback_general']) ?></span></p>
+    </div>
+</div>
 
 <div id="excel_input">
     Drag a header to reorder or double-click to remove it.
@@ -635,8 +602,6 @@ foreach ($questions as $n => $q) {
     </table>
 </div>
 
-<?php $infoTable->print_form(); ?>
-
 
 <div id="help" title="Questionnaire Builder Help">
     <h1>Click on the edit pencil icon next to a question to edit the options</h1>
@@ -668,6 +633,8 @@ foreach ($questions as $n => $q) {
 
 
 <script>
+    
+    $( "#tabs" ).tabs();
 
     if ($('#quest_id').val() == '') { $('#quest_table tbody > tr').addClass('newQ'); }
     
@@ -930,10 +897,7 @@ foreach ($questions as $n => $q) {
         });
         
         // !    add radiorow option
-        $('#add-radio-option').button({
-            icons: {primary: "ui-icon-plusthick"},
-            text: false
-        }).click( function() {
+        $('#add-radio-option').click( function() {
             // add last option cell
             $('#quest_table tr').each( function() {
                 var lastTD = $(this).find('> *:last').prev();
@@ -946,15 +910,16 @@ foreach ($questions as $n => $q) {
                                                 .attr('id', 'radiorow_value_' + n);
             
             $('tr.radiorow_options span:last').attr('id', 'radiorow_option_' + n)
+                                                .unbind("click")
                                                 .html(n);
+                                                
+            $('tr.radiorow_options input.instantedit:last').remove();
+            
             editbox_init();
         });
         
         // !    delete radiorow option
-        $('#delete-radio-option').button({
-            icons: {primary: "ui-icon-minusthick"},
-            text: false
-        }).click( function() {
+        $('#delete-radio-option').click( function() {
             // count selects in radiorow_values tr
             var opts = $('tr.radiorow_values input');
             var optN = opts.length;
@@ -1117,14 +1082,21 @@ foreach ($questions as $n => $q) {
     // !    excelPaste()
     // get pasted data from excel, display it in the table, stripe the table, and show buttons
     function excelPaste() {
-            var data = $("#excel_paste").val();
+        var data = $("#excel_paste").val();
+        var headers = new Array();
+        $('#excel_box thead tr th').each(function(i) {
+            headers[i] = $(this).html();
+        });
+        
+        $('#excel_box tbody').html("<tr><td>" +
+            data.replace(/\n+$/i, '')
+                .replace(/\n/g, '</td></tr><tr><td>')
+                .replace(/\t/g, '</td><td>') +
+                "</td></tr>"
+            );
             
-            $('#excel_box tbody').html("<tr><td>" +
-                data.replace(/\n+$/i, '').replace(/\n/g, '</td></tr><tr><td>').replace(/\t/g, '</td><td>') +
-                "</td></tr>");
-                
-            stripe('#quest_table > tbody');
-        }
+        stripe('#quest_table > tbody');
+    }
     
     // !    addExcel
     // display box to copy Excel into
@@ -1304,16 +1276,24 @@ foreach ($questions as $n => $q) {
             
             if (theType == 'select') {
                 var theOptions = {};
-                $('#q' + theID + ' option[value!="NULL"]').each( function() {
-                    theOptions[$(this).val()] = $(this).text();
+                $('#q' + theID + ' option[value!="NULL"]').each( function(i) {
+                    theOptions[i] = {
+                        value: $(this).val(),
+                        display: $(this).text(),
+                        opt_order: i+1
+                    };
                 });
                 theQ['options'] = theOptions;
             } else if (theType == 'countries') {
                 // no options needed until default options are added
             } else if (theType == 'radio') {
                 var theOptions = {};
-                $('input[type=radio][name="q' + theID + '"]').each( function() {
-                    theOptions[$(this).val()] = $(this).next('label').find('span.ui-button-text').html();
+                $('input[type=radio][name="q' + theID + '"]').each( function(i) {
+                    theOptions[i] = {
+                        value: $(this).val(),
+                        display: $(this).next('label').find('span.ui-button-text').html(),
+                        opt_order: i+1
+                    };
                 });
                 theQ['options'] = theOptions;
             } else if (theType == 'datemenu') {
@@ -1336,16 +1316,19 @@ foreach ($questions as $n => $q) {
         var radioRowOptions = {};
         $('input[id^="i_radiorow_option_"]').each( function() {
             var n = $(this).attr('id').replace('i_radiorow_option_', '');
-            var dv = $('#radiorow_value_' + n).val();
-            radioRowOptions[dv] = $(this).val();
+            radioRowOptions[n] = {
+                display: $(this).val(),
+                value: $('#radiorow_value_' + n).val(),
+                opt_order: n
+            };
         });
     
         var myInfo = {};
         $.each($('#myInformation_form').serializeArray(), function(index,value) {
             myInfo[value.name] = value.value;
         });
-        myInfo['title'] = $('#i_title').val();
         myInfo['instructions'] = $('#i_instructions').val();
+        myInfo['feedback_general'] = $('#i_feedback_general').val();
         
         var submitData = {
             'questions': qInfo,
@@ -1373,15 +1356,23 @@ foreach ($questions as $n => $q) {
         
         var oldRegex = new RegExp('_' + oldID, 'g');
         $('#quest_table > tbody').append($('#quest_table > tbody > tr:last').clone(true));
-        $('#quest_table > tbody > tr:last').attr('id', 'row_' + newID).addClass('newQ');
-        $('#quest_table > tbody > tr:last *[id]').attr('id', function(i, a) { return a.replace(oldID, newID); });
-        $('#quest_table > tbody > tr:last *[name]').attr('name', function(i, a) { return a.replace(oldID, newID); })
-        $('#quest_table > tbody > tr:last *[value]').attr('value', function(i, a) { return a.replace(oldID, newID); });
-        $('#quest_table > tbody > tr:last *[onclick]').attr('onclick', function(i, a) { return a.replace(oldID, newID); });
-        $('#quest_table > tbody > tr:last *[href]').attr('href', function(i, a) { return a.replace(oldID, newID); });
-        $('#quest_table > tbody > tr:last *[onchange]').attr('onchange', function(i, a) { return a.replace(oldID, newID); });
-        $('#quest_table > tbody > tr:last *[for]').attr('for', function(i, a) { return a.replace(oldID, newID); });
-        $('#quest_table > tbody > tr:last .qid').html(function(i, a) { return a.replace(oldID, newID); });
+        var $lastTr = $('#quest_table > tbody > tr:last');
+        $lastTr.attr('id', 'row_' + newID).addClass('newQ');
+        
+        // remove instantedit and unbind its functions
+        $lastTr.find('.editText').unbind("click");
+        $lastTr.find('.instantedit').remove();
+        
+        
+        $lastTr.find('*[id]').attr('id', function(i, a) { return a.replace(oldID, newID); });
+        $lastTr.find('*[name]').attr('name', function(i, a) { return a.replace(oldID, newID); })
+        $lastTr.find('*[value]').attr('value', function(i, a) { return a.replace(oldID, newID); });
+        $lastTr.find('*[onclick]').attr('onclick', function(i, a) { return a.replace(oldID, newID); });
+        $lastTr.find('*[href]').attr('href', function(i, a) { return a.replace(oldID, newID); });
+        $lastTr.find('*[onchange]').attr('onchange', function(i, a) { return a.replace(oldID, newID); });
+        $lastTr.find('*[for]').attr('for', function(i, a) { return a.replace(oldID, newID); });
+        $lastTr.find('.qid').html(function(i, a) { return a.replace(oldID, newID); });
+        
         editbox_init();
         stripe('#quest_table > tbody');
         $('#quest_table ul.radio').each( function() { $(this).buttonset(); } );

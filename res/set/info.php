@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 
 $title = array(
@@ -23,77 +23,77 @@ $styles = array(
 // !AJAX get item data
 if (array_key_exists('data', $_GET)) {
     // get stats on participant completion of the experiment
-       if (substr($_GET['item'],0,4) == "exp_") {
-           $equery = new myQuery('SELECT subtype, randomx FROM exp WHERE id=' . intval(substr($_GET['item'],4)));
-           $einfo = $equery->get_assoc(0);
-           if ($einfo['subtype'] == "large_n") {
-               $mydata = new myQuery(array(
-                                      "CREATE TEMPORARY TABLE tmp_ln
-                                      SELECT user_id, sex, COUNT(*) as n, 
-                                      AVG(rt) as val 
-                                      FROM {$_GET['item']} 
-                                      LEFT JOIN user USING (user_id) 
-                                      WHERE status>1 AND status<4 
-                                      GROUP BY user_id
-                                      HAVING n >={$einfo['randomx']}",
-                                      "CREATE TEMPORARY TABLE tmp_ln2
-                                      SELECT * FROM tmp_ln",
-                                      "SELECT COUNT(*) as total_c,
-                                      COUNT(IF(sex='male',1,NULL)) as total_male,
-                                      COUNT(IF(sex='female',1,NULL)) as total_female
-                                      FROM tmp_ln")
-                                      );
-               $data = $mydata->get_one_array();
+   if (substr($_GET['item'],0,4) == "exp_") {
+       $exp_id = intval(substr($_GET['item'],4));
+       $equery = new myQuery('SELECT subtype, random_stim FROM exp WHERE id=' . $exp_id);
+       $einfo = $equery->get_assoc(0);
+       $mydata = new myQuery('SELECT COUNT(*) as total_c,
+                                COUNT(DISTINCT user_id) as total_dist,
+                                COUNT(IF(sex="male",1,NULL)) as total_male,
+                                COUNT(IF(sex="female",1,NULL)) as total_female,
+                                COUNT(DISTINCT IF(sex="male",user_id,NULL)) as dist_male,
+                                COUNT(DISTINCT IF(sex="female",user_id,NULL)) as dist_female
+                                FROM (
+                                    SELECT user_id, sex
+                                    FROM exp_data 
+                                    LEFT JOIN user USING (user_id) 
+                                    WHERE status>1 AND status<40 AND exp_id=' . $exp_id. '
+                                    GROUP BY user_id, session_id
+                                ) as info');
+       $data = $mydata->get_one_array();
 
-               $mytime = new myQuery("SELECT t1.val as median_val FROM (
-                SELECT @rownum:=@rownum+1 as `row_number`, val
-                  FROM tmp_ln AS d, (SELECT @rownum:=0) r
-                  WHERE val>0 AND val<360001
-                  ORDER BY val
-                ) as t1, 
-                (
-                  SELECT count(*) as total_rows
-                  FROM tmp_ln2 AS d
-                  WHERE val>0 AND val<360001
-                ) as t2
-                WHERE t1.row_number=floor(1*total_rows/2)+1;", true);
-            $median_seconds = $mytime->get_one();
-            $median = round(($median_seconds * $einfo['randomx'])/1000/6)/10;
-            
-            $mytime = new myQuery("SELECT t1.val as median_val FROM (
-                SELECT @rownum:=@rownum+1 as `row_number`, val
-                  FROM tmp_ln AS d, (SELECT @rownum:=0) r
-                  WHERE val>0 AND val<360001
-                  ORDER BY val
-                ) as t1, 
-                (
-                  SELECT count(*) as total_rows
-                  FROM tmp_ln2 AS d
-                  WHERE val>0 AND val<360001
-                ) as t2
-                WHERE t1.row_number=floor(9*total_rows/10)+1;", true);
-            $upper_seconds = $mytime->get_one();
-            $upper = round(($upper_seconds* $einfo['randomx'])/1000/6)/10;
- 
-               echo $data['total_c'] . ';' . 
-                    $data['total_male'] . ';' . 
-                    $data['total_female'] . ';' .
-                    $median . ';' .
-                    $upper;
-                exit;
-           }
-       }
+       $mytime = new myQuery("SELECT t1.val as median_val FROM (
+        SELECT @rownum:=@rownum+1 as `row_number`, val
+          FROM tmp_ln AS d, (SELECT @rownum:=0) r
+          WHERE val>0 AND val<360001
+          ORDER BY val
+        ) as t1, 
+        (
+          SELECT count(*) as total_rows
+          FROM tmp_ln2 AS d
+          WHERE val>0 AND val<360001
+        ) as t2
+        WHERE t1.row_number=floor(1*total_rows/2)+1;", true);
+    $median_seconds = $mytime->get_num_rows() ? $mytime->get_one() : 0;
+    $median = round(($median_seconds * $einfo['random_stim'])/1000/6)/10;
     
-    
-    
+    $mytime = new myQuery("SELECT t1.val as median_val FROM (
+        SELECT @rownum:=@rownum+1 as `row_number`, val
+          FROM tmp_ln AS d, (SELECT @rownum:=0) r
+          WHERE val>0 AND val<360001
+          ORDER BY val
+        ) as t1, 
+        (
+          SELECT count(*) as total_rows
+          FROM tmp_ln2 AS d
+          WHERE val>0 AND val<360001
+        ) as t2
+        WHERE t1.row_number=floor(9*total_rows/10)+1;", true);
+    $upper_seconds = $mytime->get_num_rows() ? $mytime->get_one() : 0;
+    $upper = round(($upper_seconds* $einfo['random_stim'])/1000/6)/10;
+
+       echo $data['total_c'] . ';' . 
+            $data['total_male'] . ';' . 
+            $data['total_female'] . ';' .
+            $median . ';' .
+            $upper;
+        exit;
+   } else if (substr($_GET['item'],0,6) == "quest_") {
+       $quest_id = intval(substr($_GET['item'],6));
+
         $mydata = new myQuery('SELECT COUNT(*) as total_c,
                                 COUNT(DISTINCT user_id) as total_dist,
                                 COUNT(IF(sex="male",1,NULL)) as total_male,
                                 COUNT(IF(sex="female",1,NULL)) as total_female,
                                 COUNT(DISTINCT IF(sex="male",user_id,NULL)) as dist_male,
                                 COUNT(DISTINCT IF(sex="female",user_id,NULL)) as dist_female
-                                FROM ' . $_GET['item'] . ' LEFT JOIN user USING (user_id)
-                                WHERE status>1 AND status<40');
+                                FROM (
+                                    SELECT user_id, sex
+                                    FROM quest_data 
+                                    LEFT JOIN user USING (user_id) 
+                                    WHERE status>1 AND status<40 AND quest_id = ' . $quest_id . '
+                                    GROUP BY user_id, session_id
+                                ) as info');
         $data = $mydata->get_one_array();
         
         $mytime = new myQuery("SELECT t1.val as median_val FROM (
@@ -108,7 +108,7 @@ if (array_key_exists('data', $_GET)) {
               WHERE (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))>0 AND (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))<601
             ) as t2
             WHERE t1.row_number=floor(1*total_rows/2)+1;", true);
-        $median_seconds = $mytime->get_one();
+        $median_seconds = $mytime->get_num_rows() ? $mytime->get_one() : 0;
         $median = round($median_seconds/6)/10;
         
         $mytime = new myQuery("SELECT t1.val as median_val FROM (
@@ -126,7 +126,7 @@ if (array_key_exists('data', $_GET)) {
                     (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))<601
             ) as t2
             WHERE t1.row_number=floor(9*total_rows/10)+1;", true);
-        $upper_seconds = $mytime->get_one();
+        $upper_seconds = $mytime->get_num_rows() ? $mytime->get_one() : 0;
         $upper = round($upper_seconds/6)/10;
         
         
@@ -139,6 +139,7 @@ if (array_key_exists('data', $_GET)) {
                 $median . ';' .
                 $upper;
         exit;
+    }
 }
 
 // !AJAX delete set
@@ -216,7 +217,7 @@ if ($_SESSION['status'] == 'admin') {
     $status_chooser->set_options(array(
         'test' => 'test',
         'active' => 'active',
-        'inactive' => 'inactive'
+        'archive' => 'archive'
     ));
     $status_chooser->set_null(false);
     $status = $status_chooser->get_element();
@@ -225,21 +226,23 @@ if ($_SESSION['status'] == 'admin') {
 }
 
 // owner functions
-$myowners = new myQuery('SELECT user_id, CONCAT(lastname, " ", initials) as name FROM access LEFT JOIN researcher USING (user_id) WHERE type="sets" AND id=' . $set_id);
+$myowners = new myQuery('SELECT user_id, CONCAT(lastname, ", ", firstname) as name 
+                            FROM access 
+                            LEFT JOIN res USING (user_id) 
+                            WHERE type="sets" AND id=' . $set_id);
 $owners = $myowners->get_assoc(false, 'user_id', 'name');
 $access = in_array($_SESSION['user_id'], array_keys($owners));
 
-$allowners = new myQuery('SELECT user_id, firstname, lastname, initials, email FROM researcher LEFT JOIN user USING (user_id) WHERE status > 3');
+$allowners = new myQuery('SELECT user_id, firstname, lastname, email FROM researcher LEFT JOIN user USING (user_id) WHERE status > 3');
 $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
 foreach($ownerlisting as $res) {
     $user_id = $res['user_id'];
     $lastname = htmlspecialchars($res['lastname'], ENT_QUOTES);
     $firstname = htmlspecialchars($res['firstname'], ENT_QUOTES);
-    $initials = htmlspecialchars($res['initials'], ENT_QUOTES);
     $email = htmlentities($res['email'], ENT_QUOTES);
     
-    $ownerlist[] = "\n{ value: '{$user_id}', name: '{$lastname} {$initials}', label: '{$firstname} {$lastname} {$email}' }";
+    $ownerlist[] = "\n{ value: '{$user_id}', name: '{$lastname}, {$firstname}', label: '{$firstname} {$lastname} {$email}' }";
 }
 $owner_edit = "";
 foreach($owners as $id => $name) {
@@ -324,7 +327,7 @@ $page->displayBody();
 
 <div class='toolbar'>
     <div id="function_buttonset">
-        <button id="view-set">Go</button><button id="fb-set">Feedback</button><?php if ($_SESSION['status'] != 'student' || $access) { 
+        <button id="view-set">Go</button><?php if ($_SESSION['status'] != 'student' || $access) { 
             echo '<button id="edit-set">Edit</button>';
             echo '<button id="delete-set">Delete</button>';
             echo '<button id="duplicate-set">Duplicate</button>';
@@ -404,9 +407,6 @@ $page->displayBody();
         
         $( "#view-set" ).click(function() {
             window.location = '/include/scripts/set?id=<?= $setdata['id'] ?>';
-        });
-        $( "#fb-set" ).click(function() {
-            window.location = '/fb?type=sets&id=<?= $setdata['id'] ?>';
         });
         $( "#edit-set" ).click(function() {
             window.location = '/res/set/builder?id=<?= $setdata['id'] ?>';

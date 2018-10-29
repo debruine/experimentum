@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 $title = array(
     '/res/' => 'Researchers',
@@ -21,7 +21,7 @@ $styles = array(
                                         border-radius: 0 .5em; float: right; 
                                         text-align: center; line-height: 1.2em; font-size:100%',
     '.setlists li.active .status'   => 'background-color: hsla(120,100%,50%, 50%);',
-    '.setlists li.inactive .status' => 'background-color: hsla(120,0%,50%, 50%);',
+    '.setlists li.archive .status' => 'background-color: hsla(120,0%,50%, 50%);',
     '.setlists li.test .status'     => 'background-color: hsla(0,100%,50%, 50%);',
     '.setlists li:hover'            => 'color:hsl(0, 100%, 40%); cursor:default;',
     '.setlists li+li'               => 'border-top:0;',
@@ -86,10 +86,15 @@ if (array_key_exists('save', $_GET)) {
     if ($_SESSION['status'] == 'student') {
         // student researchers cannot edit anything
         echo 'You may not edit or create sets'; exit; 
-    } elseif ($_SESSION['status'] == 'researcher') { 
+    } elseif ($_SESSION['status'] == 'res') { 
         // researchers can edit only their own experiments
         if (validID($clean['set_id'])) {
-            $myaccess = new myQuery('SELECT user_id, status FROM access LEFT JOIN sets USING (id) WHERE access.type="sets" AND access.id='.$clean['set_id']." AND user_id=".$_SESSION['user_id']);
+            $myaccess = new myQuery('SELECT user_id, status 
+                                      FROM access 
+                                      LEFT JOIN sets USING (id) 
+                                      WHERE access.type="sets" 
+                                        AND access.id='.$clean['set_id']." 
+                                        AND user_id=".$_SESSION['user_id']);
             $checkuser = $myaccess->get_assoc(0);
             $status = $checkuser['status'];
             if ($checkuser['user_id'] != $_SESSION['user_id']) { echo 'You do not have permission to edit this set'; exit; }
@@ -215,9 +220,10 @@ $table_setup['labnotes']->set_question('Labnotes');
 $table_setup['labnotes']->set_dimensions($input_width, 18, true, 18, 300);
 
 $table_setup['feedback_general'] = new textarea('feedback_general', 'feedback_general', $set_info['feedback_general']);
-$table_setup['feedback_general']->set_question('General Feedback');
-$table_setup['feedback_general']->set_dimensions($input_width, 50, true, 50, 0, 0);
+$table_setup['feedback_general']->set_question('General Feedback <div class="note">If blank, the feedback from the last item will be displayed to participants.</div>');
+$table_setup['feedback_general']->set_dimensions($input_width, 100, true, 100, 0, 0);
 
+/*
 $table_setup['feedback_specific'] = new textarea('feedback_specific', 'feedback_specific', $set_info['feedback_specific']);
 $table_setup['feedback_specific']->set_question('Specific Feedback');
 $table_setup['feedback_specific']->set_dimensions($input_width, 50, true, 50, 0, 0);
@@ -229,6 +235,7 @@ $table_setup['feedback_query']->set_dimensions($input_width, 50, true, 50, 0, 0)
 $table_setup['forward'] = new textarea('forward', 'forward', $set_info['forward']);
 $table_setup['forward']->set_question('Forward URL');
 $table_setup['forward']->set_dimensions($input_width, 50, true, 50, 0, 0);
+*/
 
 // set up table
 $form_table = new formTable();

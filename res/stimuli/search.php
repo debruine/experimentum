@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 $title = array(
 	'/res/' => 'Researchers',

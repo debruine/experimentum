@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 // clear sets so you don't get stuck when testing
 unset($_SESSION['set_list']);
@@ -36,7 +36,7 @@ $links = array(
     '/res/stimuli/'  => 'Stimuli',
 );
 
-if ($_SESSION['status'] == 'admin') {
+if (in_array($_SESSION['status'], array('res', 'admin'))) {
     $links['/res/admin/'] = 'Admin';
 }
 
@@ -87,7 +87,7 @@ $page->displayBody();
 
 <p class="fullwidth" style="clear:both;">You can make new experiments or questionnaires at the 
     <a href="/res/exp/">Experiment</a>  or <a href="/res/quest/">Questionnaire</a> lists above. 
-    Chain them together by making new set at the <a href="/res/set/builder">Set Builder</a>.
+    Chain them together by making new sets at the <a href="/res/set/builder">Set Builder</a>.
     Make a project page with the <a href="/res/project/builder">Project Builder</a> 
     so you can direct participants to your project with a custom URL. 
     Browse our <a href="/res/stimuli/browse">open-access stimuli</a> or

@@ -1,6 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
+require_once DOC_ROOT . '/include/classes/Parsedown.php';
 auth(1);
 
 // !Next item in within_adapt, if within_adapt exists
@@ -43,17 +44,14 @@ if (array_key_exists('ineligible', $_GET)) {
 if (is_numeric($_GET['id']) 
         && $_GET['id']>0 
         && in_array($_GET['type'], array('exp','quest','sets'))) {
-    $q = new myQuery('SELECT name, forward, feedback_general, feedback_specific, feedback_query, chart_id FROM ' . $_GET['type'] . ' WHERE id=' . $_GET['id']);
+    $q = new myQuery('SELECT name, feedback_general, feedback_specific, feedback_query 
+                        FROM ' . $_GET['type'] . ' WHERE id=' . $_GET['id']);
     $fbdata = $q->get_assoc(0);
     
-    // forward to next section
-    if (!empty($fbdata['forward'])) {
-        header('Location: ' . $fbdata['forward']);
-        exit;
-    }
-    
     // general feedback
-    $general_fb = parsePara($fbdata['feedback_general']);
+    //$general_fb = parsePara($fbdata['feedback_general']);
+    $Parsedown = new Parsedown();
+    $general_fb= $Parsedown->text($fbdata['feedback_general']);
     
     // specific feedback
     if ('**AVERAGE**' == substr($fbdata['feedback_query'],0,11) && $_GET['type'] == 'exp') {
@@ -139,7 +137,9 @@ if (is_numeric($_GET['id'])
             $myfb = $fb->get_assoc(0);
         }
     
-        $spec_trans = parsePara($fbdata['feedback_specific']);
+        //$spec_trans = parsePara($fbdata['feedback_specific']);
+        $Parsedown = new Parsedown();
+        $spec_trans = $Parsedown->text($fbdata['feedback_specific']);
     
         $number_of_replacements = substr_count($spec_trans, "\$s") + substr_count($spec_trans, "\$d");
         if (!is_array($myfb)) $myfb = array(); // make sure $myfb is an array
@@ -166,16 +166,12 @@ $page->set_menu(false);
 $page->displayHead();
 $page->displayBody();
 
-echo tag('Thank you very much for your participation.');
-
 echo $general_fb;
 echo $specific_fb;
-
  
-if (!MOBILE) {
 ?>
 
-<div class="buttons"><button id="home">Back to Home Page</button></div>
+<div class="buttons"><button id="home">Back</button></div>
 <script>
     $(function() {
         $('#home').button().click( function() { 
@@ -185,7 +181,6 @@ if (!MOBILE) {
 </script>
     
 <?php 
-}
     
 $page->displayFooter();
 

@@ -3,7 +3,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';	
 
 function expCheck($id) {
-	$q = new myQuery('SELECT id, COUNT(*) as trials, exp.name, randomx,
+	$q = new myQuery('SELECT id, COUNT(*) as trials, exp.name, random_stim,
 						sex, lower_age, upper_age, subtype, design
 						FROM exp 
 						LEFT JOIN trial ON exp.id=exp_id
@@ -12,7 +12,7 @@ function expCheck($id) {
 	$qL = $q->get_assoc(0);	
 
 	$tlist = range(1, $qL['trials']);
-	$allT = ($qL['randomx']<$qL['trials']) ? 'endtime' : 't' . implode('+t', $tlist);
+	$allT = ($qL['random_stim']<$qL['trials']) ? 'endtime' : 't' . implode('+t', $tlist);
 	$adapt_versions = ($qL['subtype'] == 'adapt') ? 'AND version>0' : '';
 	
 	$userid = validID($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;	

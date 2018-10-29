@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 
 $title = array(
@@ -12,6 +12,7 @@ $title = array(
 );
 
 $styles = array(
+    "#setitems" => "margin-top: 1em;",
     "#setitems td+td+td+td+td" => "text-align: right;",
     "#setitems td" => "border-left: 1px dotted grey;",
     "#setitems tr" => "border-right: 1px dotted grey;",
@@ -24,7 +25,7 @@ $styles = array(
 if (array_key_exists('data', $_GET)) {
     // get stats on participant completion of the experiment
        if (substr($_GET['item'],0,4) == "exp_") {
-           $equery = new myQuery('SELECT subtype, randomx FROM exp WHERE id=' . intval(substr($_GET['item'],4)));
+           $equery = new myQuery('SELECT subtype, random_stim FROM exp WHERE id=' . intval(substr($_GET['item'],4)));
            $einfo = $equery->get_assoc(0);
            if ($einfo['subtype'] == "large_n") {
                $mydata = new myQuery(array(
@@ -35,7 +36,7 @@ if (array_key_exists('data', $_GET)) {
                                       LEFT JOIN user USING (user_id) 
                                       WHERE status>1 AND status<4 
                                       GROUP BY user_id
-                                      HAVING n >={$einfo['randomx']}",
+                                      HAVING n >={$einfo['random_stim']}",
                                       "CREATE TEMPORARY TABLE tmp_ln2
                                       SELECT * FROM tmp_ln",
                                       "SELECT COUNT(*) as total_c,
@@ -58,7 +59,7 @@ if (array_key_exists('data', $_GET)) {
                 ) as t2
                 WHERE t1.row_number=floor(1*total_rows/2)+1;", true);
             $median_seconds = $mytime->get_one();
-            $median = round(($median_seconds * $einfo['randomx'])/1000/6)/10;
+            $median = round(($median_seconds * $einfo['random_stim'])/1000/6)/10;
             
             $mytime = new myQuery("SELECT t1.val as median_val FROM (
                 SELECT @rownum:=@rownum+1 as `row_number`, val
@@ -73,7 +74,7 @@ if (array_key_exists('data', $_GET)) {
                 ) as t2
                 WHERE t1.row_number=floor(9*total_rows/10)+1;", true);
             $upper_seconds = $mytime->get_one();
-            $upper = round(($upper_seconds* $einfo['randomx'])/1000/6)/10;
+            $upper = round(($upper_seconds* $einfo['random_stim'])/1000/6)/10;
  
                echo $data['total_c'] . ';' . 
                     $data['total_male'] . ';' . 
@@ -108,7 +109,7 @@ if (array_key_exists('data', $_GET)) {
               WHERE (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))>0 AND (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))<601
             ) as t2
             WHERE t1.row_number=floor(1*total_rows/2)+1;", true);
-        $median_seconds = $mytime->get_one();
+        $median_seconds = $mytime->get_num_rows() ? $mytime->get_one() : 0;
         $median = round($median_seconds/6)/10;
         
         $mytime = new myQuery("SELECT t1.val as median_val FROM (
@@ -126,7 +127,7 @@ if (array_key_exists('data', $_GET)) {
                     (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))<601
             ) as t2
             WHERE t1.row_number=floor(9*total_rows/10)+1;", true);
-        $upper_seconds = $mytime->get_one();
+        $upper_seconds = $mytime->get_num_rows() ? $mytime->get_one() : 0;
         $upper = round($upper_seconds/6)/10;
         
         
@@ -215,7 +216,7 @@ if ($_SESSION['status'] == 'admin') {
     $status_chooser->set_options(array(
         'test' => 'test',
         'active' => 'active',
-        'inactive' => 'inactive'
+        'archive' => 'archive'
     ));
     $status_chooser->set_null(false);
     $status = $status_chooser->get_element();
@@ -224,13 +225,16 @@ if ($_SESSION['status'] == 'admin') {
 }
 
 // owner functions
-$myowners = new myQuery('SELECT user_id, CONCAT(lastname, " ", initials) as name FROM access 
-                        LEFT JOIN researcher USING (user_id) WHERE type="project" AND id=' . $proj_id);
+$myowners = new myQuery('SELECT user_id, CONCAT(lastname, " ", initials) as name 
+                        FROM access 
+                        LEFT JOIN res USING (user_id) 
+                        WHERE type="project" AND id=' . $proj_id . '
+                        ORDER BY lastname, firstname');
 $owners = $myowners->get_assoc(false, 'user_id', 'name');
 $access = in_array($_SESSION['user_id'], array_keys($owners));
 
-$allowners = new myQuery('SELECT user_id, firstname, lastname, initials, email 
-    FROM researcher 
+$allowners = new myQuery('SELECT user_id, firstname, lastname, email 
+    FROM res 
     LEFT JOIN user USING (user_id) 
     WHERE status > 3');
 $ownerlisting = $allowners->get_assoc();
@@ -239,10 +243,9 @@ foreach($ownerlisting as $res) {
     $user_id = $res['user_id'];
     $lastname = htmlspecialchars($res['lastname'], ENT_QUOTES);
     $firstname = htmlspecialchars($res['firstname'], ENT_QUOTES);
-    $initials = htmlspecialchars($res['initials'], ENT_QUOTES);
     $email = htmlentities($res['email'], ENT_QUOTES);
     
-    $ownerlist[] = "\n{ value: '{$user_id}', name: '{$lastname} {$initials}', label: '{$firstname} {$lastname} {$email}' }";
+    $ownerlist[] = "\n{ value: '{$user_id}', name: '{$lastname}, {$firstname}', label: '{$firstname} {$lastname} {$email}' }";
 }
 $owner_edit = "";
 foreach($owners as $id => $name) {
@@ -369,7 +372,7 @@ $page->displayBody();
 
 <div class='toolbar'>
     <div id="function_buttonset">
-        <button id="view-project">Go</button><button id="fb-project">Feedback</button><?php if ($_SESSION['status'] != 'student' || $access) { 
+        <button id="view-project">Go</button><?php if ($_SESSION['status'] != 'student' || $access) { 
             echo '<button id="edit-project">Edit</button>';
             echo '<button id="delete-project">Delete</button>';
             echo '<button id="duplicate-project">Duplicate</button>';
@@ -396,7 +399,6 @@ $page->displayBody();
         </td></tr>
     <tr><td>Blurb:</td><td><?= $projdata['blurb'] ?></td></tr>
     <tr><td>Intro:</td><td><?= $projdata['intro'] ?></td></tr>
-    <tr><td>Feedback:</td><td><?= $projdata['feedback_general'] ?><br /><?= $projdata['feedback_specific'] ?></td></tr>
 </table>
 
 <table id="setitems">
@@ -450,10 +452,7 @@ $page->displayBody();
         $('#function_buttonset').buttonset();
         
         $( "#view-project" ).click(function() {
-            window.location = '/project?=<?= $projdata['url'] ?>';
-        });
-        $( "#fb-project" ).click(function() {
-            window.location = '/fb?type=project&id=<?= $projdata['id'] ?>';
+            window.location = '/project?<?= $projdata['url'] ?>';
         });
         $( "#edit-project" ).click(function() {
             window.location = '/res/project/builder?id=<?= $projdata['id'] ?>';

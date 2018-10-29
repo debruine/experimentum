@@ -17,12 +17,13 @@
     // send to return_location if status is not high enough for this page (integer $status)
     // or if user status is not in the list (array $status)
     function auth($status, $return_location = '/') {
-            $status_list = array('test','guest','registered','student','researcher','admin');
-            $status_n = array_search($_SESSION['status'], $status_list);
+        global $ALL_STATUS;
+        $status_n = array_search($_SESSION['status'], $ALL_STATUS);
         
         if (
             (is_int($status) && $status_n < $status) ||
-            (is_array($status) && !in_array($_SESSION['status'], $status))
+            (is_array($status) && !in_array($_SESSION['status'], $status)) ||
+            (is_string($status) && $_SESSION['status'] != $status)
         ) {
             header('Location: ' . $return_location);
             exit();

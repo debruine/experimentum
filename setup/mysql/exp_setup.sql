@@ -2,74 +2,92 @@ DROP TABLE IF EXISTS `exp`;
 CREATE TABLE `exp` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT 'Experiment',
-  `url` varchar(255) DEFAULT NULL,
+  `res_name` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `status` enum('test','active','archive') DEFAULT 'test',
   `exptype` enum('2afc','jnd','rating','buttons','xafc','sort','nback','interactive','motivation','other') DEFAULT NULL,
   `subtype` enum('standard','adapt','speeded','adapt_nopre','large_n') DEFAULT NULL,
   `design` enum('between','within') DEFAULT NULL,
   `trial_order` enum('random','norepeat','fixed') DEFAULT 'random',
   `side` enum('random','fixed') DEFAULT 'random',
-  `status` enum('active','inactive','test') DEFAULT 'test',
   `instructions` text DEFAULT NULL,
   `question` varchar(255) DEFAULT NULL,
   `label1` varchar(255) DEFAULT NULL,
   `label2` varchar(255) DEFAULT NULL,
   `label3` varchar(255) DEFAULT NULL,
   `label4` varchar(255) DEFAULT NULL,
-  `range` tinyint(3) unsigned DEFAULT NULL,
+  `rating_range` tinyint(3) unsigned DEFAULT NULL,
   `low_anchor` varchar(255) DEFAULT NULL,
   `high_anchor` varchar(255) DEFAULT NULL,
+  `default_time` int(6) unsigned DEFAULT NULL,
+  `increment_time` int(6) unsigned DEFAULT NULL,
+  `orient` enum('horiz','vert') DEFAULT 'horiz',
+  `total_stim` int(4) unsigned DEFAULT NULL,
+  `random_stim` int(4) unsigned DEFAULT NULL,
+  `sex` enum('both','male','female') DEFAULT 'both',
+  `lower_age` tinyint(2) unsigned DEFAULT NULL,
+  `upper_age` tinyint(2) unsigned DEFAULT NULL,
+  `total_people` int(4) DEFAULT NULL,
+  `total_men` int(4) DEFAULT NULL,
+  `total_women` int(4) DEFAULT NULL,
   `feedback_query` text DEFAULT NULL,
   `feedback_specific` text DEFAULT NULL,
   `feedback_general` text DEFAULT NULL,
   `labnotes` text DEFAULT NULL,
-  `total_people` int(4) DEFAULT NULL,
-  `total_men` int(4) DEFAULT NULL,
-  `total_women` int(4) DEFAULT NULL,
-  `lower_age` tinyint(2) unsigned DEFAULT NULL,
-  `upper_age` tinyint(2) unsigned DEFAULT NULL,
-  `create_date` datetime DEFAULT NULL,
-  `password` varchar(32) DEFAULT NULL,
-  `blurb` varchar(255) DEFAULT NULL,
-  `res_name` varchar(255) DEFAULT NULL,
-  `orient` enum('horiz','vert') DEFAULT 'horiz',
-  `randomx` int(4) unsigned DEFAULT NULL,
-  `total_fempref` int(4) DEFAULT NULL,
-  `total_malepref` int(4) DEFAULT NULL,
-  `forward` varchar(255) DEFAULT NULL,
-  `chart_id` int(11) DEFAULT NULL,
-  `default_time` int(6) unsigned DEFAULT NULL,
-  `increment_time` int(6) unsigned DEFAULT NULL,
-  `rating_range` tinyint(3) unsigned DEFAULT NULL,
-  `sex` enum('both','male','female') DEFAULT 'both',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `exp_data`;
+CREATE TABLE `exp_data` (
+  `exp_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `session_id` int(11) DEFAULT NULL,
+  `version`   tinyint(2) unsigned, 
+  `trial_n` INT(6) DEFAULT NULL,
+  `dv` VARCHAR(64) DEFAULT NULL,
+  `rt` INT(6) DEFAULT NULL,
+  `side` VARCHAR(20) DEFAULT NULL,
+  `order` int(6) DEFAULT NULL,
+  `dt` DATETIME,
+  INDEX (`exp_id`, `user_id`, `session_id`)
+) ENGINE=InnoDB;
 
 
 DROP TABLE IF EXISTS `quest`;
 CREATE TABLE `quest` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT 'Questionnaire',
-  `url` varchar(255) DEFAULT NULL,
+  `res_name` varchar(255) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `status` enum('test','active','archive') DEFAULT 'test',
   `questtype` enum('mixed','radiopage','ranking') DEFAULT NULL,
   `quest_order` enum('fixed','random') DEFAULT 'fixed',
-  `status` enum('active','inactive','test') DEFAULT 'test',
   `instructions` text DEFAULT NULL,
+  `sex` enum('both','male','female') DEFAULT 'both',
+  `lower_age` tinyint(2) unsigned DEFAULT NULL,
+  `upper_age` tinyint(2) unsigned DEFAULT NULL,
+  `total_people` int(4) DEFAULT NULL,
+  `total_men` int(4) DEFAULT NULL,
+  `total_women` int(4) DEFAULT NULL,
   `feedback_query` text DEFAULT NULL,
   `feedback_specific` text DEFAULT NULL,
   `feedback_general` text DEFAULT NULL,
   `labnotes` text DEFAULT NULL,
-  `sex` enum('both','male','female') DEFAULT 'both',
-  `lower_age` tinyint(2) unsigned DEFAULT NULL,
-  `upper_age` tinyint(2) unsigned DEFAULT NULL,
-  `create_date` datetime DEFAULT NULL,
-  `password` varchar(32) DEFAULT NULL,
-  `blurb` varchar(255) DEFAULT NULL,
-  `res_name` varchar(255) DEFAULT NULL,
-  `custom_record` enum('false','true') DEFAULT 'false',
-  `forward` varchar(255) DEFAULT NULL,
-  `chart_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `quest_data`;
+CREATE TABLE `quest_data` (
+  `quest_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `session_id` int(11) NOT NULL,
+  `question_id` int(11) NOT NULL,
+  `dv` VARCHAR(255),
+  `order` int(6) DEFAULT NULL,
+  `starttime` DATETIME,
+  `endtime` DATETIME,
+  INDEX (`quest_id`, `user_id`, `session_id`)
+) ENGINE=InnoDB;
 
 
 DROP TABLE IF EXISTS `question`;
@@ -102,7 +120,7 @@ CREATE TABLE `project` (
   `res_name` varchar(255) DEFAULT NULL,
   `url` varchar(50) DEFAULT NULL,
   `intro` text DEFAULT NULL,
-  `status` enum('active','inactive','test') DEFAULT 'test',
+  `status` enum('active','archive','test') DEFAULT 'test',
   `labnotes` text DEFAULT NULL,
   `create_date` date DEFAULT NULL,
   `sex` enum('both','male','female') DEFAULT 'both',
@@ -128,7 +146,7 @@ CREATE TABLE `sets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) DEFAULT NULL,
   `res_name` varchar(64) DEFAULT NULL,
-  `status` enum('active','inactive','test','lab') DEFAULT NULL,
+  `status` enum('active','archive','test','lab') DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `labnotes` text DEFAULT NULL,
   `type` enum('fixed','random','one_equal','one_random') DEFAULT 'one_equal',
@@ -172,6 +190,14 @@ CREATE TABLE `trial` (
   PRIMARY KEY (`exp_id`,`trial_n`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `adapt_trial`;
+CREATE TABLE `adapt_trial` (
+  `exp_id` int(11) NOT NULL DEFAULT 0,
+  `trial_n` int(3) NOT NULL DEFAULT 0,
+  `name` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`exp_id`,`trial_n`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS `xafc`;
 CREATE TABLE `xafc` (
@@ -187,7 +213,7 @@ DROP TABLE IF EXISTS `radiorow_options`;
 CREATE TABLE `radiorow_options` (
   `quest_id` int(11) NOT NULL DEFAULT 0,
   `opt_order` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  `opt_value` int(3) DEFAULT NULL,
+  `opt_value` varchar(255) DEFAULT NULL,
   `display` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`quest_id`,`opt_order`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -208,7 +234,7 @@ DROP TABLE IF EXISTS `options`;
 CREATE TABLE `options` (
   `q_id` int(11) NOT NULL DEFAULT 0,
   `opt_order` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  `opt_value` int(3) DEFAULT NULL,
+  `opt_value` varchar(255) DEFAULT NULL,
   `display` varchar(255) DEFAULT NULL,
   `quest_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`q_id`,`opt_order`)
@@ -217,7 +243,7 @@ CREATE TABLE `options` (
 DROP TABLE IF EXISTS `buttons`;
 CREATE TABLE `buttons` (
   `exp_id` int(11) NOT NULL AUTO_INCREMENT,
-  `dv` int(3) NOT NULL DEFAULT 0,
+  `dv` varchar(64) NOT NULL DEFAULT 0,
   `display` varchar(255) DEFAULT NULL,
   `n` int(3) DEFAULT NULL,
   UNIQUE KEY `all_4` (`exp_id`,`dv`,`display`,`n`),
@@ -225,7 +251,6 @@ CREATE TABLE `buttons` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `images`;
 DROP TABLE IF EXISTS `stimuli`;
 CREATE TABLE stimuli (
     `id` int(11) auto_increment NOT NULL,
@@ -249,7 +274,7 @@ CREATE TABLE yoke (
 DROP TABLE IF EXISTS `versions`;
 CREATE TABLE versions(
     `exp_id`    int(11),
-    `version`   tinyint(1) unsigned,
+    `version`   tinyint(2) unsigned,
     `name`      varchar(32),
     `notes`     text,
     `question`  text 
@@ -265,15 +290,15 @@ CREATE TABLE `user` (
   `birthday` date DEFAULT NULL,
   `pquestion` varchar(100) DEFAULT NULL,
   `panswer` varchar(100) DEFAULT NULL,
-  `status` enum('test','guest','registered','student','researcher','admin') DEFAULT NULL,
+  `status` enum('test','guest','registered','student','res','admin') DEFAULT NULL,
   `gender` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `username` (`username`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `researcher`;
-CREATE TABLE `researcher` (
+DROP TABLE IF EXISTS `res`;
+CREATE TABLE `res` (
   `user_id` int(11),
   `firstname` varchar(50) DEFAULT NULL,
   `initials` char(3) DEFAULT NULL,

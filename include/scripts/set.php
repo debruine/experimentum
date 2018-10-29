@@ -23,9 +23,9 @@ function get_set_items($id) {
                     LEFT JOIN sets AS s ON (item_type="set" AND s.id=item_id)
                     WHERE set_id=' . $id . ' 
                     GROUP BY item_type, item_id, item_n
-                    HAVING "' . $_SESSION['status'] . '" IN("student","researcher","admin") OR 
+                    HAVING "' . $_SESSION['status'] . '" IN("student","res","admin") OR 
                     (
-                        status !="inactive" AND status !="test"
+                        status !="archive" AND status !="test"
                         AND (sex="both" OR sex="' . $_SESSION['sex'] . '")
                         AND (upper_age IS NULL OR ' . $_SESSION['age'] . '<= upper_age)
                         AND (lower_age IS NULL OR ' . $_SESSION['age'] . '>= lower_age)
@@ -49,11 +49,15 @@ function get_set_items($id) {
             
             foreach ($items as $item) {
                 if ($item['item_type'] != 'set') {
-                    $table = $item['item_type'] . "_" . $item['item_id'];
+                    $table = $item['item_type'] . "_data"; // . $item['item_id'];
                     $q = new myQuery("SELECT COUNT(IF(sex='male',1,NULL)) AS male, 
                                 COUNT(IF(sex='female',1,NULL)) AS female, 
-                                COUNT(*) AS allpeople FROM " . $table .
-                                " LEFT JOIN user USING (user_id) WHERE status>1 AND status<40 GROUP BY NULL");
+                                COUNT(*) AS allpeople 
+                                FROM {$table}
+                                LEFT JOIN user USING (user_id) 
+                                WHERE status>1 AND status<3 
+                                  AND {$item['item_type']}_id = {$item['item_id']}
+                                GROUP BY NULL");
                     $item_counts = $q->get_assoc(0);
                     
                     $male_counts[$table] = $item_counts['male'];

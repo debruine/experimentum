@@ -3,7 +3,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/exp.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 $title = array(
     '/res/' => 'Researchers',
@@ -13,7 +13,6 @@ $title = array(
 
 $styles = array(
     'form' => 'max-width: 100%; width:100%;',
-    '#experiment' => 'border-top: 5px solid hsl(200,100%,20%); border-bottom: 5px solid hsl(200,100%,20%); padding: 1em 0;',
     '#change-button-number' => 'position: relative; height: 3em; width: 2em; padding: 0 3em 0 .5em;',
     '#add-button, #delete-button' => 'position: absolute; width: 1.5em; height: 1.5em; color: white; text-align: center; background-color: ' . THEME,
     '#add-button .ui-button-text, #delete-button .ui-button-text' => 'padding: 0;',
@@ -22,7 +21,7 @@ $styles = array(
     '.button-dv' => 'position: relative; top: -2.5em; left: 2em; width: 0; overflow: visible;',
     'table#experiment_builder' => 'table-layout: auto !important;',
     '.jnd .input_interface td, tr.ranking' => '-moz-user-select: text; -webkit-user-select: text; -ms-user-select: text;',
-    '#nImageChanger' => 'float: right; font-size: smaller; margin: .5em 1em;',
+    //'#nImageChanger' => 'float: right; font-size: smaller; margin: .5em 1em;',
     '#motiv_info' => 'position: absolute; 
                       text-align: left; 
                       border: 5px solid white; 
@@ -55,7 +54,7 @@ if (array_key_exists('save', $_GET)) {
     if ($_SESSION['status'] == 'student') {
         // student researchers cannot edit anything
         echo 'You may not edit or create experiments'; exit; 
-    } elseif ($_SESSION['status'] == 'researcher') { 
+    } elseif ($_SESSION['status'] == 'res') { 
         // researchers can edit only their own experiments
         if (validID($clean['id'])) {
             $myaccess = new myQuery('SELECT user_id FROM access WHERE type="exp" AND id='.$clean['id']." AND user_id=".$_SESSION['user_id']);
@@ -70,14 +69,14 @@ if (array_key_exists('save', $_GET)) {
         instructions, question, label1, label2, label3, label4, rating_range, low_anchor, high_anchor,
         feedback_query, feedback_specific, feedback_general, labnotes, 
         sex, lower_age, upper_age, 
-        randomx, password, blurb, forward, default_time, increment_time, create_date)  
+        total_stim, random_stim, default_time, increment_time, create_date)  
         VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", 
         "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", 
         "%s", "%s", "%s","%s", 
         "%s", "%s", "%s", 
-        "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
+        "%s", "%s", "%s", "%s", NOW())',
         (validID($clean['id'])) ? $clean['id'] : 'NULL',
-        $clean['i_title'], 
+        $clean['name'], 
         $clean['res_name'], 
         $clean['exptype'], 
         $clean['subtype'],
@@ -95,15 +94,13 @@ if (array_key_exists('save', $_GET)) {
         $clean['i_high_anchor'],
         $clean['feedback_query'], 
         $clean['feedback_specific'], 
-        $clean['feedback_general'], 
+        $clean['i_feedback_general'], 
         $clean['labnotes'], 
         $clean['sex'],
         $clean['lower_age'], 
         $clean['upper_age'],
-        $clean['randomx'], 
-        $clean['password'], 
-        $clean['blurb'], 
-        $clean['forward'],
+        $clean['total_stim'], 
+        $clean['random_stim'], 
         $clean['default_time'],
         $clean['increment_time']
     );
@@ -123,102 +120,9 @@ if (array_key_exists('save', $_GET)) {
         $exp_id = $clean['id'];
     }
     
-    // check if data from non-researchers exists and drop old data table
-    $make_new_table = false;
-    $table_exists = new myQuery('SHOW TABLES WHERE Tables_in_exp="exp_' . $exp_id . '"');
-    if (1 == $table_exists->get_num_rows()) {
-        $total_participants = new myQuery('SELECT user_id AS c FROM exp_' . $exp_id . ' LEFT JOIN user USING (user_id) WHERE status="guest" OR status="registered"');
-        if (0 < $total_participants->get_num_rows()) {
-            echo 'alert:There are ' . number_format($total_participants->get_num_rows()) . ' non-researcher participants in this experiment, so a new table was not saved. If you have changed the number of trials in the experiment, you will need to ask Lisa to update the table for you.;';
-        } else {
-            $make_new_table = true;
-            $drop_exp_table = new myQuery('DROP TABLE IF EXISTS exp_' . $exp_id);
-        }
-    } else {
-        $make_new_table = true;
-    }
-    
-    if ($make_new_table) {
-        // get experiment data
-        $exp_data = new myQuery('SELECT exptype, subtype FROM exp WHERE id=' . $exp_id);
-        $types = $exp_data->get_one_array();
-        
-        $exptype = $types['exptype'];
-        $subtype = $types['subtype'];
-        
-        $trials = $clean['total_images'];
-        
-        if ($subtype == "large_n") {
-            // make by trial table to hold largeN experiment data
-            $query = "CREATE TABLE exp_$exp_id (";
-            $query .= "user_id int(11) DEFAULT NULL,";
-            $query .= "trial INT(6) DEFAULT NULL,";
-            if ("sort" == $exptype) { 
-                $images_per_trial = $clean['nImages'];
-                for ($i=1; $i<= $images_per_trial; $i++) {
-                    $query .= "dv_{$i} INT(2) DEFAULT NULL,";
-                }
-                $query .= "moves INT(3) DEFAULT NULL,";
-            } elseif ("motivation" == $exptype) {
-                $query .= "up INT(3) DEFAULT NULL,";
-                $query .= "down INT(3) DEFAULT NULL,";
-            } elseif ("rating" == $exptype && "0" == $clean['rating_range']) {
-                $query .= "dv VARCHAR(64) DEFAULT NULL,";
-            } else {
-                $query .= "dv INT(3) DEFAULT NULL,";
-            }
-            $query .= "rt INT(6) DEFAULT NULL,";
-            if ("xafc" == $exptype || "sort" == $exptype) { 
-                $query .= "side VARCHAR(20) DEFAULT NULL,";
-            } else {
-                $query .= "side enum('same','switch') DEFAULT NULL,";
-            }
-            $query .= "`order` int(4) DEFAULT NULL,";
-            $query .= "dt DATETIME,";
-            $query .= "INDEX (user_id, trial)";
-            $query .= ") ENGINE=InnoDB";
-        } else {
-            // make by user table to hold normal experiment data
-            $query = "CREATE TABLE exp_$exp_id (";
-            $query .= "id int(11) NOT NULL auto_increment,";
-            $query .= "user_id int(11) DEFAULT NULL,";
-            
-            for ($n=1; $n<=$trials; $n++) {
-                if ("sort" == $exptype) { 
-                    $images_per_trial = $clean['nImages'];
-                    for ($i=1; $i<= $images_per_trial; $i++) {
-                        $query .= "t{$n}_{$i} INT(2) DEFAULT NULL,";
-                    }
-                    $query .= "moves$n INT(3) DEFAULT NULL,";
-                } elseif ("motivation" == $exptype) {
-                    $query .= "up$n INT(3) DEFAULT NULL,";
-                    $query .= "down$n INT(3) DEFAULT NULL,";
-                } elseif ("rating" == $exptype && "0" == $clean['rating_range']) {
-                    $query .= "t$n VARCHAR(64) DEFAULT NULL,";
-                } else {
-                    $query .= "t$n INT(3) DEFAULT NULL,";
-                }
-                $query .= "rt$n INT(6) DEFAULT NULL,";
-                if ("xafc" == $exptype || "sort" == $exptype) { 
-                    $query .= "side$n VARCHAR(20) DEFAULT NULL,";
-                } else {
-                    $query .= "side$n enum('same','switch') DEFAULT NULL,";
-                }
-                $query .= "order$n int(3) default NULL,";
-            }
-            if ("adapt" == $subtype || "adapt_nopre" == $subtype) { $query .= "version TINYINT(1) UNSIGNED DEFAULT 0,"; }
-            $query .= "starttime DATETIME,";
-            $query .= "endtime DATETIME,";
-            $query .= "PRIMARY KEY (id),";
-            $query .= "INDEX (user_id)";
-            $query .= ") ENGINE=MyISAM";
-        } 
-        
-        $new_table = new myQuery( $query );
-        
-        // delete extra trials if some have been deleted fro a previous version
-        $query = new myQuery("DELETE FROM trial WHERE exp_id=$exp_id AND trial_n>$trials");
-    }
+    // delete extra trials if some have been deleted from a previous version
+    $query = new myQuery("DELETE FROM trial WHERE exp_id={$exp_id} AND trial_n>{$clean['total_stim']}");
+    $query = new myQuery("DELETE FROM xafc WHERE exp_id={$exp_id} AND trial_n>{$clean['total_stim']}");
     
     // save buttons if a buttons experiment
     if ($clean['exptype'] == 'buttons') {
@@ -227,7 +131,7 @@ if (array_key_exists('save', $_GET)) {
         $buttons = array();
         for ($i = 1; $i < 20; $i++) {
             if (isset($clean['i_button' . $i])) {
-                $buttons[] = sprintf('(%s, %s, "%s", %d)', 
+                $buttons[] = sprintf('(%s, "%s", "%s", %d)', 
                     $exp_id,
                     $clean['i_button-dv' . $i],
                     $clean['i_button' . $i],
@@ -257,16 +161,16 @@ $exp_id=$_GET['id'];
 $info = array();
 
 $exptype_options = array(
-    '2afc' => '2-alternative forced choice',
-    'jnd' => 'Forced-choice rating (JND)',
-    'rating' => 'Rating',
-    'buttons' => 'Buttons',
-    'interactive' => 'Interactive',
-    'xafc' => 'X-alternative forced choice',
+    '2afc' => '2-Alternative Forced-choice (2AFC)',
+    'jnd' => '2AFC with 8-Button Strength of Choice',
+    'rating' => 'Numeric Rating',
+    'buttons' => 'Labelled Buttons',
+    //'interactive' => 'Interactive',
+    'xafc' => 'X-alternative forced choice (XAFC)',
     'sort' => 'Sorting',
-    'motivation' => 'Motivation',
+    //'motivation' => 'Motivation',
     //'nback' => 'N-back',
-    'other' => 'Custom'
+    //'other' => 'Custom'
 );
 
 $eInfo = array();
@@ -274,13 +178,7 @@ if (validID($exp_id)) {
     //$myexp = new experiment($exp_id);
     $query = new myQuery('SELECT * FROM exp WHERE id=' . $exp_id);
     $eInfo = $query->get_assoc(0);
-    $eInfo['total_images'] = 0;
     
-    $query = new myQuery('DESC exp_' . $exp_id);
-    $fields = $query->get_assoc(false, false, 'Field');
-    foreach ($fields as $field) {
-        if (substr($field, 0, 4) == 'side') { $eInfo['total_images']++; }
-    }
     if ($eInfo['exptype'] == 'xafc') {
         $query = new myQuery("SELECT 
         COUNT(DISTINCT trial_n) as trials, 
@@ -299,9 +197,9 @@ if (validID($exp_id)) {
     $trialInfo = $query->get_assoc(0);
     
     if ($query->get_num_rows() == 0) {
-        $eInfo['total_images'] = $eInfo['randomx'];
+        $eInfo['total_stim'] = $eInfo['random_stim'];
     } else {
-        $eInfo['total_images'] = $trialInfo['trials'];
+        $eInfo['total_stim'] = $trialInfo['trials'];
     }
 } else {
     // default exp info
@@ -311,9 +209,18 @@ if (validID($exp_id)) {
         'design' => 'within',
         'trial_order' => 'random',
         'side' => 'random',
-        'instructions' => 'Click here to set instructions',
-        'question' => 'Click here to set question',
-        'name' => 'Name of experiment',
+        'instructions' => 
+        
+'*Click here* to edit the **information page**. You can use [markdown](https://codepen.io/nmtakay/pen/gscbf) or html to format your instruction page.
+
+## Make a list with numbers or asterisks
+
+1. First item
+2. Second item
+  * sub item
+  * sub item
+3. Third item',
+        'question' => '*Click here* to set the **question**',
         'label4' => 'Much more',
         'label3' => 'More',
         'label2' => 'Somewhat more',
@@ -321,15 +228,29 @@ if (validID($exp_id)) {
         'rating_range' => '7',
         'low_anchor' => 'Click Here to Set or Delete Low Anchor',
         'high_anchor' => 'Click Here to Set or Delete High Anchor',
-        'randomx' => '20',
-        'total_images' => '20',
+        'random_stim' => '20',
+        'total_stim' => '20',
         'default_time' => '4000',
         'increment_time' => '100',
-        'sex' => 'both'
+        'sex' => 'both',
+        'feedback_general' => 'Click here* to edit the **feedback page**. You can use [markdown](https://codepen.io/nmtakay/pen/gscbf) or html to format your feedback page.
+
+## Make a list with numbers or asterisks
+
+1. First item
+2. Second item
+  * sub item
+  * sub item
+3. Third item'
     );
 }
 
 $info['id'] = new hiddenInput('id', 'id', $eInfo['id']);
+
+// name for users
+$info['name'] = new input('name', 'name', $eInfo['name']);
+$info['name']->set_question('Name for Users');
+$info['name']->set_width(500);
 
 // name for researchers
 $info['res_name'] = new input('res_name', 'res_name', $eInfo['res_name']);
@@ -353,13 +274,12 @@ $info['subtype'] = new select('subtype', 'subtype', $eInfo['subtype']);
 $info['subtype']->set_question('Subtype');
 $info['subtype']->set_null(false);
 $subtype_options = array(
-    'standard' => 'Standard',
-    'large_n' => 'Large N',
-    'adapt' => 'Adaptation',
-    'adapt_nopre' => 'Adaptation (no pre-test)'
+    'large_n' => 'Standard',
+    //'adapt' => 'Adaptation (with pre-test)',
+    //'adapt_nopre' => 'Adaptation (no pre-test)'
 );
 
-if ("2afc" == $eInfo['exptype'] || "buttons" == $eInfo['exptype']) { $subtype_options['speeded'] = 'Speeded decisions'; }
+if ("2afc" == $eInfo['exptype'] || "buttons" == $eInfo['exptype']) { $subtype_options['speeded'] = 'Speeded'; }
 $info['subtype']->set_options($subtype_options);
 */
 
@@ -389,14 +309,14 @@ $info['side']->set_options(array(
 ));
 
 // total images
-$total_images = new input('total_images', 'total_images', $eInfo['total_images']);
-$total_images->set_width(50);
-$total_images->set_type('number');
-$randomx = new input('randomx', 'randomx', $eInfo['randomx']);
-$randomx->set_width(50);
-$randomx->set_type('number');
-$randomx->set_eventHandlers(array('onchange' => '$(\'#randomx_top\').html(this.value);'));
-$ci = "Show " . $randomx->get_element() . ' of ' . $total_images->get_element() . ' total images';
+$total_stim = new input('total_stim', 'total_stim', $eInfo['total_stim']);
+$total_stim->set_width(50);
+$total_stim->set_type('number');
+$random_stim = new input('random_stim', 'random_stim', $eInfo['random_stim']);
+$random_stim->set_width(50);
+$random_stim->set_type('number');
+$random_stim->set_eventHandlers(array('onchange' => '$(\'#random_stim_top\').html(this.value);'));
+$ci = "Show " . $random_stim->get_element() . ' of ' . $total_stim->get_element() . ' total images';
 $info['images'] = new formElement('images','images');
 $info['images']->set_question("Images");
 $info['images']->set_custom_input($ci);
@@ -426,17 +346,52 @@ $info['labnotes'] = new textarea('labnotes', 'labnotes', $eInfo['labnotes']);
 $info['labnotes']->set_question('Labnotes');
 $info['labnotes']->set_dimensions(500, 50, true, 50, 0, 0);
 
-/*
-$info['forward'] = new input('forward', 'forward', $eInfo['forward']);
-$info['forward']->set_question('Forward to URL');
-$info['forward']->set_width(500);
-*/
+$min_max_images = array(
+    '2afc'      => array(2, 3),
+    'jnd'       => array(2, 3),
+    'rating'    => array(1, 3),
+    'buttons'   => array(1, 3),
+    'xafc'      => array(3, 10),
+    'sort'      => array(2, 10),
+    'nback'     => array(1, 1),
+    'other'     => array(1, 10),
+    'motivation' => array(1, 1),
+    'interactive' => array(1, 1),
+);
 
+if (is_array($trialInfo) && array_key_exists('nimages', $trialInfo)) {
+    $nImages = $trialInfo['nimages'];
+} else {
+    switch ($eInfo['exptype']) {
+        case '2afc': 
+        case 'jnd':
+            $nImages = 2;
+            break;
+        case 'buttons':
+        case 'rating':
+        case 'motivation':
+        case 'interactive':
+            $nImages = 1;
+            break;
+        case 'xafc':
+            $nImages = 3;
+            break;
+        case 'sort':
+            $nImages = 5;
+            break;
+    } 
+}
+
+$info['nImages'] = new selectnum('nImages', 'nImages', $nImages);
+$info['nImages']->set_question('Number of Images to Display');
+$info['nImages']->set_options(array(), $min_max_images[$eInfo['exptype']][0], $min_max_images[$eInfo['exptype']][1]);
+$info['nImages']->set_null(false);
+
+/*
 $info['feedback_general'] = new textarea('feedback_general', 'feedback_general', $eInfo['feedback_general']);
 $info['feedback_general']->set_question('General Feedback');
 $info['feedback_general']->set_dimensions(500, 50, true, 50, 0, 0);
 
-/*
 $info['feedback_specific'] = new textarea('feedback_specific', 'feedback_specific', $eInfo['feedback_specific']);
 $info['feedback_specific']->set_question('Specific Feedback (%1$s)<br /><button id="generic_fb">insert generic</button>');
 $info['feedback_specific']->set_dimensions(500, 50, true, 50, 0, 0);
@@ -447,11 +402,6 @@ $info['feedback_query']->set_dimensions(500, 50, true, 50, 0, 0);
 */
 
 $submit_buttons = array('Save' => 'saveExperiment();');
-if (validID($exp_id)) {
-    //$submit_buttons['Save as new'] = 'saveNew();';
-    $submit_buttons['Feedback Page'] = 'window.open("/fb?type=exp&id=" + $("#id").val());';
-    $submit_buttons['Edit Trials'] = 'editTrials()';
-}
 $submit_buttons['Reset'] = 'window.location.href=window.location.href;';
 
 // set up other info table
@@ -462,7 +412,7 @@ $infoTable->set_action('');
 $infoTable->set_questionList($info);
 $infoTable->set_method('post');
 $infoTable->set_buttons($submit_buttons);
-$infoTable->set_button_location('bottom');
+$infoTable->set_button_location('top');
 
 /****************************************************/
 /* !Display Page */
@@ -478,13 +428,30 @@ $page->displayBody();
 
 ?>
 
-<form action='' method='post' id='exp_<?= $exp_id ?>'>  
-<h2><span id='title' class='editText' title='Title for participants to see'><?= $eInfo['name'] ?></span></h2>
-<p class='instructions'><span id='instructions' class='editText' title='Instructions on page before the experiment starts'><?= htmlspecialchars($eInfo['instructions']) ?></span></p>
-<input type='hidden' name='exp_id' id='exp_id' value='<?= $exp_id ?>' />
-<div id="experiment">
-<div id='question'><span id='trial_question' class='editText' title='Question to be displayed at the top of each trial. Leave blank for a different question for each trial.'><?= $eInfo['question'] ?></span></div>
-<table id="experiment_builder" class="<?= ('2afc' == $eInfo['exptype']) ? 'tafc' : $eInfo['exptype'] ?>">
+<?= $infoTable->print_form() ?>
+
+<form action='' method='post' id='exp_<?= $exp_id ?>'>
+    
+<div id="tabs">
+  <ul>
+    <li><a href="#intropage">Introduction</a></li>
+    <li><a href="#exppage">Experiment</a></li>
+    <li><a href="#fbpage">Feedback</a></li>
+  </ul>
+  
+  <div id="intropage">
+    <p class='instructions'><span id='instructions' 
+        class='editText md' 
+        title='Instructions on page before the experiment starts'><?= htmlspecialchars($eInfo['instructions']) ?></span></p>
+    <input type='hidden' name='exp_id' id='exp_id' value='<?= $exp_id ?>' />
+  </div>
+  
+  <div id="exppage">
+    <div id="experiment">
+        <div id='question'><span id='trial_question' 
+            class='editText md' 
+            title='Question to be displayed at the top of each trial. Leave blank for a different question for each trial.'><?= $eInfo['question'] ?></span></div>
+        <table id="experiment_builder" class="<?= ('2afc' == $eInfo['exptype']) ? 'tafc' : $eInfo['exptype'] ?>">
 
 <?php
 
@@ -506,7 +473,7 @@ switch ($eInfo['exptype']) {
                         . $eInfo['label2'] . '</span></td>' . ENDLINE;
         $text .= '      <td><span class="editText" id="label1" onchange="$(\'#label1b\').html($(\'#label1_field\').val());">' 
                         . $eInfo['label1'] . '</span></td>' . ENDLINE;
-        $text .= '      <td id="center_col" style="display:none;"></td>' . ENDLINE;
+        $text .= '      <td class="center" id="center_col" style="display:none;"></td>' . ENDLINE;
         $text .= '      <td><span class="editText" id="label1b" onchange="$(\'#label1\').html($(\'#label1b_field\').val());">' 
                         . $eInfo['label1'] . '</span></td>' . ENDLINE;
         $text .= '      <td><span class="editText" id="label2b" onchange="$(\'#label2\').html($(\'#label2b_field\').val());">' 
@@ -637,23 +604,6 @@ switch ($eInfo['exptype']) {
         break;
 } 
 
-if (is_array($trialInfo) && array_key_exists('nimages', $trialInfo)) {
-    $nImages = $trialInfo['nimages'];
-}
-
- $min_max_images = array(
-    '2afc'      => array(2, 3),
-    'jnd'       => array(2, 3),
-    'rating'    => array(1, 3),
-    'buttons'   => array(1, 3),
-    'xafc'      => array(3, 10),
-    'sort'      => array(2, 10),
-    'nback'     => array(1, 1),
-    'other'     => array(1, 10),
-    'motivation' => array(1, 1),
-    'interactive' => array(1, 1),
-);
-
 $fb_queries = array(
     '2afc'      => "ROUND(AVG(t1+t2+t3+t4+t5+t6+t7+t8+t9+t10)/10*100) as avg_score, ROUND(AVG(IF(@myid=id, t1+t2+t3+t4+t5+t6+t7+t8+t9+t10, NULL))/10*100) as my_score",
     'jnd'       => "ROUND(AVG((t1>3)+(t2>3)+(t3>3)+(t4>3)+(t5>3)+(t6>3)+(t7>3)+(t8>3)+(t9>3)+(t10>3))/10*100) as avg_score, ROUND(AVG(IF(@myid=id, (t1>3)+(t2>3)+(t3>3)+(t4>3)+(t5>3)+(t6>3)+(t7>3)+(t8>3)+(t9>3)+(t10>3), NULL))/10*100) as my_score",
@@ -686,14 +636,17 @@ $fb_specifics = array(
 
 </table>
 
-Trial x of <span id="randomx_top"><?= $eInfo['randomx'] ?></span>
+Trial x of <span id="random_stim_top"><?= $eInfo['random_stim'] ?></span>
 </div>
 
-<div id="nImageChanger">Number of images to display: 
-    <button id="add_image">+</button>
-    <button id="delete_image">-</button>
 </div>
 
+    <div id="fbpage">
+        <p class='instructions'><span id='feedback_general' 
+            class='editText md' 
+            title='Feedback'><?= htmlspecialchars($eInfo['feedback_general']) ?></span></p>
+    </div>
+</div>
 </form>
 
 <div id="help" title="Experiment Builder Help">
@@ -704,20 +657,19 @@ Trial x of <span id="randomx_top"><?= $eInfo['randomx'] ?></span>
     </ul>
 </div>
 
-<?= $infoTable->print_form() ?>
 
 <!--**************************************************-->
 <!-- !Javascripts for this page -->
 <!--**************************************************-->
 
 <script>
-    var nImages = <?= $nImages ?>;
-    var minImages = <?= $min_max_images[$eInfo['exptype']][0] ?>;
-    var maxImages = <?= $min_max_images[$eInfo['exptype']][1] ?>;
+    var nImages = $('#nImages').val();
     
     var defaultTime = 4000;
     
     $(function() {
+        
+        $( "#tabs" ).tabs();
     
         setOriginalValues('myInformation'); 
         
@@ -755,57 +707,29 @@ Trial x of <span id="randomx_top"><?= $eInfo['randomx'] ?></span>
             return false;
         });
         
-        $('#total_images').change( function() {
+        $('#total_stim').change( function() {
             if (this.value > 300 && $('#subtype').val() != 'large_n') { 
                 $('#subtype').val('large_n');
                 alert('Subtype must be Large N or total images must be <300'); 
             }
         });
         $('#subtype').change(function() {
-            if ($('#total_images').val() > 300 && this.value != 'large_n') {
+            if ($('#total_stim').val() > 300 && this.value != 'large_n') {
                 alert('Subtype must be Large N or total images must be <300'); 
-                $('#total_images').val(300);
+                $('#total_stim').val(300);
             }
         });
                 
-        $('#nImageChanger').buttonset();
-        
-        $('#add_image').click( function() {
-            if (nImages <= maxImages) { 
-                nImages++;
-                viewImages();
                 
-                $('#delete_image').button('enable');
-                if (nImages == maxImages) $(this).button('disable');
-            } else {
-                $('<div />').html("You can't show more than " + maxImages + " images.")
-                             .dialog({ buttons: { "OK": function() {$(this).dialog('close');} } });
-            }
-            return false;
-        });
-        
-        $('#delete_image').click( function() {
-            if (nImages > minImages) { 
-                nImages--;
-                viewImages();
-                
-                $('#add_image').button('enable');
-                if (nImages == minImages) $(this).button('disable');
-            } else {
-                $('<div />').html("You must show at least " + minImages + " image(s).")
-                             .dialog({ buttons: { "OK": function() {$(this).dialog('close');} } });
-            }
-            return false;
-        });
-        
-        // disable image buttons is at max or min
-        if (nImages == minImages) $('#delete_image').button('disable');
-        if (nImages == maxImages) $('#add_image').button('disable');
-        
+        $('#nImages').change( function() {
+            nImages = $('#nImages').val();
+            viewImages();
+        } );
     }); // end of $(function(){})
     
 
     function viewImages() {
+        $('table.jnd .input_interface').removeClass('jnd3');
         if ($('table.xafc').length > 0 || $('table.sort').length > 0) {
             $('#center_image').html('');
             for (var i = 0; i < nImages; i++) {
@@ -827,6 +751,8 @@ Trial x of <span id="randomx_top"><?= $eInfo['randomx'] ?></span>
             $('#center_image').show();
             if ($('#center_col')) $('#center_col').show();
             $('#right_image').show();
+            
+            $('table.jnd .input_interface').addClass('jnd3');
         }
     }
     
@@ -854,7 +780,7 @@ Trial x of <span id="randomx_top"><?= $eInfo['randomx'] ?></span>
         $.ajax({
             url: './builder?save',
             type: 'POST',
-            data: formData[0] + '&' + formData[1] + '&nImages=' + nImages,
+            data: formData[0] + '&' + formData[1],
             success: function(data) {
                 parsedResponse = data.split(':');
                 if (parsedResponse[0] == 'id') {

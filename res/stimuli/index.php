@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 $title = array(
 	'/res/' => loc('Researchers'),
@@ -23,7 +23,7 @@ $page->displayBody();
 
 $links = array();
 
-if (in_array($_SESSION['status'], array('researcher', 'admin'))) {
+if (in_array($_SESSION['status'], array('res', 'admin'))) {
 	//$links['search'] = 'Search';
 	$links['browse'] = 'Browse';
 	$links['upload'] = 'Upload';

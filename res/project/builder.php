@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 $title = array(
     '/res/' => 'Researchers',
@@ -22,7 +22,7 @@ $styles = array(
                                         border-radius: 0 .5em; float: right; 
                                         text-align: center; line-height: 1.2em; font-size:100%',
     '.setlists li.active .status'   => 'background-color: hsla(120,100%,50%, 50%);',
-    '.setlists li.inactive .status' => 'background-color: hsla(120,0%,50%, 50%);',
+    '.setlists li.archive .status' => 'background-color: hsla(120,0%,50%, 50%);',
     '.setlists li.test .status'     => 'background-color: hsla(0,100%,50%, 50%);',
     '.setlists li:hover'            => 'color: white;background-color:hsl(0, 0%, 40%); cursor:default;',
     '.setlists li+li'               => 'border-top:0;',
@@ -105,7 +105,7 @@ if (array_key_exists('save', $_GET)) {
     if ($_SESSION['status'] == 'student') {
         // student researchers cannot edit anything
         echo 'You may not edit or create projects'; exit; 
-    } elseif ($_SESSION['status'] == 'researcher') { 
+    } elseif ($_SESSION['status'] == 'res') { 
         // researchers can edit only their own experiments
         if (validID($clean['project_id'])) {
             $myaccess = new myQuery('SELECT user_id, status FROM project LEFT JOIN access USING (id) WHERE access.type="project" AND id='.$clean['project_id']." AND user_id=".$_SESSION['user_id']);
@@ -371,7 +371,7 @@ $page->displayBody();
         <li>Click on items to add them to your project list.</li>
         <li>Double-click on items in your project list to delete them.</li>
         <li>Drag items in your project list to reorder them.</li>
-        <li>Make sure you include a readable URL, since you will be able to advertise your project at <i>http://faceresearch.org/project?shortname</i>.</li>
+        <li>Make sure you include a readable URL, since you will be able to advertise your project at <i>https://exp.psy.gla.ac.uk/project?shortname</i>.</li>
     </ul>
 </div>
 

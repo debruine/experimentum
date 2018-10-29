@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 $status_changer = ($_SESSION['status'] == "admin") ? "statusChanger(5,'quest');" : "";
 
@@ -31,9 +31,9 @@ if (array_key_exists('owner', $_GET)) {
 $howmany = new myQuery("SELECT COUNT(*) as c FROM quest LEFT JOIN access USING (id) WHERE access.type='quest' AND access.user_id='{$access_user}'");
 
 if ($_GET['status'] == "all" || $howmany->get_one() < 50) {
-	$visible_statuses = "'test', 'active', 'inactive'";
+	$visible_statuses = "'test', 'active', 'archive'";
 	$_GET['status'] = "all";
-} else if (in_array($_GET['status'], array("test", "active", "inactive"))) { 
+} else if (in_array($_GET['status'], array("test", "active", "archive"))) { 
 	$visible_statuses = "'" . $_GET['status'] . "'";
 } else {
 	$visible_statuses = "'test'";
@@ -60,9 +60,9 @@ $my = new myQuery('SELECT CONCAT("<span class=\'fav",
 	
 $search = new input('search', 'search');
 
-$owners = new myQuery('SELECT researcher.user_id as user_id, 
+$owners = new myQuery('SELECT res.user_id as user_id, 
 	CONCAT(lastname, ", ", initials) as name 
-	FROM researcher 
+	FROM res 
 	LEFT JOIN access USING (user_id)
 	WHERE access.type="quest" AND access.user_id IS NOT NULL 
 	ORDER BY lastname, initials');
@@ -80,7 +80,7 @@ $status->set_options(array(
 	"all" => "all", 
 	"test" => "test", 
 	"active" => "active", 
-	"inactive" => "inactive"
+	"archive" => "archive"
 ));
 $status->set_null(false);
 $status->set_eventHandlers(array('onchange' => 'changePage()'));

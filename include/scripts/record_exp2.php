@@ -1,4 +1,6 @@
 <?php
+    // update to record to long format exp_data table
+    
 	require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 	auth(1);
 
@@ -89,9 +91,9 @@
 	
 	if ($maxversion > 0 && $version == 0) {
 		$version = rand(1, $maxversion);
-		echo '/slideshow?id=' . $id . '&v=' . $version; 
+		echo '/exp/slideshow?id=' . $id . '&v=' . $version; 
 	} else {
-		echo '/fb?type=exp&id=' . $id;
+		echo '/feedback/fb?type=exp&id=' . $id;
 	}
 	
 	exit;

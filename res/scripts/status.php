@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(array('researcher', 'admin'));
+auth(array('res', 'admin'));
 
 $type = $_POST['type'];
 $id = intval($_POST['id']);
@@ -10,13 +10,13 @@ $status = $_POST['status'];
 if (!in_array($type, array('exp','quest','project','sets'))) {
     echo "Incorrect item type '{$type}'";
     exit;
-} else if (!in_array($status, array('active','inactive','test'))) {
+} else if (!in_array($status, array('active','archive','test'))) {
     echo "Incorrect status '{$status}'";
     exit;
 }
 
 // if a researcher, check if they have access to this one
-if ($_SESSION['status'] == 'researcher') {
+if ($_SESSION['status'] == 'res') {
     if ($status == 'active') {
         echo "You do not have permission to change the status of {$type}_{$id} to active, please ask an admin.";
         exit;

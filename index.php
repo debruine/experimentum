@@ -6,7 +6,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 unset($_SESSION['set_list']);
 unset($_SESSION['set_item_number']);
 unset($_SESSION['project']);
-unset($_SESSION['session']);
+unset($_SESSION['project_id']);
+unset($_SESSION['session_id']);
 
 /****************************************************/
 /* !Display Page */
@@ -136,32 +137,6 @@ $(function() {
         });
     });
 });
-
-function post_fb() {
-    FB.ui(
-       {
-         method: 'stream.publish',
-         message: 'I just signed up to participate in experiments at faceresearch.org.',
-         attachment: {
-           name: 'FaceResearch',
-           caption: 'Experiments about face and voice preferences',
-           description: (
-             'FaceResearch.org allows you to participate in short ' +
-             'online psychology experiments looking at the traits ' +
-             'people find attractive in faces and voices.'
-           ),
-           href: 'http://faceresearch.org'
-         },
-         user_message_prompt: 'Share your thoughts about FaceResearch'
-       },
-       function(response) {
-         if (response && response.post_id) {
-         } else {
-           alert('Post was not published.');
-         }
-       }
-     );
-}
 
 </script>
 

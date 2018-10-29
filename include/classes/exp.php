@@ -4,6 +4,8 @@
  * Experiment classes
  ***************************************************/
  
+ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/Parsedown.php';
+ 
  class expChooser {
     public $id;
     public $exptype;
@@ -115,7 +117,7 @@ class experiment {
     public $range;
     public $anchors;
     public $orient;
-    public $randomx;
+    public $random_stim;
     public $trials;
     public $default_time = 4000;
     public $increment_time = 100;
@@ -149,7 +151,7 @@ class experiment {
             $this->range = $info['rating_range'];
             $this->anchors = array($info['low_anchor'], $info['high_anchor']);
             $this->orient = $info['orient'];
-            $this->randomx = $info['randomx'];
+            $this->random_stim = $info['random_stim'];
             $this->default_time = $info['default_time'];
             $this->increment_time = $info['increment_time'];                
             
@@ -215,7 +217,9 @@ class experiment {
     
     function get_instructions() {
         $text = "<div id='instructions'>" . ENDLINE;
-        $text .= parsePara($this->instructions);
+        //$text .= parsePara($this->instructions);
+        $Parsedown = new Parsedown();
+        $text .= $Parsedown->text($this->instructions);
         $text .= "</div>" . ENDLINE;
         
         // image loader
@@ -304,7 +308,7 @@ class experiment {
         $text .= $this->get_input_interface();
         $text .= $this->get_stimuli_interface();
         $text .= '</table>' . ENDLINE;
-        $text .= '<div class="trialcounter">Trial <span id="trial_n">0</span> of ' . $this->randomx . '</div>' . ENDLINE;
+        $text .= '<div class="trialcounter">Trial <span id="trial_n">0</span> of ' . $this->random_stim . '</div>' . ENDLINE;
         $text .= '</div>' . ENDLINE;
         
         return $text;
@@ -405,13 +409,13 @@ class experiment {
         $text .=         '    beginTrial = 0;' . ENDLINE;
 
 
-        // randomise trial order and select randomx if applicable
+        // randomise trial order and select random_stim if applicable
         $trial_n = array();
         foreach ($this->trials as $n => $trial) { $trial_n[$n] = $trial->get_trial_n(); }
         if ($this->trial_order == 'random') { shuffle($trial_n); } elseif ($this->trial_order == 'norepeat') { shuffle($trial_n); }
-        if ($this->randomx < count($trial_n)) { // choose a subset of the trials
+        if ($this->random_stim < count($trial_n)) { // choose a subset of the trials
             shuffle($trial_n); // shuffle again in case trial order is accidentally set to not shuffle (which would make no sense)
-            $trial_n = array_slice($trial_n, 0, $this->randomx);
+            $trial_n = array_slice($trial_n, 0, $this->random_stim);
         }
         $text .=         '    trialOrder = [0,'     . implode(',', $trial_n) . '];' . ENDLINE;
         
@@ -487,7 +491,7 @@ class experiment {
                            '            $.ajax({' . ENDLINE .
                            '                type: "POST",' . ENDLINE .
                            '                async: false,' . ENDLINE .
-                           '                url: "/include/scripts/exp_record", ' . ENDLINE .
+                           '                url: "/include/scripts/record_exp2", ' . ENDLINE .
                            '                data: d,' . ENDLINE .
                            '                success: function(r) {' . ENDLINE .
                            '                    // send to feedback page' . ENDLINE .
@@ -527,7 +531,7 @@ class experiment {
                            '        $.ajax({' . ENDLINE .
                            '            type: "POST",' . ENDLINE .
                            '            async: true,' . ENDLINE .
-                           '            url: "/include/scripts/large_n_record", ' . ENDLINE .
+                           '            url: "/include/scripts/record_exp", ' . ENDLINE .
                            '            data: d,' . ENDLINE .
                            '            success: function(r) {' . ENDLINE .
                            '                // send to feedback page' . ENDLINE .
@@ -554,13 +558,13 @@ class experiment {
     function side() {
         // side randomisation (default for all but xafc)
         
-        $total = count($this->trials); // $this->randomx;
+        $total = count($this->trials); // $this->random_stim;
         if ($this->side == 'random') {        
-            for ($i = 0; $i < $this->randomx; $i++) {
+            for ($i = 0; $i < $this->random_stim; $i++) {
                 $side[] = rand(1,2);
             }
         } else {
-            $side = array_fill(0, $this->randomx, 1);
+            $side = array_fill(0, $this->random_stim, 1);
         }
         
         return             '    side = [0,'     . implode(",", $side) . '];' . ENDLINE;
@@ -671,7 +675,7 @@ class exp_xafc extends experiment {
             } else if ($this->stimuli_type == 'audio') {
                 $text .= '        <div class="audio" id="xafc_' . $n . '">
                 <span class="play">PLAY</span>
-                <span class="choose" onclick="nextTrial(' . $n . '); return false;">choose</span>
+                <span class="choose" onclick="nextTrial("' . $n . '"); return false;">choose</span>
                 <audio id="xafc_' . $n . '_player">
                     Your browser does not support the audio element.
                 </audio>
@@ -689,7 +693,7 @@ class exp_xafc extends experiment {
         // side randomisation: side is recorded as the position for each image, so 5,3,4,1,2 means that the first image is in position 5, the second in position 3, etc.
         $c = count($this->xafc_images[0]);
         $r = range(1,$c);
-        $total = count($this->trials); // $this->randomx;
+        $total = count($this->trials); // $this->random_stim;
         
         for ($i = 0; $i<$total; $i++) {
             if ($this->side == 'random') { shuffle($r); }
@@ -1106,12 +1110,16 @@ class exp_jnd extends experiment {
         ifEmpty($cols_to_span, 1);
     
         // jnd input interface
-        $text .= '    <tr class="input_interface">' . ENDLINE;
+        if (!empty($this->center_images)) {
+            $text .= '    <tr class="input_interface jnd3">' . ENDLINE;
+        } else {
+            $text .= '    <tr class="input_interface">' . ENDLINE;
+        }
         $revlabels = array_reverse($this->labels, true);
         foreach ($revlabels as $i => $label) {
             $text .= "    <td onclick='nextTrial(" . ($i+4) . ")'>$label</td>" . ENDLINE;
         }
-        if (!empty($this->center_images)) $text .= "    <td></td>" . ENDLINE;
+        if (!empty($this->center_images)) $text .= "    <td class='center'></td>" . ENDLINE;
         foreach ($this->labels as $i => $label) {
             $text .= "    <td onclick='nextTrial(" . (-$i+3) . ")'>$label</td>" . ENDLINE;
         }
@@ -1201,7 +1209,7 @@ class exp_buttons extends experiment {
             $text .= "            <span id='low_anchor'>" . $this->anchors[0] . "</span>" . ENDLINE;
             $button_query = new myQuery('SELECT dv, display FROM buttons WHERE exp_id=' . $this->id . " ORDER BY n");
             foreach ($button_query->get_assoc() as $b) {
-                $text .= "        <input type='button' value='{$b['display']}' onclick='nextTrial({$b['dv']})'/>" . ENDLINE;
+                $text .= "        <input type='button' value='{$b['display']}' onclick='nextTrial(\"{$b['dv']}\")'/>" . ENDLINE;
             }
             $text .= "            <span id='high_anchor'>" . $this->anchors[1] . "</span>" . ENDLINE;
             $text .= '        </td>' . ENDLINE;
@@ -1398,7 +1406,7 @@ class exp_adaptation extends exp_buttons {
             
                         '            if (data.length == adapt_images.length) {' . ENDLINE .
                         '                // record to database' . ENDLINE .
-                        '                var url =     "/include/scripts/exp_record?id=' . $this->id . '" +' . ENDLINE .
+                        '                var url =     "/include/scripts/record_exp2?id=' . $this->id . '" +' . ENDLINE .
                         '                            "&version=' . $this->version . '" + ' . ENDLINE .
                         '                            "&response=" + escape(response) + ' . ENDLINE .
                         '                            "&side=" + side + ' . ENDLINE .
@@ -1409,7 +1417,7 @@ class exp_adaptation extends exp_buttons {
             
                         '                $.get(url, function(r) {' . ENDLINE .
                         '                    // send to feedback page' . ENDLINE .
-                        '                    window.location.href="/fb?type=exp&id=<?php echo $exp_id; ?>";' . ENDLINE .
+                        '                    window.location.href="/fb?type=exp&id=' . $this->id . '";' . ENDLINE .
                         '                });' . ENDLINE .
                         '            }' . ENDLINE .
                         '        }' . ENDLINE .

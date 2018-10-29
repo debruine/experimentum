@@ -87,7 +87,8 @@ $input['password2']->set_required(true);
 
 // sex
 $input['sex'] = new select('sex', 'sex');
-$input['sex']->set_question('Sex<small><a href="javascript: trans();">Click here if these options don&#39;t apply to you</a></small>');
+$input['sex']->set_question('Gender');
+//$input['sex']->set_question('Sex<small><a href="javascript: trans();">Click here if these options don&#39;t apply to you</a></small>');
 $input['sex']->set_options(array(
     'male' => loc('male'),
     'female' => loc('female'),
@@ -99,7 +100,7 @@ $input['sex']->set_required(true);
 // birthday
 //$input['birthday'] = new dateMenu('birthday', 'birthday');
 $input['birthday'] = new formElement('birthday', 'birthday');
-$input['birthday']->set_question('Birthday <small>Year required for some studies</small>');
+$input['birthday']->set_question('Birthday <small>Year required for some age-restricted studies</small>');
 $year = new selectnum('year','year',0);
 $year->set_options(array(0 => "----"), date("Y"), date("Y") - 120);
 $year->set_null(false);
@@ -127,7 +128,7 @@ $day->set_null(false);
 $input['birthday']->set_custom_input( $year->get_element() . ' ' .
                                       $month->get_element() . ' ' .
                                       $day->get_element() );
-
+/*
 // pquestion
 $input['pquestion'] = new input('pquestion', 'pquestion');
 $input['pquestion']->set_question('Password retrieval question');
@@ -140,6 +141,7 @@ $input['panswer'] = new input('panswer', 'panswer');
 $input['panswer']->set_question('Answer to password retrieval question');
 $input['panswer']->set_maxlength(100);
 $input['panswer']->set_width($input_width);
+*/
 
 // set up form table
 $q = new formTable();

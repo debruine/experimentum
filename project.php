@@ -1,6 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
+unset($_SESSION['session_id']);
 
 /****************************************************
  * Get Project Info
@@ -9,7 +10,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 if (count($_GET) == 1) {
     $keys = array_keys($_GET);
     $projectname = $keys[0];
-    if (in_array($_SESSION['status'], array('student', 'researcher', 'admin'))) {
+    if (in_array($_SESSION['status'], $RES_STATUS)) {
         $myproject = new myQuery('SELECT * FROM project WHERE url="' . $projectname . '"');
     } else {
         $myproject = new myQuery('SELECT * FROM project WHERE status="active" AND url="' . $projectname . '"');
@@ -23,6 +24,7 @@ if (count($_GET) == 1) {
     
     $_SESSION['project'] = $projectname;
     $project = $myproject->get_one_array();
+    $_SESSION['project_id'] = $project['id'];
     
     $exclusions = array();
     if ($_SESSION['age'] > 0) {
@@ -71,7 +73,7 @@ if (count($_GET) == 1) {
                         
     $items = $myitems->get_assoc();
 } else {
-    location('/');
+    header('Location: /');
     exit;
 }
 
@@ -96,9 +98,18 @@ $page->set_menu(false);
 $page->displayHead($styles);
 $page->displayBody();
 
+// warn if not eligible for any parts of the study
+$visitems = false;
+foreach ($items as $i) { $visitems = $visitems || !empty($i['the_status']); }
+if (!$visitems) {
+    echo "<h3 class='ui-state-error'>You are not eligible for this study.<br>
+            It might be restricted by age or gender.</h3>";
+}
+
 echo '<p>' . $project['intro'] . '</p>' . ENDLINE;
 
 if (!empty($_SESSION['status'])) {
+    $res = in_array($_SESSION['status'], $RES_STATUS) ? ' res' : '';
     // participant is logged in
     echo '<ul class="bigbuttons" id="itembuttons">';
     $url = array(
@@ -107,19 +118,18 @@ if (!empty($_SESSION['status'])) {
         'set'   => '/include/scripts/set'
     );
     foreach ($items as $i) {
-            printf('<li id="%s_%s" class="%s"><a class="%s" href="%s?id=%s" style="%s">%s</a></li>' . ENDLINE,
-                $i['item_type'],
-                $i['item_id'],
-                ifEmpty($i['the_status'], 'hide'),
-                $i['item_type'],
-                $url[$i['item_type']],
-                $i['item_id'],
-                (!empty($i['icon'])) ? "background-image: url({$i['icon']}?c=FFF)" : "",
-                ifEmpty($i['name'], "Hidden: age or sex <span class='corner'>" . $i['item_type'] . "_" . $i['item_id'] . "</span>")
-            );
-            
-            if ($i['the_status'] != 'hide') $itemList[] = '"' . $i['item_type'] . '_' . $i['item_id'] . '"';
-        }
+        printf('<li id="%s_%s" class="%s%s"><a class="%s" href="%s?id=%s" style="%s">%s</a></li>' . ENDLINE,
+            $i['item_type'],
+            $i['item_id'],
+            ifEmpty($i['the_status'], 'hide'),
+            $res,
+            $i['item_type'],
+            $url[$i['item_type']],
+            $i['item_id'],
+            (!empty($i['icon'])) ? "background-image: url({$i['icon']}?c=FFF)" : "",
+            ifEmpty($i['name'], $i['item_type'] . "_" . $i['item_id'] . "<span class='corner'>hidden</span>")
+        );
+    }
     echo '</ul>';
 } else {
     // participant is not logged in yet

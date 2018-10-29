@@ -349,6 +349,8 @@ class page {
     }
     
     function displayFooter() {
+        global $RES_STATUS, $ALL_STATUS;
+        
         // make menu
         $menu = '';
         if ($this->menu) {
@@ -367,10 +369,8 @@ class page {
                 '/my'           => 'my'
             );
             
-            $res_list = array('student','researcher','admin');
-            $status_list = array('test','guest','registered','student','researcher','admin');
-            if (in_array($_SESSION['status'], $res_list)) $menuList['/res/'] = 'Researchers';
-            if (in_array($_SESSION['status'], $status_list)) $menuList['/my'] = 'My Account';
+            if (in_array($_SESSION['status'], $RES_STATUS)) $menuList['/res/'] = 'Researchers';
+            if (in_array($_SESSION['status'], $ALL_STATUS)) $menuList['/my'] = 'My Account';
             
             $menu .= '  <ul>' . ENDLINE;
             foreach($menuList as $url => $item) {

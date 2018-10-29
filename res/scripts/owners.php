@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(array('researcher', 'admin'));
+auth(array('res', 'admin'));
 
 $type = $_POST['type'];
 $id = intval($_POST['id']);
@@ -12,7 +12,7 @@ if (!in_array($type, array('exp','quest','project','sets'))) {
 }
 
 // if a researcher, check if they have access to this one
-if ($_SESSION['status'] == 'researcher') {
+if ($_SESSION['status'] == 'res') {
     $query = new myQuery("SELECT user_id FROM access WHERE `type`='{$type}' AND id={$id} AND user_id={$_SESSION['user_id']}");
     if ($query->get_num_rows() == 0) {
         echo "You do not have permission to change owners.";

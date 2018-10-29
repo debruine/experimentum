@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
-auth(array('researcher', 'admin'));
+auth(array('res', 'admin'), "/res/");
 
 $title = array(
     '/res/' => loc('Researchers'),
@@ -29,6 +29,7 @@ if (count($_FILES) > 0) {
     $description = my_clean($_POST['description']);
     
     $uploaded = array();
+    $okfiles = array();
     
     foreach ($_FILES['uploads']['name'] as $n => $name) {
         $type = explode('/', $_FILES['uploads']['type'][$n]);
@@ -38,23 +39,33 @@ if (count($_FILES) > 0) {
 
         if ($error == 0 && $size > 0 && in_array($type[0], array('image','audio','video'))) {
             $newname = $subdir . '/' . safeFileName($name);
-            if (copy($tmp_name, $newname)) {
-                chmod($newname, 0744);
-                $stimname = str_replace(array(DOC_ROOT, '.jpg','.gif','.png','.mp3','.ogg'), '', $newname);
-                $q = new myQuery("SELECT id FROM stimuli WHERE path='{$stimname}'");
-                if ($q->get_num_rows() > 0) {
-                    $newid = $q->get_one();
-                    $query = "UPDATE stimuli SET type='{$type[0]}', size='$size', description='$description' WHERE id='{$newid}'";
-                    $query = str_replace("'null'", "NULL", $query);
-                    $q = new myQuery($query);
-                } else {
-                    $query = "INSERT INTO stimuli (path, type, size, description) VALUES ('/{$stimname}', '{$type[0]}', '$size', '$description')";
-                    $query = str_replace("'null'", "NULL", $query);
-                    $q = new myQuery($query);
-                    $newid = $q->get_insert_id();
-                }
-                $uploaded[$newid] = $stimname;
+            $okfiles[$newname] = array(
+                'newname' => $newname,
+                'tmp_name' => $tmp_name,
+                'type' => $type[0],
+                'size' => $size
+            );
+        }
+    }
+    
+    ksort($okfiles);
+    foreach ($okfiles as $file) {
+        if (copy($file['tmp_name'], $file['newname'])) {
+            chmod($file['newname'], 0744);
+            $stimname = str_replace(array(DOC_ROOT, '.jpg','.gif','.png','.mp3','.ogg'), '', $file['newname']);
+            $q = new myQuery("SELECT id FROM stimuli WHERE path='{$stimname}'");
+            if ($q->get_num_rows() > 0) {
+                $newid = $q->get_one();
+                $query = "UPDATE stimuli SET type='{$file['type']}', size='{$file['size']}', description='$description' WHERE id='{$newid}'";
+                $query = str_replace("'null'", "NULL", $query);
+                $q = new myQuery($query);
+            } else {
+                $query = "INSERT INTO stimuli (path, type, size, description) VALUES ('{$stimname}', '{$file['type']}', '{$file['size']}', '$description')";
+                $query = str_replace("'null'", "NULL", $query);
+                $q = new myQuery($query);
+                $newid = $q->get_insert_id();
             }
+            $uploaded[$newid] = $stimname;
         }
     }
     

@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 
 $title = array(
@@ -14,7 +14,8 @@ $title = array(
 $styles = array( 
     'br' => 'margin: 0 0 .5em 0;',
     '#time_container' => 'height: 300px; width: 500px;',
-    '.question_info, .quest_info' => 'margin-bottom: 1em; width: 100%;'
+    '.question_info, .quest_info' => 'margin-bottom: 1em; width: 100%;',
+    '#myQuery' => 'display: none;'
 );
 
 
@@ -111,21 +112,6 @@ if (array_key_exists('duplicate', $_GET) && validID($_GET['id'])) {
     unset($table_schema['user_id']);
     unset($table_schema['starttime']);
     unset($table_schema['endtime']);
-        
-    $new_fields = '';
-    foreach ($table_schema as $field => $type) {
-        $new_fields .= $old_to_new[$field] . ' ' . $type . ',' . ENDLINE;
-    }
-    
-    $query = "CREATE TABLE quest_{$new_id} (
-                id INT(11) NOT NULL AUTO_INCREMENT,
-                user_id INT(11),
-                {$new_fields}
-                starttime DATETIME,
-                endtime DATETIME,
-                INDEX (user_id),
-                PRIMARY KEY (id));";
-    $q = new myQuery($query);           
     
     // set owner/access
     $q = new myQuery("INSERT INTO access (type, id, user_id) VALUES ('quest', $new_id, {$_SESSION['user_id']})");
@@ -156,21 +142,26 @@ if ($myquest->get_num_rows() == 0) { header('Location: /res/quest/'); }
 $questdata = $myquest->get_one_array();
 
 // owner functions
-$myowners = new myQuery('SELECT user_id, CONCAT(lastname, " ", initials) as name FROM access LEFT JOIN researcher USING (user_id) WHERE type="quest" AND id=' . $quest_id);
+$myowners = new myQuery('SELECT user_id, CONCAT(lastname, ", ", firstname) as name 
+                           FROM access 
+                           LEFT JOIN res USING (user_id) 
+                           WHERE type="quest" AND id=' . $quest_id);
 $owners = $myowners->get_assoc(false, 'user_id', 'name');
 $access = in_array($_SESSION['user_id'], array_keys($owners));
 
-$allowners = new myQuery('SELECT user_id, firstname, lastname, initials, email FROM researcher LEFT JOIN user USING (user_id) WHERE status > 4');
+$allowners = new myQuery('SELECT user_id, firstname, lastname, email 
+                            FROM res 
+                            LEFT JOIN user USING (user_id) 
+                            WHERE status > 4');
 $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
 foreach($ownerlisting as $res) {
     $user_id = $res['user_id'];
     $lastname = htmlspecialchars($res['lastname'], ENT_QUOTES);
     $firstname = htmlspecialchars($res['firstname'], ENT_QUOTES);
-    $initials = htmlspecialchars($res['initials'], ENT_QUOTES);
     $email = htmlentities($res['email'], ENT_QUOTES);
     
-    $ownerlist[] = "\n{ value: '{$user_id}', name: '{$lastname} {$initials}', label: '{$firstname} {$lastname} {$email}' }";
+    $ownerlist[] = "\n{ value: '{$user_id}', name: '{$lastname}, {$firstname}', label: '{$firstname} {$lastname} {$email}' }";
 }
 $owner_edit = "";
 foreach($owners as $id => $name) {
@@ -209,23 +200,13 @@ if (in_array($_SESSION['status'], array('researcher', 'admin'))) {
     $status_chooser->set_options(array(
         'test' => 'test',
         'active' => 'active',
-        'inactive' => 'inactive'
+        'archive' => 'archive'
     ));
     $status = $status_chooser->get_element();
 } else {
     $status = '(' . $questdata['status'] . ')';
 }
 
-// get stats on participant completion of the questeriment
-/*
-$mydata = new myQuery('SELECT COUNT(*) as total_c,
-                        COUNT(IF(sex="male",1,NULL)) as total_male,
-                        COUNT(IF(sex="female",1,NULL)) as total_female,
-                        MAX(endtime) as last_completion
-                        FROM quest_' . $quest_id . ' LEFT JOIN user USING (user_id)
-                        WHERE status>1 AND status<4');
-$data = $mydata->get_one_array();  
-*/
 $mysets = new myQuery('SELECT set_id, CONCAT(set_id, ": ", name) as si from set_items LEFT JOIN sets ON sets.id=set_id where item_type="quest" and item_id=' . $quest_id);
 $setslist = $mysets->get_assoc(false, 'set_id', 'si');  
 $insets = new select('insets', 'insets');
@@ -234,7 +215,58 @@ $insets->set_null(false);
 
 // create chart of time taken
 
-$timechart = 'SELECT @percentile:=t1.val FROM (SELECT @rownum:=@rownum+1 as row_number, (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime)) as val FROM quest_' . $quest_id . ' AS d,  (SELECT @rownum:=0) r WHERE (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))>0 ORDER BY (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime)) ) as t1, (SELECT count(*) as total_rows FROM quest_' . $quest_id . ' AS d WHERE (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))>0) as t2 WHERE t1.row_number=floor(95*total_rows/100)+1; CREATE TEMPORARY TABLE tmp_score SELECT ROUND((UNIX_TIMESTAMP(endtime)-UNIX_TIMESTAMP(starttime))/60,1) as score FROM quest_' . $quest_id . '; SELECT @totalp := COUNT(*) FROM tmp_score WHERE score IS NOT NULL GROUP BY NULL; SELECT "   " as title, "Minutes" as xlabel, "Proportion of Participants" as ylabel, 0 as ymin, 0 as xmin, score as xcat, COUNT(*)/@totalp as dv, "line" as chart_type, "reverse" as reverse, "time_container" as container FROM tmp_score WHERE score IS NOT NULL AND score<=(@percentile/60) AND score>0 GROUP BY score;';
+$timechart = 'CREATE TEMPORARY TABLE tmp_ln ' . 
+             'SELECT endtime-starttime as total_time ' .
+             'FROM quest_data ' .
+             'WHERE quest_id='.$quest_id. ' ' .
+             'GROUP BY session_id, user_id; ' .
+                
+             'CREATE TEMPORARY TABLE tmp_ln2 ' .
+             'SELECT * FROM tmp_ln; ' .
+             
+             'SELECT @percentile:=t1.val ' .
+             'FROM (SELECT @rownum:=@rownum+1 as row_number, ' .
+             '             total_time as val FROM tmp_ln AS d, ' .
+             '             (SELECT @rownum:=0) r ORDER BY total_time ) as t1, ' .
+             '             (SELECT count(*) as total_rows FROM tmp_ln2 AS d) as t2 ' .
+             'WHERE t1.row_number=floor(95*total_rows/100)+1; ' .
+             
+             'CREATE TEMPORARY TABLE tmp_score ' .
+             'SELECT ROUND(total_time/60,2) as score ' .
+             'FROM tmp_ln; ' .
+             
+             'SELECT @totalp := COUNT(*) ' .
+             'FROM tmp_score ' .
+             'WHERE score IS NOT NULL GROUP BY NULL; ' .
+             
+             'SELECT "  " as title, ' .
+             '  "Minutes" as xlabel, ' .
+             '  "Proportion of Participants" as ylabel, ' .
+             '  0 as ymin, 0 as xmin, ' .
+             '  score as xcat, ' .
+             '  COUNT(*)/@totalp as dv, ' .
+             '  "line" as chart_type, ' .
+             '  "reverse" as reverse, ' .
+             '  "time_container" as container ' .
+             'FROM tmp_score ' .
+             'WHERE score IS NOT NULL ' .
+             '  AND score<=(@percentile/60) ' .
+             '  AND score>0 ' .
+             'GROUP BY score;';
+
+/****************************************************
+ * Set up query
+ ***************************************************/
+
+$input['query_id'] = new hiddenInput('query_id', 'query_id', $quest_id);
+$input['query_type'] = new hiddenInput('query_type', 'query_type', 'quest');
+
+// set up form table
+$myquery = new formTable();
+$myquery->set_table_id('myQuery');
+$myquery->set_action('/res/scripts/download');
+$myquery->set_questionList($input);
+$myquery->set_method('post');
     
 /****************************************************/
 /* !Display Page */
@@ -257,10 +289,12 @@ $page->displayBody();
             echo '<button id="edit-quest">Edit</button>';
             echo '<button id="delete-quest">Delete</button>';
             echo '<button id="duplicate-quest">Duplicate</button>';
-            echo '<button id="data-quest">Data</button>';
+            echo '<button id="data-download">Download Data</button>';
         } ?>
     </div>
 </div>
+
+<?= $myquery->print_form(); ?>
 
 <table class="quest_info"> 
     <tr><td>Name:</td> <td><?= $questdata['name'] ?></td></tr>
@@ -323,193 +357,189 @@ $page->displayBody();
 <script>
     var chart;
 
-    $(function() {
-        if (<?= ifEmpty($data['total_c'], 0) ?> > 0) {
-            // get time graph
-            $('#time_container').css('background', 'url("/images/loaders/loading.gif") center center no-repeat');
-            $.ajax({
-                type: 'POST',
-                url: '/include/scripts/chart',
-                data: 'query_text=' + encodeURIComponent('<?= $timechart ?>'),
-                success: function(data) {
-                    //alert(JSON.stringify(data));
-                    $('#time_container').css('background', 'none');
-                    chart = new Highcharts.Chart(data);
-                },
-                dataType: 'json'
-            }); 
-        } else {
-            $('#time_container').hide();
-        }
-        
-        $('#function_buttonset').buttonset();
-    
-        $( "#view-quest" ).click(function() {
-            window.location = '/quest?id=<?= $questdata['id'] ?>';
-        });
-        $( "#edit-quest" ).click(function() {
-            window.location = '/res/quest/builder?id=<?= $questdata['id'] ?>';
-        });
-        $( "#data-quest" ).click(function() {
-            window.location = '/res/data/index?quest_id=<?= $questdata['id'] ?>';
-        });
-        $( "#delete-quest" ).click( function() {
-            $( "<div/>").html("Do you really want to delete this questionnaire?").dialog({
-                title: "Delete questionnaire",
-                position: ['center', 100],
-                modal: true,
-                buttons: {
-                    Cancel: function() {
-                        $( this ).dialog( "close" );
-                    },
-                    "Delete": function() {
-                        $( this ).dialog( "close" );
-                        $.get("/res/scripts/delete_quest?id=<?= $questdata['id'] ?>", function(data) {
-                            if (data == 'deleted') {
-                                window.location = '/res/quest/';
-                            } else {
-                                $('<div title="Problem with Deletion" />').html(data).dialog();
-                            }
-                        });
-                    },
-                }
-            });
-        });
-        
-        $( "#duplicate-quest" ).click( function() {
-            $( "<div/>").html("Do you really want to duplicate this questionnaire?").dialog({
-                title: "Duplicate Questionnaire",
-                position: ['center', 100],
-                modal: true,
-                buttons: {
-                    Cancel: function() {
-                        $( this ).dialog( "close" );
-                    },
-                    "Duplicate": function() {
-                        $( this ).dialog( "close" );
-                        $.get("?duplicate&id=<?= $questdata['id'] ?>", function(data) {
-                            var resp = data.split(':');
-                            if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
-                                window.location = '/res/quest/info?id=' + resp[1];
-                            } else {
-                                $('<div title="Problem with Duplication" />').html(data).dialog();
-                            }
-                        });
-                    },
-                }
-            });
-        });
-        
-        $( "#status" ).css('fontWeight', 'normal').change( function() {
-            var $sel = $(this);
-            $sel.css('color', 'red');
-
-            $.ajax({
-                url: '/res/scripts/status',
-                type: 'POST',
-                data: {
-                    type: 'quest',
-                    status: $sel.val(),
-                    id: <?= $questdata['id'] ?>
-                },
-                success: function(data) {
-                    if (data == 'Status of quest_<?= $questdata['id'] ?> changed to '+ $sel.val() ) {
-                        $sel.css('color', 'inherit');
-                    } else {
-                        growl(data, 30);
-                    }
-                }
-            });
-        });
-        
-        $('#gosets').click( function() {
-            var s = $('#insets').val();
-            window.location.href = "/res/set/info?id=" + s;
-        });
-        
-        $('#goqueries').click( function() {
-            var q = $('#inqueries').val();
-            window.location.href = "/res/data/?id=" + q;
-        });
-              
-        $('html').on("click", ".owner-delete", function() {
-            if ($(this).text() == 'delete') {
-                $(this).text('undelete');
-                $(this).prev().addClass('delete-owner');
-            } else {
-                $(this).text('delete');
-                $(this).prev().removeClass('delete-owner');
-            }
-        });
-        
-        $('button.tinybutton').button();
-        
-        $('#owner-add-input').autocomplete({
-            source: [<?= implode(",", $ownerlist) ?>],
-            focus: function( event, ui ) {
-                $(this).val(ui.item.name);
-                return false;
+    if (<?= ifEmpty($data['total_c'], 0) ?> > 0) {
+        // get time graph
+        $('#time_container').css('background', 'url("/images/loaders/loading.gif") center center no-repeat');
+        $.ajax({
+            type: 'POST',
+            url: '/include/scripts/chart',
+            data: 'query_text=' + encodeURIComponent('<?= $timechart ?>'),
+            success: function(data) {
+                //alert(JSON.stringify(data));
+                $('#time_container').css('background', 'none');
+                chart = new Highcharts.Chart(data);
             },
-            select: function( event, ui ) {
-                $(this).val(ui.item.name).data('id', ui.item.value);
-                return false;
-            }
-        }).data('id', 0);
-        
-        $( "#owner-add" ).click( function() {
-            var owner_id = $('#owner-add-input').data('id');
-            
-            if (owner_id == '' || owner_id == 0) { return false; }
-            
-            if ($('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
-                var new_owner = "<li><span class='new-owner'>" + $('#owner-add-input').val() + "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
-                $('#owner-edit').append(new_owner);
-            } else {
-                growl("You can't add a duplicate owner.");
-            }
-            $('#owner-add-input').val('').data('id','');
-        });
-        
-        $( "#owner-change" ).click( function() {
-            var to_add = [];
-            var to_delete = [];
-            $('#owner-edit .owner-delete').each( function() {
-                var $this = $(this);
-                
-                if ($this.text() == "delete") {
-                    to_add.push($this.attr('owner-id'));
-                } else {
-                    to_delete.push($this.attr('owner-id'));
-                }
-            });
-            
-            if (to_add.length == 0) {
-                growl("You have to keep at least one owner.");
-                return false;
-            }
-            
-            $.ajax({
-                url: '/res/scripts/owners',
-                type: 'POST',
-                data: {
-                    type: 'quest',
-                    id: <?= $questdata['id'] ?>,
-                    add: to_add,
-                    delete: to_delete
-                },
-                success: function(data) {
-                    if (data) {
-                        growl("Something went wrong");
-                    } else {
-                        $('#owner-edit .delete-owner').closest('li').remove();
-                        $('#owner-edit span').removeClass('new-owner');
-                    }
-                }
-            });
-        });
+            dataType: 'json'
+        }); 
+    } else {
+        $('#time_container').hide();
+    }
+    
+    $('#function_buttonset').buttonset();
 
+    $( "#view-quest" ).click(function() {
+        window.location = '/quest?id=<?= $questdata['id'] ?>';
+    });
+    $( "#edit-quest" ).click(function() {
+        window.location = '/res/quest/builder?id=<?= $questdata['id'] ?>';
+    });
+    $( "#data-download" ).button().click(function() { 
+        $('#myQuery_form').submit();
+    });
+    $( "#delete-quest" ).click( function() {
+        $( "<div/>").html("Do you really want to delete this questionnaire?").dialog({
+            title: "Delete questionnaire",
+            position: ['center', 100],
+            modal: true,
+            buttons: {
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                },
+                "Delete": function() {
+                    $( this ).dialog( "close" );
+                    $.get("/res/scripts/delete_quest?id=<?= $questdata['id'] ?>", function(data) {
+                        if (data == 'deleted') {
+                            window.location = '/res/quest/';
+                        } else {
+                            $('<div title="Problem with Deletion" />').html(data).dialog();
+                        }
+                    });
+                },
+            }
+        });
     });
     
+    $( "#duplicate-quest" ).click( function() {
+        $( "<div/>").html("Do you really want to duplicate this questionnaire?").dialog({
+            title: "Duplicate Questionnaire",
+            position: ['center', 100],
+            modal: true,
+            buttons: {
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                },
+                "Duplicate": function() {
+                    $( this ).dialog( "close" );
+                    $.get("?duplicate&id=<?= $questdata['id'] ?>", function(data) {
+                        var resp = data.split(':');
+                        if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
+                            window.location = '/res/quest/info?id=' + resp[1];
+                        } else {
+                            $('<div title="Problem with Duplication" />').html(data).dialog();
+                        }
+                    });
+                },
+            }
+        });
+    });
+    
+    $( "#status" ).css('fontWeight', 'normal').change( function() {
+        var $sel = $(this);
+        $sel.css('color', 'red');
+
+        $.ajax({
+            url: '/res/scripts/status',
+            type: 'POST',
+            data: {
+                type: 'quest',
+                status: $sel.val(),
+                id: <?= $questdata['id'] ?>
+            },
+            success: function(data) {
+                if (data == 'Status of quest_<?= $questdata['id'] ?> changed to '+ $sel.val() ) {
+                    $sel.css('color', 'inherit');
+                } else {
+                    growl(data, 30);
+                }
+            }
+        });
+    });
+    
+    $('#gosets').click( function() {
+        var s = $('#insets').val();
+        window.location.href = "/res/set/info?id=" + s;
+    });
+    
+    $('#goqueries').click( function() {
+        var q = $('#inqueries').val();
+        window.location.href = "/res/data/?id=" + q;
+    });
+          
+    $('html').on("click", ".owner-delete", function() {
+        if ($(this).text() == 'delete') {
+            $(this).text('undelete');
+            $(this).prev().addClass('delete-owner');
+        } else {
+            $(this).text('delete');
+            $(this).prev().removeClass('delete-owner');
+        }
+    });
+    
+    $('button.tinybutton').button();
+    
+    $('#owner-add-input').autocomplete({
+        source: [<?= implode(",", $ownerlist) ?>],
+        focus: function( event, ui ) {
+            $(this).val(ui.item.name);
+            return false;
+        },
+        select: function( event, ui ) {
+            $(this).val(ui.item.name).data('id', ui.item.value);
+            return false;
+        }
+    }).data('id', 0);
+    
+    $( "#owner-add" ).click( function() {
+        var owner_id = $('#owner-add-input').data('id');
+        
+        if (owner_id == '' || owner_id == 0) { return false; }
+        
+        if ($('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
+            var new_owner = "<li><span class='new-owner'>" + $('#owner-add-input').val() + "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
+            $('#owner-edit').append(new_owner);
+        } else {
+            growl("You can't add a duplicate owner.");
+        }
+        $('#owner-add-input').val('').data('id','');
+    });
+    
+    $( "#owner-change" ).click( function() {
+        var to_add = [];
+        var to_delete = [];
+        $('#owner-edit .owner-delete').each( function() {
+            var $this = $(this);
+            
+            if ($this.text() == "delete") {
+                to_add.push($this.attr('owner-id'));
+            } else {
+                to_delete.push($this.attr('owner-id'));
+            }
+        });
+        
+        if (to_add.length == 0) {
+            growl("You have to keep at least one owner.");
+            return false;
+        }
+        
+        $.ajax({
+            url: '/res/scripts/owners',
+            type: 'POST',
+            data: {
+                type: 'quest',
+                id: <?= $questdata['id'] ?>,
+                add: to_add,
+                delete: to_delete
+            },
+            success: function(data) {
+                if (data) {
+                    growl("Something went wrong");
+                } else {
+                    $('#owner-edit .delete-owner').closest('li').remove();
+                    $('#owner-edit span').removeClass('new-owner');
+                }
+            }
+        });
+    });
 </script>
 
 <?php

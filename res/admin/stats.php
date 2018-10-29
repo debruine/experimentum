@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(4);
+auth($RES_STATUS);
 
 /****************************************************/
 /* !Display Page */

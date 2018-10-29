@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
-auth(array('student', 'researcher', 'admin'));
+auth($RES_STATUS);
 
 $status_changer = ($_SESSION['status'] == 'admin') ? "statusChanger(5, 'sets');" : "";
 
@@ -49,9 +49,9 @@ $my = new myQuery('SELECT CONCAT("<span class=\'fav",
 	
 $search = new input('search', 'search');
 
-$owners = new myQuery('SELECT researcher.user_id as user_id, 
-	CONCAT(lastname, ", ", initials) as name 
-	FROM researcher 
+$owners = new myQuery('SELECT res.user_id as user_id, 
+	CONCAT(lastname, ", ", firstname) as name 
+	FROM res 
 	LEFT JOIN access USING (user_id)
 	WHERE access.type="sets" AND access.user_id IS NOT NULL 
 	ORDER BY lastname, initials');

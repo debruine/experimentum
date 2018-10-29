@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(array('admin'), "/res/");
+auth(array('admin', 'res'), "/res/");
 
 if (array_key_exists('add', $_GET)) {
 	$types = array('exp','quest','sets','project');
@@ -55,7 +55,7 @@ if (array_key_exists('delete', $_GET)) {
 
 $styles = array(
 	'.lists' => 'float: left; max-width: 60%; margin-right: 1em;',
-	'#researchers ul, #access ul' => 'overflow:auto;',
+	'#ress ul, #access ul' => 'overflow:auto;',
 	'.lists li' => 'border: 1px solid transparent;',
 	'li.selected' => 'background-color: hsl(60, 100%, 90%);',
 	'.lists li.acceptDrop' => 'border: 1px solid red;',
@@ -76,10 +76,10 @@ $page->displayHead($styles);
 $page->displayBody();
 
 $q = new myQuery('SELECT user_id, CONCAT(lastname, ", ", firstname) as name, status, COUNT(access.user_id) as c 
-FROM researcher LEFT JOIN user USING (user_id) 
+FROM res LEFT JOIN user USING (user_id) 
 LEFT JOIN access USING (user_id)
 GROUP BY user_id ORDER BY c DESC');
-$researchers = $q->get_assoc();
+$ress = $q->get_assoc();
 ?>
 
 <h2 id="active_item"></h2>
@@ -89,13 +89,13 @@ $researchers = $q->get_assoc();
 	<div id="mytrash"></div>
 </span>
 
-<span class="lists" id="researchers">
-	<input id="res_search" placeholder="researchers" />
+<span class="lists" id="ress">
+	<input id="res_search" placeholder="ress" />
 	<ul>
 
 <?php
 
-foreach ($researchers as $res) {
+foreach ($ress as $res) {
 	echo sprintf('		<li userid="%d" class="%s">%s (<span class="n">%d</span>)</li>' . ENDLINE,
 		$res['user_id'],
 		$res['status'],
@@ -122,7 +122,7 @@ $q = new myQuery('CREATE TEMPORARY TABLE tmp_access SELECT a.type,
 	create_date as cd
 FROM exp
 LEFT JOIN access AS a USING (id)
-LEFT JOIN researcher AS r ON (a.user_id = r.user_id)
+LEFT JOIN res AS r ON (a.user_id = r.user_id)
 WHERE a.type = "exp"
 GROUP BY exp.id;
 
@@ -133,7 +133,7 @@ INSERT INTO tmp_access SELECT a.type,
 	create_date as cd
 FROM quest
 LEFT JOIN access AS a USING (id)
-LEFT JOIN researcher AS r ON (a.user_id = r.user_id)
+LEFT JOIN res AS r ON (a.user_id = r.user_id)
 WHERE a.type = "quest"
 GROUP BY quest.id;
 
@@ -144,7 +144,7 @@ INSERT INTO tmp_access SELECT a.type,
 	create_date as cd
 FROM sets
 LEFT JOIN access AS a USING (id)
-LEFT JOIN researcher AS r ON (a.user_id = r.user_id)
+LEFT JOIN res AS r ON (a.user_id = r.user_id)
 WHERE a.type = "sets"
 GROUP BY sets.id;
 
@@ -155,7 +155,7 @@ INSERT INTO tmp_access SELECT a.type,
 	create_date as cd
 FROM project
 LEFT JOIN access AS a USING (id)
-LEFT JOIN researcher AS r ON (a.user_id = r.user_id)
+LEFT JOIN res AS r ON (a.user_id = r.user_id)
 WHERE a.type = "project"
 GROUP BY project.id;
 
@@ -189,7 +189,7 @@ foreach ($access as $a) {
 		<li>Drag a researcher to an item or an item to a researcher to add access.</li>
 		<li>Click on a researcher to view the items they have access to.</li>
 		<li>Click on an item to view the researchers who have access to that item.</li>
-		<li>Drag a researcher or an item to the trash to disassociate it from the selected item or reseaarcher.</li>
+		<li>Drag a researcher or an item to the trash to disassociate it from the selected item or researcher.</li>
 	</ul>
 </div>
 
@@ -204,7 +204,7 @@ $(function() {
 	$('#reset').button().click( function() {
 		location.reload();
 		/*
-		$('#access, #researchers').show();
+		$('#access, #ress').show();
 		$('#access_search, #res_search').val('');
 		stripe('.lists ul');
 		$('#mytrash').hide();
@@ -214,11 +214,11 @@ $(function() {
 
 	stripe('.lists ul');
 
-	$('#res_search').keyup( function() { narrowTable('#researchers ul', this.value); } );
+	$('#res_search').keyup( function() { narrowTable('#ress ul', this.value); } );
 	$('#access_search').keyup( function() { narrowTable('#access ul', this.value); } );
 	
-	$('#researchers li').click( function() {
-		$('#researchers').hide();
+	$('#ress li').click( function() {
+		$('#ress').hide();
 		$('#access').show();
 		$('#access_search').val('');
 		$('#active_item').html($(this).html());
@@ -261,14 +261,14 @@ $(function() {
 	
 	$('#access li').click( function() {
 		$('#access').hide();
-		$('#researchers').show();
+		$('#ress').show();
 		$('#res_search').val('');
 		$('#active_item').html($(this).html());
 		
-		$('#researchers li').hide();
+		$('#ress li').hide();
 		var users = $(this).attr('users').split(':');
 		$.each(users, function(i,v) {
-			$('#researchers li[userid="'+v+'"]').show();
+			$('#ress li[userid="'+v+'"]').show();
 		});
 		stripe('.lists ul');
 		$('#mytrash').show().attr('theType', $(this).attr('theType')).attr('theID', $(this).attr('theID')). removeAttr('userid');
@@ -304,7 +304,7 @@ $(function() {
 	});
 	
 	$('#mytrash').droppable({
-		//scope: '#access li, #researcher li',
+		//scope: '#access li, #res li',
 		hoverClass: 'acceptTrash',
 		tolerance: 'touch',
 		drop: function(e, ui) { 
@@ -333,7 +333,7 @@ $(function() {
 
 
 function sizeToViewport() {
-	var ul_height = $(window).height() - $('#researchers ul').offset().top - $('#footer').height()-40;
+	var ul_height = $(window).height() - $('#ress ul').offset().top - $('#footer').height()-40;
 	$('#maincontent ul').height(ul_height);
 }
 	

@@ -491,7 +491,11 @@ function dashboard_checkboxes(type) {
 
 // set up status changer in index pages
 function statusChanger(column, theType) {
-    var status_menu = '<select class="status_changer"><option value="test">test</option><option value="active">active</option><option value="inactive">inactive</option></select>';
+    var status_menu = '<select class="status_changer">' +
+                      '<option value="test">test</option>' +
+                      '<option value="active">active</option>' +
+                      '<option value="archive">archive</option>' +
+                      '</select>';
     
     
     $('table.query tbody tr').each( function(i) {
