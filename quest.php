@@ -79,7 +79,7 @@ if (!$q->check_exists()) {
 
 if (!$q->check_eligible()) { 
     if ($_SESSION['status'] > 3) {
-        $ineligible = "<p class='ui-state-error'>You would not be able to see this questionnaire because of your age or sex if you were a non-researcher.</p>";
+        $ineligible = "<p class='error'>You would not be able to see this questionnaire because of your age or sex if you were a non-researcher.</p>";
     } else {
         header('Location: /fb?ineligible&type=quest&id=' . $quest_id); exit;
     }

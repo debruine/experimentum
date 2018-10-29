@@ -15,7 +15,7 @@ if (!$expC->check_exists()) { header('Location: /'); exit; }
 
 if (!$expC->check_eligible()) { 
 	if (in_array($_SESSION['status'], $RES_STATUS)) {
-		$ineligible = "<p class='ui-state-error'>You would not be able to see this study because of your age or sex if you were a non-researcher.</p>";
+		$ineligible = "<p class='warning'>You would not be able to see this study because of your age or sex if you were a non-researcher.</p>";
 	} else {
 		header('Location: /fb?ineligible&type=exp&id=' . $exp_id); exit;
 	}

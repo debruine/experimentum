@@ -201,6 +201,20 @@ ul#login_info li input { display: block; text-align: left; }
     margin: 1em auto;
 }
 
+.error {
+	border: 3px solid #cd0a0a;
+	background: #fef1ec;
+	color: #cd0a0a;
+	padding: 0 0.5em;
+}
+
+.warning {
+	border: 3px solid #DBDB4C;
+	background: #f7f7db;
+	color: #333;
+	padding: 0 0.5em;
+}
+
 
 
 .users_online {

@@ -240,7 +240,7 @@ echo "<p>$login_info</p>", ENDLINE;
             $('#email_row').hide();
         }
         
-        $('#response').addClass('ui-state-error').click( function() {
+        $('#response').addClass('error').click( function() {
             $(this).hide('slide', { direction: 'left' }, 500);
         });
     });

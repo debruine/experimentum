@@ -427,20 +427,20 @@ $(function() {
     $('#url').change( function() {
         var nonWord = $('#url').val().replace(/^\w+$/, '');
         
-        $('#url').removeClass('ui-state-error');
+        $('#url').removeClass('error');
     
         if (nonWord != '') {
             $('<div />').html('<i>' + $('#url').val() + 
                               '</i> is not a valid URL. Please make sure there are no spaces or symbols.')
                          .dialog({modal:true});
-            $('#url').addClass('ui-state-error');
+            $('#url').addClass('error');
         } else {
             // check if short url is unique
             var url = '/res/project/builder?checkurl=' + $('#url').val() + '&id=' + $('#project_id').val();
             $.get(url, function(data) {
                 if (data != '') { 
                     $('<div />').html(data).dialog({modal:true}); 
-                    $('#url').addClass('ui-state-error');
+                    $('#url').addClass('error');
                 }
             });
         }

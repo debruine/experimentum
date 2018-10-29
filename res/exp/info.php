@@ -337,7 +337,7 @@ $page->displayBody();
             <input id='owner-add-input' type='text' > (<a id='owner-add'>add</a>)
             <?php } ?>
         </td></tr>
-    <tr><td>Labnotes:</td> <td><pre><?= ifEmpty($expdata['labnotes'], '<span class="ui-state-error">Please add labnotes</span>') ?></pre></td></tr>
+    <tr><td>Labnotes:</td> <td><pre><?= ifEmpty($expdata['labnotes'], '<span class="error">Please add labnotes</span>') ?></pre></td></tr>
     <?php
         if (count($setslist) > 0) {
             echo "<tr><td>In Sets:</td> <td>";

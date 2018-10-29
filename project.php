@@ -102,7 +102,7 @@ $page->displayBody();
 $visitems = false;
 foreach ($items as $i) { $visitems = $visitems || !empty($i['the_status']); }
 if (!$visitems) {
-    echo "<h3 class='ui-state-error'>You are not eligible for this study.<br>
+    echo "<h3 class='error'>You are not eligible for this study.<br>
             It might be restricted by age or gender.</h3>";
 }
 

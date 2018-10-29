@@ -125,6 +125,8 @@ $(function() {
 
     stripe('tbody');
     
+    $('.warning').on('dblclick', function() {$(this).remove(); })
+    
     // set up help dialog box
     if ($('#help').length > 0) {
         $('<div />')

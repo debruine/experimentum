@@ -1295,7 +1295,8 @@ class exp_rating extends exp_buttons {
         $maxlength = ($this->range) ? strlen(strval($this->range)) : 64;
         $w = min($maxlength, 15);
         
-        $text .= "            <input type='text' 
+        $text .= "            <input type='number' 
+                                min-'{1}' max='{$this->range}'
                                 style='width: {$w}em' 
                                 class='rating' 
                                 name='rating' 

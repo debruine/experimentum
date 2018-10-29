@@ -233,7 +233,9 @@ if (validID($exp_id)) {
         'default_time' => '4000',
         'increment_time' => '100',
         'sex' => 'both',
-        'feedback_general' => 'Click here* to edit the **feedback page**. You can use [markdown](https://codepen.io/nmtakay/pen/gscbf) or html to format your feedback page.
+        'feedback_general' => '*Click here* to edit the **feedback page**. You can leave this blank if it is part of a set where the feedback is given by the set.
+        
+You can use [markdown](https://codepen.io/nmtakay/pen/gscbf) or html to format your feedback page.
 
 ## Make a list with numbers or asterisks
 
@@ -423,6 +425,13 @@ $page->set_menu(false);
 
 $page->displayHead($styles);
 $page->displayBody();
+
+if ($eInfo['exptype'] == "rating") {
+    echo "<p class='warning'>Rating experiments don't work well on mobile devices 
+    (the input keyboard covers the stimuli). Try a 
+    <a href='builder?exptype=button'>button interface</a> instead if your 
+    participants might use mobile devices.</p>";
+}
 
 // editable experiment
 
