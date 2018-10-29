@@ -32,17 +32,38 @@ if (count($_FILES) > 0) {
     $okfiles = array();
     
     foreach ($_FILES['uploads']['name'] as $n => $name) {
-        $type = explode('/', $_FILES['uploads']['type'][$n]);
+        //$type = explode('/', $_FILES['uploads']['type'][$n]);
         $tmp_name = $_FILES['uploads']['tmp_name'][$n];
         $error = $_FILES['uploads']['error'][$n];
         $size = $_FILES['uploads']['size'][$n];
+        $ext = pathinfo($name)['extension'];
+        
+        switch ($ext) {
+            case "jpg":
+            case "gif":
+            case "png":
+                $type = "image";
+                break;
+            case "ogg":
+            case "mp3":
+            case "wav":
+                $type = "audio";
+                break;
+            case "m4v":
+                $type = "video";
+                break;
+            default:
+                $type = false;
+        }
 
-        if ($error == 0 && $size > 0 && in_array($type[0], array('image','audio','video'))) {
+        if ($error == 0 && $size > 0 && 
+            in_array($type, array('image','audio','video'))
+            ) {
             $newname = $subdir . '/' . safeFileName($name);
             $okfiles[$newname] = array(
                 'newname' => $newname,
                 'tmp_name' => $tmp_name,
-                'type' => $type[0],
+                'type' => $type,
                 'size' => $size
             );
         }
@@ -110,6 +131,10 @@ $page->displayHead($styles);
 $page->displayBody();
 
 ?>
+
+<p class="warning">You can upload image files with the formats jpg, gif, or png. 
+    For audio files, you must upload both ogg and mp3 versions for your study to 
+    be playable on all major browsers.</p> 
 
 <?= $formTable->print_form() ?>
 

@@ -581,15 +581,35 @@ function folderize(json, appendElement) {
             // contents are an image name
             var splitName = contents.split('/');
             var shortName = splitName[splitName.length - 1];
+            var ext = shortName.substr(shortName.length - 3);
+            
+            var classes = {
+                'jpg': 'image',
+                'gif': 'image',
+                'png': 'image',
+                'mp3': 'audio',
+                'ogg': 'audio',
+                'wav': 'audio',
+                'm4v': 'video',
+                'txt': 'text',
+                'csv': 'csv',
+            };
             
             theItem .html('<span>' + shortName + '</span>')
                     .attr('url', contents)
-                    .addClass('image')
+                    .addClass(classes[ext])
+                    .addClass('file')
                     .click( function() {
-                        $('#imagebox img').attr('src', $(this).attr('url'));
+                        if (classes[ext]=='image') {
+                            $('#imagebox img').attr('src', $(this).attr('url'));
+                        } else if (classes[ext]=='audio') {
+                            $('#imagebox img').attr('src', '/images/linearicons/volume-high.php');
+                        } else if (classes[ext]=='video') {
+                            $('#imagebox img').attr('src', '/images/linearicons/camera-video.php');
+                        }
                         $('#imagebox #imageurl').html($(this).attr('url'));
                         
-                        $('li.image.selected').removeClass('selected');
+                        $('li.file.selected').removeClass('selected');
                         $(this).addClass('selected');
                         $(this).siblings('li').addClass('closed').find('li').addClass('closed');
                     });

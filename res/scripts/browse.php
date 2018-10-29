@@ -10,7 +10,7 @@ function folder_array($dir) {
     
     while (false !== ($f = $d->read())) {
         $ext = pathinfo($f)['extension'];
-        $show_exts = array("jpg", "png", "gif", "ogg"); //, "mp3", "m4v", "wav", "txt", "csv");
+        $show_exts = array("jpg", "png", "gif", "ogg", "mp3", "m4v", "wav", "txt", "csv");
             
         if (is_dir($dir . $f . '/') && substr($f, 0, 1) != '.') {
             $dirname = str_replace(DOC_ROOT, '', $dir) . $f;

@@ -891,13 +891,27 @@ tr.chosen1 img {
     display: none;
 }
 
-#finder li.image {
-    background: transparent 5px center no-repeat url("/images/finder/imgicon?h=<?= THEME_HUE ?>");
+#finder li.image, #finder li.audio, #finder li.video {
+    background: transparent 5px center no-repeat;
     background-size: contain;
     color: #333; 
 }
 
-#finder li.image.selected {
+#finder li.image {  
+    background-image: url("/images/finder/imgicon?h=<?= THEME_HUE ?>");
+}
+
+#finder li.audio {  
+    background-image: url("/images/finder/audioicon?h=<?= THEME_HUE ?>");
+}
+
+#finder li.video {  
+    background-image: url("/images/finder/videoicon?h=<?= THEME_HUE ?>");
+}
+
+#finder li.image.selected,
+#finder li.audio.selected,
+#finder li.video.selected {
     background-color: hsl(60, 100%, 90%);
 }
 
@@ -1313,7 +1327,7 @@ EXPERIMENT STYLES
 }
 #image_loader img#loader { visibility: visible; width:300px; height:300px;}
 
-.audio {
+div.audio {
     width: 5em; 
     font-size: 300%;
     margin: 1em auto;
@@ -1321,7 +1335,7 @@ EXPERIMENT STYLES
     text-align: center; 
 }
     
-.audio span.play {
+div.audio span.play {
     height: 1.4em; 
     line-height: 1.4em;
     <?= roundCorners('3em') ?>
@@ -1331,14 +1345,17 @@ EXPERIMENT STYLES
     box-shadow: 4px 4px 6px rgba(0,0,0,.5); 
     display: block; 
 }
-.audio span.play:active, .audio span.choose:active { box-shadow: 2px 2px 4px rgba(0,0,0,.5); }
-.audio.played span.play { 
+div.audio span.play:active, 
+div.audio span.choose:active { 
+    box-shadow: 2px 2px 4px rgba(0,0,0,.5); 
+}
+div.audio.played span.play { 
     background-color: hsl(<?= THEME_HUE ?>, 10%, 50%); 
 }
-.audio.playing span.play { 
+div.audio.playing span.play { 
     background-color: hsl(<?= THEME_HUE ?>, 100%, 30%); 
 }
-.audio span.choose { 
+div.audio span.choose { 
     display: block;
     font-size: 70%;
     width: 4em;
