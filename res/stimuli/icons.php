@@ -11,12 +11,12 @@ $title = array(
 
 $styles = array( 
     '.gallery div' => "
-        width: 85px; 
-        height: 85px; 
+        width: 100px; 
+        height: 100px; 
         text-align: center; 
         float: left; 
         margin: 5px; 
-        background: " . THEME . " 50% 75% no-repeat; 
+        background: hsl(" . THEME_HUE . ",70%, 30%) 50% 75% no-repeat; 
         background-size: auto 50%;
         color: white; 
         font-size: 60%; 
@@ -24,7 +24,6 @@ $styles = array(
         padding: 4px; 
         box-shadow: 2px 2px 4px rgba(0,0,0,.5);",
     '.gallery div:active' => 'box-shadow: 1px 1px 2px rgba(0,0,0,.5);',
-    '#minigallery div' => 'width: 70px; height: 70px;',
     '#maincontent' => 'overflow: visible;',
     'h2' => 'margin: 0 auto 0; padding: 1em 0 0 0;'
 );
@@ -53,6 +52,8 @@ foreach ($basedirs as $section => $basedir) {
         }
     }
     
+    ksort($images);
+    
     foreach ($images as $name => $src) {
         $gallery[$section] .= " <div style='background-image: url(\"$src\");' title='$src'>$name</div>\n";
     }
@@ -75,7 +76,7 @@ $page->displayBody();
     Search: <input type='text' id='search' />
 </div>
 
-<h2><a href="https://linearicons.com/free">LinearIcons</a></h2>
+<h2><a href="https://linearicons.com">LinearIcons</a></h2>
 <div id='icongallery' class='gallery'>
     <?= $gallery['linearicons'] ?>
 </div>

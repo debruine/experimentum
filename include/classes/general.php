@@ -244,7 +244,10 @@ class page {
     <link rel="apple-touch-icon-precomposed" href="/images/logos/apple-touch-icon-precomposed.png" />
     <link rel="stylesheet" type="text/css" href="/include/js/jquery-ui-1.12.1.custom/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="/include/css/style.php">
-    <!--<link rel="alternate" type="application/rss+xml" title="<?= SITETITLE ?> via RSS" href="/rss" />-->
+    <!--
+    <link rel="stylesheet" type="text/css" href="/include/css/linearicons-free.css">
+    <link rel="stylesheet" type="text/css" href="/include/css/linearicons.css">
+    -->
     <script src="<?= JQUERY ?>"></script> 
     <script src="<?= JQUERYUI ?>"></script>
     <script src="/include/js/jquery.ui.touch-punch.min.js"></script>
