@@ -233,9 +233,11 @@ class questionnaire extends formTable {
     function get_type() { return $this->type; }
     
     function get_option_row() {
-        $radio_width = (MOBILE) ? round(100/count($this->options), 1) : round(50/count($this->options), 1);
+        //$radio_width = (MOBILE) ? round(100/count($this->options), 1) : round(50/count($this->options), 1);
+        $radio_width = round(50/count($this->options), 1);
         $opt_row =  "<tr class='radiorow_options'>";
-        $opt_row .= (MOBILE) ? "" : "<th></th>";
+        //$opt_row .= (MOBILE) ? "" : "<th></th>";
+        $opt_row .= "<th></th>";
         foreach ($this->options as $display) {
             $opt_row .= "<th style='width:{$radio_width}%'>$display</th>";
         }
@@ -341,11 +343,11 @@ class formElement {
         // display question cell
         echo "<td class='question'><label for='{$this->id}'>{$this->question}</label>" . ENDLINE;
         
-        if (MOBILE) {
+        /*if (MOBILE) {
             echo '<br />'; // put question and input on separate lines if on a mobile interface
-        } else {
+        } else {*/
             echo "</td>\n   <td class='input'>" . ENDLINE;
-        }
+        //}
         
         // display input cell
         
@@ -578,15 +580,15 @@ class radiorow extends radio {
     function print_formLine($editable=false) {
         echo "<tr title='{$this->tip}' id='{$this->id}_row'>" . ENDLINE;    
         
-        if (MOBILE) {
+        /*if (MOBILE) {
             // put question and input on separate lines if on a mobile interface
             echo "<td class='question' colspan='20'><label for='{$this->id}'>{$this->question}</label></td></tr>" . ENDLINE; 
             echo "<tr class='mobile_radiorow_div'><td colspan='20'></td></tr><tr><td class='input'>";
-        } else {
+        } else {*/
             // display question cell
             echo "<td class='question'><label for='{$this->id}'>{$this->question}</label>" . ENDLINE;
             echo "</td>\n   <td class='input'>" . ENDLINE;
-        }
+        //}
         
         // display input cell
         

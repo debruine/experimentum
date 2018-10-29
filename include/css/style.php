@@ -1652,13 +1652,16 @@ MOBILE STYLES
     
     tr.mobile_radiorow_div, tr.mobile_radiorow_div td { height: 0; padding: 0; margin: 0; }
     
-    td.question, td.input { 
+    table:not(.radiopage) td.question, 
+    table:not(.radiopage) td.input { 
         width: 100%;
         overflow: visible;
         display: block;
     }
     
-    table.questionnaire input, table.questionnaire select, table.questionnaire ul.radio { 
+    table.questionnaire:not(.radiopage) input, 
+    table.questionnaire:not(.radiopage) select, 
+    table.questionnaire:not(.radiopage) ul.radio { 
         font-size: 150%; 
         max-width: 100%;
         width: 100%;
