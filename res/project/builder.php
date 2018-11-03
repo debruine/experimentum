@@ -285,6 +285,7 @@ foreach ($basedirs as $section => $basedir) {
             $images[$name] = $basedir . $name;
         }
     }
+    ksort($images);
     
     foreach ($images as $name => $src) {
         $icon_list[] .= "   <li style='background-image: url(\"$src?c=FFF\");' title='$src'>$name</li>\n";

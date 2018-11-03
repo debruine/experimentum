@@ -69,7 +69,7 @@ $owners = new myQuery('SELECT res.user_id as user_id,
     FROM res 
     LEFT JOIN access USING (user_id)
     WHERE access.type="exp" AND access.user_id IS NOT NULL 
-    ORDER BY lastname, initials');
+    ORDER BY lastname, firstname');
 $ownerlist = array('all' => 'All');
 foreach ($owners->get_assoc() as $o) {
     $ownerlist[$o['user_id']] = $o['name'];

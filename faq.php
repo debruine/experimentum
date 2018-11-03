@@ -76,7 +76,10 @@ $page->displayBody();
 
 <h2><a href="#">Do I need a particular browser to view your website?</a></h2>
 <div>
-<p>No. We have worked hard to make sure that this website is accessible to 
+<p>Some people are reporting problems with questionnaires on some versions of 
+    Chrome for Windows. We are working to fix this, but you should be able to 
+    access the studies with FireFox in the meantime.</p>
+<p>We have worked hard to make sure that this website is accessible to 
     all people using visual browsers (we are working on better support for 
     audio-only browsers to access the parts of this website that do not 
     require the viewing of images). If the website looks strange in your 
@@ -98,7 +101,9 @@ $page->displayBody();
 <h2><a href="#">Can you host my experiment?</a></h2>
 <div>
 <p>Sorry, we cannot host your experiments unless you are a member of the 
-    University of Glasgow School of Psychology.</p>
+    University of Glasgow School of Psychology. However, the code used to run 
+    this website is open source at 
+    <a href="https://github.com/debruine/experimentum">GitHub</a>.</p>
 </div>
 
 

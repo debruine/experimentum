@@ -54,7 +54,7 @@ $owners = new myQuery('SELECT res.user_id as user_id,
 	FROM res 
 	LEFT JOIN access USING (user_id)
 	WHERE access.type="sets" AND access.user_id IS NOT NULL 
-	ORDER BY lastname, initials');
+	ORDER BY lastname, firstname');
 $ownerlist = array('all' => 'All');
 foreach ($owners->get_assoc() as $o) {
 	$ownerlist[$o['user_id']] = $o['name'];
@@ -80,6 +80,7 @@ echo $owner->get_element();
 echo 'Search: ';
 echo $search->get_element();
 echo '<button id="new-set">New set</button>';
+echo '</div>';
 
 echo $my->get_result_as_table(true, true);
 

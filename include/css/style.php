@@ -531,22 +531,23 @@ hr.invisible { height:0; margin:0; }
     display:none;
 }
 
+#faq h2 { background-color: <?= $theme ?>; }
 #faq h2 a { border: none; color: white; }
 #faq h2 a:active { background-color: transparent; }
 div.ui-accordion-content { max-width: 40em; }
 
-#faq h2:nth-child(1) { background-color: var(--rainbow-red); }
-#faq h2:nth-child(3) { background-color: var(--rainbow-orange); }
-#faq h2:nth-child(5) { background-color: var(--rainbow-yellow); }
-#faq h2:nth-child(7) { background-color: var(--rainbow-green); }
-#faq h2:nth-child(9) { background-color: var(--rainbow-blue); }
-#faq h2:nth-child(11) { background-color: var(--rainbow-purple); }
-#faq h2:nth-child(13) { background-color: var(--rainbow-red); }
-#faq h2:nth-child(15) { background-color: var(--rainbow-orange); }
-#faq h2:nth-child(17) { background-color: var(--rainbow-yellow); }
-#faq h2:nth-child(19) { background-color: var(--rainbow-green); }
-#faq h2:nth-child(21) { background-color: var(--rainbow-blue); }
-#faq h2:nth-child(23) { background-color: var(--rainbow-purple); }
+#faq h2:nth-child(1):hover, #faq h2.ui-state-active:nth-child(1) { background-color: var(--rainbow-red); }
+#faq h2:nth-child(3):hover, #faq h2.ui-state-active:nth-child(3) { background-color: var(--rainbow-orange); }
+#faq h2:nth-child(5):hover, #faq h2.ui-state-active:nth-child(5) { background-color: var(--rainbow-yellow); }
+#faq h2:nth-child(7):hover, #faq h2.ui-state-active:nth-child(7) { background-color: var(--rainbow-green); }
+#faq h2:nth-child(9):hover, #faq h2.ui-state-active:nth-child(9) { background-color: var(--rainbow-blue); }
+#faq h2:nth-child(11):hover, #faq h2.ui-state-active:nth-child(11) { background-color: var(--rainbow-purple); }
+#faq h2:nth-child(13):hover, #faq h2.ui-state-active:nth-child(13) { background-color: var(--rainbow-red); }
+#faq h2:nth-child(15):hover, #faq h2.ui-state-active:nth-child(15) { background-color: var(--rainbow-orange); }
+#faq h2:nth-child(17):hover, #faq h2.ui-state-active:nth-child(17) { background-color: var(--rainbow-yellow); }
+#faq h2:nth-child(19):hover, #faq h2.ui-state-active:nth-child(19) { background-color: var(--rainbow-green); }
+#faq h2:nth-child(21):hover, #faq h2.ui-state-active:nth-child(21) { background-color: var(--rainbow-blue); }
+#faq h2:nth-child(23):hover, #faq h2.ui-state-active:nth-child(23) { background-color: var(--rainbow-purple); }
 
 
 /***** TEXT LINKS *****/

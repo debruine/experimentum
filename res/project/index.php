@@ -43,11 +43,11 @@ $my = new myQuery('SELECT CONCAT("<span class=\'fav",
 $search = new input('search', 'search');
 
 $owners = new myQuery('SELECT res.user_id as user_id, 
-	CONCAT(lastname, ", ", initials) as name 
+	CONCAT(lastname, ", ", firstname) as name 
 	FROM res 
 	LEFT JOIN access USING (user_id)
 	WHERE access.type="project" AND access.user_id IS NOT NULL 
-	ORDER BY lastname, initials');
+	ORDER BY lastname, firstname');
 $ownerlist = array('all' => 'All');
 foreach ($owners->get_assoc() as $o) {
 	$ownerlist[$o['user_id']] = $o['name'];
