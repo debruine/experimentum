@@ -279,6 +279,32 @@
 /***************************************************/
 /* !Other Functions */
 /***************************************************/
+
+    // finish a script, return values as json (or html), optionally close out the buffer
+    function scriptReturn($return, $buffer = false, $json = true) {
+        if ($buffer) {
+            // start and end user output so this can happen without the user waiting
+            ob_end_clean();
+            header("Connection: close");
+            ignore_user_abort(); // optional
+            ob_start();
+        }
+        
+        if ($json) {
+            header('Content-Type: application/json');
+            echo json_encode($return, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+        } else {
+            header('Content-Type: text/html');
+            echo htmlArray($return);
+        }
+        
+        if ($buffer) {
+            $size = ob_get_length();
+            header("Content-Length: $size");
+            ob_end_flush();     // Strange behaviour, will not work
+            flush();            // Unless both are called !
+        }
+    }
     
     // make a list of tag words sized according to frequency
     // tags = array of word => frequency pairs

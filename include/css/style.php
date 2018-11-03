@@ -108,7 +108,7 @@ PAGE BODY and LAYOUT
 
 body {
     font-family:"Fira Code", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
-    font-size:100%; 
+    font-size:120%; 
     color:<?= $text ?>;
     background-color: <?= $bgcolor ?>;
     width:100%;
@@ -116,7 +116,7 @@ body {
 
 pre {
     font-family:"Fira Code", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
-    font-size:100%; 
+    font-size:120%; 
     color:<?= $text ?>;
     white-space: pre-wrap;
 }
@@ -255,14 +255,14 @@ ul#login_info li input { display: block; text-align: left; }
     padding-right: 280px;
     padding-left: 50px;
     overflow:auto;
-    padding-bottom: 1em;                
+    padding-bottom: 1em;
 }
 
 #menu {
     position: absolute;
-    width: 220px;
+    width: 250px;
     right: 50px;
-    min-width: 220px;   
+    min-width: 250px;   
 }
 
 
@@ -330,8 +330,10 @@ tr.radiorow_values a {
 /***** RIGHT COLUMN MENU *****/
 
 #menu ul {
-    width:220px;
+    width:250px;
 }
+
+#menu ul a:hover {}
 
 #menu > ul, #dash { 
     float: none; 
@@ -342,7 +344,7 @@ tr.radiorow_values a {
     color: white;
     padding: .5em 1em;
     margin: 1em 0;
-    width: 220px;
+    width: 250px;
 }
 
 #dash { 
@@ -402,9 +404,16 @@ li.my         { background-image: url("/images/linearicons/user?c=FFFFFF"); }
 }
 #menu a:hover, #menu a:active, #menu a:focus {
     color: white; /* <?= $theme ?>; */
-    background-color:transparent;
-    border-bottom: 1px solid white;
+    background-color: transparent;
+    border-bottom: 2px solid white;
 }
+
+#menu ul li:nth-child(1) a:active, #menu ul li:nth-child(1) a:hover { border-color: var(--rainbow-red); }
+#menu ul li:nth-child(2) a:active, #menu ul li:nth-child(2) a:hover { border-color: var(--rainbow-orange); }
+#menu ul li:nth-child(3) a:active, #menu ul li:nth-child(3) a:hover { border-color: var(--rainbow-yellow); }
+#menu ul li:nth-child(4) a:active, #menu ul li:nth-child(4) a:hover { border-color: var(--rainbow-green); }
+#menu ul li:nth-child(5) a:active, #menu ul li:nth-child(5) a:hover { border-color: var(--rainbow-blue); }
+#menu ul li:nth-child(6) a:active, #menu ul li:nth-child(6) a:hover { border-color: var(--rainbow-purple); }
 
 
 /***** HEADERS AND TEXT *****/
@@ -521,6 +530,24 @@ hr.invisible { height:0; margin:0; }
 .hidden {
     display:none;
 }
+
+#faq h2 a { border: none; color: white; }
+#faq h2 a:active { background-color: transparent; }
+div.ui-accordion-content { max-width: 40em; }
+
+#faq h2:nth-child(1) { background-color: var(--rainbow-red); }
+#faq h2:nth-child(3) { background-color: var(--rainbow-orange); }
+#faq h2:nth-child(5) { background-color: var(--rainbow-yellow); }
+#faq h2:nth-child(7) { background-color: var(--rainbow-green); }
+#faq h2:nth-child(9) { background-color: var(--rainbow-blue); }
+#faq h2:nth-child(11) { background-color: var(--rainbow-purple); }
+#faq h2:nth-child(13) { background-color: var(--rainbow-red); }
+#faq h2:nth-child(15) { background-color: var(--rainbow-orange); }
+#faq h2:nth-child(17) { background-color: var(--rainbow-yellow); }
+#faq h2:nth-child(19) { background-color: var(--rainbow-green); }
+#faq h2:nth-child(21) { background-color: var(--rainbow-blue); }
+#faq h2:nth-child(23) { background-color: var(--rainbow-purple); }
+
 
 /***** TEXT LINKS *****/
 a { 
@@ -1046,7 +1073,7 @@ table.ranking {
 }
 
 tr.ranking {
-    cursor: url(/images/linearicons/arrow-up), move;
+    cursor: url(/images/linearicons/up-down), move;
     -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none;
 }
 
