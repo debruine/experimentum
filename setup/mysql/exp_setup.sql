@@ -165,7 +165,7 @@ CREATE TABLE `sets` (
 DROP TABLE IF EXISTS `set_items`;
 CREATE TABLE `set_items` (
   `set_id` int(11) DEFAULT NULL,
-  `item_type` enum('exp','quest','econ','set') DEFAULT NULL,
+  `item_type` enum('exp','quest','set') DEFAULT NULL,
   `item_id` int(11) DEFAULT NULL,
   `item_n` int(4) DEFAULT NULL,
   KEY `set_id` (`set_id`)
@@ -222,7 +222,7 @@ CREATE TABLE `radiorow_options` (
 DROP TABLE IF EXISTS `project_items`;
 CREATE TABLE `project_items` (
   `project_id` int(11) DEFAULT NULL,
-  `item_type` enum('exp','quest','econ','set') DEFAULT NULL,
+  `item_type` enum('exp','quest','set') DEFAULT NULL,
   `item_id` int(11) DEFAULT NULL,
   `item_n` int(3) DEFAULT NULL,
   `icon` varchar(255) DEFAULT NULL,
@@ -326,7 +326,7 @@ CREATE TABLE `login` (
 
 DROP TABLE IF EXISTS `access`;
 CREATE TABLE `access` (
-  `type` enum('exp','quest','econ','chain','file','project','sets') NOT NULL DEFAULT 'exp',
+  `type` enum('exp','quest','set','project') NOT NULL DEFAULT 'exp',
   `id` int(11) NOT NULL DEFAULT 0,
   `user_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`type`,`id`,`user_id`)
@@ -338,9 +338,18 @@ CREATE TABLE `dashboard` (
   `user_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `id` int(11) DEFAULT NULL,
-  `type` enum('query','exp','quest','econ','set','project','chart') DEFAULT NULL,
+  `type` enum('exp','quest','set','project') DEFAULT NULL,
   `dt` datetime DEFAULT NULL,
-  UNIQUE KEY `user_id` (`user_id`,`type`,`id`)
+  UNIQUE KEY `user_id_type_id` (`user_id`,`type`,`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `downloads`;
+CREATE TABLE `downloads` (
+  `user_id` int(11) DEFAULT NULL,
+  `type` enum('exp','quest') DEFAULT NULL,
+  `id` int(11) DEFAULT NULL,
+  `dt` datetime DEFAULT NULL,
+  UNIQUE KEY `user_id_type_id` (`user_id`,`type`,`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 

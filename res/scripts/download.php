@@ -10,6 +10,22 @@ if (!array_key_exists('query_type', $_POST) ||
     exit;
 }
 
+
+
+// exit if user down't have permission
+$query  = new myQuery("SELECT user_id 
+                        FROM access 
+                        WHERE type='{$_POST['query_type']}'
+                        AND id={$_POST['query_id']}
+                        AND user_id={$_SESSION['user_id']}");
+                        
+if ($query->get_num_rows() == 0) { exit; }
+
+// record download
+$query  = new myQuery("INSERT INTO downloads (user_id, type, id, dt) VALUES
+                        ({$_SESSION['user_id']}, '{$_POST['query_type']}', {$_POST['query_id']}, NOW())");
+
+
 if ($_POST['query_type'] == 'exp') {
     $query = new myQuery('SELECT res_name, exptype, subtype FROM exp WHERE id=' . $_POST['query_id']);
     $exp = $query->get_one_array();
