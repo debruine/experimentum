@@ -595,17 +595,35 @@ function folderize(json, appendElement) {
                 'csv': 'csv',
             };
             
+            var avtype = {
+                'mp3': 'audio/mpeg',
+                'ogg': 'audio/ogg',
+                'wav': 'audio/wave',
+                'm4v': 'video/mp4'
+            };
+            
             theItem .html('<span>' + shortName + '</span>')
                     .attr('url', contents)
                     .addClass(classes[ext])
                     .addClass('file')
                     .click( function() {
                         if (classes[ext]=='image') {
-                            $('#imagebox img').attr('src', $(this).attr('url'));
+                            $('#imagebox img').show().attr('src', $(this).attr('url'));
+                            $('#imagebox audio, #imagebox video').hide();
                         } else if (classes[ext]=='audio') {
-                            $('#imagebox img').attr('src', '/images/linearicons/volume-high.php');
+                            $('#imagebox img').hide().attr('src', '/images/linearicons/volume-high.php');
+                            $('#imagebox audio').show();
+                            $('#imagebox video').hide();
+                            $('#imagebox audio').get(0).pause();
+                            $('#imagebox audio source').attr('src', $(this).attr('url'));
+                            $("#imagebox audio").get(0).load();
                         } else if (classes[ext]=='video') {
-                            $('#imagebox img').attr('src', '/images/linearicons/camera-video.php');
+                            $('#imagebox img').hide().attr('src', '/images/linearicons/camera-video.php');
+                            $('#imagebox audio').hide();
+                            $('#imagebox video').show();
+                            $('#imagebox video').get(0).pause();
+                            $('#imagebox video source').attr('src', $(this).attr('url'));
+                            $('#imagebox video').get(0).load();
                         }
                         $('#imagebox #imageurl').html($(this).attr('url'));
                         
@@ -622,7 +640,9 @@ function folderize(json, appendElement) {
             theItem .html('<span>' + shortName + '</span>')
                     .addClass('folder closed')
                     .data('contents', contents)
-                    .click( function() { 
+                    .click( function() {
+                        var fname = folder.replace(/\/stimuli\/uploads\/\d+\//, '');
+                        $('#subdir').val(fname);
                         folderize($(this).data('contents'), $(this)); 
                     });
         }
@@ -632,6 +652,7 @@ function folderize(json, appendElement) {
 
     appendElement.append( theFolder );
     $('#finder > ul').css('margin-left', 0); // fix first ul
+    $('#imagebox audio, #imagebox video, #imagebox img').hide();
 }
 
 function sizeToViewport() {

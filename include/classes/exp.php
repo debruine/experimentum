@@ -243,13 +243,11 @@ class experiment {
                 $text .= "\t<img src='$stim' />\n";
             } else if ($this->stimuli_type == 'audio') {
                 $text .= "<audio preload='auto' />
-                    <source src='{$stim}.ogg' type='audio/ogg' autoplay='false' />
                     <source src='{$stim}.mp3' type='audio/mp3' autoplay='false' />
                 </audio>";
             } else if ($this->stimuli_type == 'video') {
                 $text .= "<video preload='auto' />
-                    <source src='{$stim}.ogv' type='video/ogg' autoplay='false' />
-                    <source src='{$stim}.m4v' type='video/mp4' autoplay='false' />
+                    <source src='{$stim}' type='video/mp4' autoplay='false' />
                 </video>";
             }
         }
@@ -351,11 +349,11 @@ class experiment {
                         '        if(this.complete) $(this).load();' . ENDLINE .
                         '      });' . ENDTAG;
         } else {
-            $text .=     '    $("#image_loader").hide();' . ENDLINE .
+            $text .=    '    $("#image_loader").hide();' . ENDLINE .
                         '    $("#continue_button").show();' . ENDTAG ;
         }
         
-        $text .=         '    function beginExp() {' . ENDLINE .
+        $text .=        '    function beginExp() {' . ENDLINE .
                         '        console.log("beginExp()");'. ENDLINE .
                         '        trial = 0;' . ENDLINE . // added to stop skipping first trial if the begin button is pushed twice
                         '        $("#instructions").hide();' . ENDLINE .
@@ -372,7 +370,7 @@ class experiment {
 
         // audio-specific functions
         if ($this->stimuli_type == 'audio') {
-            $text .=     '    var playing = false;' . ENDLINE .
+            $text .=    '    var playing = false;' . ENDLINE .
                         '    var theAudioContainer = null;' . ENDTAG .
     
                         '    $("#experiment .audio span.play").click( function() {' . ENDLINE .
@@ -395,6 +393,36 @@ class experiment {
                         '        // show choose if all played' . ENDLINE .
                         '        if ($("#experiment .audio.unplayed").length == 0) {' . ENDLINE .
                         '            $("#experiment .audio span.choose").show();' . ENDLINE .
+                        '        }' . ENDLINE .
+                        '    });' . ENDTAG;
+        }
+        
+        // video-specific functions
+        if ($this->stimuli_type == 'video') {
+            $text .=    '    var playing = false;' . ENDLINE .
+                        '    var theVideoContainer = null;' . ENDTAG .
+    
+                        '    $("#experiment video").click( function() {' . ENDLINE .
+                        '        if (playing == false) {' . ENDLINE .
+                        '            playing = true;' . ENDLINE .
+                        '            console.log("playing:",$(this).find("source").attr("src"));' . ENDLINE .
+                        '            theVideoContainer = $(this).closest(".video");' . ENDLINE .
+                        '            theVideoContainer.addClass("playing");' . ENDLINE .
+                        '            var thePlayer = document.getElementById( theVideoContainer.attr("id") + "_vplayer" );' . ENDLINE .
+                        '            thePlayer.play();' . ENDLINE .
+                        '        }' . ENDLINE .
+                        '    });' . ENDTAG .
+    
+                        '    $("#experiment video").on("ended", function() {' . ENDLINE .
+                        '        playing=false; ' . ENDLINE .
+                        '        console.log("ended:",$(this).find("source").attr("src"));' . ENDLINE .
+                        '        $(this).closest("div.video")' . ENDLINE . 
+                        '                .removeClass("playing unplayed")' . ENDLINE . 
+                        '                .addClass("played");' . ENDLINE .
+        
+                        '        // show choose if all played' . ENDLINE .
+                        '        if ($("#experiment .video.unplayed").length == 0) {' . ENDLINE .
+                        '            $("#experiment .video span.choose").show();' . ENDLINE .
                         '        }' . ENDLINE .
                         '    });' . ENDTAG;
         }
@@ -449,7 +477,12 @@ class experiment {
         
         if ($this->stimuli_type == 'audio') {
             $text .=       '        if ($("#experiment .audio.unplayed").length > 0) {' . ENDLINE .
-                           '            alert("You must listen to all sounds before continuing");' . ENDLINE .
+                           '            alert("You must listen to all sounds before continuing.");' . ENDLINE .
+                           '            return false;' . ENDLINE .
+                           '        }' . ENDTAG;
+        } else if ($this->stimuli_type == 'video') {
+            $text .=       '        if ($("#experiment .video.unplayed").length > 0) {' . ENDLINE .
+                           '            alert("You must view all videos before continuing. Click on a video to view it.");' . ENDLINE .
                            '            return false;' . ENDLINE .
                            '        }' . ENDTAG;
         }
@@ -600,35 +633,63 @@ class experiment {
             $text .= '
                 if ($("#center_image").length > 0) {
                     $("#center_image_player").html("")
-                        .append( $("<source />").attr("src", center_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
                         .append( $("<source />").attr("src", center_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
                 }
                 if (side[trialOrder[trial]] == 1) {
                     if ($("#left_image").length > 0) {
                         $("#left_image_player").html("")
-                            .append( $("<source />").attr("src", left_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
                             .append( $("<source />").attr("src", left_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
                     }
                     if ($("#right_image").length > 0) {
                         $("#right_image_player").html("")
-                            .append( $("<source />").attr("src", right_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
                             .append( $("<source />").attr("src", right_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
                     }
                 } else {
                     if ($("#left_image").length > 0) {
                         $("#left_image_player").html("")
-                            .append( $("<source />").attr("src", right_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
                             .append( $("<source />").attr("src", right_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
                     }
                     if ($("#right_image").length > 0) {
                         $("#right_image_player").html("")
-                            .append( $("<source />").attr("src", left_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
                             .append( $("<source />").attr("src", left_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
                     }
                 }
                 $(".audio").removeClass("played").removeClass("playing").addClass("unplayed").find("span.play").text("PLAY");
                 $("audio").load();
                 $("#experiment .audio span.choose").hide();
+                playing = false;
+            ' . ENDLINE;
+        }  else if ($this->stimuli_type == 'video') {
+            $text .= '
+                $("video").hide().get(0).pause();
+                if ($("#center_image").length > 0) {
+                    $("#center_image_vplayer source").attr("src", center_image[trialOrder[trial]]);
+                    console.log("loading:", center_image[trialOrder[trial]]);
+                }
+                if (side[trialOrder[trial]] == 1) {
+                    if ($("#left_image").length > 0) {
+                        $("#left_image_vplayer source").attr("src", left_image[trialOrder[trial]]);
+                        console.log("loading:", left_image[trialOrder[trial]]);
+                    }
+                    if ($("#right_image").length > 0) {
+                        $("#right_image_vplayer source").attr("src", right_image[trialOrder[trial]]);
+                        console.log("loading:", right_image[trialOrder[trial]]);
+                    }
+                } else {
+                    if ($("#left_image").length > 0) {
+                        $("#left_image_vplayer source").attr("src", right_image[trialOrder[trial]]);
+                        console.log("loading:",right_image[trialOrder[trial]]);
+                    }
+                    if ($("#right_image").length > 0) {
+                        $("#right_image_vplayer source").attr("src", left_image[trialOrder[trial]]);
+                        console.log("loading:", left_image[trialOrder[trial]]);
+                    }
+                }
+                $(".video").removeClass("played").removeClass("playing").addClass("unplayed")
+                $("video").show().each(function() {
+                    $(this).get(0).load();
+                });
+                $("#experiment .video span.choose").hide();
                 playing = false;
             ' . ENDLINE;
         }
@@ -679,6 +740,14 @@ class exp_xafc extends experiment {
                 <audio id="xafc_' . $n . '_player">
                     Your browser does not support the audio element.
                 </audio>
+            </div>' . ENDLINE;
+            } else if ($this->stimuli_type == 'video') {
+                $text .= '        <div class="video" id="xafc_' . $n . '">
+                <video id="xafc_' . $n . '_vplayer">
+                    <source src="" type="video/mp4" />
+                    Your browser does not support the video element.
+                </video>
+                <span class="choose" onclick="nextTrial("' . $n . '"); return false;">choose</span>
             </div>' . ENDLINE;
             }
         }
@@ -784,6 +853,30 @@ class exp_tafc extends experiment {
                 <audio id="right_image_player">
                     Your browser does not support the audio element.
                 </audio>
+            </div></td>' . ENDLINE;
+        } else if ($this->stimuli_type == 'video') {
+            $text .= '        <td><div class="video" id="left_image">
+                <video id="left_image_vplayer">
+                    <source src="" type="video/mp4" />
+                    Your browser does not support the video element.
+                </video>
+                <span class="choose" onclick="nextTrial(1); return false;">choose</span>
+            </div></td>' . ENDLINE;
+            
+            if (!empty($this->center_images)) {
+                $text .= '        <td><div class="video" id="center_image">
+                <video id="center_image_vplayer">
+                    <source src="" type="video/mp4" />
+                    Your browser does not support the video element.
+                </video></div></td>' . ENDLINE;
+            }
+            
+            $text .= '        <td><div class="video" id="right_image">
+                <video id="right_image_vplayer">
+                    <source src="" type="video/mp4" />
+                    Your browser does not support the video element.
+                </video>
+                <span class="choose" onclick="nextTrial(0); return false;">choose</span>
             </div></td>' . ENDLINE;
         }
 
@@ -972,15 +1065,25 @@ class exp_motivation extends experiment {
         if ($this->stimuli_type == 'image') {
             $text .= '
             $("#center_image").attr("src", center_image[trialOrder[trial]]);'. ENDLINE;
-        }  else if ($this->stimuli_type == 'audio') {
+        } else if ($this->stimuli_type == 'audio') {
                 $text .= '
             $("#center_image_player").html("")
-                .append( $("<source />").attr("src", center_image[trialOrder[trial]] + ".ogg").attr("type", "audio/ogg"))
                 .append( $("<source />").attr("src", center_image[trialOrder[trial]] + ".mp3").attr("type", "audio/mp3"));
             
             $(".audio").removeClass("played").removeClass("playing").addClass("unplayed").find("span.play").text("PLAY");
             $("audio").load();
             $("#experiment .audio span.choose").hide();
+            playing = false;' . ENDLINE;
+        } else if ($this->stimuli_type == 'video') {
+                $text .= '
+            $("video").hide().get(0).pause();
+            $("#center_image_vplayer <source").attr("src", center_image[trialOrder[trial]]);
+            console.log("loading:", center_image[trialOrder[trial]]);
+            
+            $(".video").removeClass("played").removeClass("playing").addClass("unplayed");
+            $("video").show().each(function() {
+                $(this).get(0).load();
+            });
             playing = false;' . ENDLINE;
         }
         
@@ -1251,7 +1354,29 @@ class exp_buttons extends experiment {
                     Your browser does not support the audio element.
                 </audio></div></td>' . ENDLINE;
             }
-        }    
+        } else if ($this->stimuli_type == 'video') {
+            if (!empty($this->left_images)) {
+                $text .= '<td><div class="video" id="left_image">
+                <video id="left_image_vplayer">
+                    <source src="" type="video/mp4" />
+                    Your browser does not support the video element.
+                </audio></div></td>' . ENDLINE;
+            }
+            if (!empty($this->center_images)) {
+                $text .= '<td><div class="video" id="center_image">
+                <video id="center_image_vplayer">
+                    <source src="" type="video/mp4" />
+                    Your browser does not support the video element.
+                </video></div></td>' . ENDLINE;
+            }
+            if (!empty($this->right_images)) {
+                $text .= '<td><div class="video" id="right_image">
+                <video id="right_image_vplayer">
+                    <source src="" type="video/mp4" />
+                    Your browser does not support the video element.
+                </video></div></td>' . ENDLINE;
+            }
+        }
 
         $text .= '    </tr>' . ENDLINE;
         

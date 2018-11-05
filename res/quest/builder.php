@@ -4,6 +4,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
 auth($RES_STATUS);
 
+if (validID($_GET['id']) && !permit('quest', $_GET['id'])) header('Location: /res/');
+
 $title = array(
     '/res/' => 'Researchers',
     '/res/quest/' => 'Questionnaires',
@@ -57,23 +59,6 @@ if (array_key_exists('save', $_GET)) {
     $clean = my_clean($_POST['quest']);
     $cleanq = my_clean($_POST['questions']);
     $cleanr = my_clean($_POST['radiorow']);
-    
-    // make sure user has permission to edit this questionnaire
-    if ($_SESSION['status'] == "student") { 
-        // students can edit only their own questionnaires
-        if (validID($clean['id'])) {
-            $myaccess = new myQuery('SELECT user_id 
-                                     FROM access 
-                                     WHERE type="quest" 
-                                        AND id='.$clean['id']." 
-                                        AND user_id=".$_SESSION['user_id']);
-            $checkuser = $myaccess->get_assoc(0);
-            if ($checkuser['user_id'] != $_SESSION['user_id']) { 
-                echo 'error;You do not have permission to edit this questionnaire'; 
-                exit; 
-            }
-        }
-    }
     
     // update quest table
     if (!validID($clean['id'])) {

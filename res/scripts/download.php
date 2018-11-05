@@ -3,28 +3,12 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 auth($RES_STATUS, "/res/");
 
-// exit if post data are invalid
-if (!array_key_exists('query_type', $_POST) || 
-    !in_array($_POST['query_type'], array('exp', 'quest')) || 
-    !validID($_POST['query_id'])) {
-    exit;
-}
-
-
-
-// exit if user down't have permission
-$query  = new myQuery("SELECT user_id 
-                        FROM access 
-                        WHERE type='{$_POST['query_type']}'
-                        AND id={$_POST['query_id']}
-                        AND user_id={$_SESSION['user_id']}");
-                        
-if ($query->get_num_rows() == 0) { exit; }
+// exit if no permission
+if (!permit($_POST['query_type'], $_POST['query_id'])) exit;
 
 // record download
 $query  = new myQuery("INSERT INTO downloads (user_id, type, id, dt) VALUES
                         ({$_SESSION['user_id']}, '{$_POST['query_type']}', {$_POST['query_id']}, NOW())");
-
 
 if ($_POST['query_type'] == 'exp') {
     $query = new myQuery('SELECT res_name, exptype, subtype FROM exp WHERE id=' . $_POST['query_id']);
@@ -62,6 +46,8 @@ if ($_POST['query_type'] == 'exp') {
             LEFT JOIN user USING (user_id)
             LEFT JOIN question ON qd.quest_id = question.quest_id AND question_id = question.id
             WHERE qd.quest_id = ' . $_POST['query_id'];
+} else {
+    exit;
 }
 
 $query = new myQuery($q, true);

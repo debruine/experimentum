@@ -944,7 +944,7 @@ tr.chosen1 img {
 }
 
 #imagebox {position: fixed; right: 50px; }
-#imagebox img {max-width: 300px; max-height: 400px;}
+#imagebox img, #imagebox audio, #imagebox video {max-width: 300px; max-height: 400px;}
 #imagebox #imageurl {width: 300px; margin-bottom: .5em; }
 
 
@@ -1116,7 +1116,7 @@ label {
 }
 
 .note, small { 
-    font-size:10px; 
+    font-size:12px; 
     display: block;
 }
 
@@ -1314,6 +1314,10 @@ EXPERIMENT STYLES
     text-shadow: 0px 0px 1px #000000;
 }
 
+#experiment video {
+    width: 100%;
+}
+
 #continue_button input {
     display: block;
     margin: 1em auto;
@@ -1374,7 +1378,8 @@ div.audio span.play {
     display: block; 
 }
 div.audio span.play:active, 
-div.audio span.choose:active { 
+div.audio span.choose:active,
+div.video span.choose:active { 
     box-shadow: 2px 2px 4px rgba(0,0,0,.5); 
 }
 div.audio.played span.play { 
@@ -1383,14 +1388,15 @@ div.audio.played span.play {
 div.audio.playing span.play { 
     background-color: hsl(<?= THEME_HUE ?>, 100%, 30%); 
 }
-div.audio span.choose { 
+div.audio span.choose,
+div.video span.choose { 
     display: block;
-    font-size: 70%;
-    width: 4em;
+    font-size: 20px;
+    width: 200px;
     margin: 0 auto;
     color: hsl(<?= THEME_HUE ?>,100%,30%);
     background-color: white;
-    padding: 0 .5em;
+    padding: .5em .5em;
     border: 3px solid hsl(<?= THEME_HUE ?>, 100%, 30%);
     border-bottom-left-radius: 1em; 
     border-bottom-right-radius: 1em; 
@@ -1400,6 +1406,13 @@ div.audio span.choose {
 table.jnd {
     border: 2px solid <?= $theme ?>;
     <?= roundCorners('0') ?>
+}
+
+#experiment * {
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Likely future */
 }
 
 .jnd .input_interface td { 

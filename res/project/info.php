@@ -4,6 +4,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
 auth($RES_STATUS);
 
+if (validID($_GET['id']) && !permit('project', $_GET['id'])) header('Location: /res/');
+
 
 $title = array(
     '/res/' => 'Researchers',
@@ -195,7 +197,7 @@ if (array_key_exists('duplicate', $_GET) && validID($_GET['id'])) {
 }
 
 /***************************************************/
-/* !Get Set Data */
+/* !Get Project Data */
 /***************************************************/
 
 if (validID($_GET['id'])) {

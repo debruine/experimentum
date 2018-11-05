@@ -4,6 +4,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
 auth($RES_STATUS);
 
+if (validID($_GET['id']) && !permit('exp', $_GET['id'])) header('Location: /res/');
+
 $title = array(
     '/res/' => 'Researchers',
     '/res/exp/' => 'Experiment',
@@ -92,6 +94,7 @@ if (array_key_exists('search', $_GET)) {
  
 if (array_key_exists('save', $_GET)) {  
     $exp_id = $_GET['exp_id'];
+    
     $q = new myQuery('DELETE FROM trial WHERE exp_id=' . $exp_id);
     $q = new myQuery('DELETE FROM xafc WHERE exp_id=' . $exp_id);
 

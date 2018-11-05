@@ -8,7 +8,12 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 /* !Display Page */
 /***************************************************/
 
-$page = new page('Debug');
+$title = array(
+	"/res/" => loc("Researchers"),
+	"/res/admin/" => loc("Admin"),
+	"/res/admin/debug" => loc("Debug")
+);
+$page = new page($title);
 $page->set_menu(false);
 
 $page->displayHead();

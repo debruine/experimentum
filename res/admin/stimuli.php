@@ -16,21 +16,19 @@ if (array_key_exists('dir', $_POST)) {
             case "png":
                 $type = "image";
                 break;
-            case "ogg":
+            case "mp3":
                 $type = "audio";
                 break;
             case "m4v":
                 $type = "video";
                 break;
-            case "mp3":
-            case "wav":
             default:
                 $type = false;
         }
         
         if ($type) {
             $query = sprintf("INSERT IGNORE INTO stimuli (path, type, size) VALUES ('%s', '%s', '%d')",
-                str_replace(array("../..", ".jpg", ".png", ".ogg", ".gif", ".mp3", ".m4v"), "", $fullpath),
+                str_replace(array("../..", ".jpg", ".png", ".gif", ".mp3",), "", $fullpath),
                 $type,
                 filesize($fullpath)
             );

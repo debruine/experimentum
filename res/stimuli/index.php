@@ -23,12 +23,9 @@ $page->displayBody();
 
 $links = array();
 
-if (in_array($_SESSION['status'], array('res', 'admin'))) {
-	//$links['search'] = 'Search';
-	$links['browse'] = 'Browse';
-	$links['upload'] = 'Upload';
-}
-
+//$links['search'] = 'Search';
+$links['browse'] = 'Browse';
+$links['upload'] = 'Upload';
 $links['icons'] = 'Icons';
 
 $classes = array(

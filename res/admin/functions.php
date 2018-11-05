@@ -34,7 +34,7 @@ if (!empty($_POST['function'])) {
 $title = array(
 	"/res/" => loc("Researchers"),
 	"/res/admin/" => loc("Admin"),
-	"/res/admin/merge" => loc("Periodic Functions")
+	"/res/admin/functions" => loc("Periodic Functions")
 );
 $styles = array();
 

@@ -254,7 +254,7 @@ CREATE TABLE `buttons` (
 DROP TABLE IF EXISTS `stimuli`;
 CREATE TABLE stimuli (
     `id` int(11) auto_increment NOT NULL,
-    `path` varchar(255),
+    `path` VARCHAR(255),
     `type` enum('image','audio','video'),
     `size` int(10),
     `description` text,
@@ -306,6 +306,13 @@ CREATE TABLE `res` (
   `institution` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `supervise`;
+CREATE TABLE `supervise` (
+  `supervisor_id` int(11),
+  `supervisee_id` int(11),
+  UNIQUE KEY `id_id` (`supervisor_id`,`supervisee_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 

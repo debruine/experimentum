@@ -7,8 +7,8 @@ auth($RES_STATUS);
 $status_changer = ($_SESSION['status'] == "admin") ? "statusChanger(5,'quest');" : "";
 
 $title = array(
-	'/res/' => 'Researchers',
-	'/res/quest/' => 'Questionnaires'
+    '/res/' => 'Researchers',
+    '/res/quest/' => 'Questionnaires'
 );
 
 $styles = array();
@@ -19,72 +19,109 @@ $styles = array();
  ***************************************************/
 
 // set the user whose items to get
-$access_user = $_SESSION['user_id'];
-if (array_key_exists('owner', $_GET)) { 
-	if ($_GET['owner'] == 'all') {
-		$access_user = 'access.user_id';
-	} elseif (validID($_GET['owner'])) {
-		$access_user = $_GET['owner'];
-	}
-}
-
-$howmany = new myQuery("SELECT COUNT(*) as c FROM quest LEFT JOIN access USING (id) WHERE access.type='quest' AND access.user_id='{$access_user}'");
-
-if ($_GET['status'] == "all" || $howmany->get_one() < 50) {
-	$visible_statuses = "'test', 'active', 'archive'";
-	$_GET['status'] = "all";
-} else if (in_array($_GET['status'], array("test", "active", "archive"))) { 
-	$visible_statuses = "'" . $_GET['status'] . "'";
-} else {
-	$visible_statuses = "'test'";
-	$_GET['status'] = "test";
-}
-
-$my = new myQuery('SELECT CONCAT("<span class=\'fav", 
+$aq = 'CONCAT("<span class=\'fav", 
         IF(d.id IS NOT NULL, " heart", ""), 
-        "\' id=\'dash", q.id, "\'>",
+        "\' id=\'dash", quest.id, "\'>",
         IF(d.id IS NOT NULL, "+", "-"), 
         "</span>") as "Favs", 
-	CONCAT("<a href=\'info?id=", q.id, "\'>", q.id, "</a>") as "ID", 
-	res_name as "Name",
-	CONCAT("<span class=\'labnotes\'>", labnotes, "</span") as "Labnotes", 
-	status, 
-	DATE_FORMAT(create_date, "%Y-%m-%d") as "Date Created"
-	FROM quest as q
-	LEFT JOIN access USING (id) 
-	LEFT JOIN dashboard as d ON d.id = q.id AND d.type="quest" AND d.user_id=' . $_SESSION['user_id'] . '
-	WHERE access.type="quest" 
-	  AND access.user_id=' . $access_user . '
-	  AND status IN (' . $visible_statuses. ')
-	GROUP BY q.id ORDER BY d.user_id DESC, q.id DESC');
-	
+    CONCAT("<a href=\'info?id=", quest.id, "\'>", quest.id, "</a>") as "ID", 
+    CONCAT("<span class=\'expname\'>", "<a href=\'info?id=", quest.id, "\'>", res_name, "</a>", "</span>") as "Name", 
+    CONCAT("<span class=\'labnotes\'>", labnotes, "</span>") as "Labnotes", 
+    status as "Status", 
+    DATE_FORMAT(create_date, "%Y-%m-%d") as "Date Created"';
+$accessquery = "SELECT {$aq} 
+                        FROM quest 
+                        LEFT JOIN access USING (id) 
+                        LEFT JOIN dashboard as d ON d.id = quest.id AND d.type='quest' AND d.user_id={$_SESSION['user_id']}
+                        WHERE access.type='quest' 
+                        AND access.user_id={$_SESSION['user_id']}
+                        GROUP BY quest.id ORDER BY d.user_id DESC, quest.id DESC";
+if (array_key_exists('owner', $_GET)) { 
+    if ($_GET['owner'] == 'all') {
+        if ($_SESSION['status'] == 'admin') {
+            $accessquery = "SELECT {$aq} 
+                            FROM quest 
+                            LEFT JOIN access USING (id) 
+                            LEFT JOIN dashboard as d ON d.id = quest.id 
+                              AND d.type='quest' AND d.user_id={$_SESSION['user_id']}
+                            WHERE access.type='quest'
+                            GROUP BY quest.id ORDER BY d.user_id DESC, quest.id DESC";
+        } elseif ($_SESSION['status'] == 'res') {
+            $accessquery = "SELECT {$aq}
+                            FROM quest 
+                            LEFT JOIN access USING (id) 
+                            LEFT JOIN dashboard as d ON d.id = quest.id 
+                              AND d.type='quest' AND d.user_id={$_SESSION['user_id']}
+                            WHERE access.type='quest' 
+                            AND (access.user_id={$_SESSION['user_id']} OR 
+                                 access.user_id IN (SELECT supervisee_id 
+                                                     FROM supervise 
+                                                    WHERE supervisor_id={$_SESSION['user_id']}))
+                            GROUP BY quest.id ORDER BY d.user_id DESC, quest.id DESC";
+        }
+    } elseif (validID($_GET['owner'])) {
+        if ($_SESSION['status'] == 'admin') {
+            $accessquery = "SELECT {$aq} 
+                            FROM quest 
+                            LEFT JOIN access USING (id) 
+                            LEFT JOIN dashboard as d ON d.id = quest.id 
+                              AND d.type='quest' AND d.user_id={$_SESSION['user_id']}
+                            WHERE access.type='quest' AND access.user_id={$_GET['owner']}
+                            GROUP BY quest.id ORDER BY d.user_id DESC, quest.id DESC";
+        } elseif ($_SESSION['status'] == 'res') {
+            $accessquery = "SELECT {$aq} 
+                            FROM quest 
+                            LEFT JOIN access USING (id) 
+                            LEFT JOIN dashboard as d ON d.id = quest.id AND d.type='quest' 
+                              AND d.user_id={$_SESSION['user_id']}
+                            WHERE access.type='quest' AND access.user_id={$_GET['owner']}
+                            AND (access.user_id={$_SESSION['user_id']} OR 
+                                 access.user_id IN (SELECT supervisee_id 
+                                                     FROM supervise 
+                                                    WHERE supervisor_id={$_SESSION['user_id']}))
+                            GROUP BY quest.id ORDER BY d.user_id DESC, quest.id DESC";
+        }
+    }
+} else {
+    $_GET['owner'] = $_SESSION['user_id'];
+}
+
+$my = new myQuery($accessquery);
+    
 $search = new input('search', 'search');
 
-$owners = new myQuery('SELECT res.user_id as user_id, 
-	CONCAT(lastname, ", ", firstname) as name 
-	FROM res 
-	LEFT JOIN access USING (user_id)
-	WHERE access.type="quest" AND access.user_id IS NOT NULL 
-	ORDER BY lastname, firstname');
-$ownerlist = array('all' => 'All');
-foreach ($owners->get_assoc() as $o) {
-	$ownerlist[$o['user_id']] = $o['name'];
+if ($_SESSION['status'] == 'admin') {
+    $ownerquery = 'SELECT res.user_id as user_id, 
+        CONCAT(lastname, ", ", firstname) as name 
+        FROM res 
+        LEFT JOIN access USING (user_id)
+        WHERE (access.type="quest" AND access.user_id IS NOT NULL) OR res.user_id ='.$_SESSION['user_id']. '
+        ORDER BY lastname, firstname';
+} else if ($_SESSION['status'] == 'res') {
+    $ownerquery = 'SELECT res.user_id as user_id, 
+        CONCAT(lastname, ", ", firstname) as name 
+        FROM res 
+        LEFT JOIN access USING (user_id)
+        LEFT JOIN supervise ON res.user_id=supervisee_id
+        WHERE (access.type="quest" AND access.user_id IS NOT NULL 
+        AND (supervisee_id IS NOT NULL OR res.user_id = ' . $_SESSION['user_id'] . ')) 
+        OR res.user_id ='.$_SESSION['user_id']. '
+        ORDER BY lastname, firstname';
 }
-$owner = new select('owner', 'owner', $access_user);
-$owner->set_options($ownerlist);
-$owner->set_null(false);
-$owner->set_eventHandlers(array('onchange' => 'changePage()'));
 
-$status = new select('status', 'status', $_GET['status']);
-$status->set_options(array(
-	"all" => "all", 
-	"test" => "test", 
-	"active" => "active", 
-	"archive" => "archive"
-));
-$status->set_null(false);
-$status->set_eventHandlers(array('onchange' => 'changePage()'));
-	
+if (!empty($ownerquery)) { 
+    $owners = new myQuery($ownerquery);
+    
+    $ownerlist = array('all' => 'All');
+    foreach ($owners->get_assoc() as $o) {
+        $ownerlist[$o['user_id']] = $o['name'];
+    }
+    $owner = new select('owner', 'owner', $_GET['owner']);
+    $owner->set_options($ownerlist);
+    $owner->set_null(false);
+    $owner->set_eventHandlers(array('onchange' => 'changePage()'));
+}
+    
 /****************************************************/
 /* !Display Page */
 /***************************************************/
@@ -96,10 +133,11 @@ $page->displayHead($styles);
 $page->displayBody();
 
 // search box
-echo '<div class="searchline toolbar">Owner: ';
-echo $owner->get_element();
-echo 'Show: ';
-echo $status->get_element();
+echo '<div class="searchline toolbar">';
+if (!empty($ownerquery)) { 
+    echo 'Owner: ';
+    echo $owner->get_element();
+}
 echo 'Search: ';
 echo $search->get_element();
 echo '<button id="new_quest">New Questionnaire</button></div>';
@@ -107,30 +145,30 @@ echo '<button id="new_quest">New Questionnaire</button></div>';
 echo $my->get_result_as_table(true, true);
 
 $new_quest_buttons = array(
-	"builder" => "Mixed (different question types)",
-	"builder?radiopage" => "Radiopage (response options across top)",
-	"builder?ranking" => "Ranking (order a list of items)"
+    "builder" => "Mixed (different question types)",
+    "builder?radiopage" => "Radiopage (response options across top)",
+    "builder?ranking" => "Ranking (order a list of items)"
 );
 
 ?>
 
 <div id="dialog-typechooser" title="Choose a Questionnaire Type">
-	<?= linkList($new_quest_buttons, '', 'ul') ?>
+    <?= linkList($new_quest_buttons, '', 'ul') ?>
 </div>
 
 <div id="help" title="Questionnaire Finder Help">
-	<ul>
-		<li>Type into the search box to narrow down your list. It searches the ID number, name and notes, so you can type in the ID to find a specific questionnaire quickly.</li>
-		<li>Click on a column title to sort by that column.</li>
-		<li>Click on the ID of a questionnaire to view its info page.</li>
-		<li>Click on the circle next to a chart to save it to your favourites list (on the <a href="/res/">Researchers</a> page.</li>
-		<li>Click on the "New questionnaire" button at the top to start creating a new experiment. You will need to choose which type of questionnaire you want to build.<ul>
-			<li>&ldquo;Mixed&rdquo; questionnaires allow you to choose a different style for each question, such as a drop-down menu or a text box.</li>
-			<li>&ldquo;Ranking&rdquo; questionnaires consist of a list of items that the participant can re-order.</li>
-			<li>&ldquo;Radiopage&rdquo; questionnaires show a list of questions down the left column and options across the top row. Participants can click buttons to choose the option for each question.</li>
-		</ul></li>
-	</ul>
-	<p>If you are a admin, you can click on the status to see a drop-down menu to change the status of any item.</p>
+    <ul>
+        <li>Type into the search box to narrow down your list. It searches the ID number, name and notes, so you can type in the ID to find a specific questionnaire quickly.</li>
+        <li>Click on a column title to sort by that column.</li>
+        <li>Click on the ID of a questionnaire to view its info page.</li>
+        <li>Click on the circle next to a chart to save it to your favourites list (on the <a href="/res/">Researchers</a> page.</li>
+        <li>Click on the "New questionnaire" button at the top to start creating a new questionnaire. You will need to choose which type of questionnaire you want to build.<ul>
+            <li>&ldquo;Mixed&rdquo; questionnaires allow you to choose a different style for each question, such as a drop-down menu or a text box.</li>
+            <li>&ldquo;Ranking&rdquo; questionnaires consist of a list of items that the participant can re-order.</li>
+            <li>&ldquo;Radiopage&rdquo; questionnaires show a list of questions down the left column and options across the top row. Participants can click buttons to choose the option for each question.</li>
+        </ul></li>
+    </ul>
+    <p>If you are a admin, you can click on the status to see a drop-down menu to change the status of any item.</p>
 </div>
 
 <!--*************************************************-->
@@ -138,29 +176,28 @@ $new_quest_buttons = array(
 <!--*************************************************-->
 
 <script>
-	$(function() {
-		$( "#new_quest" ).button().click(function() { $( "#dialog-typechooser" ).dialog( "open" ); });	
-		$( "#dialog-typechooser" ).dialog({
-			autoOpen: false,
-			show: "scale",
-			hide: "scale",
-			width: "35em",
-			modal: true,
-		});
-		
-		$('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
-		
-		dashboard_checkboxes('quest'); // function defined in myfunctions.js
-		
-		<?= $status_changer ?> // function defined in myfunctions.js
-		
-	});
-	
-	function changePage() {
-		var owner = $('#owner').val();
-		var status = $('#status').val();
-		window.location.href = "./?owner=" + owner + "&status=" + status;
-	}
+    $(function() {
+        $( "#new_quest" ).button().click(function() { $( "#dialog-typechooser" ).dialog( "open" ); });  
+        $( "#dialog-typechooser" ).dialog({
+            autoOpen: false,
+            show: "scale",
+            hide: "scale",
+            width: "35em",
+            modal: true,
+        });
+        
+        $('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
+        
+        dashboard_checkboxes('quest'); // function defined in myfunctions.js
+        
+        <?= $status_changer ?> // function defined in myfunctions.js
+        
+    });
+    
+    function changePage() {
+        var owner = $('#owner').val();
+        window.location.href = "./?owner=" + owner;
+    }
 </script>
 
 <?php

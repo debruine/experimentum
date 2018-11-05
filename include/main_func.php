@@ -280,6 +280,27 @@
 /* !Other Functions */
 /***************************************************/
 
+    // check if user has permission to access an item
+    function permit($type, $id) {
+        if (!in_array($type, array('exp', 'quest', 'sets', 'project'))) return false;
+        
+        // admins have access to everything
+        if ($_SESSION['status'] == 'admin') return true;
+        
+        $id = intval($id);
+        $user_id = intval($_SESSION['user_id']);
+        $query = new myQuery(
+             "SELECT user_id
+                FROM access 
+               WHERE type='$type' 
+                 AND id=$id 
+                 AND (user_id=$user_id OR
+                   user_id IN (SELECT supervisee_id FROM supervise WHERE supervisor_id=$user_id)
+                 )"
+        );
+        return $query->get_num_rows();
+    }
+
     // finish a script, return values as json (or html), optionally close out the buffer
     function scriptReturn($return, $buffer = false, $json = true) {
         if ($buffer) {

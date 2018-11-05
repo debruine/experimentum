@@ -5,6 +5,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/exp.php';
 auth($RES_STATUS);
 
+if (validID($_GET['id']) && !permit('exp', $_GET['id'])) header('Location: /res/');
+
 $title = array(
     '/res/' => 'Researchers',
     '/res/exp/' => 'Experiment',
@@ -49,19 +51,6 @@ $styles = array(
  
 if (array_key_exists('save', $_GET)) {
     $clean = my_clean($_POST);
-    
-    // make sure user has permission to edit this experiment
-    if ($_SESSION['status'] == 'student') {
-        // student researchers cannot edit anything
-        echo 'You may not edit or create experiments'; exit; 
-    } elseif ($_SESSION['status'] == 'res') { 
-        // researchers can edit only their own experiments
-        if (validID($clean['id'])) {
-            $myaccess = new myQuery('SELECT user_id FROM access WHERE type="exp" AND id='.$clean['id']." AND user_id=".$_SESSION['user_id']);
-            $checkuser = $myaccess->get_assoc(0);
-            if ($checkuser['user_id'] != $_SESSION['user_id']) { echo 'You do not have permission to edit this experiment'; exit; }
-        }
-    }
     
     // update exp table
     $exp_query = sprintf('REPLACE INTO exp 
@@ -175,6 +164,7 @@ $exptype_options = array(
 
 $eInfo = array();
 if (validID($exp_id)) {
+    if (!permit('exp', $exp_id)) header('Location: /res/exp/');
     //$myexp = new experiment($exp_id);
     $query = new myQuery('SELECT * FROM exp WHERE id=' . $exp_id);
     $eInfo = $query->get_assoc(0);

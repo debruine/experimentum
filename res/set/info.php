@@ -4,6 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
 auth($RES_STATUS);
 
+if (validID($_GET['id']) && !permit('sets', $_GET['id'])) header('Location: /res/');
 
 $title = array(
     '/res/' => 'Researchers',

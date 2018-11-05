@@ -20,6 +20,7 @@ $styles = array(
 	'.bigbuttons li a.processlist' => 'background-image: url("/images/linearicons/list?c=FFF");',
 	'.bigbuttons li a.status' => 'background-image: url("/images/linearicons/list?c=FFF");',
 	'.bigbuttons li a.usage' => 'background-image: url("/images/linearicons/users?c=FFF");',
+	'.bigbuttons li a.supervise' => 'background-image: url("/images/linearicons/0295-group-work?c=FFFFFF");',
 );
 
 $page = new page($title);
@@ -32,6 +33,7 @@ $links = array(
     'participant' => 'Participant Data',
     	'merge' => 'Merge',
     	'status' => 'Change Status',
+    	'supervise' => 'Supervision',
     'access' => 'Access',
     'stimuli' => 'Update Stimuli',
     'usage' => 'Usage',
@@ -46,6 +48,7 @@ $classes = array(
 	'status' => 'status',
 	'merge' => 'merge',
 	'stimuli' => 'stimuli',
+	'supervise' => 'supervise',
 	'access' => 'access',
 	'debug' => 'debug',
 	'upload' => 'upload',

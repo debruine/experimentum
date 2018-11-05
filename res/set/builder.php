@@ -4,6 +4,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
 auth($RES_STATUS);
 
+if (validID($_GET['id']) && !permit('sets', $_GET['id'])) header('Location: /res/');
+
 $title = array(
     '/res/' => 'Researchers',
     '/res/set/' => 'Set',
@@ -79,32 +81,8 @@ if (array_key_exists('id', $_GET)) {
  
 if (array_key_exists('save', $_GET)) {
     // save a set
-    
     $clean = my_clean($_POST);
-    
-    // make sure user has permission to edit this set
-    if ($_SESSION['status'] == 'student') {
-        // student researchers cannot edit anything
-        echo 'You may not edit or create sets'; exit; 
-    } elseif ($_SESSION['status'] == 'res') { 
-        // researchers can edit only their own experiments
-        if (validID($clean['set_id'])) {
-            $myaccess = new myQuery('SELECT user_id, status 
-                                      FROM access 
-                                      LEFT JOIN sets USING (id) 
-                                      WHERE access.type="sets" 
-                                        AND access.id='.$clean['set_id']." 
-                                        AND user_id=".$_SESSION['user_id']);
-            $checkuser = $myaccess->get_assoc(0);
-            $status = $checkuser['status'];
-            if ($checkuser['user_id'] != $_SESSION['user_id']) { echo 'You do not have permission to edit this set'; exit; }
-        }
-    } elseif ($_SESSION['status'] == 'admin') { 
-        if (validID($clean['set_id'])) {
-            $myaccess = new myQuery('SELECT status FROM sets WHERE id='.$clean['set_id']);
-            $status = $myaccess->get_one();
-        }
-    }
+
     
     $set_query = sprintf('REPLACE INTO sets (
             id, name, res_name, status, 
