@@ -187,7 +187,7 @@ class experiment {
         $text .= $this->get_input_interface();
         $text .= $this->get_stimuli_interface();
         $text .= '</table>' . ENDLINE;
-        $text .= '<div class="trialcounter">Trial <span id="trial_n">0</span> of ' . $this->random_stim . '</div>' . ENDLINE;
+        //$text .= '<div class="trialcounter">Trial <span id="trial_n">0</span> of ' . $this->random_stim . '</div>' . ENDLINE;
         $text .= '</div>' . ENDLINE;
         
         return $text;
@@ -244,6 +244,7 @@ class experiment {
                         '        $("#experiment").show();' . ENDLINE .
                         '        $("#recording").hide();' . ENDLINE .
                         '        $("#header").hide();' . ENDLINE .
+                        '        maxstimsize();' . ENDLINE .
                         '        nextTrial(0);' . ENDLINE .
                         '    }' . ENDTAG .
                         
@@ -544,6 +545,7 @@ class experiment {
         $text .= '
             if ($("#question").length > 0 && typeof(question) !== "undefined") $("#question").html(question[trialOrder[trial]]);
             $("#trial_n").html(trial);
+            $("#footer").text("Trial "+ trial +" of " + trialOrder.length);
             
             var currentTime = new Date();
             beginTrial = currentTime.getTime();

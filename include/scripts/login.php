@@ -63,7 +63,9 @@ if (!empty($user_id) && !empty($passcode)) {
         $return['error'] = $login_status;
     }
     
-    if (in_array($user->get_status(), $RES_STATUS)) {
+    if (array_key_exists('return_to', $_SESSION)) {
+        $return['url'] = $_SESSION['return_to'];
+    } else if (in_array($user->get_status(), $RES_STATUS)) {
         $return['url'] = "/res/";
     }
 } elseif (empty($username) || empty($password)) {

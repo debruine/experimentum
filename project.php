@@ -139,7 +139,7 @@ if (!empty($_SESSION['status'])) {
     
     <ul class="bigbuttons" id="logres">
         <li><a class="registerbutton" href="/consent">Register</a></li>
-        <li><a class="loginbutton" href="javascript: startLogin();">Login</a></li>
+        <li><a class="loginbutton" href="/login">Login</a></li>
     </ul>
     
     

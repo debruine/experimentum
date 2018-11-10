@@ -40,6 +40,28 @@ echo $exp->get_experiment();
 
 echo $ineligible;
 
+?>
+
+<script>
+    function maxstimsize() {
+        var w = $(window).width();
+        var h = $(window).height();
+        var qdiv = $('#question').outerHeight();
+        var ii = $('tr.input_interface').outerHeight();
+        var ft = $('#footer').outerHeight();
+        
+        var maxheight = h-qdiv-ft-ii-30;
+        
+        $('video, tr.exp_images img').css('max-height', maxheight);
+    }
+    
+    window.onresize = maxstimsize;
+    
+    maxstimsize();
+</script>
+
+<?php
+
 $page->displayFooter();
 
 ?>

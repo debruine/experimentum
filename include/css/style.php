@@ -1312,6 +1312,7 @@ EXPERIMENT STYLES
 
 #experiment table {
     margin: 0 auto;
+    padding: 0;
     table-layout: fixed;
     width: 100%;
     max-width: 1200px;
