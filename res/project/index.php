@@ -74,7 +74,7 @@ if (!empty($ownerquery)) {
     foreach ($owners->get_assoc() as $o) {
         $ownerlist[$o['user_id']] = $o['name'];
     }
-    $owner = new select('owner', 'owner', $access_user);
+    $owner = new select('owner', 'owner', ifEmpty($_GET['owner'], $_SESSION['user_id']));
     $owner->set_options($ownerlist);
     $owner->set_null(false);
     $owner->set_eventHandlers(array('onchange' => 'setOwner(this.value)'));
