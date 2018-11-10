@@ -15,7 +15,7 @@ $title = array(
 );
 
 $styles = array(
-    "#setitems" => "margin-top: 1em;",
+    "#setitems" => "width: 100%;",
     "#setitems td+td+td+td+td" => "text-align: right;",
     "#setitems td" => "border-left: 1px dotted grey;",
     "#setitems tr" => "border-right: 1px dotted grey;",
@@ -24,134 +24,13 @@ $styles = array(
     ".potential-error" => "color: hsl(0, 100%, 40%);"
 );
 
-// !AJAX get item data
-if (array_key_exists('data', $_GET)) {
-    // get stats on participant completion of the experiment
-       if (substr($_GET['item'],0,4) == "exp_") {
-           $equery = new myQuery('SELECT subtype, random_stim FROM exp WHERE id=' . intval(substr($_GET['item'],4)));
-           $einfo = $equery->get_assoc(0);
-           if ($einfo['subtype'] == "large_n") {
-               $mydata = new myQuery(array(
-                                      "CREATE TEMPORARY TABLE tmp_ln
-                                      SELECT user_id, sex, COUNT(*) as n, 
-                                      AVG(rt) as val 
-                                      FROM {$_GET['item']} 
-                                      LEFT JOIN user USING (user_id) 
-                                      WHERE status>1 AND status<4 
-                                      GROUP BY user_id
-                                      HAVING n >={$einfo['random_stim']}",
-                                      "CREATE TEMPORARY TABLE tmp_ln2
-                                      SELECT * FROM tmp_ln",
-                                      "SELECT COUNT(*) as total_c,
-                                      COUNT(IF(sex='male',1,NULL)) as total_male,
-                                      COUNT(IF(sex='female',1,NULL)) as total_female
-                                      FROM tmp_ln")
-                                      );
-               $data = $mydata->get_one_array();
-
-               $mytime = new myQuery("SELECT t1.val as median_val FROM (
-                SELECT @rownum:=@rownum+1 as `row_number`, val
-                  FROM tmp_ln AS d, (SELECT @rownum:=0) r
-                  WHERE val>0 AND val<360001
-                  ORDER BY val
-                ) as t1, 
-                (
-                  SELECT count(*) as total_rows
-                  FROM tmp_ln2 AS d
-                  WHERE val>0 AND val<360001
-                ) as t2
-                WHERE t1.row_number=floor(1*total_rows/2)+1;", true);
-            $median_seconds = $mytime->get_one();
-            $median = round(($median_seconds * $einfo['random_stim'])/1000/6)/10;
-            
-            $mytime = new myQuery("SELECT t1.val as median_val FROM (
-                SELECT @rownum:=@rownum+1 as `row_number`, val
-                  FROM tmp_ln AS d, (SELECT @rownum:=0) r
-                  WHERE val>0 AND val<360001
-                  ORDER BY val
-                ) as t1, 
-                (
-                  SELECT count(*) as total_rows
-                  FROM tmp_ln2 AS d
-                  WHERE val>0 AND val<360001
-                ) as t2
-                WHERE t1.row_number=floor(9*total_rows/10)+1;", true);
-            $upper_seconds = $mytime->get_one();
-            $upper = round(($upper_seconds* $einfo['random_stim'])/1000/6)/10;
- 
-               echo $data['total_c'] . ';' . 
-                    $data['total_male'] . ';' . 
-                    $data['total_female'] . ';' .
-                    $median . ';' .
-                    $upper;
-                exit;
-           }
-       }
-    
-    
-    
-        $mydata = new myQuery('SELECT COUNT(*) as total_c,
-                                COUNT(DISTINCT user_id) as total_dist,
-                                COUNT(IF(sex="male",1,NULL)) as total_male,
-                                COUNT(IF(sex="female",1,NULL)) as total_female,
-                                COUNT(DISTINCT IF(sex="male",user_id,NULL)) as dist_male,
-                                COUNT(DISTINCT IF(sex="female",user_id,NULL)) as dist_female
-                                FROM ' . $_GET['item'] . ' LEFT JOIN user USING (user_id)
-                                WHERE status>1 AND status<40');
-        $data = $mydata->get_one_array();
-        
-        $mytime = new myQuery("SELECT t1.val as median_val FROM (
-            SELECT @rownum:=@rownum+1 as `row_number`, (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime)) as val
-              FROM {$_GET['item']} AS d,  (SELECT @rownum:=0) r
-              WHERE (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))>0 AND (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))<601
-              ORDER BY (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))
-            ) as t1, 
-            (
-              SELECT count(*) as total_rows
-              FROM {$_GET['item']} AS d
-              WHERE (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))>0 AND (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))<601
-            ) as t2
-            WHERE t1.row_number=floor(1*total_rows/2)+1;", true);
-        $median_seconds = $mytime->get_num_rows() ? $mytime->get_one() : 0;
-        $median = round($median_seconds/6)/10;
-        
-        $mytime = new myQuery("SELECT t1.val as median_val FROM (
-            SELECT @rownum:=@rownum+1 as `row_number`, 
-                (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime)) as val
-              FROM {$_GET['item']} AS d,  (SELECT @rownum:=0) r
-              WHERE (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))>0 AND 
-                    (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))<601
-              ORDER BY (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))
-            ) as t1, 
-            (
-              SELECT count(*) as total_rows
-              FROM {$_GET['item']} AS d
-              WHERE (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))>0 AND 
-                    (UNIX_TIMESTAMP(d.endtime)-UNIX_TIMESTAMP(d.starttime))<601
-            ) as t2
-            WHERE t1.row_number=floor(9*total_rows/10)+1;", true);
-        $upper_seconds = $mytime->get_num_rows() ? $mytime->get_one() : 0;
-        $upper = round($upper_seconds/6)/10;
-        
-        
-        echo    $data['total_c'] . ';' . 
-                $data['total_male'] . ';' . 
-                $data['total_female'] . ';' .
-                $data['total_dist'] . ';' . 
-                $data['dist_male'] . ';' . 
-                $data['dist_female'] . ';' .
-                $median . ';' .
-                $upper;
-        exit;
-}
-
 // !AJAX delete set
 if (array_key_exists('delete', $_GET)) {
-    $proj_id = intval($_GET['id']);
-    $delete = new myQuery("DELETE FROM project WHERE id=$proj_id;
-                        DELETE FROM access WHERE type='project' AND id=$proj_id;
-                        DELETE FROM dashboard WHERE type='project' AND id=$proj_id;
-                        DELETE FROM project_items WHERE project_id=$proj_id;",
+    $item_id = intval($_GET['id']);
+    $delete = new myQuery("DELETE FROM project WHERE id=$item_id;
+                        DELETE FROM access WHERE type='project' AND id=$item_id;
+                        DELETE FROM dashboard WHERE type='project' AND id=$item_id;
+                        DELETE FROM project_items WHERE project_id=$item_id;",
                         true);
     
     echo 'deleted';
@@ -202,12 +81,12 @@ if (array_key_exists('duplicate', $_GET) && validID($_GET['id'])) {
 /***************************************************/
 
 if (validID($_GET['id'])) {
-    $proj_id = intval($_GET['id']);
+    $item_id = intval($_GET['id']);
 } else {
     header('Location: /res/project/');
 }
 
-$myset = new myQuery('SELECT * FROM project WHERE id=' . $proj_id);
+$myset = new myQuery('SELECT * FROM project WHERE id=' . $item_id);
 
 if ($myset->get_num_rows() == 0) { header('Location: /res/project/'); }
 
@@ -241,7 +120,7 @@ if ($_SESSION['status'] == 'admin') {
 $myowners = new myQuery('SELECT user_id, CONCAT(lastname, " ", initials) as name 
                         FROM access 
                         LEFT JOIN res USING (user_id) 
-                        WHERE type="project" AND id=' . $proj_id . '
+                        WHERE type="project" AND id=' . $item_id . '
                         ORDER BY lastname, firstname');
 $owners = $myowners->get_assoc(false, 'user_id', 'name');
 $access = in_array($_SESSION['user_id'], array_keys($owners));
@@ -380,19 +259,21 @@ $page->displayBody();
 
 ?>
 
+<input type="hidden" id="item_id" value="<?= $itemdata['id'] ?>" />
+<input type="hidden" id="item_type" value="project" />
+
 <h2>Project <?= $itemdata['id'] ?>: <?= $itemdata['res_name'] ?></h2>
 
 <div class='toolbar'>
-    <div id="function_buttonset">
-        <button id="view-project">Go</button><?php if ($_SESSION['status'] != 'student' || $access) { 
-            echo '<button id="edit-project">Edit</button>';
-            echo '<button id="delete-project">Delete</button>';
-            echo '<button id="duplicate-project">Duplicate</button>';
-            echo '<button id="download-exp">Exp Data</button>';
-            echo '<button id="download-quest">Quest Data</button>';
-            echo '<button id="get-json">Structure</button>';
-        } ?>
-    </div>
+    <div id="function_buttonset"><?php
+        echo '<button id="view-project">Go</button>';
+        echo '<button id="edit-item">Edit</button>';
+        echo '<button id="delete-project">Delete</button>';
+        echo '<button id="duplicate-project">Duplicate</button>';
+        echo '<button id="download-exp">Exp Data</button>';
+        echo '<button id="download-quest">Quest Data</button>';
+        echo '<button id="get-json">Structure</button>';
+    ?></div>
 </div>
 
 <table class='info'> 
@@ -409,13 +290,19 @@ $page->displayBody();
             <?php } ?>
         </td></tr>
     <tr><td>Labnotes:</td><td><?= ifEmpty($itemdata['labnotes'], '<span class="error">Please add labnotes</span>') ?></td></tr>
-    <tr><td>Type:</td><td><?= $types[$itemdata['type']] ?></td></tr>
+    <tr><td>URL:</td><td><span id='url'><?= $itemdata['url'] ?></span></td></tr>
     <tr><td>Restrictions:</td><td><?= $itemdata['sex'] ?> 
         ages <?= is_null($itemdata['lower_age']) ? 'any' : $itemdata['lower_age'] ?> 
         to <?= is_null($itemdata['upper_age']) ? 'any' : $itemdata['upper_age'] ?> years</td></tr>
     <tr><td>Blurb:</td><td><?= $itemdata['blurb'] ?></td></tr>
     <tr><td>Intro:</td><td><?= $itemdata['intro'] ?></td></tr>
 </table>
+
+<p class="fullwidth">The table below shows the number of total completions 
+    (and unique participants) for the items from this project. If the items are 
+    used in other projects, data collected via the other projects will not count 
+    towards the participant numbers below (but will count towards the timing estimates).</p>
+    
 
 <table id="setitems">
     <thead>
@@ -433,7 +320,7 @@ $page->displayBody();
     </thead>
     <tbody>
         <?php 
-            echo generate_project($proj_id);
+            echo generate_project($item_id);
         ?>
     </tbody>
     <tfoot>
@@ -463,15 +350,12 @@ $page->displayBody();
 <!-- !Javascripts for this page -->
 <!--**************************************************-->
 
+<script src="/res/scripts/res.js"></script>
+
 <script>
     $(function() {
-        $('#function_buttonset').buttonset();
-        
         $( "#view-project" ).click(function() {
-            window.location = '/project?<?= $itemdata['url'] ?>';
-        });
-        $( "#edit-project" ).click(function() {
-            window.location = '/res/project/builder?id=<?= $itemdata['id'] ?>';
+            window.location = '/project?' + $('#url').text();
         });
         $( "#delete-project" ).click( function() {
             $( "<div/>").html("Do you really want to delete this project?").dialog({
@@ -484,7 +368,7 @@ $page->displayBody();
                     },
                     "Delete": function() {
                         $( this ).dialog( "close" );
-                        $.get("?delete&id=<?= $itemdata['id'] ?>", function(data) {
+                        $.get('?delete&id=' + $('#item_id').val(), function(data) {
                             if (data == 'deleted') {
                                 window.location = '/res/project/';
                             } else {
@@ -507,7 +391,7 @@ $page->displayBody();
                     },
                     "Duplicate": function() {
                         $( this ).dialog( "close" );
-                        $.get("?duplicate&id=<?= $itemdata['id'] ?>", function(data) {
+                        $.get('?duplicate&id=' + $('#item_id').val(), function(data) {
                             var resp = data.split(':');
                             if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
                                 window.location = '/res/project/info?id=' + resp[1];
@@ -520,51 +404,6 @@ $page->displayBody();
             });
         });
         
-        $( "#get-json" ).click(function() { 
-            postIt('/res/scripts/get_json', {
-                table: 'project',
-                id: <?= $itemdata['id'] ?>
-            });
-        });
-        
-        $( "#download-quest" ).click(function() { 
-            postIt('/res/scripts/download', {
-                download: 'quest',
-                type: 'project',
-                id: <?= $itemdata['id'] ?>
-            });
-        });
-        
-        $( "#download-exp" ).click(function() {
-            postIt('/res/scripts/download', {
-                download: 'exp',
-                type: 'project',
-                id: <?= $itemdata['id'] ?>
-            });
-        });
-        
-        $( "#status" ).css('fontWeight', 'normal').change( function() {
-            var $sel = $(this);
-            $sel.css('color', 'red');
-
-            $.ajax({
-                url: '/res/scripts/status',
-                type: 'POST',
-                data: {
-                    type: 'project',
-                    status: $sel.val(),
-                    id: <?= $itemdata['id'] ?>
-                },
-                success: function(data) {
-                    if (data == 'Status of project_<?= $itemdata['id'] ?> changed to '+ $sel.val() ) {
-                        $sel.css('color', 'inherit');
-                    } else {
-                        growl(data, 30);
-                    }
-                }
-            });
-        });
-        
         $('span.set_nest').click( function() {
             var toggle_class = $(this).closest('tr').attr('id');
             $('tr.' + toggle_class).toggle();
@@ -573,70 +412,7 @@ $page->displayBody();
         });
         
         var items = ["<?= implode('","', $items_for_data) ?>"];
-        var totals = {
-            people: 0,
-            men: 0,
-            women: 0,
-            peopled: 0,
-            mend: 0,
-            womend: 0,
-            median: 0,
-            upper: 0
-        };
-        $.each(items, function(idx, item) {
-            $.ajax({
-                url: '?data&item=' + item,
-                type: 'GET',
-                success: function(data) {
-                    var parts = data.split(';');
-                    if (parts.length == 8) {
-                        totals.people += parseInt(parts[0]);
-                        totals.men += parseInt(parts[1]);
-                        totals.women += parseInt(parts[2]);
-                        totals.peopled += parseInt(parts[3]);
-                        totals.mend += parseInt(parts[4]);
-                        totals.womend += parseInt(parts[5]);
-                        
-                        totals.median += parseInt(parts[6]*10);
-                        totals.upper += parseInt(parts[7]*10);
-                        
-                        $('#total_people').html(totals.people + " (" + totals.peopled + ")");
-                        $('#total_men').html(totals.men + " (" + totals.mend + ")");
-                        $('#total_women').html(totals.women + " (" + totals.womend + ")");
-                        
-                        if (<?= (substr($itemdata['type'],0,3)=='one') ? 'true' : 'false' ?>) {
-                            $('#total_median').html(parseInt(totals.median/items.length)/10 + ' min');
-                            $('#total_upper').html(parseInt(totals.upper/items.length)/10 + ' min');
-                        } else {
-                            $('#total_median').html(totals.median/10 + ' min');
-                            $('#total_upper').html(totals.upper/10 + ' min');
-                        }
-                        
-                        var cells = $('#' + item + ' td');
-                        
-                        cells[4].innerHTML = parts[0] + " (" + parts[3] + ")";
-                        cells[5].innerHTML = parts[1] + " (" + parts[4] + ")";
-                        cells[6].innerHTML = parts[2] + " (" + parts[5] + ")";
-                        cells[7].innerHTML = parts[6];
-                        cells[8].innerHTML = parts[7];
-                    } else {
-                        //alert(data);
-                    }
-                }
-            });
-        });
-        
-        $('html').on("click", ".owner-delete", function() {
-            if ($(this).text() == 'delete') {
-                $(this).text('undelete');
-                $(this).prev().addClass('delete-owner');
-            } else {
-                $(this).text('delete');
-                $(this).prev().removeClass('delete-owner');
-            }
-        });
-        
-        $('button.tinybutton').button();
+        item_stats(items, $('#item_id').val());
         
         $('#owner-add-input').autocomplete({
             source: [<?= implode(",", $ownerlist) ?>],
@@ -649,61 +425,6 @@ $page->displayBody();
                 return false;
             }
         }).data('id', 0);
-        
-        $( "#owner-add" ).click( function() {
-            var owner_id = $('#owner-add-input').data('id');
-            
-            if (owner_id == '' || owner_id == 0) { return false; }
-            
-            if ($('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
-                var new_owner = "<li><span class='new-owner'>" + $('#owner-add-input').val() + 
-                                "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
-                $('#owner-edit').append(new_owner);
-            } else {
-                growl("You can't add a duplicate owner.");
-            }
-            $('#owner-add-input').val('').data('id','');
-        });
-        
-        $( "#owner-change" ).click( function() {
-            var to_add = [];
-            var to_delete = [];
-            $('#owner-edit .owner-delete').each( function() {
-                var $this = $(this);
-                
-                if ($this.text() == "delete") {
-                    to_add.push($this.attr('owner-id'));
-                } else {
-                    to_delete.push($this.attr('owner-id'));
-                }
-            });
-            
-            if (to_add.length == 0) {
-                growl("You have to keep at least one owner.");
-                return false;
-            }
-            
-            $.ajax({
-                url: '/res/scripts/owners',
-                type: 'POST',
-                data: {
-                    type: 'project',
-                    id: <?= $itemdata['id'] ?>,
-                    add: to_add,
-                    delete: to_delete
-                },
-                success: function(data) {
-                    if (data) {
-                        growl("Something went wrong");
-                    } else {
-                        $('#owner-edit .delete-owner').closest('li').remove();
-                        $('#owner-edit span').removeClass('new-owner');
-                    }
-                }
-            });
-        });
-        
-        
     });
 </script>
 

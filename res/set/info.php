@@ -14,6 +14,7 @@ $title = array(
 );
 
 $styles = array(
+    "#setitems" => "width: 100%;",
     "#setitems td+td+td+td+td" => "text-align: right;",
     "#setitems td" => "border-left: 1px dotted grey;",
     "#setitems tr" => "border-right: 1px dotted grey;",
@@ -146,12 +147,12 @@ if (array_key_exists('data', $_GET)) {
 
 // !AJAX delete set
 if (array_key_exists('delete', $_GET)) {
-    $set_id = intval($_GET['id']);
-    $delete = new myQuery("DELETE FROM sets WHERE id=$set_id;
-                        DELETE FROM set_items WHERE item_type='set' AND item_id=$set_id;
-                        DELETE FROM access WHERE type='sets' AND id=$set_id;
-                        DELETE FROM dashboard WHERE type='set' AND id=$set_id;
-                        DELETE FROM set_items WHERE set_id=$set_id;",
+    $item_id = intval($_GET['id']);
+    $delete = new myQuery("DELETE FROM sets WHERE id=$item_id;
+                        DELETE FROM set_items WHERE item_type='set' AND item_id=$item_id;
+                        DELETE FROM access WHERE type='sets' AND id=$item_id;
+                        DELETE FROM dashboard WHERE type='set' AND id=$item_id;
+                        DELETE FROM set_items WHERE set_id=$item_id;",
                         true);
     
     echo 'deleted';
@@ -201,13 +202,9 @@ if (array_key_exists('duplicate', $_GET) && validID($_GET['id'])) {
 /* !Get Set Data */
 /***************************************************/
 
-if (validID($_GET['id'])) {
-    $set_id = intval($_GET['id']);
-} else {
-    header('Location: /res/set/');
-}
+$item_id = intval($_GET['id']);
 
-$myset = new myQuery('SELECT * FROM sets WHERE id=' . $set_id);
+$myset = new myQuery('SELECT * FROM sets WHERE id=' . $item_id);
 
 if ($myset->get_num_rows() == 0) { header('Location: /res/set/'); }
 
@@ -242,7 +239,7 @@ if ($_SESSION['status'] == 'admin') {
 $myowners = new myQuery('SELECT user_id, CONCAT(lastname, ", ", firstname) as name 
                             FROM access 
                             LEFT JOIN res USING (user_id) 
-                            WHERE type="sets" AND id=' . $set_id);
+                            WHERE type="sets" AND id=' . $item_id);
 $owners = $myowners->get_assoc(false, 'user_id', 'name');
 $access = in_array($_SESSION['user_id'], array_keys($owners));
 
@@ -336,16 +333,21 @@ $page->displayBody();
 
 ?>
 
+<input type="hidden" id="item_id" value="<?= $itemdata['id'] ?>" />
+<input type="hidden" id="item_type" value="set" />
+
 <h2>Set <?= $itemdata['id'] ?>: <?= $itemdata['res_name'] ?></h2>
 
 <div class='toolbar'>
     <div id="function_buttonset">
-        <button id="view-set">Go</button><?php if ($_SESSION['status'] != 'student' || $access) { 
+        <?php
+            echo '<button id="view-set">Go</button>';
             echo '<button id="edit-set">Edit</button>';
             echo '<button id="delete-set">Delete</button>';
             echo '<button id="duplicate-set">Duplicate</button>';
             echo '<button id="get-json">Structure</button>';
-        } ?><button id="test-set">Test</button>
+            echo '<button id="test-set">Test</button>';
+        ?>
     </div>
 </div>
 
@@ -353,7 +355,7 @@ $page->displayBody();
     <tr><td>Name:</td><td><?= $itemdata['name'] ?></td></tr>
     <tr><td>Status:</td> <td><?= $status ?></td></tr>
     <tr><td>Created on:</td><td><?= $itemdata['create_date'] ?></td></tr>
-    <tr><td>Type:</td><td><?= $types[$itemdata['type']] ?></td></tr>
+    <tr><td>Type:</td><td id='itemtype'><?= $types[$itemdata['type']] ?></td></tr>
     <tr><td>Owners:<br><?php if ($_SESSION['status'] != 'student') { echo '<button class="tinybutton"  id="owner-change">Change</button>'; } ?></td> 
         <td>
             <ul id='owner-edit'>
@@ -369,6 +371,9 @@ $page->displayBody();
     <tr><td>Feedback:</td><td><?= $itemdata['feedback_general'] ?><br /><?= $itemdata['feedback_specific'] ?></td></tr>
     <tr><td>Labnotes:</td><td><?= ifEmpty($itemdata['labnotes'], '<span class="error">Please add labnotes</span>') ?></td></tr>
 </table>
+
+<p class="fullwidth">The table below shows the number of total 
+    completions (and unique participants) for the items from this set.</p>
 
 <table id="setitems">
     <thead>
@@ -386,7 +391,7 @@ $page->displayBody();
     </thead>
     <tbody>
         <?php 
-            echo generate_set($set_id);
+            echo generate_set($item_id);
         ?>
     </tbody>
     <tfoot>
@@ -416,242 +421,93 @@ $page->displayBody();
 <!-- !Javascripts for this page -->
 <!--**************************************************-->
 
-<script>
-    $(function() {
-        $('#function_buttonset').buttonset();
-        
-        $( "#view-set" ).click(function() {
-            window.location = '/include/scripts/set?id=<?= $itemdata['id'] ?>';
-        });
-        $( "#edit-set" ).click(function() {
-            window.location = '/res/set/builder?id=<?= $itemdata['id'] ?>';
-        });
-        $( "#delete-set" ).click( function() {
-            $( "<div/>").html("Do you really want to delete this set?").dialog({
-                title: "Delete Set",
-                position: ['center', 100],
-                modal: true,
-                buttons: {
-                    Cancel: function() {
-                        $( this ).dialog( "close" );
-                    },
-                    "Delete": function() {
-                        $( this ).dialog( "close" );
-                        $.get("?delete&id=<?= $itemdata['id'] ?>", function(data) {
-                            if (data == 'deleted') {
-                                window.location = '/res/set/';
-                            } else {
-                                $('<div title="Problem with Deletion" />').html(data).dialog();
-                            }
-                        });
-                    },
-                }
-            });
-        });
-        
-        $( "#duplicate-set" ).click( function() {
-            $( "<div/>").html("Do you really want to duplicate this set?").dialog({
-                title: "Duplicate Set",
-                position: ['center', 100],
-                modal: true,
-                buttons: {
-                    Cancel: function() {
-                        $( this ).dialog( "close" );
-                    },
-                    "Duplicate": function() {
-                        $( this ).dialog( "close" );
-                        $.get("?duplicate&id=<?= $itemdata['id'] ?>", function(data) {
-                            var resp = data.split(':');
-                            if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
-                                window.location = '/res/set/info?id=' + resp[1];
-                            } else {
-                                $('<div title="Problem with Duplication" />').html(data).dialog();
-                            }
-                        });
-                    },
-                }
-            });
-        });
-        
-        $( "#get-json" ).click(function() { 
-            postIt('/res/scripts/get_json', {
-                table: 'sets',
-                id: <?= $itemdata['id'] ?>
-            });
-        });
-        
-        $( "#status" ).css('fontWeight', 'normal').change( function() {
-            var $sel = $(this);
-            $sel.css('color', 'red');
+<script src="/res/scripts/res.js"></script>
 
-            $.ajax({
-                url: '/res/scripts/status',
-                type: 'POST',
-                data: {
-                    type: 'sets',
-                    status: $sel.val(),
-                    id: <?= $itemdata['id'] ?>
-                },
-                success: function(data) {
-                    if (data == 'Status of sets_<?= $itemdata['id'] ?> changed to '+ $sel.val() ) {
-                        $sel.css('color', 'inherit');
-                    } else {
-                        growl(data, 30);
-                    }
-                }
-            });
-        });
-        
-        $('#test-set').button().click( function() {
-            $.ajax({
-                url: '/include/scripts/set?test&id=<?= $itemdata['id'] ?>',
-                type: 'GET',
-                success: function(data) {
-                    if (data) $('<div title="Sample Order" />').html(data).dialog();
-                }
-            });
-        });
-        
-        $('span.set_nest').click( function() {
-            var toggle_class = $(this).closest('tr').attr('id');
-            $('tr.' + toggle_class).toggle();
-            stripe('#setitems tbody');
-            $(this).toggleClass("hide_set");
-        });
-        
-        var items = ["<?= implode('","', $items_for_data) ?>"];
-        var totals = {
-            people: 0,
-            men: 0,
-            women: 0,
-            peopled: 0,
-            mend: 0,
-            womend: 0,
-            median: 0,
-            upper: 0
-        };
-        $.each(items, function(idx, item) {
-            $.ajax({
-                url: '?data&item=' + item,
-                type: 'GET',
-                success: function(data) {
-                    var parts = data.split(';');
-                    if (parts.length == 8) {
-                        totals.people += parseInt(parts[0]);
-                        totals.men += parseInt(parts[1]);
-                        totals.women += parseInt(parts[2]);
-                        totals.peopled += parseInt(parts[3]);
-                        totals.mend += parseInt(parts[4]);
-                        totals.womend += parseInt(parts[5]);
-                        
-                        totals.median += parseInt(parts[6]*10);
-                        totals.upper += parseInt(parts[7]*10);
-                        
-                        $('#total_people').html(totals.people + " (" + totals.peopled + ")");
-                        $('#total_men').html(totals.men + " (" + totals.mend + ")");
-                        $('#total_women').html(totals.women + " (" + totals.womend + ")");
-                        
-                        if (<?= (substr($itemdata['type'],0,3)=='one') ? 'true' : 'false' ?>) {
-                            $('#total_median').html(parseInt(totals.median/items.length)/10 + ' min');
-                            $('#total_upper').html(parseInt(totals.upper/items.length)/10 + ' min');
-                        } else {
-                            $('#total_median').html(totals.median/10 + ' min');
-                            $('#total_upper').html(totals.upper/10 + ' min');
-                        }
-                        
-                        var cells = $('#' + item + ' td');
-                        
-                        cells[4].innerHTML = parts[0] + " (" + parts[3] + ")";
-                        cells[5].innerHTML = parts[1] + " (" + parts[4] + ")";
-                        cells[6].innerHTML = parts[2] + " (" + parts[5] + ")";
-                        cells[7].innerHTML = parts[6];
-                        cells[8].innerHTML = parts[7];
-                    } else {
-                        //alert(data);
-                    }
-                }
-            });
-        });
-        
-        $('html').on("click", ".owner-delete", function() {
-            if ($(this).text() == 'delete') {
-                $(this).text('undelete');
-                $(this).prev().addClass('delete-owner');
-            } else {
-                $(this).text('delete');
-                $(this).prev().removeClass('delete-owner');
-            }
-        });
-        
-        $('button.tinybutton').button();
-        
-        $('#owner-add-input').autocomplete({
-            source: [<?= implode(",", $ownerlist) ?>],
-            focus: function( event, ui ) {
-                $(this).val(ui.item.name);
-                return false;
-            },
-            select: function( event, ui ) {
-                $(this).val(ui.item.name).data('id', ui.item.value);
-                return false;
-            }
-        }).data('id', 0);
-        
-        $( "#owner-add" ).click( function() {
-            var owner_id = $('#owner-add-input').data('id');
-            
-            if (owner_id == '' || owner_id == 0) { return false; }
-            
-            if ($('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
-                var new_owner = "<li><span class='new-owner'>" + $('#owner-add-input').val() + 
-                                "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
-                $('#owner-edit').append(new_owner);
-            } else {
-                growl("You can't add a duplicate owner.");
-            }
-            $('#owner-add-input').val('').data('id','');
-        });
-        
-        $( "#owner-change" ).click( function() {
-            var to_add = [];
-            var to_delete = [];
-            $('#owner-edit .owner-delete').each( function() {
-                var $this = $(this);
-                
-                if ($this.text() == "delete") {
-                    to_add.push($this.attr('owner-id'));
-                } else {
-                    to_delete.push($this.attr('owner-id'));
-                }
-            });
-            
-            if (to_add.length == 0) {
-                growl("You have to keep at least one owner.");
-                return false;
-            }
-            
-            $.ajax({
-                url: '/res/scripts/owners',
-                type: 'POST',
-                data: {
-                    type: 'sets',
-                    id: <?= $itemdata['id'] ?>,
-                    add: to_add,
-                    delete: to_delete
-                },
-                success: function(data) {
-                    if (data) {
-                        growl("Something went wrong");
-                    } else {
-                        $('#owner-edit .delete-owner').closest('li').remove();
-                        $('#owner-edit span').removeClass('new-owner');
-                    }
-                }
-            });
-        });
-        
-        
+<script>
+    $( "#view-set" ).click(function() {
+        window.location = '/include/scripts/set?id=' + $('#item_id').val();
     });
+    $( "#edit-set" ).click(function() {
+        window.location = '/res/set/builder?id=' + $('#item_id').val();
+    });
+    $( "#delete-set" ).click( function() {
+        $( "<div/>").html("Do you really want to delete this set?").dialog({
+            title: "Delete Set",
+            position: ['center', 100],
+            modal: true,
+            buttons: {
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                },
+                "Delete": function() {
+                    $( this ).dialog( "close" );
+                    $.get("?delete&id=" + $('#item_id').val(), function(data) {
+                        if (data == 'deleted') {
+                            window.location = '/res/set/';
+                        } else {
+                            $('<div title="Problem with Deletion" />').html(data).dialog();
+                        }
+                    });
+                },
+            }
+        });
+    });
+    
+    $( "#duplicate-set" ).click( function() {
+        $( "<div/>").html("Do you really want to duplicate this set?").dialog({
+            title: "Duplicate Set",
+            position: ['center', 100],
+            modal: true,
+            buttons: {
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                },
+                "Duplicate": function() {
+                    $( this ).dialog( "close" );
+                    $.get('?duplicate&id=' + $('#item_id').val(), function(data) {
+                        var resp = data.split(':');
+                        if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
+                            window.location = '/res/set/info?id=' + resp[1];
+                        } else {
+                            $('<div title="Problem with Duplication" />').html(data).dialog();
+                        }
+                    });
+                },
+            }
+        });
+    });
+    
+    $('#test-set').button().click( function() {
+        $.ajax({
+            url: '/include/scripts/set?test&id=' + $('#item_id').val(),
+            type: 'GET',
+            success: function(data) {
+                if (data) $('<div title="Sample Order" />').html(data).dialog();
+            }
+        });
+    });
+    
+    $('span.set_nest').click( function() {
+        var toggle_class = $(this).closest('tr').attr('id');
+        $('tr.' + toggle_class).toggle();
+        stripe('#setitems tbody');
+        $(this).toggleClass("hide_set");
+    });
+    
+    var items = ["<?= implode('","', $items_for_data) ?>"];
+    item_stats(items);
+    
+    $('#owner-add-input').autocomplete({
+        source: [<?= implode(",", $ownerlist) ?>],
+        focus: function( event, ui ) {
+            $(this).val(ui.item.name);
+            return false;
+        },
+        select: function( event, ui ) {
+            $(this).val(ui.item.name).data('id', ui.item.value);
+            return false;
+        }
+    }).data('id', 0);
 </script>
 
 <?php

@@ -123,7 +123,7 @@ if (array_key_exists('duplicate', $_GET) && validID($_GET['id'])) {
 
  
 if (validID($_GET['id'])) {
-    $quest_id = intval($_GET['id']);
+    $item_id = intval($_GET['id']);
 } else {
     header('Location: /res/quest/');
 }
@@ -131,7 +131,7 @@ if (validID($_GET['id'])) {
 
 $myquest = new myQuery('SELECT quest.*
                         FROM quest 
-                        WHERE quest.id=' . $quest_id . ' GROUP BY quest.id');
+                        WHERE quest.id=' . $item_id . ' GROUP BY quest.id');
 
 if ($myquest->get_num_rows() == 0) { header('Location: /res/quest/'); }
 
@@ -153,7 +153,7 @@ $itemdata['sex'] = array(
 $myowners = new myQuery('SELECT user_id, CONCAT(lastname, ", ", firstname) as name 
                            FROM access 
                            LEFT JOIN res USING (user_id) 
-                           WHERE type="quest" AND id=' . $quest_id);
+                           WHERE type="quest" AND id=' . $item_id);
 $owners = $myowners->get_assoc(false, 'user_id', 'name');
 $access = in_array($_SESSION['user_id'], array_keys($owners));
 
@@ -192,7 +192,7 @@ $query = new myQuery("SELECT q.*,
                         ) as option_list
                         FROM question as q
                         LEFT JOIN options ON q_id=q.id 
-                        WHERE q.quest_id={$quest_id}
+                        WHERE q.quest_id={$item_id}
                         GROUP BY q.id
                         ORDER BY n");
 $questlist = $query->get_assoc();
@@ -215,7 +215,7 @@ if (in_array($_SESSION['status'], array('researcher', 'admin'))) {
     $status = '(' . $itemdata['status'] . ')';
 }
 
-$mysets = new myQuery('SELECT set_id, CONCAT(set_id, ": ", name) as si from set_items LEFT JOIN sets ON sets.id=set_id where item_type="quest" and item_id=' . $quest_id);
+$mysets = new myQuery('SELECT set_id, CONCAT(set_id, ": ", name) as si from set_items LEFT JOIN sets ON sets.id=set_id where item_type="quest" and item_id=' . $item_id);
 $setslist = $mysets->get_assoc(false, 'set_id', 'si');  
 $insets = new select('insets', 'insets');
 $insets->set_options($setslist);
@@ -226,7 +226,7 @@ $insets->set_null(false);
 $timechart = 'CREATE TEMPORARY TABLE tmp_ln ' . 
              'SELECT endtime-starttime as total_time ' .
              'FROM quest_data ' .
-             'WHERE quest_id='.$quest_id. ' ' .
+             'WHERE quest_id='.$item_id. ' ' .
              'GROUP BY session_id, user_id; ' .
                 
              'CREATE TEMPORARY TABLE tmp_ln2 ' .
@@ -275,18 +275,20 @@ $page->displayBody();
 
 ?>
 
+<input type="hidden" id="item_id" value="<?= $itemdata['id'] ?>" />
+<input type="hidden" id="item_type" value="quest" />
+
 <h2>quest <?= $itemdata['id'] ?>: <?= $itemdata['res_name'] ?></h2>
 
 <div class='toolbar'>
-    <div id="function_buttonset">
-        <button id="view-quest">Go</button><?php if ($_SESSION['status'] == 'admin' || $access) { 
-            echo '<button id="edit-quest">Edit</button>';
-            echo '<button id="delete-quest">Delete</button>';
-            echo '<button id="duplicate-quest">Duplicate</button>';
-            echo '<button id="data-download">Data</button>';
-            echo '<button id="get-json">Structure</button>';
-        } ?>
-    </div>
+    <div id="function_buttonset"><?php
+        echo '<button id="view-item">Go</button>';
+        echo '<button id="edit-item">Edit</button>';
+        echo '<button id="delete-quest">Delete</button>';
+        echo '<button id="duplicate-quest">Duplicate</button>';
+        echo '<button id="data-download">Data</button>';
+        echo '<button id="get-json">Structure</button>';
+    ?></div>
 </div>
 
 <table class="info"> 
@@ -343,7 +345,8 @@ $page->displayBody();
 
 <script src="/include/js/highcharts/highcharts-<?= HIGHCHARTS ?>.js"></script>
 <script src="/include/js/highcharts/<?= (MOBILE) ? 'mobile_' : '' ?>theme.js"></script> 
-    
+<script src="/res/scripts/res.js"></script>
+
 <script>
     var chart;
 
@@ -364,27 +367,7 @@ $page->displayBody();
     } else {
         $('#time_container').hide();
     }
-    
-    $('#function_buttonset').buttonset();
 
-    $( "#view-quest" ).click(function() {
-        window.location = '/quest?id=<?= $itemdata['id'] ?>';
-    });
-    $( "#edit-quest" ).click(function() {
-        window.location = '/res/quest/builder?id=<?= $itemdata['id'] ?>';
-    });
-    $( "#data-download" ).click(function() { 
-        postIt('/res/scripts/download', {
-            type: 'quest',
-            id: <?= $itemdata['id'] ?>
-        });
-    });
-    $( "#get-json" ).click(function() { 
-        postIt('/res/scripts/get_json', {
-            table: 'quest',
-            id: <?= $itemdata['id'] ?>
-        });
-    });
     $( "#delete-quest" ).click( function() {
         $( "<div/>").html("Do you really want to delete this questionnaire?").dialog({
             title: "Delete questionnaire",
@@ -396,7 +379,7 @@ $page->displayBody();
                 },
                 "Delete": function() {
                     $( this ).dialog( "close" );
-                    $.get("/res/scripts/delete_quest?id=<?= $itemdata['id'] ?>", function(data) {
+                    $.get("/res/scripts/delete_quest?id=" + $('#item_id').val(), function(data) {
                         if (data == 'deleted') {
                             window.location = '/res/quest/';
                         } else {
@@ -432,50 +415,6 @@ $page->displayBody();
         });
     });
     
-    $( "#status" ).css('fontWeight', 'normal').change( function() {
-        var $sel = $(this);
-        $sel.css('color', 'red');
-
-        $.ajax({
-            url: '/res/scripts/status',
-            type: 'POST',
-            data: {
-                type: 'quest',
-                status: $sel.val(),
-                id: <?= $itemdata['id'] ?>
-            },
-            success: function(data) {
-                if (data == 'Status of quest_<?= $itemdata['id'] ?> changed to '+ $sel.val() ) {
-                    $sel.css('color', 'inherit');
-                } else {
-                    growl(data, 30);
-                }
-            }
-        });
-    });
-    
-    $('#gosets').click( function() {
-        var s = $('#insets').val();
-        window.location.href = "/res/set/info?id=" + s;
-    });
-    
-    $('#goqueries').click( function() {
-        var q = $('#inqueries').val();
-        window.location.href = "/res/data/?id=" + q;
-    });
-          
-    $('html').on("click", ".owner-delete", function() {
-        if ($(this).text() == 'delete') {
-            $(this).text('undelete');
-            $(this).prev().addClass('delete-owner');
-        } else {
-            $(this).text('delete');
-            $(this).prev().removeClass('delete-owner');
-        }
-    });
-    
-    $('button.tinybutton').button();
-    
     $('#owner-add-input').autocomplete({
         source: [<?= implode(",", $ownerlist) ?>],
         focus: function( event, ui ) {
@@ -488,57 +427,7 @@ $page->displayBody();
         }
     }).data('id', 0);
     
-    $( "#owner-add" ).click( function() {
-        var owner_id = $('#owner-add-input').data('id');
-        
-        if (owner_id == '' || owner_id == 0) { return false; }
-        
-        if ($('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
-            var new_owner = "<li><span class='new-owner'>" + $('#owner-add-input').val() + "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
-            $('#owner-edit').append(new_owner);
-        } else {
-            growl("You can't add a duplicate owner.");
-        }
-        $('#owner-add-input').val('').data('id','');
-    });
     
-    $( "#owner-change" ).click( function() {
-        var to_add = [];
-        var to_delete = [];
-        $('#owner-edit .owner-delete').each( function() {
-            var $this = $(this);
-            
-            if ($this.text() == "delete") {
-                to_add.push($this.attr('owner-id'));
-            } else {
-                to_delete.push($this.attr('owner-id'));
-            }
-        });
-        
-        if (to_add.length == 0) {
-            growl("You have to keep at least one owner.");
-            return false;
-        }
-        
-        $.ajax({
-            url: '/res/scripts/owners',
-            type: 'POST',
-            data: {
-                type: 'quest',
-                id: <?= $itemdata['id'] ?>,
-                add: to_add,
-                delete: to_delete
-            },
-            success: function(data) {
-                if (data) {
-                    growl("Something went wrong");
-                } else {
-                    $('#owner-edit .delete-owner').closest('li').remove();
-                    $('#owner-edit span').removeClass('new-owner');
-                }
-            }
-        });
-    });
 </script>
 
 <?php

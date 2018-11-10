@@ -18,7 +18,8 @@ $styles = array(
     '#trial_list, .adapt_list' => 'margin: 0 auto;',
     '.trial img' => 'width: 90px; display: inline; margin: 0; box-shadow: 1px 1px 2px rgba(0,0,0,.5);',
     '.trialname' => 'display: block; clear: right; margin: 5px 0 0 0;',
-    '#image_table .trial' => 'border-top: 1px solid grey;',
+    '#stim_table' => "clear: both;",
+    '#stim_table .trial' => 'border-top: 1px solid grey;',
     "select" => "max-width: 25em",
     '#function_buttonset, #image_list_toggle' => 'display: inline-block; float: left;'
 );
@@ -28,18 +29,14 @@ $styles = array(
  * Get Experiment Data
  ***************************************************/
  
-if (validID($_GET['id'])) {
-    $exp_id = intval($_GET['id']);
-} else {
-    header('Location: /res/exp/');
-}
+$item_id = intval($_GET['id']);
 
 $myexp = new myQuery(
     'SELECT exp.*, 
             GROUP_CONCAT(CONCAT(dv,": ",display) SEPARATOR "<br />") as buttons
        FROM exp 
   LEFT JOIN buttons ON exp.id=exp_id 
-      WHERE exp.id=' . $exp_id . ' 
+      WHERE exp.id=' . $item_id . ' 
    GROUP BY exp.id'
 );
                         
@@ -64,7 +61,7 @@ $myowners = new myQuery(
     'SELECT user_id, CONCAT(lastname, " ", firstname) as name 
        FROM access 
   LEFT JOIN res USING (user_id) 
-      WHERE type="exp" AND id=' . $exp_id
+      WHERE type="exp" AND id=' . $item_id
 );
 $owners = $myowners->get_assoc(false, 'user_id', 'name');
 $access = in_array($_SESSION['user_id'], array_keys($owners));
@@ -131,7 +128,7 @@ $mytrials = new myQuery(
   LEFT JOIN stimuli AS c ON (c.id=center_img)
   LEFT JOIN stimuli AS r ON (r.id=right_img)
   LEFT JOIN stimuli AS x ON (x.id=xafc.image)
-      WHERE exp_id=' . $exp_id . ' GROUP BY trial_n'
+      WHERE exp_id=' . $item_id . ' GROUP BY trial_n'
 );
 $trials = $mytrials->get_assoc(false, 'trial_n');
 
@@ -165,7 +162,7 @@ $table_query .= ' FROM trial
              LEFT JOIN stimuli AS c ON (c.id=center_img)
              LEFT JOIN stimuli AS r ON (r.id=right_img)
              LEFT JOIN stimuli AS x ON (x.id=xafc.image)
-                 WHERE exp_id=' . $exp_id . ' GROUP BY trial_n';
+                 WHERE exp_id=' . $item_id . ' GROUP BY trial_n';
 $mytable = new myQuery($table_query);
 $trial_table = $mytable->get_result_as_table();
 $trial_table = str_replace($common_path, '', $trial_table);
@@ -185,7 +182,7 @@ if (substr($itemdata['subtype'], 0, 5) == 'adapt') {
       LEFT JOIN stimuli AS li ON (li.id=left_img)
       LEFT JOIN stimuli AS ci ON (ci.id=center_img)
       LEFT JOIN stimuli AS ri ON (ri.id=right_img)
-          WHERE a.exp_id=' . $exp_id . ' ORDER BY a.version, trial_n'
+          WHERE a.exp_id=' . $item_id . ' ORDER BY a.version, trial_n'
     );
         
     $adapt_trials = $adapt_query->get_assoc();
@@ -199,7 +196,7 @@ $mydata = new myQuery(
             MAX(dt) as last_completion
        FROM exp_data 
   LEFT JOIN user USING (user_id)
-      WHERE status>1 AND status<4 AND exp_id='.$exp_id.'
+      WHERE status>1 AND status<4 AND exp_id='.$item_id.'
    GROUP BY user_id, session_id'
 );
 $data = $mydata->get_one_array();    
@@ -208,7 +205,7 @@ $mysets = new myQuery('
     SELECT set_id, CONCAT(set_id, ": ", name) as si 
       FROM set_items 
  LEFT JOIN sets ON sets.id=set_id 
-     WHERE item_type="exp" AND item_id=' . $exp_id
+     WHERE item_type="exp" AND item_id=' . $item_id
 );
 $setslist = $mysets->get_assoc(false, 'set_id', 'si');    
 $insets = new select('insets', 'insets');
@@ -220,7 +217,7 @@ $timechart = 'CREATE TEMPORARY TABLE tmp_ln ' .
              'SELECT SUM(rt) as total_time, ' .
              '  COUNT(*) as n ' .
              'FROM exp_data ' .
-             'WHERE exp_id='.$exp_id. ' ' .
+             'WHERE exp_id='.$item_id. ' ' .
              'GROUP BY session_id, user_id ' .
              'HAVING n=' . $itemdata['random_stim'] . '; ' .
                 
@@ -269,18 +266,20 @@ $page->displayBody();
 
 ?>
 
+<input type="hidden" id="item_id" value="<?= $itemdata['id'] ?>" />
+<input type="hidden" id="item_type" value="exp" />
+
 <h2>Exp <?= $itemdata['id'] ?>: <?= $itemdata['res_name'] ?></h2>
 
 <div class='toolbar'>
-    <div id="function_buttonset">
-        <button id="view-exp">Go</button><?php if ($_SESSION['status'] == 'admin' || $access) { 
-            echo '<button id="edit-exp">Edit</button>';
-            echo '<button id="delete-exp">Delete</button>';
-            echo '<button id="duplicate-exp">Duplicate</button>';
-            echo '<button id="data-download">Data</button>';
-            echo '<button id="get-json">Structure</button>';
-        } ?>
-    </div>
+    <div id="function_buttonset"><?php
+        echo '<button id="view-item">Go</button>';
+        echo '<button id="edit-item">Edit</button>';
+        echo '<button id="delete-exp">Delete</button>';
+        echo '<button id="duplicate-exp">Duplicate</button>';
+        echo '<button id="data-download">Data</button>';
+        echo '<button id="get-json">Structure</button>';
+    ?></div>
 </div>
 
 <table class="info"> 
@@ -303,16 +302,12 @@ $page->displayBody();
             echo $insets->get_element();
             echo '<button class="tinybutton" id="gosets">Go</button></td></tr>';
         }
-        
-        if (count($querylist) > 0) {
-            echo '<tr><td>In Queries:</td> <td>';
-            echo $inqueries->get_element();
-            echo '<button class="tinybutton" id="goqueries">Go</button></td></tr>';
-        }
     ?>
-    <tr><td>Completed by:</td> <td>    <?= number_format($data['total_c']) ?> people: 
-                                <?= number_format($data['total_male']) ?> men; 
-                                <?= number_format($data['total_female']) ?> women</td></tr>
+    <tr><td>Completed by:</td> <td>
+        <?= number_format($data['total_c']) ?> people: 
+        <?= number_format($data['total_male']) ?> men; 
+        <?= number_format($data['total_female']) ?> women
+    </td></tr>
     <tr><td>Last completion:</td> <td><?= $data['last_completion'] ?></td></tr>
     <tr><td>Time to complete:<div class="note">(excluding slowest 5%)</div></td> <td><div id="time_container"></div></td></tr>
     
@@ -350,8 +345,7 @@ $page->displayBody();
 
 <div class='toolbar'>
     <div id="image_list_toggle">
-        <input type="radio" id="image_toggle" name="radio" checked="checked" /><label for="image_toggle">Images</label><input 
-        type="radio" id="list_toggle" name="radio" /><label for="list_toggle">List</label>
+        <input type="radio" id="image_toggle" name="radio" checked="checked" /><label for="image_toggle">Stimuli</label><input type="radio" id="list_toggle" name="radio" /><label for="list_toggle">List</label>
     </div>
 </div>
 
@@ -390,7 +384,7 @@ if (substr($itemdata['subtype'], 0, 5) == 'adapt') {
         <?= $trial_table ?>
     </div>
 
-    <div id="image_table">
+    <div id="stim_table">
 <?php
 
 foreach ($trials as $t) {
@@ -403,33 +397,46 @@ foreach ($trials as $t) {
         if ($t['ltype'] == 'image') {
             echo '            <img src="' . $t['left_stim'] . '" title="' . $t['left_stim'] . '" />' . ENDLINE;
         } else if ($t['ltype'] == 'audio') {
-            $audioname = str_replace($common_path, '',$t['left_stim']);
-            echo "            Hi: $audioname<br><audio controls>
-                    <source src='{$t['left_stim']}.ogg' type='audio/ogg' autoplay='false' />
+            $shortname = str_replace($common_path, '',$t['left_stim']);
+            echo "            1: $shortname<br><audio controls>
                     <source src='{$t['left_stim']}.mp3' type='audio/mp3' autoplay='false' />
                 </audio><br>" . ENDLINE;
+        } else if ($t['ltype'] == 'video') {
+            $shortname = str_replace($common_path, '',$t['left_stim']);
+            echo "            1: $shortname<br><video controls>
+                    <source src='{$t['left_stim']}' type='video/mp4' autoplay='false' />
+                </video><br>" . ENDLINE;
         }
     }
     if (!empty($t['center_stim'])) {
         if ($t['ctype'] == 'image') {
             echo '            <img src="' . $t['center_stim'] . '" title="' . $t['center_stim'] . '" />' . ENDLINE;
         } else if ($t['ctype'] == 'audio') {
-            $audioname = str_replace($common_path, '',$t['center_stim']);
-            echo "            $audioname<br><audio controls>
-                    <source src='{$t['center_stim']}.ogg' type='audio/ogg' autoplay='false' />
+            $shortname = str_replace($common_path, '',$t['center_stim']);
+            echo "            $shortname<br><audio controls>
                     <source src='{$t['center_stim']}.mp3' type='audio/mp3' autoplay='false' />
                 </audio><br>" . ENDLINE;
+        } else if ($t['ctype'] == 'video') {
+            $shortname = str_replace($common_path, '',$t['center_stim']);
+            echo "            $shortname<br><video controls>
+                    <source src='{$t['center_stim']}' type='video/mp4' autoplay='false' />
+                </video><br>" . ENDLINE;
         }
     }
     if (!empty($t['right_stim'])) {
         if ($t['rtype'] == 'image') {
             echo '            <img src="' . $t['right_stim'] . '" title="' . $t['right_stim'] . '" />' . ENDLINE;
         } else if ($t['rtype'] == 'audio') {
-            $audioname = str_replace($common_path, '',$t['right_stim']);
-            echo "            Lo: $audioname<br><audio controls>
+            $shortname = str_replace($common_path, '',$t['right_stim']);
+            echo "            0: $shortname<br><audio controls>
                     <source src='{$t['right_stim']}.ogg' type='audio/ogg' autoplay='false' />
                     <source src='{$t['right_stim']}.mp3' type='audio/mp3' autoplay='false' />
                 </audio><br>" . ENDLINE;
+        } else if ($t['rtype'] == 'video') {
+            $shortname = str_replace($common_path, '',$t['right_stim']);
+            echo "            0: $shortname<br><video controls>
+                    <source src='{$t['right_stim']}' type='video/mp4' autoplay='false' />
+                </video><br>" . ENDLINE;
         }
     }
     if (!empty($t['xafc'])) {
@@ -452,8 +459,9 @@ foreach ($trials as $t) {
 <!--*************************************************-->
 
 <script src="/include/js/highcharts/highcharts-<?= HIGHCHARTS ?>.js"></script>
-<script src="/include/js/highcharts/<?= (MOBILE) ? 'mobile_' : '' ?>theme.js"></script>    
-    
+<script src="/include/js/highcharts/<?= (MOBILE) ? 'mobile_' : '' ?>theme.js"></script>
+<script src="/res/scripts/res.js"></script>
+
 <script>
     var chart;
     // get time graph
@@ -473,32 +481,12 @@ foreach ($trials as $t) {
     } else {
         $('#time_container').hide();
     }
-    
-    $('#function_buttonset').buttonset();
 
-    $( "#view-exp" ).click(function() {
-        window.location = '/exp?id=<?= $itemdata['id'] ?>';
-    });
-    $( "#edit-exp" ).click(function() {
-        window.location = '/res/exp/builder?id=<?= $itemdata['id'] ?>';
-    });
     $( "#edit-trials" ).click(function() {
-        window.location = '/res/exp/trials?id=<?= $itemdata['id'] ?>';
+        window.location = '/res/exp/trials?id=' + $('#item_id').val();
     });
     $( "#edit-adapt" ).click(function() {
-        window.location = '/res/exp/adapt?id=<?= $itemdata['id'] ?>';
-    });
-    $( "#data-download" ).click(function() { 
-        postIt('/res/scripts/download', {
-            type: 'exp',
-            id: <?= $itemdata['id'] ?>
-        });
-    });
-    $( "#get-json" ).click(function() { 
-        postIt('/res/scripts/get_json', {
-            table: 'exp',
-            id: <?= $itemdata['id'] ?>
-        });
+        window.location = '/res/exp/adapt?id=' + $('#item_id').val();
     });
     
     $( "#delete-exp" ).click( function() {
@@ -512,7 +500,7 @@ foreach ($trials as $t) {
                 },
                 "Delete": function() {
                     $( this ).dialog( "close" );
-                    $.get("/res/scripts/delete_exp?id=<?= $itemdata['id'] ?>", function(data) {
+                    $.get("/res/scripts/delete_exp?id=" + $('#item_id').val(), function(data) {
                         if (data == 'deleted') {
                             window.location = '/res/exp/';
                         } else {
@@ -535,19 +523,11 @@ foreach ($trials as $t) {
                 },
                 "Duplicate": function() {
                     $( this ).dialog( "close" );
-                    /*$.get("?duplicate&id=<?= $itemdata['id'] ?>", function(data) {
-                        var resp = data.split(':');
-                        if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
-                            window.location = '/res/exp/info?id=' + resp[1];
-                        } else {
-                            $('<div title="Problem with Duplication" />').html(data).dialog();
-                        }
-                    });*/
                     $.ajax({
                         url: "/res/scripts/exp_duplicate",
                         type: 'POST',
                         dataType: 'json',
-                        data: {id: <?= $itemdata['id'] ?>},
+                        data: {id: $('#item_id').val()},
                         success: function(data) {
                             if (!data.error) {
                                 window.location = '/res/exp/info?id=' + data.new_id;
@@ -563,59 +543,15 @@ foreach ($trials as $t) {
         
     $( "#image_list_toggle" ).buttonset();
     $( "#list_toggle" ).click(function() { 
-        $('#image_table').hide();
+        $('#stim_table').hide();
         $('#trial_table').show();
     });
     $( "#image_toggle" ).click(function() { 
-        $('#image_table').show();
+        $('#stim_table').show();
         $('#trial_table').hide();
     });
     
-    $( "#status" ).css('fontWeight', 'normal').change( function() {
-        var $sel = $(this);
-        $sel.css('color', 'red');
-
-        $.ajax({
-            url: '/res/scripts/status',
-            type: 'POST',
-            data: {
-                type: 'exp',
-                status: $sel.val(),
-                id: <?= $itemdata['id'] ?>
-            },
-            success: function(data) {
-                if (data == 'Status of exp_<?= $itemdata['id'] ?> changed to '+ $sel.val() ) {
-                    $sel.css('color', 'inherit');
-                } else {
-                    growl(data, 30);
-                }
-            }
-        });
-    });
-    
     $('#trial_table').hide();
-    
-    $('#gosets').click( function() {
-        var s = $('#insets').val();
-        window.location.href = "/res/set/info?id=" + s;
-    });
-    
-    $('#goqueries').click( function() {
-        var q = $('#inqueries').val();
-        window.location.href = "/res/data/?id=" + q;
-    });
-    
-    $('html').on("click", ".owner-delete", function() {
-        if ($(this).text() == 'delete') {
-            $(this).text('undelete');
-            $(this).prev().addClass('delete-owner');
-        } else {
-            $(this).text('delete');
-            $(this).prev().removeClass('delete-owner');
-        }
-    });
-    
-    $('button.tinybutton').button();
     
     $('#owner-add-input').autocomplete({
         source: [<?= implode(",", $ownerlist) ?>],
@@ -629,57 +565,6 @@ foreach ($trials as $t) {
         }
     }).data('id', 0);
     
-    $( "#owner-add" ).click( function() {
-        var owner_id = $('#owner-add-input').data('id');
-        
-        if (owner_id == '' || owner_id == 0) { return false; }
-        
-        if ($('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
-            var new_owner = "<li><span class='new-owner'>" + $('#owner-add-input').val() + "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
-            $('#owner-edit').append(new_owner);
-        } else {
-            growl("You can't add a duplicate owner.");
-        }
-        $('#owner-add-input').val('').data('id','');
-    });
-    
-    $( "#owner-change" ).click( function() {
-        var to_add = [];
-        var to_delete = [];
-        $('#owner-edit .owner-delete').each( function() {
-            var $this = $(this);
-            
-            if ($this.text() == "delete") {
-                to_add.push($this.attr('owner-id'));
-            } else {
-                to_delete.push($this.attr('owner-id'));
-            }
-        });
-        
-        if (to_add.length == 0) {
-            growl("You have to keep at least one owner.");
-            return false;
-        }
-        
-        $.ajax({
-            url: '/res/scripts/owners',
-            type: 'POST',
-            data: {
-                type: 'exp',
-                id: <?= $itemdata['id'] ?>,
-                add: to_add,
-                delete: to_delete
-            },
-            success: function(data) {
-                if (data) {
-                    growl(data);
-                } else {
-                    $('#owner-edit .delete-owner').closest('li').remove();
-                    $('#owner-edit span').removeClass('new-owner');
-                }
-            }
-        });
-    });
     $('#list_toggle').click();
     
 </script>
