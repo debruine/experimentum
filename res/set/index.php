@@ -24,7 +24,12 @@ $styles = array(
 $access_user = $_SESSION['user_id'];
 if (array_key_exists('owner', $_GET)) { 
 	if ($_GET['owner'] == 'all') {
-		$access_user = 'access.user_id';
+        if ($_SESSION['status'] == "admin") {
+            $access_user = 'access.user_id';
+        } else {
+            $access_user = 'SELECT ' . $_SESSION['user_id'] . ' AS supervisee_id UNION
+            SELECT supervisee_id FROM supervise WHERE supervisor_id=' . $_SESSION['user_id'];
+        }
 	} elseif (validID($_GET['owner'])) {
 		$access_user = $_GET['owner'];
 	}
@@ -44,25 +49,44 @@ $my = new myQuery('SELECT CONCAT("<span class=\'fav",
 	LEFT JOIN access USING (id) 
 	LEFT JOIN set_items ON (set_id=s.id)
 	LEFT JOIN dashboard as d ON d.id = s.id AND d.type="set" AND d.user_id=' . $_SESSION['user_id'] . '
-	WHERE access.type="sets" AND access.user_id=' . $access_user . '
+	WHERE access.type="sets" AND access.user_id IN(' . $access_user . ')
 	GROUP BY s.id ORDER BY d.user_id DESC, s.id DESC');
 	
 $search = new input('search', 'search');
 
-$owners = new myQuery('SELECT res.user_id as user_id, 
-	CONCAT(lastname, ", ", firstname) as name 
-	FROM res 
-	LEFT JOIN access USING (user_id)
-	WHERE access.type="sets" AND access.user_id IS NOT NULL 
-	ORDER BY lastname, firstname');
-$ownerlist = array('all' => 'All');
-foreach ($owners->get_assoc() as $o) {
-	$ownerlist[$o['user_id']] = $o['name'];
+$user_id = $_SESSION['user_id'];
+if ($_SESSION['status'] == 'admin') {
+    $ownerquery = "SELECT res.user_id as user_id, 
+        CONCAT(lastname, ', ', firstname) as name 
+        FROM res 
+        LEFT JOIN access USING (user_id)
+        WHERE (access.type='sets' AND access.user_id IS NOT NULL) 
+          OR res.user_id={$user_id} 
+        ORDER BY lastname, firstname";
+} else if ($_SESSION['status'] == 'res') {
+    $ownerquery = "SELECT res.user_id as user_id, 
+        CONCAT(lastname, ', ', firstname) as name 
+        FROM res 
+        LEFT JOIN access USING (user_id)
+        LEFT JOIN supervise ON res.user_id=supervisee_id
+        WHERE (access.type='sets' AND access.user_id IS NOT NULL 
+        AND (supervisor_id={$user_id} OR access.user_id={$user_id})) 
+        OR res.user_id={$user_id}
+        ORDER BY lastname, firstname";
 }
-$owner = new select('owner', 'owner', $access_user);
-$owner->set_options($ownerlist);
-$owner->set_null(false);
-$owner->set_eventHandlers(array('onchange' => 'setOwner(this.value)'));
+
+if (!empty($ownerquery)) { 
+    $owners = new myQuery($ownerquery);
+    
+    $ownerlist = array('all' => 'All');
+    foreach ($owners->get_assoc() as $o) {
+        $ownerlist[$o['user_id']] = $o['name'];
+    }
+    $owner = new select('owner', 'owner', $_GET['owner']);
+    $owner->set_options($ownerlist);
+    $owner->set_null(false);
+    $owner->set_eventHandlers(array('onchange' => 'changePage()'));
+}
 	
 /****************************************************/
 /* !Display Page */
@@ -75,8 +99,11 @@ $page->displayHead($styles);
 $page->displayBody();
 
 // search box
-echo '<div class="searchline toolbar">Owner: ';
-echo $owner->get_element();
+echo '<div class="searchline toolbar">';
+if (!empty($ownerquery)) { 
+    echo 'Owner: ';
+    echo $owner->get_element();
+}
 echo 'Search: ';
 echo $search->get_element();
 echo '<button id="new-set">New set</button>';

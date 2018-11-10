@@ -66,7 +66,7 @@ if ($_SESSION['status'] == 'admin') {
 }
 
 // owner functions
-$myowners = new myQuery('SELECT user_id, CONCAT(lastname, " ", initials) as name 
+$myowners = new myQuery('SELECT user_id, CONCAT(lastname, " ", firstname) as name 
                         FROM access 
                         LEFT JOIN res USING (user_id) 
                         WHERE type="project" AND id=' . $item_id . '

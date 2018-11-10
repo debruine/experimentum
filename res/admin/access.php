@@ -117,7 +117,7 @@ foreach ($ress as $res) {
 
 $q = new myQuery('CREATE TEMPORARY TABLE tmp_access SELECT a.type,
 	a.id, GROUP_CONCAT(a.user_id SEPARATOR ":") as users,
-	GROUP_CONCAT(CONCAT(lastname, " ", initials) SEPARATOR ", ") as usernames, 
+	GROUP_CONCAT(CONCAT(lastname, " ", firstname) SEPARATOR ", ") as usernames, 
 	res_name as name,
 	create_date as cd
 FROM exp
@@ -128,7 +128,7 @@ GROUP BY exp.id;
 
 INSERT INTO tmp_access SELECT a.type,
 	a.id, GROUP_CONCAT(a.user_id SEPARATOR ":") as users,
-	GROUP_CONCAT(CONCAT(lastname, " ", initials) SEPARATOR ", ") as usernames, 
+	GROUP_CONCAT(CONCAT(lastname, " ", firstname) SEPARATOR ", ") as usernames, 
 	res_name as name,
 	create_date as cd
 FROM quest
@@ -139,7 +139,7 @@ GROUP BY quest.id;
 
 INSERT INTO tmp_access SELECT a.type,
 	a.id, GROUP_CONCAT(a.user_id SEPARATOR ":") as users,
-	GROUP_CONCAT(CONCAT(lastname, " ", initials) SEPARATOR ", ") as usernames, 
+	GROUP_CONCAT(CONCAT(lastname, " ", firstname) SEPARATOR ", ") as usernames, 
 	res_name as name,
 	create_date as cd
 FROM sets
@@ -150,7 +150,7 @@ GROUP BY sets.id;
 
 INSERT INTO tmp_access SELECT a.type,
 	a.id, GROUP_CONCAT(a.user_id SEPARATOR ":") as users,
-	GROUP_CONCAT(CONCAT(lastname, " ", initials) SEPARATOR ", ") as usernames, 
+	GROUP_CONCAT(CONCAT(lastname, " ", firstname) SEPARATOR ", ") as usernames, 
 	res_name as name,
 	create_date as cd
 FROM project

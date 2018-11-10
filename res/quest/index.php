@@ -17,6 +17,21 @@ $styles = array();
 /****************************************************
  * Get Questionnaire Data
  ***************************************************/
+ 
+ // set the user whose items to get
+$access_user = $_SESSION['user_id'];
+if (array_key_exists('owner', $_GET)) { 
+	if ($_GET['owner'] == 'all') {
+        if ($_SESSION['status'] == "admin") {
+            $access_user = 'access.user_id';
+        } else {
+            $access_user = 'SELECT ' . $_SESSION['user_id'] . ' AS supervisee_id UNION
+            SELECT supervisee_id FROM supervise WHERE supervisor_id=' . $_SESSION['user_id'];
+        }
+	} elseif (validID($_GET['owner'])) {
+		$access_user = $_GET['owner'];
+	}
+}
 
 // set the user whose items to get
 $aq = 'CONCAT("<span class=\'fav", 
@@ -34,79 +49,32 @@ $accessquery = "SELECT {$aq}
                         LEFT JOIN access USING (id) 
                         LEFT JOIN dashboard as d ON d.id = quest.id AND d.type='quest' AND d.user_id={$_SESSION['user_id']}
                         WHERE access.type='quest' 
-                        AND access.user_id={$_SESSION['user_id']}
+                        AND access.user_id IN({$access_user})
                         GROUP BY quest.id ORDER BY d.user_id DESC, quest.id DESC";
-if (array_key_exists('owner', $_GET)) { 
-    if ($_GET['owner'] == 'all') {
-        if ($_SESSION['status'] == 'admin') {
-            $accessquery = "SELECT {$aq} 
-                            FROM quest 
-                            LEFT JOIN access USING (id) 
-                            LEFT JOIN dashboard as d ON d.id = quest.id 
-                              AND d.type='quest' AND d.user_id={$_SESSION['user_id']}
-                            WHERE access.type='quest'
-                            GROUP BY quest.id ORDER BY d.user_id DESC, quest.id DESC";
-        } elseif ($_SESSION['status'] == 'res') {
-            $accessquery = "SELECT {$aq}
-                            FROM quest 
-                            LEFT JOIN access USING (id) 
-                            LEFT JOIN dashboard as d ON d.id = quest.id 
-                              AND d.type='quest' AND d.user_id={$_SESSION['user_id']}
-                            WHERE access.type='quest' 
-                            AND (access.user_id={$_SESSION['user_id']} OR 
-                                 access.user_id IN (SELECT supervisee_id 
-                                                     FROM supervise 
-                                                    WHERE supervisor_id={$_SESSION['user_id']}))
-                            GROUP BY quest.id ORDER BY d.user_id DESC, quest.id DESC";
-        }
-    } elseif (validID($_GET['owner'])) {
-        if ($_SESSION['status'] == 'admin') {
-            $accessquery = "SELECT {$aq} 
-                            FROM quest 
-                            LEFT JOIN access USING (id) 
-                            LEFT JOIN dashboard as d ON d.id = quest.id 
-                              AND d.type='quest' AND d.user_id={$_SESSION['user_id']}
-                            WHERE access.type='quest' AND access.user_id={$_GET['owner']}
-                            GROUP BY quest.id ORDER BY d.user_id DESC, quest.id DESC";
-        } elseif ($_SESSION['status'] == 'res') {
-            $accessquery = "SELECT {$aq} 
-                            FROM quest 
-                            LEFT JOIN access USING (id) 
-                            LEFT JOIN dashboard as d ON d.id = quest.id AND d.type='quest' 
-                              AND d.user_id={$_SESSION['user_id']}
-                            WHERE access.type='quest' AND access.user_id={$_GET['owner']}
-                            AND (access.user_id={$_SESSION['user_id']} OR 
-                                 access.user_id IN (SELECT supervisee_id 
-                                                     FROM supervise 
-                                                    WHERE supervisor_id={$_SESSION['user_id']}))
-                            GROUP BY quest.id ORDER BY d.user_id DESC, quest.id DESC";
-        }
-    }
-} else {
-    $_GET['owner'] = $_SESSION['user_id'];
-}
 
 $my = new myQuery($accessquery);
     
 $search = new input('search', 'search');
 
+$user_id = $_SESSION['user_id'];
 if ($_SESSION['status'] == 'admin') {
-    $ownerquery = 'SELECT res.user_id as user_id, 
-        CONCAT(lastname, ", ", firstname) as name 
+    $ownerquery = "SELECT res.user_id as user_id, 
+        CONCAT(lastname, ', ', firstname) as name 
         FROM res 
         LEFT JOIN access USING (user_id)
-        WHERE (access.type="quest" AND access.user_id IS NOT NULL) OR res.user_id ='.$_SESSION['user_id']. '
-        ORDER BY lastname, firstname';
+        WHERE (access.type='quest' AND access.user_id IS NOT NULL) 
+          OR res.user_id={$user_id} 
+        ORDER BY lastname, firstname";
 } else if ($_SESSION['status'] == 'res') {
-    $ownerquery = 'SELECT res.user_id as user_id, 
-        CONCAT(lastname, ", ", firstname) as name 
+    $ownerquery = "SELECT res.user_id as user_id, 
+        CONCAT(lastname, ', ', firstname) as name 
         FROM res 
         LEFT JOIN access USING (user_id)
         LEFT JOIN supervise ON res.user_id=supervisee_id
-        WHERE (access.type="quest" AND access.user_id IS NOT NULL 
-        AND (supervisee_id IS NOT NULL OR res.user_id = ' . $_SESSION['user_id'] . ')) 
-        OR res.user_id ='.$_SESSION['user_id']. '
-        ORDER BY lastname, firstname';
+        WHERE (access.type='quest' AND access.user_id IS NOT NULL 
+        AND (supervisor_id={$user_id} OR access.user_id={$user_id})) 
+        OR res.user_id={$user_id}
+        ORDER BY lastname, firstname";
 }
 
 if (!empty($ownerquery)) { 

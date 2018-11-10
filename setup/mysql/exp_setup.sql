@@ -295,7 +295,6 @@ DROP TABLE IF EXISTS `res`;
 CREATE TABLE `res` (
   `user_id` int(11),
   `firstname` varchar(50) DEFAULT NULL,
-  `initials` char(3) DEFAULT NULL,
   `lastname` varchar(100) DEFAULT NULL,
   `institution` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,

@@ -12,10 +12,10 @@ if (substr($_GET['item'],0,4) == "exp_") {
      $einfo = $equery->get_assoc(0);
      
      $mydata = new myQuery(
-        "SELECT COUNT(*) as total_c,
+        "SELECT COUNT(DISTINCT session_id) as total_c,
                 COUNT(DISTINCT user.user_id) as total_dist,
-                COUNT(IF(sex='male',1,NULL)) as total_male,
-                COUNT(IF(sex='female',1,NULL)) as total_female,
+                COUNT(DISTINCT IF(sex='male',session_id,NULL)) as total_male,
+                COUNT(DISTINCT IF(sex='female',session_id,NULL)) as total_female,
                 COUNT(DISTINCT IF(sex='male',user.user_id,NULL)) as dist_male,
                 COUNT(DISTINCT IF(sex='female',user.user_id,NULL)) as dist_female
            FROM exp_data 
@@ -86,10 +86,10 @@ if (substr($_GET['item'],0,4) == "exp_") {
 $quest_id = intval(substr($_GET['item'],6));
 
  $mydata = new myQuery(
-    "SELECT COUNT(*) as total_c,
+    "SELECT COUNT(DISTINCT session_id) as total_c,
             COUNT(DISTINCT user.user_id) as total_dist,
-            COUNT(IF(sex='male',1,NULL)) as total_male,
-            COUNT(IF(sex='female',1,NULL)) as total_female,
+            COUNT(DISTINCT IF(sex='male',session_id,NULL)) as total_male,
+            COUNT(DISTINCT IF(sex='female',session_id,NULL)) as total_female,
             COUNT(DISTINCT IF(sex='male',user.user_id,NULL)) as dist_male,
             COUNT(DISTINCT IF(sex='female',user.user_id,NULL)) as dist_female
        FROM quest_data 
