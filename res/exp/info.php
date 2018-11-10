@@ -18,7 +18,6 @@ $styles = array(
     '#trial_list, .adapt_list' => 'margin: 0 auto;',
     '.trial img' => 'width: 90px; display: inline; margin: 0; box-shadow: 1px 1px 2px rgba(0,0,0,.5);',
     '.trialname' => 'display: block; clear: right; margin: 5px 0 0 0;',
-    '#time_container' => 'height: 300px; width: 500px;',
     '#image_table .trial' => 'border-top: 1px solid grey;',
     "select" => "max-width: 25em",
     '#function_buttonset, #image_list_toggle' => 'display: inline-block; float: left;'

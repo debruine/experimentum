@@ -16,14 +16,8 @@ $title = array(
 
 $styles = array( 
     'br' => 'margin: 0 0 .5em 0;',
-    '#time_container' => 'height: 300px; width: 500px;',
     '.question_info' => 'margin-bottom: 1em; width: 100%;'
 );
-
-
-if (MOBILE) {
-    $styles['#time_container'] = 'height: 200px; width: 100%; margin-left: -1em;';
-}
 
 // !AJAX duplicate questionnaire
 if (array_key_exists('duplicate', $_GET) && validID($_GET['id'])) {

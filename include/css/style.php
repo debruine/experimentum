@@ -356,6 +356,11 @@ tr.radiorow_values a {
 
 #myfavs { min-height: 20em; }
 
+#time_container {
+    height: 300px; 
+    width: 500px;
+}
+
 #dash li {
     padding: 0 0 10px 35px; 
     min-height: 30px; 
@@ -1788,6 +1793,12 @@ MOBILE STYLES
     }
     
     #myfavs { min-height: auto; }
+    
+    #time_container {
+        height: 200px; 
+        width: 100%; 
+        margin-left: -1em;
+    }
     
     #dash ul {
         width: 100%;
