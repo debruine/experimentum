@@ -557,7 +557,7 @@ class radio extends select {
         }
         
         foreach($this->options as $value => $display) {
-            $element_text .=  ' <li>' . $this->create_radio($value, $display) . '</li>' . ENDLINE;
+            $element_text .=  '<li>' . $this->create_radio($value, $display) . '</li>';
         }
         
         $element_text .=  "</ul>" . ENDLINE;

@@ -32,7 +32,6 @@ if ($type == "exp") {
         $query = new myQuery('DELETE FROM adapt_trial WHERE exp_id=' . $id);
         $query = new myQuery('DELETE FROM buttons WHERE exp_id=' . $id);
         $query = new myQuery('DELETE FROM xafc WHERE exp_id=' . $id);
-        $query = new myQuery('DELETE FROM versions WHERE exp_id=' . $id);
         $query = new myQuery('DELETE FROM dashboard WHERE type="exp" AND id=' . $id);
         $query = new myQuery('DELETE FROM access WHERE type="exp" AND id=' . $id);
         $query = new myQuery('DELETE FROM set_items WHERE item_type="exp" AND item_id=' . $id);

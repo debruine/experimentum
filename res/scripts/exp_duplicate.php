@@ -54,7 +54,6 @@ $q = new myQuery("UPDATE exp SET feedback_query=REPLACE(feedback_query, 'exp_{$o
 duplicateTable("trial", 'exp', $old_id, $new_id);
 duplicateTable("adapt_trial", 'exp', $old_id, $new_id);
 duplicateTable("xafc", 'exp', $old_id, $new_id);
-duplicateTable("versions", 'exp', $old_id, $new_id);
 duplicateTable("buttons", 'exp', $old_id, $new_id);
 
 // set owner/access

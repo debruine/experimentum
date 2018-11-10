@@ -154,7 +154,7 @@ $exptype_options = array(
     'jnd' => '2AFC with 8-Button Strength of Choice',
     'rating' => 'Numeric Rating',
     'buttons' => 'Labelled Buttons',
-    //'interactive' => 'Interactive',
+    'slideshow' => 'Slideshow',
     'xafc' => 'X-alternative forced choice (XAFC)',
     'sort' => 'Sorting',
     //'motivation' => 'Motivation',
@@ -199,17 +199,7 @@ if (validID($exp_id)) {
         'design' => 'within',
         'trial_order' => 'random',
         'side' => 'random',
-        'instructions' => 
-        
-'*Click here* to edit the **information page**. You can use [markdown](https://codepen.io/nmtakay/pen/gscbf) or html to format your instruction page.
-
-## Make a list with numbers or asterisks
-
-1. First item
-2. Second item
-  * sub item
-  * sub item
-3. Third item',
+        'instructions' => '*Click here* to edit the **information page**. You can use [markdown](https://codepen.io/nmtakay/pen/gscbf) or html to format your instruction page.',
         'question' => '*Click here* to set the **question**',
         'label4' => 'Much more',
         'label3' => 'More',
@@ -223,17 +213,7 @@ if (validID($exp_id)) {
         'default_time' => '4000',
         'increment_time' => '100',
         'sex' => 'both',
-        'feedback_general' => '*Click here* to edit the **feedback page**. You can leave this blank if it is part of a set where the feedback is given by the set.
-        
-You can use [markdown](https://codepen.io/nmtakay/pen/gscbf) or html to format your feedback page.
-
-## Make a list with numbers or asterisks
-
-1. First item
-2. Second item
-  * sub item
-  * sub item
-3. Third item'
+        'feedback_general' => ''
     );
 }
 
@@ -283,6 +263,14 @@ $info['design']->set_options(array(
     'between' => 'Between-subjects (can only complete once)',
     'within' => 'Within-subjects (can complete many times)'
 ));
+
+if ($eInfo['exptype'] == 'slideshow') {
+    $info['increment_time'] = new input('increment_time', 'increment_time', $eInfo['increment_time']);
+    $info['increment_time']->set_question('Increment Time<div class="note">(in milliseconds)</div>');
+    $info['increment_time']->set_width(100);
+    $info['increment_time']->set_type('number');
+    $info['increment_time']->set_int_only(true);
+}
 
 // trial_order
 $info['trial_order'] = new radio('trial_order', 'trial_order', $eInfo['trial_order']);
@@ -340,6 +328,7 @@ $info['labnotes']->set_dimensions(500, 50, true, 50, 0, 0);
 
 $min_max_images = array(
     '2afc'      => array(2, 3),
+    'slideshow' => array(1, 3),
     'jnd'       => array(2, 3),
     'rating'    => array(1, 3),
     'buttons'   => array(1, 3),
@@ -362,7 +351,7 @@ if (is_array($trialInfo) && array_key_exists('nimages', $trialInfo)) {
         case 'buttons':
         case 'rating':
         case 'motivation':
-        case 'interactive':
+        case 'slideshow':
             $nImages = 1;
             break;
         case 'xafc':
@@ -461,6 +450,8 @@ if ($eInfo['exptype'] == "rating") {
 $text = '';
 switch ($eInfo['exptype']) {
     case '2afc': break;
+    case 'slideshow': break;
+    case 'motivation': break;
     case 'xafc': break;
     case 'jnd':
         $text .= '  <tr class="input_interface">' . ENDLINE;
@@ -526,9 +517,6 @@ switch ($eInfo['exptype']) {
         $text .= '      </div></td>' . ENDLINE;
         $text .= '  </tr>' . ENDLINE;
         break;
-    case 'motivation':
-        $text.= '';
-        break;
 }
 echo $text;
 
@@ -550,6 +538,7 @@ switch ($eInfo['exptype']) {
         echo '      <td id="right_image" colspan="4"><img src="/stimuli/blankface" /></td>' . ENDLINE;
         $nImages = 2;
         break;
+    case 'slideshow': 
     case 'buttons':
     case 'rating':
         echo '      <td id="left_image" style="display:none;"><img src="/stimuli/blankface" /></td>' . ENDLINE;
@@ -602,32 +591,6 @@ switch ($eInfo['exptype']) {
         $nImages = 1;
         break;
 } 
-
-$fb_queries = array(
-    '2afc'      => "ROUND(AVG(t1+t2+t3+t4+t5+t6+t7+t8+t9+t10)/10*100) as avg_score, ROUND(AVG(IF(@myid=id, t1+t2+t3+t4+t5+t6+t7+t8+t9+t10, NULL))/10*100) as my_score",
-    'jnd'       => "ROUND(AVG((t1>3)+(t2>3)+(t3>3)+(t4>3)+(t5>3)+(t6>3)+(t7>3)+(t8>3)+(t9>3)+(t10>3))/10*100) as avg_score, ROUND(AVG(IF(@myid=id, (t1>3)+(t2>3)+(t3>3)+(t4>3)+(t5>3)+(t6>3)+(t7>3)+(t8>3)+(t9>3)+(t10>3), NULL))/10*100) as my_score",
-    'rating'    => "ROUND(AVG(t1+t2+t3+t4+t5+t6+t7+t8+t9+t10)/10, 1) as avg_score, ROUND(AVG(IF(@myid=id, t1+t2+t3+t4+t5+t6+t7+t8+t9+t10, NULL))/10, 1) as my_score",
-    'buttons'   => "ROUND(AVG((t1=1)+(t2=1)+(t3=1)+(t4=1)+(t5=1)+(t6=1)+(t7=1)+(t8=1)+(t9=1)+(t10=1))/10*100) as avg_score, ROUND(AVG(IF(@myid=id, (t1=1)+(t2=1)+(t3=1)+(t4=1)+(t5=1)+(t6=1)+(t7=1)+(t8=1)+(t9=1)+(t10=1), NULL))/10*100) as my_score",
-    'xafc'      => "ROUND(AVG((t1=1)+(t2=1)+(t3=1)+(t4=1)+(t5=1)+(t6=1)+(t7=1)+(t8=1)+(t9=1)+(t10=1))/10*100) as avg_score, ROUND(AVG(IF(@myid=id, (t1=1)+(t2=1)+(t3=1)+(t4=1)+(t5=1)+(t6=1)+(t7=1)+(t8=1)+(t9=1)+(t10=1), NULL))/10*100) as my_score",
-    'sort'      => "NO DEFAULT QUERY",
-    'nback'     => "NO DEFAULT QUERY",
-    'other'     => "NO DEFAULT QUERY",
-    'motivation' => "NO DEFAULT QUERY",
-    'interactive' => "NO DEFAULT QUERY",
-);
-
-$fb_specifics = array(
-    '2afc'      => 'On average, people chose the XXXX face %1$s%% of the time. You chose the XXXX face %2$s%% of the time.',
-    'jnd'       => 'On average, people chose the XXXX face %1$s%% of the time. You chose the XXXX face %2$s%% of the time.',
-    'rating'    => 'On average, people rated the faces %1$s. You rated the faces %2$s.',
-    'buttons'   => 'On average, people chose the XXXX button %1$s%% of the time. You chose the XXXX button %2$s%% of the time.',
-    'xafc'      => 'On average, people chose the XXXX face %1$s%% of the time. You chose the XXXX face %2$s%% of the time.',
-    'sort'      => "NO DEFAULT QUERY",
-    'nback'     => "NO DEFAULT QUERY",
-    'other'     => "NO DEFAULT QUERY",
-    'motivation' => "NO DEFAULT QUERY",
-    'interactive' => "NO DEFAULT QUERY",
-);
 
 ?>
 
@@ -730,22 +693,26 @@ Trial x of <span id="random_stim_top"><?= $eInfo['random_stim'] ?></span>
     function viewImages() {
         $('table.jnd .input_interface').removeClass('jnd3');
         if ($('table.xafc').length > 0 || $('table.sort').length > 0) {
+            $('#side_row').show();
             $('#center_image').html('');
             for (var i = 0; i < nImages; i++) {
                 $('#center_image').append('<img src="/stimuli/blankface"/>');
             }
             $('td.xafc img').css('width', (100/nImages)-2 + '%').css('min-width', '18%');
         } else if (nImages == 1) {
+            $('#side_row').hide();
             $('#left_image').hide();
             $('#center_image').show();
             if ($('#center_col')) $('#center_col').show();
             $('#right_image').hide();
         } else if (nImages == 2) {
+            $('#side_row').show();
             $('#left_image').show();
             $('#center_image').hide();
             if ($('#center_col')) $('#center_col').hide();
             $('#right_image').show();
         } else if (nImages == 3) {
+            $('#side_row').show();
             $('#left_image').show();
             $('#center_image').show();
             if ($('#center_col')) $('#center_col').show();
@@ -772,9 +739,15 @@ Trial x of <span id="random_stim_top"><?= $eInfo['random_stim'] ?></span>
             $(this).val(unescape($(this).val()));
         });
         
+        if (nImages == 1) {
+            $('#side_fixed').click()
+        }
+        
         $('#maincontent form').each( function(e) {
             formData[formData.length] = $(this).serialize(false);
         });
+        
+        
     
         $.ajax({
             url: './builder?save',

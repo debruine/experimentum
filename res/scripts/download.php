@@ -17,7 +17,7 @@ if ($type == 'exp') {
     $query = new myQuery('SELECT res_name, exptype, subtype FROM exp WHERE id=' . $id);
     $fname = $query->get_one_array();
         
-    $q = 'SELECT session_id, exp_id, version, user_id, sex as user_sex, status as user_status,
+    $q = 'SELECT session_id, exp_id, user_id, sex as user_sex, status as user_status,
             ROUND(DATEDIFF(dt, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
             trial.name as trial_name,
             trial_n,
@@ -65,7 +65,7 @@ if ($type == 'exp') {
     $query = new myQuery('SELECT CONCAT(res_name, "_exps") AS res_name FROM project WHERE id=' . $id);
     $fname = $query->get_one_array();
     
-    $q = 'SELECT session_id, exp_id, version, session.user_id, sex as user_sex, status as user_status,
+    $q = 'SELECT session_id, exp_id, session.user_id, sex as user_sex, status as user_status,
             ROUND(DATEDIFF(ed.dt, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
             trial.name as trial_name,
             trial_n,

@@ -168,27 +168,6 @@ $mytable = new myQuery($table_query);
 $trial_table = $mytable->get_result_as_table();
 $trial_table = str_replace($common_path, '', $trial_table);
 
-if (substr($itemdata['subtype'], 0, 5) == 'adapt') {
-    // get adaptation trial info
-    $adapt_query = new myQuery(
-        'SELECT trial_n, exposure, a.version, name, notes, question,
-                li.path as left_stim,
-                ci.path as center_stim,
-                ri.path as right_stim,
-                li.type as ltype,
-                ci.type as ctype,
-                ri.type as rtype
-           FROM adapt_trial as a
-      LEFT JOIN versions AS v ON a.exp_id=v.exp_id AND a.version = v.version
-      LEFT JOIN stimuli AS li ON (li.id=left_img)
-      LEFT JOIN stimuli AS ci ON (ci.id=center_img)
-      LEFT JOIN stimuli AS ri ON (ri.id=right_img)
-          WHERE a.exp_id=' . $item_id . ' ORDER BY a.version, trial_n'
-    );
-        
-    $adapt_trials = $adapt_query->get_assoc();
-}
-
 // get stats on participant completion of the experiment
 $mydata = new myQuery(
     'SELECT COUNT(*) as total_c,
@@ -349,36 +328,6 @@ $page->displayBody();
         <input type="radio" id="image_toggle" name="radio" checked="checked" /><label for="image_toggle">Stimuli</label><input type="radio" id="list_toggle" name="radio" /><label for="list_toggle">List</label>
     </div>
 </div>
-
-<?php
-
-if (substr($itemdata['subtype'], 0, 5) == 'adapt') {
-    $exposure = array(); // check if all exposures are the same
-    $version = $adapt_trials[0]['version'];
-    echo '<div class="adapt_list">V' . $version . ': ' . $adapt_trials[0]['name'];
-    
-    foreach ($adapt_trials as $t) {
-        if ($t['version'] != $version) {
-            $version = $t['version'];
-            echo '</div><div class="adapt_list">V' . $version . ': ' . $t['name'];
-        }
-        
-        $exposure[$t['exposure']]++;
-    
-        echo '        <div class="trial" exposure="' . $t['exposure'] . '">' . ENDLINE;
-        
-        // show images
-        if (!empty($t['left_stim'])) echo '            <img src="' . $t['left_stim'] . '" title="' . $t['left_stim'] . '" />' . ENDLINE;
-        if (!empty($t['center_stim'])) echo '            <img src="' . $t['center_stim'] . '" title="' . $t['center_stim'] . '" />' . ENDLINE;
-        if (!empty($t['right_stim'])) echo '            <img src="' . $t['right_stim'] . '" title="' . $t['right_stim'] . '" />' . ENDLINE;
-        
-        echo '        </div>' . ENDLINE;
-    }
-    
-    echo '</div>';
-}
-    
-?>
     
 <div id="trial_list">
     <div id="trial_table">

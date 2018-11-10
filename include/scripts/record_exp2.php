@@ -10,7 +10,6 @@
 	$side = $_POST['side'];
 	$rt = $_POST['rt'];
 	$starttime = $_POST['starttime'];
-	$version = intval($_POST['version']);
 	$exptype = $_POST['exptype'];
 	
 	$attribute_order = '(id, user_id, ';
@@ -75,26 +74,14 @@
 		}
 	}
 	
-	if ($version > 0) {
-		$attribute_order .= 'version, ';
-		$attribute_value .= "$version, ";
-	}
-	
 	$attribute_order .= 'starttime, endtime)';
 	$endtime = date('Y-m-d H:i:s');
 	$attribute_value .= "'$starttime', '$endtime')";
 	
 	$query = new myQuery('INSERT INTO exp_' . $id . ' ' . $attribute_order . ' VALUES ' . $attribute_value);
 	
-	$exp = new myQuery('SELECT MAX(version) as v FROM versions WHERE exp_id=' . $id);
-	$maxversion = $exp->get_one();
-	
-	if ($maxversion > 0 && $version == 0) {
-		$version = rand(1, $maxversion);
-		echo '/exp/slideshow?id=' . $id . '&v=' . $version; 
-	} else {
-		echo '/feedback/fb?type=exp&id=' . $id;
-	}
+
+    echo '/feedback/fb?type=exp&id=' . $id;
 	
 	exit;
 ?>

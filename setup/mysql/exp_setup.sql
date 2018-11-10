@@ -5,8 +5,8 @@ CREATE TABLE `exp` (
   `res_name` varchar(255) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `status` enum('test','active','archive') DEFAULT 'test',
-  `exptype` enum('2afc','jnd','rating','buttons','xafc','sort','nback','interactive','motivation','other') DEFAULT NULL,
-  `subtype` enum('standard','adapt','speeded','adapt_nopre','large_n') DEFAULT NULL,
+  `exptype` VARCHAR(255) DEFAULT NULL,
+  `subtype` VARCHAR(255) DEFAULT NULL,
   `design` enum('between','within') DEFAULT NULL,
   `trial_order` enum('random','norepeat','fixed') DEFAULT 'random',
   `side` enum('random','fixed') DEFAULT 'random',
@@ -42,7 +42,6 @@ CREATE TABLE `exp_data` (
   `exp_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `session_id` int(11) DEFAULT NULL,
-  `version`   tinyint(2) unsigned, 
   `trial_n` INT(6) DEFAULT NULL,
   `dv` VARCHAR(64) DEFAULT NULL,
   `rt` INT(6) DEFAULT NULL,
@@ -272,13 +271,8 @@ CREATE TABLE yoke (
 );
 
 DROP TABLE IF EXISTS `versions`;
-CREATE TABLE versions(
-    `exp_id`    int(11),
-    `version`   tinyint(2) unsigned,
-    `name`      varchar(32),
-    `notes`     text,
-    `question`  text 
-);
+ALTER TABLE exp_data drop column version;
+
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (

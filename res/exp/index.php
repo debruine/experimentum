@@ -158,7 +158,7 @@ $new_exp_buttons = array(
     "builder?exptype=xafc" => "X-Alternative Forced-choice (XAFC)",
     "builder?exptype=sort" => "Sorting",
     //"builder?exptype=motivation" => "Motivation",
-    //"builder?exptype=adaptation" => "Adaptation",
+    "builder?exptype=slideshow" => "Slideshow",
     //"builder?exptype=nback" => "N-back",
     //"builder?exptype=other" => "Custom"
 );

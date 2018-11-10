@@ -48,7 +48,6 @@ if ($type == "exp") {
     duplicateTable("trial", 'exp', $old_id, $new_id);
     duplicateTable("adapt_trial", 'exp', $old_id, $new_id);
     duplicateTable("xafc", 'exp', $old_id, $new_id);
-    duplicateTable("versions", 'exp', $old_id, $new_id);
     duplicateTable("buttons", 'exp', $old_id, $new_id);
     
     $return['new_id'] = $new_id;

@@ -7,9 +7,8 @@ auth(1);
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/exp.php';
 
 $exp_id=$_GET['id'];
-$version=$_GET['v'];
 
-$expC = new expChooser($exp_id, $version);
+$expC = new expChooser($exp_id);
 
 if (!$expC->check_exists()) { header('Location: /'); exit; }
 

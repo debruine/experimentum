@@ -13,7 +13,6 @@ function expCheck($id) {
 
 	$tlist = range(1, $qL['trials']);
 	$allT = ($qL['random_stim']<$qL['trials']) ? 'endtime' : 't' . implode('+t', $tlist);
-	$adapt_versions = ($qL['subtype'] == 'adapt') ? 'AND version>0' : '';
 	
 	$userid = validID($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;	
 			
@@ -21,7 +20,6 @@ function expCheck($id) {
 						COUNT(DISTINCT IF(user_id={$userid}, id, NULL)) as me_done
 						FROM exp_{$id}
 						WHERE {$allT} IS NOT NULL
-						  {$adapt_versions}
 						  AND UNIX_TIMESTAMP(endtime)-UNIX_TIMESTAMP(starttime) > 0 
 						  AND UNIX_TIMESTAMP(endtime)-UNIX_TIMESTAMP(starttime) < {$qL['trials']} * 60
 						GROUP BY NULL");
