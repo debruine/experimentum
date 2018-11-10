@@ -216,7 +216,7 @@ class experiment {
     }
     
     function get_instructions() {
-        $text = "<div id='instructions'>" . ENDLINE;
+        $text = "<div class='instructions'>" . ENDLINE;
         //$text .= parsePara($this->instructions);
         $Parsedown = new Parsedown();
         $text .= $Parsedown->text($this->instructions);

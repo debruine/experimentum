@@ -90,8 +90,8 @@ $page->displayBody();
     Chain them together by making new sets at the <a href="/res/set/builder">Set Builder</a>.
     Make a project page with the <a href="/res/project/builder">Project Builder</a> 
     so you can direct participants to your project with a custom URL. 
-    Browse our <a href="/res/stimuli/browse">open-access stimuli</a> or
-    <a href="/res/stimuli/upload">upload your own stimuli</a>.
+    Browse our <a href="/res/stimuli/browse">open-access stimuli</a>. <!-- or
+    <a href="/res/stimuli/upload">upload your own stimuli</a>.-->
 </p>
 
 

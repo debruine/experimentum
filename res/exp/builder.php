@@ -439,9 +439,9 @@ if ($eInfo['exptype'] == "rating") {
   </ul>
   
   <div id="intropage">
-    <p class='instructions'><span id='instructions' 
+    <div class='instructions'><span id='instructions' 
         class='editText md' 
-        title='Instructions on page before the experiment starts'><?= htmlspecialchars($eInfo['instructions']) ?></span></p>
+        title='Instructions on page before the experiment starts'><?= htmlspecialchars($eInfo['instructions']) ?></span></div>
     <input type='hidden' name='exp_id' id='exp_id' value='<?= $exp_id ?>' />
   </div>
   

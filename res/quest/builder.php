@@ -389,7 +389,7 @@ echo '<div id="tabs">
   echo "<form action='' method='post' id='quest_form'>" . ENDLINE;
 
 //echo "<h1><span id='title' class='editText'>{$qInfo['name']}</span></h1>" . ENDLINE;
-echo "<p class='instructions'><span id='instructions' class='editText md'>" . htmlspecialchars($qInfo['instructions']). "</span></p>" . ENDLINE;
+echo "<div class='instructions'><span id='instructions' class='editText md'>" . htmlspecialchars($qInfo['instructions']). "</span></div>" . ENDLINE;
 echo "<input type='hidden' name='quest_id' id='quest_id' value='{$quest_id}' />" . ENDLINE;
 
 // !    questionnaire table

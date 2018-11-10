@@ -43,9 +43,8 @@ class formTable {
     
     function print_instructions() {
         if ($this->instructions != '') {
-            //echo "<p class='instructions'>" , $this->instructions , "</p>" . ENDLINE;
             $Parsedown = new Parsedown();
-            echo "<p class='instructions'>" , $Parsedown->text($this->instructions) , "</p>" . ENDLINE; 
+            echo "<div class='instructions'>" , $Parsedown->text($this->instructions) , "</div>" . ENDLINE; 
         }
     }
     

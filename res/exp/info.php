@@ -21,7 +21,8 @@ $styles = array(
     '#stim_table' => "clear: both;",
     '#stim_table .trial' => 'border-top: 1px solid grey;',
     "select" => "max-width: 25em",
-    '#function_buttonset, #image_list_toggle' => 'display: inline-block; float: left;'
+    '#function_buttonset, #image_list_toggle' => 'display: inline-block; float: left;',
+    "video" => "max-width: 25%;"
 );
 
 

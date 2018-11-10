@@ -1061,18 +1061,23 @@ tr + tr.radiorow_options th {
     padding-left: 3em;
 }
 
-#instructions ol {
-    list-style-position: inside;
-}
-
-#instructions ul {
-    list-style-type: circle;
-    list-style-position: inside;
-}
-
-.instructions {
+div.instructions {
     font-size: 100%;
     max-width: 795px;
+    margin: 0 auto;
+}
+
+div.instructions p {
+    max-width: 100%;
+}
+
+div.instructions ol {
+    list-style-position: outside;
+}
+
+div.instructions ul {
+    list-style-type: circle;
+    list-style-position: outside;
 }
 
 table.questionnaire td.question {
