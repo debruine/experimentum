@@ -2,6 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
+require_once DOC_ROOT . '/include/classes/Parsedown.php';
 auth($RES_STATUS);
 
 if (validID($_GET['id']) && !permit('quest', $_GET['id'])) header('Location: /res/');
@@ -16,8 +17,7 @@ $title = array(
 $styles = array( 
     'br' => 'margin: 0 0 .5em 0;',
     '#time_container' => 'height: 300px; width: 500px;',
-    '.question_info, .quest_info' => 'margin-bottom: 1em; width: 100%;',
-    '#myQuery' => 'display: none;'
+    '.question_info' => 'margin-bottom: 1em; width: 100%;'
 );
 
 
@@ -141,7 +141,19 @@ $myquest = new myQuery('SELECT quest.*
 
 if ($myquest->get_num_rows() == 0) { header('Location: /res/quest/'); }
 
-$questdata = $myquest->get_one_array();
+$itemdata = $myquest->get_one_array();
+
+// convert markdown sections
+$Parsedown = new Parsedown();
+$itemdata['instructions'] = $Parsedown->text($itemdata['instructions']);
+$itemdata['feedback_general'] = $Parsedown->text($itemdata['feedback_general']);
+$itemdata['feedback_specific'] = $Parsedown->text($itemdata['feedback_specific']);
+
+$itemdata['sex'] = array(
+    'both' => 'All genders',
+    'male' => 'Men only',
+    'female' => 'Women only'
+)[$itemdata['sex']];
 
 // owner functions
 $myowners = new myQuery('SELECT user_id, CONCAT(lastname, ", ", firstname) as name 
@@ -197,7 +209,7 @@ foreach($questlist as $q) {
 
 // get status changer for researchers
 if (in_array($_SESSION['status'], array('researcher', 'admin'))) {
-    $status_chooser = new select('status', 'status', $questdata['status']);
+    $status_chooser = new select('status', 'status', $itemdata['status']);
     $status_chooser->set_null(false);
     $status_chooser->set_options(array(
         'test' => 'test',
@@ -206,7 +218,7 @@ if (in_array($_SESSION['status'], array('researcher', 'admin'))) {
     ));
     $status = $status_chooser->get_element();
 } else {
-    $status = '(' . $questdata['status'] . ')';
+    $status = '(' . $itemdata['status'] . ')';
 }
 
 $mysets = new myQuery('SELECT set_id, CONCAT(set_id, ": ", name) as si from set_items LEFT JOIN sets ON sets.id=set_id where item_type="quest" and item_id=' . $quest_id);
@@ -255,20 +267,6 @@ $timechart = 'CREATE TEMPORARY TABLE tmp_ln ' .
              '  AND score<=(@percentile/60) ' .
              '  AND score>0 ' .
              'GROUP BY score;';
-
-/****************************************************
- * Set up query
- ***************************************************/
-
-$input['query_id'] = new hiddenInput('query_id', 'query_id', $quest_id);
-$input['query_type'] = new hiddenInput('query_type', 'query_type', 'quest');
-
-// set up form table
-$myquery = new formTable();
-$myquery->set_table_id('myQuery');
-$myquery->set_action('/res/scripts/download');
-$myquery->set_questionList($input);
-$myquery->set_method('post');
     
 /****************************************************/
 /* !Display Page */
@@ -283,7 +281,7 @@ $page->displayBody();
 
 ?>
 
-<h2>quest <?= $questdata['id'] ?>: <?= $questdata['res_name'] ?> <?= $status ?></h2>
+<h2>quest <?= $itemdata['id'] ?>: <?= $itemdata['res_name'] ?></h2>
 
 <div class='toolbar'>
     <div id="function_buttonset">
@@ -291,16 +289,16 @@ $page->displayBody();
             echo '<button id="edit-quest">Edit</button>';
             echo '<button id="delete-quest">Delete</button>';
             echo '<button id="duplicate-quest">Duplicate</button>';
-            echo '<button id="data-download">Download Data</button>';
+            echo '<button id="data-download">Data</button>';
+            echo '<button id="get-json">Structure</button>';
         } ?>
     </div>
 </div>
 
-<?= $myquery->print_form(); ?>
-
-<table class="quest_info"> 
-    <tr><td>Name:</td> <td><?= $questdata['name'] ?></td></tr>
-    <tr><td>Created on:</td> <td><?= $questdata['create_date'] ?></td></tr>
+<table class="info"> 
+    <tr><td>Name:</td> <td><?= $itemdata['name'] ?></td></tr>
+    <tr><td>Status:</td> <td><?= $status ?></td></tr>
+    <tr><td>Created on:</td> <td><?= $itemdata['create_date'] ?></td></tr>
     <tr><td>Owners:<br><?php if ($_SESSION['status'] == 'admin') { echo '<button class="tinybutton"  id="owner-change">Change</button>'; } ?></td> 
         <td>
             <ul id='owner-edit'>
@@ -310,7 +308,6 @@ $page->displayBody();
             <input id='owner-add-input' type='text' > (<a id='owner-add'>add</a>)
             <?php } ?>
         </td></tr>
-    <tr><td>Labnotes:</td> <td><pre><?= ifEmpty($questdata['labnotes'], '<span class="error">Please add labnotes</span>') ?></pre></td></tr>
     <?php
         if (count($setslist) > 0) {
             echo "<tr><td>In Sets:</td> <td>";
@@ -318,26 +315,23 @@ $page->displayBody();
             echo '<button class="tinybutton" id="gosets">Go</button></td></tr>';
         }
     ?>
+    <tr><td>Labnotes:</td> <td><pre><?= ifEmpty($itemdata['labnotes'], '<span class="error">Please add labnotes</span>') ?></pre></td></tr>
     <tr><td>Completed by:</td> <td> <?= number_format($data['total_c']) ?> people: 
                                 <?= number_format($data['total_male']) ?> men; 
                                 <?= number_format($data['total_female']) ?> women</td></tr>
     <tr><td>Last completion:</td> <td><?= $data['last_completion'] ?></td></tr>
     <tr><td>Time to complete:<div class="note">(excluding slowest 5%)</div></td> <td><div id="time_container"></div></td></tr>
     
-    <tr><td>Type:</td> <td><?= $questdata['questtype'] ?></td></tr>
-    <tr><td>Order:</td> <td><?= $questdata['quest_order'] ?></td></tr>
-    <?php if (!empty($questdata['url'])) { ?>
-        <tr><td>URL:</td> <td><?= $questdata['url'] ?></td></tr>
+    <tr><td>Type:</td> <td><?= $itemdata['questtype'] ?></td></tr>
+    <tr><td>Order:</td> <td><?= $itemdata['quest_order'] ?></td></tr>
+    <?php if (!empty($itemdata['url'])) { ?>
+        <tr><td>URL:</td> <td><?= $itemdata['url'] ?></td></tr>
     <?php } ?>
-    <tr><td>Restrictions:</td> <td><?= $questdata['sex'] ?> 
-        ages <?= is_null($questdata['lower_age']) ? 'any' : $questdata['lower_age'] ?> 
-        to <?= is_null($questdata['upper_age']) ? 'any' : $questdata['upper_age'] ?> years</td></tr>
-    <tr><td>Instructions:</td> <td><?= $questdata['instructions'] ?></td></tr>
-    <tr><td><a href="/quest/feedback?id=<?= $questdata['id'] ?>">Feedback</a>:</td> 
-        <td><?= $questdata['feedback_general'] ?><br /><?= $questdata['feedback_specific'] ?></td></tr>
-    <?php if (!empty($questdata['forward'])) { ?>
-        <tr><td>Forward to URL:</td> <td><a href="<?= $questdata['forward'] ?>"><?= $questdata['forward'] ?></a></td></tr>
-    <?php } ?>
+    <tr><td>Restrictions:</td> <td><?= $itemdata['sex'] ?> 
+        ages <?= is_null($itemdata['lower_age']) ? 'any' : $itemdata['lower_age'] ?> 
+        to <?= is_null($itemdata['upper_age']) ? 'any' : $itemdata['upper_age'] ?> years</td></tr>
+    <tr><td>Instructions:</td> <td><pre><?= $itemdata['instructions'] ?></pre></td></tr>
+    <tr><td>Feedback:</td> <td><?= $itemdata['feedback_general'] ?><br><?= $itemdata['feedback_specific'] ?></td></tr>
 </table>
 
 <table class="question_info">
@@ -380,13 +374,22 @@ $page->displayBody();
     $('#function_buttonset').buttonset();
 
     $( "#view-quest" ).click(function() {
-        window.location = '/quest?id=<?= $questdata['id'] ?>';
+        window.location = '/quest?id=<?= $itemdata['id'] ?>';
     });
     $( "#edit-quest" ).click(function() {
-        window.location = '/res/quest/builder?id=<?= $questdata['id'] ?>';
+        window.location = '/res/quest/builder?id=<?= $itemdata['id'] ?>';
     });
-    $( "#data-download" ).button().click(function() { 
-        $('#myQuery_form').submit();
+    $( "#data-download" ).click(function() { 
+        postIt('/res/scripts/download', {
+            type: 'quest',
+            id: <?= $itemdata['id'] ?>
+        });
+    });
+    $( "#get-json" ).click(function() { 
+        postIt('/res/scripts/get_json', {
+            table: 'quest',
+            id: <?= $itemdata['id'] ?>
+        });
     });
     $( "#delete-quest" ).click( function() {
         $( "<div/>").html("Do you really want to delete this questionnaire?").dialog({
@@ -399,7 +402,7 @@ $page->displayBody();
                 },
                 "Delete": function() {
                     $( this ).dialog( "close" );
-                    $.get("/res/scripts/delete_quest?id=<?= $questdata['id'] ?>", function(data) {
+                    $.get("/res/scripts/delete_quest?id=<?= $itemdata['id'] ?>", function(data) {
                         if (data == 'deleted') {
                             window.location = '/res/quest/';
                         } else {
@@ -422,7 +425,7 @@ $page->displayBody();
                 },
                 "Duplicate": function() {
                     $( this ).dialog( "close" );
-                    $.get("?duplicate&id=<?= $questdata['id'] ?>", function(data) {
+                    $.get("?duplicate&id=<?= $itemdata['id'] ?>", function(data) {
                         var resp = data.split(':');
                         if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
                             window.location = '/res/quest/info?id=' + resp[1];
@@ -445,10 +448,10 @@ $page->displayBody();
             data: {
                 type: 'quest',
                 status: $sel.val(),
-                id: <?= $questdata['id'] ?>
+                id: <?= $itemdata['id'] ?>
             },
             success: function(data) {
-                if (data == 'Status of quest_<?= $questdata['id'] ?> changed to '+ $sel.val() ) {
+                if (data == 'Status of quest_<?= $itemdata['id'] ?> changed to '+ $sel.val() ) {
                     $sel.css('color', 'inherit');
                 } else {
                     growl(data, 30);
@@ -528,7 +531,7 @@ $page->displayBody();
             type: 'POST',
             data: {
                 type: 'quest',
-                id: <?= $questdata['id'] ?>,
+                id: <?= $itemdata['id'] ?>,
                 add: to_add,
                 delete: to_delete
             },

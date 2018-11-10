@@ -2,7 +2,13 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 
-$clean = my_clean($_GET);
+$return = array(
+    'login' => false,
+    'url' => '/',
+    'error' => ''
+);
+
+$clean = my_clean($_POST);
 if (empty($clean)) $clean = array();
 $username = ifEmpty($clean['username']);
 $password = ifEmpty($clean['password']);
@@ -17,8 +23,7 @@ if (!empty($user_id) && !empty($passcode)) {
     
     // exit if login is invalid
     if (0 == $query->get_num_rows()) { 
-        echo "error:" . loc("Sorry, something went wrong.");
-        exit;
+        $return['error'] = loc("Sorry, something went wrong.");
     } else {
         // set up user object and login
         $user = new user($user_id);
@@ -26,7 +31,7 @@ if (!empty($user_id) && !empty($passcode)) {
         $user->set_session_variables();
         
         // send to new page
-        $newpage = '';
+        $newpage = '/';
         if (array_key_exists('url', $clean)) {
             $newpage = urldecode($clean['url']);
         } else if (array_key_exists('exp', $clean)) {
@@ -42,8 +47,7 @@ if (!empty($user_id) && !empty($passcode)) {
             header('Location: ' . $newpage);
             exit;
         } else {
-            echo 'login';
-            exit;
+            $return['login'] = 'login';
         }
     }
 } elseif (!empty($username) && !empty($password)) {
@@ -53,16 +57,23 @@ if (!empty($user_id) && !empty($passcode)) {
     $user->set_username($username);
     $login_status = $user->login($password);
     
-    echo $login_status;
-    exit;
+    if ($login_status == "login") {
+        $return['login'] = "login";
+    } else {
+        $return['error'] = $login_status;
+    }
+    
+    if (in_array($user->get_status(), $RES_STATUS)) {
+        $return['url'] = "/res/";
+    }
 } elseif (empty($username) || empty($password)) {
     // prompt for username or password if one is missing
-    echo "empty:" . loc("Please fill in both the username and the password");
-    exit;
+    $return['error'] = loc("Please fill in both the username and the password");
 } else {
     // no valid information
-    echo "error:" . loc("Sorry, something went wrong.");
-    exit;
+    $return['error'] = loc("Sorry, something went wrong.");
 }
+
+scriptReturn($return);
 
 ?>

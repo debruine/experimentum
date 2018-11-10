@@ -276,7 +276,6 @@ class page {
             echo '  <meta name="MobileOptimized" content="width" />' . ENDLINE;
             echo '  <meta name="HandheldFriendly" content="True" />' . ENDLINE;
             echo '  <meta http-equiv="cleartype" content="on" />' . ENDLINE;
-            //echo '    <script>$(document).ready(function() { loadPage(); alert();});</script>' . ENDLINE;
         }
 
         echo '</head>', ENDTAG;
@@ -328,7 +327,9 @@ class page {
 <?php       
         } else {
 ?>
-        <li id='login'><a href='javascript: startLogin();'><?= loc("Login/Sign up") ?></a></li>
+        <!--<li id='login'><a href='javascript: startLogin();'><?= loc("Login/Sign up") ?></a></li>-->
+        <li><a href='/login'><?= loc("Login") ?></a></li>
+        <li><a href='/consent'><?= loc("Sign up") ?></a></li>
 <?php
         } 
 ?>
@@ -390,97 +391,6 @@ class page {
                 
 ?>
 
-<!-- Modal dialog box for logging in -->
-
-<div id='loginbox' class="modal" title='Login'>
-            <input  id='login_username'
-                    name='login_username'  
-                    type='text' 
-                    maxlength='32' 
-                    onchange='login();' />
-            <label for='login_username'><?= loc("Username") ?></label>
-
-            <input  id='login_password' 
-                    name='login_password'
-                    type='password' 
-                    maxlength='32' 
-                    onchange='login();' />
-            <label for='login_password'><?= loc("Password") ?></label>
-
-    <div id='login_error' class='ui-state-highlight'></div>
-    <br>
-    <div class="note">This website requires cookies to allow you to log in. Logging in indicates you agree to this.</div>
-</div>
-
-<div id='guestloginbox' class="modal" title='Login as a Guest'>
-    Some studies are only available to people in a certain age range or of a certain sex,
-    so you can optionally fill in that information to be able to participate in those studies.
-<?php
-    require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
-    
-    $input = array();
-    $input_width = 250;
-    
-    // sex
-    $input['sex'] = new select('sex', 'sex');
-    $input['sex']->set_question('Sex');
-    $input['sex']->set_options(array(
-        'male'=>loc('male'),
-        'female'=>loc('female'),
-        'nonbinary'=>loc('these options do not apply to me (e.g., nonbinary)'),
-        'na' => loc('prefer not to answer')
-    ));  
-    
-    // birthday
-    //$input['birthday'] = new dateMenu('birthday', 'birthday');
-    $input['birthday'] = new formElement('birthday', 'birthday');
-    $input['birthday']->set_question('Birthday <small>Year required for some studies</small>');
-    $year = new selectnum('year','year',0);
-    $year->set_options(array(0 => "----"), date("Y"), date("Y") - 120);
-    $year->set_null(false);
-    $month = new select('month','month',0);
-    $month->set_options(array(
-        0 => "----------",
-        1 => loc("January"),
-        2 => loc("February"),
-        3 => loc("March"),
-        4 => loc("April"),
-        5 => loc("May"),
-        6 => loc("June"),
-        7 => loc("July"),
-        8 => loc("August"),
-        9 => loc("September"),
-        10 => loc("October"),
-        11 => loc("November"),
-        12 => loc("December")
-    )); 
-    $month->set_null(false);
-    $day = new selectnum('day','day',0);
-    $day->set_options(array(0=>"--"), 1, 31);
-    $day->set_null(false);
-    
-    $input['birthday']->set_custom_input( $year->get_element() . ' ' .
-                                          $month->get_element() . ' ' .
-                                          $day->get_element() );
-                                          
-    // set up form table
-    $q = new formTable();
-    $q->set_table_id('guestreg');
-    $q->set_title('');
-    $q->set_action('');
-    $q->set_questionList($input);
-    $q->set_method('post');
-    $q->set_buttons(array(
-        'Register' => 'register();'
-    ));
-    $q->set_button_location('bottom');
-    
-    $q->print_form();
-?>
-    <div id='login_error' class='ui-state-highlight'></div>
-    <br>
-    <div class="note">This website requires cookies to allow you to log in. Logging in indicates you agree to this.</div>
-</div>
         
 </div> <!-- END OF maincontent -->
 

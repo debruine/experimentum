@@ -107,6 +107,31 @@ var KEYCODE = {
     'single_quote' : 222
 };
 
+// set defaults for ajax
+$.xhrPool = []; // array of uncompleted requests
+$.xhrPool.abortAll = function() { // our abort function
+    $(this).each(function(idx, jqXHR) {
+        jqXHR.abort();
+    });
+    $.xhrPool.length = 0;
+};
+
+$.ajaxSetup({
+    //dataType: 'json',
+    type: 'POST',
+    beforeSend: function(jqXHR) { // before jQuery send the request we will push it to our array
+        $.xhrPool.push(jqXHR);
+    },
+    complete: function(jqXHR) { // when some of the requests completed it will splice from the array
+        var index;
+
+        index = $.xhrPool.indexOf(jqXHR);
+        if (index > -1) {
+            $.xhrPool.splice(index, 1);
+        }
+    }
+});
+
 /****************************************************/
 /* !onLoad items                                    */
 /****************************************************/
@@ -139,41 +164,6 @@ $(function() {
                 position: ['center', 50]
             }); });
     }
-    
-    // set up loginBox dialog
-    $('#loginbox').dialog({
-        autoOpen: false,
-        show: "scale",
-        hide: "scale",
-        modal: true,
-        width: 400,
-        position: ['center', 'center'],
-        buttons: {
-            "Login" : function() { login(); },
-            "Sign up for an account" : function() { window.location.href="/consent"; },
-            //"Participate without an account" : function() { window.location.href="/consent?guest"; },
-        }
-    });
-    $('#guestloginbox').dialog({
-        autoOpen: false,
-        show: "scale",
-        hide: "scale",
-        modal: true,
-        width: 400,
-        position: ['center', 'center'],
-        buttons: {
-            "Login" : function() { login(); }
-        }
-    });
-    
-    // set up loginError dialog
-    $('#login_error_header').dialog({
-        autoOpen: false,
-        show: "scale",
-        hide: "scale",
-        modal: true,
-        position: ['center', 50],
-    });
     
     // give button styles to all inputs in a buttons div
     $('.buttons input, .buttons a, .buttons button').button();
@@ -242,24 +232,6 @@ $(function() {
 /* !EVERY PAGE FUNCTIONS                            */
 /****************************************************/
 
-// load pages for iPhone
-function loadPage(url) {
-    $('body').append('<div id="progress">Loading...</div>');
-    if (url == undefined) {
-        $('wrap').load('/index #wrap', hijackLinks);
-    } else {
-        $('wrap').load(url + ' #wrap', hijackLinks);
-    }
-}
-
-function hijackLinks() {
-    $('#wrap a[href]').click( function(e) {
-        e.preventDefault();
-        loadPage(e.target.href);
-    });
-    $('#progress').remove();
-}
-
 // change the height of a textarea to fit the amount of text in it
 function textarea_expand(ta, min, max) {
     if (ta.scrollHeight>ta.clientHeight){
@@ -280,75 +252,26 @@ function logout() {
     });
 }
 
-function startLogin() {
-    $("#loginbox").dialog("open");
-    $("#login_username").focus();
-}
-
 function login() {
     var un = $("#login_username").val();
     var pw = $("#login_password").val();
     console.log('logging in ' + un);
     
     if (un != "" && pw != "") {
-        
-        var url = "/include/scripts/login?username=" + un + "&password=" + pw;
-        
-        $("#login_error").hide();
-        
-        $.get(url, function(data) {
-            if (data == "login") {
-                $("#login_error").hide();
-                window.location.reload(false);
-            } else {
-                var parsedResponse = data.split(":");
-                if (parsedResponse[0] == "username") {
-                    $("#login_username").focus();
-                    $("#login_username").select();
-                    $("#login_error").html( parsedResponse[1] ).show();
-                } else if (parsedResponse[0] == "password") {
-                    $("#login_password").focus();
-                    $("#login_password").select();
-                    $("#login_error").html( parsedResponse[1] ).show();
-                } else if (parsedResponse[0] == "newpage") {
-                    window.location = parsedResponse[1];
+        $.ajax({
+            url: '/include/scripts/login',
+            dataType: 'json',
+            data: {
+                username: un,
+                password: pw
+            },
+            success: function(data) {
+                if (data.login == 'login') {
+                    console.log("logged in");
+                    $("#login_error").hide();
+                    window.location = data.url;
                 } else {
-                    $("#login_error").html( data ).show();
-                }
-            }
-        });
-    }
-}
-
-function login() {
-    var un = $("#login_username").val();
-    var pw = $("#login_password").val();
-    console.log('logging in ' + un);
-    
-    if (un != "" && pw != "") {
-        
-        var url = "/include/scripts/login?username=" + un + "&password=" + pw;
-        
-        $("#login_error").hide();
-        
-        $.get(url, function(data) {
-            if (data == "login") {
-                $("#login_error").hide();
-                window.location.reload(false);
-            } else {
-                var parsedResponse = data.split(":");
-                if (parsedResponse[0] == "username") {
-                    $("#login_username").focus();
-                    $("#login_username").select();
-                    $("#login_error").html( parsedResponse[1] ).show();
-                } else if (parsedResponse[0] == "password") {
-                    $("#login_password").focus();
-                    $("#login_password").select();
-                    $("#login_error").html( parsedResponse[1] ).show();
-                } else if (parsedResponse[0] == "newpage") {
-                    window.location = parsedResponse[1];
-                } else {
-                    $("#login_error").html( data ).show();
+                    $("#login_error").html( data.error ).show();
                 }
             }
         });
@@ -371,6 +294,26 @@ function guestLogin(project_id) {
             }
         }
     });
+}
+
+// download without leaving the page
+function postIt(url, data) {
+    $('#jQueryPostItForm').remove();
+    $('body').append($('<form/>', {
+        id: 'jQueryPostItForm',
+        method: 'POST',
+        action: url
+    }));
+    for (var i in data) {
+        if (data.hasOwnProperty(i)) {
+            $('#jQueryPostItForm').append($('<input/>', {
+                type: 'hidden',
+                name: i,
+                value: data[i]
+            }));
+        }
+    }
+    $('#jQueryPostItForm').submit();
 }
 
 
@@ -454,9 +397,12 @@ function setOriginalValues(table_id) {
 
 function growl(title, interval, pos) {
     pos = pos || "center";
+
     var growlDialog = $('<div />').attr('title', title).dialog({
         hide: "fade",
-        position: pos
+        position: pos,
+        width: 400,
+        height: "auto"
     }).fadeOut(0);
     if (interval >= 100) {
         setTimeout(function() { growlDialog.dialog("close"); }, interval);
@@ -627,8 +573,8 @@ function folderize(json, appendElement) {
                         }
                         $('#imagebox #imageurl').html($(this).attr('url'));
                         
-                        $('li.file.selected').removeClass('selected');
-                        $(this).addClass('selected');
+                        $('li.file.ui-selected').removeClass('ui-selected');
+                        $(this).addClass('ui-selected');
                         $(this).siblings('li').addClass('closed').find('li').addClass('closed');
                     });
         } else {
@@ -638,6 +584,7 @@ function folderize(json, appendElement) {
             var shortName = splitName[splitName.length - 1];
             
             theItem .html('<span>' + shortName + '</span>')
+                    .attr('url', folder)
                     .addClass('folder closed')
                     .data('contents', contents)
                     .click( function() {
@@ -652,6 +599,9 @@ function folderize(json, appendElement) {
 
     appendElement.append( theFolder );
     $('#finder > ul').css('margin-left', 0); // fix first ul
+    /*$('#finder li.folder > ul').selectable({
+        filter: "li.file"
+    });*/
     $('#imagebox audio, #imagebox video, #imagebox img').hide();
 }
 

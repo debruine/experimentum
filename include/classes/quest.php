@@ -307,7 +307,7 @@ class formElement {
     public $custom_input = '';
     public $required = false;
     
-    function __construct($id, $variable_name, $current_value='') {
+    function __construct($id = '', $variable_name = '', $current_value='') {
         $this->id = $id;
         $this->set_name($variable_name);
         $this->set_value($current_value);

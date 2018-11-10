@@ -108,7 +108,7 @@ PAGE BODY and LAYOUT
 
 body {
     font-family:"Fira Code", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
-    font-size:120%; 
+    font-size:100%; 
     color:<?= $text ?>;
     background-color: <?= $bgcolor ?>;
     width:100%;
@@ -180,6 +180,7 @@ ul#login_info {
 ul#login_info li label { display: block; text-align: left; }
 ul#login_info li input { display: block; text-align: left; }
 
+/*
 #loginbox {
     text-align: left;
     display: none;
@@ -194,6 +195,7 @@ ul#login_info li input { display: block; text-align: left; }
     width: 100%;
     font-size: 200%;
 }
+*/
 
 #login_error {
     display: none;
@@ -904,9 +906,11 @@ tr.chosen1 img {
     padding-left: 30px; 
     background: hsl(200, 100%, 20%) 5px center no-repeat url("/images/finder/folder_arrow_grey"); 
     color: white;
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; user-select: none;
+    min-height: 1.6em;
 }
 
-#finder li.image:hover, #finder li.folder.closed:hover {
+#finder li.file:hover, #finder li.folder.closed:hover {
     background-color: rgb(212,212,212);
 }
 
@@ -919,9 +923,9 @@ tr.chosen1 img {
     display: none;
 }
 
-#finder li.image, #finder li.audio, #finder li.video {
-    background: transparent 5px center no-repeat;
-    background-size: contain;
+#finder li.file {
+    background: transparent 5px 0px no-repeat;
+    background-size: auto 1.5em;
     color: #333; 
 }
 
@@ -937,10 +941,16 @@ tr.chosen1 img {
     background-image: url("/images/finder/videoicon?h=<?= THEME_HUE ?>");
 }
 
-#finder li.image.selected,
-#finder li.audio.selected,
-#finder li.video.selected {
+#finder li.file.ui-selected {
     background-color: hsl(60, 100%, 90%);
+}
+
+#finder li.file.ui-selecting {
+    background-color: rgb(212,212,212);
+}
+
+#finder li.file.ui-unselecting {
+    /*background-color: hsl(0, 100%, 90%);*/
 }
 
 #imagebox {position: fixed; right: 50px; }
@@ -1075,7 +1085,7 @@ table.ranking {
 
 tr.ranking {
     cursor: url(/images/linearicons/up-down), move;
-    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none;
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select: none; user-select: none;
 }
 
 td.handle {
@@ -1275,6 +1285,11 @@ table.fb_chart {
 .graph5 { background-color: #06C; }
 .graph6 { background-color: #00C; }
 .graph7 { background-color: #609; }
+
+table.info {
+    margin-bottom: 1em; 
+    width: 100%;
+}
 
 /*-------------------------------------------------
 EXPERIMENT STYLES

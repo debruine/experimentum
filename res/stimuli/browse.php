@@ -58,11 +58,11 @@ $(function() {
             // unselect selected folders
             $openFolder.find('li.folder.selected').removeClass('selected'); 
     
-            var $allfiles = $openFolder.find('> ul > li.image:visible');
+            var $allfiles = $openFolder.find('> ul > li.file:visible');
             console.log($allfiles);
-            if ($allfiles.length == $allfiles.filter('.selected').length) {
+            if ($allfiles.length == $allfiles.filter('.ui-selected').length) {
                 // all files are already selected, so unselect instead
-                $finder.find('li.file').removeClass('selected');
+                $finder.find('li.file').removeClass('ui-selected');
             } else {
                 $allfiles.addClass('selected');
             }

@@ -110,9 +110,12 @@ if (array_key_exists('find', $_GET)) {
 
 // reset password
 if (array_key_exists("resetpswd", $_GET)) {
-    $query = new myQuery("UPDATE user set password=MD5(username) WHERE user_id={$_POST[id]}");
+    $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ123456789123456789";
+    $password = substr(str_shuffle($chars),0,10);
+    
+    $query = new myQuery("UPDATE user set password=MD5('{$password}') WHERE user_id={$_POST[id]}");
     if ($query->get_affected_rows() > 0) {
-        echo "Password changed to username";
+        echo "Password changed to: $password";
     } else {
         echo 'Error--password not changed';
     }
@@ -160,6 +163,8 @@ $page->displayBody();
     <button id='resetpswd'>reset password</button>
     <!--<button id='changecode'>change code</button>-->
 </div>
+
+<p id="msgtext"></p>
     
 <dl id="userinfo">
     <dt>Sex:</dt><dd id='sex'></dd>
@@ -185,6 +190,7 @@ $(function() {
     $('.buttonset').buttonset();
     $('#finduser').click( function() {
         if ($('#finduser span').html() == 'reset search') {
+            $('#msgtext').html("");
             $('#id,#code,#username').val('');
             $('#userinfo,#show_comp_tables').hide();
             $('#finduser span').html('find user');
@@ -200,6 +206,7 @@ $(function() {
                 type: 'POST',
                 dataType: 'json',
                 success: function(data) {
+                    $('#msgtext').html("");
                     if (data.userlist) {
                         var userlist = $('<select id="userlist" />');
                         
@@ -251,7 +258,7 @@ $(function() {
             data: $('#id').serialize(),
             type: 'POST',
             success: function(data) {
-                growl(data, 2000);
+                $('#msgtext').html(data);
             }
         });
     }).button({disabled: true});
@@ -262,7 +269,7 @@ $(function() {
             data: $('.usersearch input').serialize(),
             type: 'POST',
             success: function(data) {
-                growl(data, 2000);
+                $('#msgtext').html(data);
             }
         });
     }).button({disabled: true});

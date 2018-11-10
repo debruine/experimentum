@@ -353,10 +353,9 @@ CREATE TABLE `dashboard` (
 DROP TABLE IF EXISTS `downloads`;
 CREATE TABLE `downloads` (
   `user_id` int(11) DEFAULT NULL,
-  `type` enum('exp','quest') DEFAULT NULL,
+  `type` enum('exp','quest','set','project') DEFAULT NULL,
   `id` int(11) DEFAULT NULL,
-  `dt` datetime DEFAULT NULL,
-  UNIQUE KEY `user_id_type_id` (`user_id`,`type`,`id`)
+  `dt` datetime DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 

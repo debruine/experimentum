@@ -29,7 +29,7 @@ $_SESSION['debug'] = true;
 ?>
 
 <ul>
-    <li>All Statuses: <?= implode(", ", $ALL_STATUS) ?> is array <?= is_array($ALL_STATUS) ?></li>
+    <li>All Statuses: <?= implode(", ", $ALL_STATUS) ?></li>
     <li>Researcher Statuses: <?= implode(", ", $RES_STATUS) ?></li>
     <li>MySQL time: <?= $mysql_time ?></li>
     <li>PHP time: <?= $php_time ?></li>
@@ -41,8 +41,14 @@ $_SESSION['debug'] = true;
 </ul>
 
 <script>
-    $('#wwidth').html($(window).width());
-    $('#wheight').html($(window).height());
+    function windowdim() {
+        $('#wwidth').html($(window).width());
+        $('#wheight').html($(window).height());
+    }
+    
+    window.onresize = windowdim;
+    
+    windowdim();
 </script>
 
 <h2>$_SESSION Variables</h2>

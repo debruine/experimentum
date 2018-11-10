@@ -45,9 +45,9 @@ if (isset($_GET['username'])) {
     
     $username_check = new myQuery("SELECT username FROM user WHERE username='" . $clean['username'] . "' LIMIT 1");
     if ($username_check->get_num_rows() > 0) {
-        echo 'taken';
+        scriptReturn('taken');
     } else {
-        echo 'free';
+        scriptReturn('free');
     }
     exit;
 }

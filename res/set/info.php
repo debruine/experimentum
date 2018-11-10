@@ -2,6 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
+require_once DOC_ROOT . '/include/classes/Parsedown.php';
 auth($RES_STATUS);
 
 if (validID($_GET['id']) && !permit('sets', $_GET['id'])) header('Location: /res/');
@@ -210,11 +211,22 @@ $myset = new myQuery('SELECT * FROM sets WHERE id=' . $set_id);
 
 if ($myset->get_num_rows() == 0) { header('Location: /res/set/'); }
 
-$setdata = $myset->get_one_array();
+$itemdata = $myset->get_one_array();
+
+// convert markdown sections
+$Parsedown = new Parsedown();
+$itemdata['feedback_general'] = $Parsedown->text($itemdata['feedback_general']);
+$itemdata['feedback_specific'] = $Parsedown->text($itemdata['feedback_specific']);
+
+$itemdata['sex'] = array(
+    'both' => 'All genders',
+    'male' => 'Men only',
+    'female' => 'Women only'
+)[$itemdata['sex']];
 
 // get status changer for admins
 if ($_SESSION['status'] == 'admin') {
-    $status_chooser = new select('status', 'status', $setdata['status']);
+    $status_chooser = new select('status', 'status', $itemdata['status']);
     $status_chooser->set_options(array(
         'test' => 'test',
         'active' => 'active',
@@ -223,7 +235,7 @@ if ($_SESSION['status'] == 'admin') {
     $status_chooser->set_null(false);
     $status = $status_chooser->get_element();
 } else {
-    $status = '(' . $setdata['status'] . ')';
+    $status = '(' . $itemdata['status'] . ')';
 }
 
 // owner functions
@@ -324,7 +336,7 @@ $page->displayBody();
 
 ?>
 
-<h2>Set <?= $setdata['id'] ?>: <?= $setdata['res_name'] ?> <?= $status ?></h2>
+<h2>Set <?= $itemdata['id'] ?>: <?= $itemdata['res_name'] ?></h2>
 
 <div class='toolbar'>
     <div id="function_buttonset">
@@ -332,18 +344,16 @@ $page->displayBody();
             echo '<button id="edit-set">Edit</button>';
             echo '<button id="delete-set">Delete</button>';
             echo '<button id="duplicate-set">Duplicate</button>';
+            echo '<button id="get-json">Structure</button>';
         } ?><button id="test-set">Test</button>
     </div>
 </div>
 
-<table> 
-    <tr><td>Name:</td><td><?= $setdata['name'] ?></td></tr>
-    <tr><td>Type:</td><td><?= $types[$setdata['type']] ?></td></tr>
-    <tr><td>Restrictions:</td><td><?= $setdata['sex'] ?> 
-        ages <?= is_null($setdata['lower_age']) ? 'any' : $setdata['lower_age'] ?> 
-        to <?= is_null($setdata['upper_age']) ? 'any' : $setdata['upper_age'] ?> years</td></tr>
-    <tr><td>Labnotes:</td><td><?= ifEmpty($setdata['labnotes'], '<span class="potential-error">Please add labnotes</span>') ?></td></tr>
-    <tr><td>Created on:</td><td><?= $setdata['create_date'] ?></td></tr>
+<table class='info'> 
+    <tr><td>Name:</td><td><?= $itemdata['name'] ?></td></tr>
+    <tr><td>Status:</td> <td><?= $status ?></td></tr>
+    <tr><td>Created on:</td><td><?= $itemdata['create_date'] ?></td></tr>
+    <tr><td>Type:</td><td><?= $types[$itemdata['type']] ?></td></tr>
     <tr><td>Owners:<br><?php if ($_SESSION['status'] != 'student') { echo '<button class="tinybutton"  id="owner-change">Change</button>'; } ?></td> 
         <td>
             <ul id='owner-edit'>
@@ -353,7 +363,11 @@ $page->displayBody();
             <input id='owner-add-input' type='text' > (<a id='owner-add'>add</a>)
             <?php } ?>
         </td></tr>
-    <tr><td>Feedback:</td><td><?= $setdata['feedback_general'] ?><br /><?= $setdata['feedback_specific'] ?></td></tr>
+    <tr><td>Restrictions:</td><td><?= $itemdata['sex'] ?> 
+        ages <?= is_null($itemdata['lower_age']) ? 'any' : $itemdata['lower_age'] ?> 
+        to <?= is_null($itemdata['upper_age']) ? 'any' : $itemdata['upper_age'] ?> years</td></tr>
+    <tr><td>Feedback:</td><td><?= $itemdata['feedback_general'] ?><br /><?= $itemdata['feedback_specific'] ?></td></tr>
+    <tr><td>Labnotes:</td><td><?= ifEmpty($itemdata['labnotes'], '<span class="error">Please add labnotes</span>') ?></td></tr>
 </table>
 
 <table id="setitems">
@@ -407,10 +421,10 @@ $page->displayBody();
         $('#function_buttonset').buttonset();
         
         $( "#view-set" ).click(function() {
-            window.location = '/include/scripts/set?id=<?= $setdata['id'] ?>';
+            window.location = '/include/scripts/set?id=<?= $itemdata['id'] ?>';
         });
         $( "#edit-set" ).click(function() {
-            window.location = '/res/set/builder?id=<?= $setdata['id'] ?>';
+            window.location = '/res/set/builder?id=<?= $itemdata['id'] ?>';
         });
         $( "#delete-set" ).click( function() {
             $( "<div/>").html("Do you really want to delete this set?").dialog({
@@ -423,7 +437,7 @@ $page->displayBody();
                     },
                     "Delete": function() {
                         $( this ).dialog( "close" );
-                        $.get("?delete&id=<?= $setdata['id'] ?>", function(data) {
+                        $.get("?delete&id=<?= $itemdata['id'] ?>", function(data) {
                             if (data == 'deleted') {
                                 window.location = '/res/set/';
                             } else {
@@ -446,7 +460,7 @@ $page->displayBody();
                     },
                     "Duplicate": function() {
                         $( this ).dialog( "close" );
-                        $.get("?duplicate&id=<?= $setdata['id'] ?>", function(data) {
+                        $.get("?duplicate&id=<?= $itemdata['id'] ?>", function(data) {
                             var resp = data.split(':');
                             if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
                                 window.location = '/res/set/info?id=' + resp[1];
@@ -456,6 +470,13 @@ $page->displayBody();
                         });
                     },
                 }
+            });
+        });
+        
+        $( "#get-json" ).click(function() { 
+            postIt('/res/scripts/get_json', {
+                table: 'sets',
+                id: <?= $itemdata['id'] ?>
             });
         });
         
@@ -469,10 +490,10 @@ $page->displayBody();
                 data: {
                     type: 'sets',
                     status: $sel.val(),
-                    id: <?= $setdata['id'] ?>
+                    id: <?= $itemdata['id'] ?>
                 },
                 success: function(data) {
-                    if (data == 'Status of sets_<?= $setdata['id'] ?> changed to '+ $sel.val() ) {
+                    if (data == 'Status of sets_<?= $itemdata['id'] ?> changed to '+ $sel.val() ) {
                         $sel.css('color', 'inherit');
                     } else {
                         growl(data, 30);
@@ -483,7 +504,7 @@ $page->displayBody();
         
         $('#test-set').button().click( function() {
             $.ajax({
-                url: '/include/scripts/set?test&id=<?= $setdata['id'] ?>',
+                url: '/include/scripts/set?test&id=<?= $itemdata['id'] ?>',
                 type: 'GET',
                 success: function(data) {
                     if (data) $('<div title="Sample Order" />').html(data).dialog();
@@ -530,7 +551,7 @@ $page->displayBody();
                         $('#total_men').html(totals.men + " (" + totals.mend + ")");
                         $('#total_women').html(totals.women + " (" + totals.womend + ")");
                         
-                        if (<?= (substr($setdata['type'],0,3)=='one') ? 'true' : 'false' ?>) {
+                        if (<?= (substr($itemdata['type'],0,3)=='one') ? 'true' : 'false' ?>) {
                             $('#total_median').html(parseInt(totals.median/items.length)/10 + ' min');
                             $('#total_upper').html(parseInt(totals.upper/items.length)/10 + ' min');
                         } else {
@@ -614,7 +635,7 @@ $page->displayBody();
                 type: 'POST',
                 data: {
                     type: 'sets',
-                    id: <?= $setdata['id'] ?>,
+                    id: <?= $itemdata['id'] ?>,
                     add: to_add,
                     delete: to_delete
                 },

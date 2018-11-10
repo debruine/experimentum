@@ -328,6 +328,8 @@ class experiment {
     
     function get_javascript() {
         $text =         '<script>' . ENDLINE;
+        $text .=        '    window.onbeforeunload = function() {return "Using the back button will reset this experiment"; }' . ENDLINE;
+        
         
         if (array_key_exists('go', $_GET)) { 
             $text .=     '    $(function() { beginExp(); });' . ENDTAG; 
@@ -365,6 +367,7 @@ class experiment {
                         '    }' . ENDTAG .
                         
                         '    function noConsent() {' . ENDLINE .
+                        '        window.onbeforeunload = function() {};' . ENDLINE .
                         '        window.location.href="/";' . ENDLINE .
                         '    }' . ENDTAG;
 
@@ -531,6 +534,7 @@ class experiment {
                            '                    if (r.substr(0,1) != "/") {' . ENDLINE .
                            '                        alert(r);' . ENDLINE .
                            '                    } else {' . ENDLINE .
+                           '                        window.onbeforeunload = function() {};' . ENDLINE .
                            '                        window.location.href=r;' . ENDLINE .
                            '                    }' . ENDLINE .
                            '                }' . ENDLINE .
@@ -569,6 +573,7 @@ class experiment {
                            '            success: function(r) {' . ENDLINE .
                            '                // send to feedback page' . ENDLINE .
                            '                if (r.substr(0,1) == "/") {' . ENDLINE .
+                           '                    window.onbeforeunload = function() {};' . ENDLINE .
                            '                    window.location.href=r;' . ENDLINE .
                            '                }' . ENDLINE .
                            '            }' . ENDLINE .
@@ -1543,6 +1548,7 @@ class exp_adaptation extends exp_buttons {
             
                         '                $.get(url, function(r) {' . ENDLINE .
                         '                    // send to feedback page' . ENDLINE .
+                        '                    window.onbeforeunload = function() {};' . ENDLINE .
                         '                    window.location.href="/fb?type=exp&id=' . $this->id . '";' . ENDLINE .
                         '                });' . ENDLINE .
                         '            }' . ENDLINE .

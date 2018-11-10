@@ -47,22 +47,18 @@ $page->displayBody();
 <div>
 <p>Yes. Just click on <a href="/my">My Account</a>. You can change your username 
     to any unused name. This will not affect the experiments you&#39;ve already done. 
-    The form allows you to change your password or your password retrieval question 
-    and answer. You can also change your birthdate or sex if you entered them 
-    incorrectly when registering. Having accurate information about your age and sex 
-    are very important to our scientific research.</p>
+    The form allows you to change your password. You can also change your birthdate 
+    or sex if you entered them incorrectly when registering. Having accurate 
+    information about your age and sex are very important to our scientific research.</p>
 </div>
 
 
 <h2><a href="#">Can I retrieve my password if I forgot it?</a></h2>
 <div>	
-<p>Yes. Just fill out this <a href="password.php">password retrieval form</a>. 
-    You will have to correctly answer your password retrieval question.</p>
-<p>If you have not yet set your password retrieval question and answer, you can 
-    do so at <a href="/my">My Account</a> if you are logged in. Unfortunately, 
-    this won&#39;t help if you can&#39;t remember your password. You can e-mail 
-    us with your username and IP address and we can see what we can do. Otherwise, 
-    you may just have to register using a different username.</p>
+<p>No. We protect user anonymity, so we do not collect email or IP addresses. Therefore,
+    there is no way to securely retrieve your account details. If you are participating 
+    in a long-term study, please contact the experimenter. Otherwise, you can just 
+    make a new account.</p>
 </div>
 
 <h2><a href="#">Where do you get your great icons?</a></h2>
@@ -73,12 +69,8 @@ $page->displayBody();
 </div>
 
 
-
 <h2><a href="#">Do I need a particular browser to view your website?</a></h2>
 <div>
-<p>Some people are reporting problems with questionnaires on some versions of 
-    Chrome for Windows. We are working to fix this, but you should be able to 
-    access the studies with FireFox in the meantime.</p>
 <p>We have worked hard to make sure that this website is accessible to 
     all people using visual browsers (we are working on better support for 
     audio-only browsers to access the parts of this website that do not 
@@ -109,11 +101,9 @@ $page->displayBody();
 
 <h2><a href="#">What do we do with your data?</a></h2>
 <div>
-<p>All of your responses are confidential and anonymous. Although we will 
-    present average results for our tests, we will never make the answers of a 
-    single person public in a way where they can be identified. Your data are 
-    stored on a secure server and we will never ask for identifying data, such 
-    as your email address, in a way that can link it to your user data. If you 
+<p>All of your responses are confidential and anonymous. Your data are 
+    stored on a secure server and this website will never ask for identifying data, 
+    such as your email address, in a way that can link it to your user data. If you 
     have any concerns about the security or the use of your data, do not hesitate 
     to contact us.</p>
 </div>

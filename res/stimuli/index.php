@@ -25,7 +25,7 @@ $links = array();
 
 //$links['search'] = 'Search';
 $links['browse'] = 'Browse';
-$links['upload'] = 'Upload';
+//$links['upload'] = 'Upload';
 $links['icons'] = 'Icons';
 
 $classes = array(
@@ -34,6 +34,8 @@ $classes = array(
 	'upload' => 'upload',
 	'icons' => 'icons'
 );
+
+echo "<p>You will be able to upload your own stimuli again soon<br>(Lisa added file deletion and messed everything up 🤦‍♀️)</p>";
 
 echo linkList($links, 'bigbuttons', 'ul', $classes);
 
