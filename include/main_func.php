@@ -282,6 +282,7 @@
 
     // check if user has permission to access an item
     function permit($type, $id) {
+        if ($type=='set') $type = 'sets';
         if (!in_array($type, array('exp', 'quest', 'sets', 'project'))) return false;
         
         // admins have access to everything

@@ -276,8 +276,8 @@ $page->displayBody();
     <div id="function_buttonset"><?php
         echo '<button id="view-item">Go</button>';
         echo '<button id="edit-item">Edit</button>';
-        echo '<button id="delete-exp">Delete</button>';
-        echo '<button id="duplicate-exp">Duplicate</button>';
+        echo '<button id="delete-item">Delete</button>';
+        echo '<button id="duplicate-item">Duplicate</button>';
         echo '<button id="data-download">Data</button>';
         echo '<button id="get-json">Structure</button>';
     ?></div>
@@ -430,7 +430,6 @@ foreach ($trials as $t) {
         } else if ($t['rtype'] == 'audio') {
             $shortname = str_replace($common_path, '',$t['right_stim']);
             echo "            0: $shortname<br><audio controls>
-                    <source src='{$t['right_stim']}.ogg' type='audio/ogg' autoplay='false' />
                     <source src='{$t['right_stim']}.mp3' type='audio/mp3' autoplay='false' />
                 </audio><br>" . ENDLINE;
         } else if ($t['rtype'] == 'video') {
@@ -488,58 +487,6 @@ foreach ($trials as $t) {
     });
     $( "#edit-adapt" ).click(function() {
         window.location = '/res/exp/adapt?id=' + $('#item_id').val();
-    });
-    
-    $( "#delete-exp" ).click( function() {
-        $( "<div/>").html("Do you really want to delete this experiment?").dialog({
-            title: "Delete Experiment",
-            position: ['center', 100],
-            modal: true,
-            buttons: {
-                Cancel: function() {
-                    $( this ).dialog( "close" );
-                },
-                "Delete": function() {
-                    $( this ).dialog( "close" );
-                    $.get("/res/scripts/delete_exp?id=" + $('#item_id').val(), function(data) {
-                        if (data == 'deleted') {
-                            window.location = '/res/exp/';
-                        } else {
-                            $('<div title="Problem with Deletion" />').html(data).dialog();
-                        }
-                    });
-                },
-            }
-        });
-    });
-    
-    $( "#duplicate-exp" ).click( function() {
-        $( "<div/>").html("Do you really want to duplicate this experiment?").dialog({
-            title: "Duplicate Experiment",
-            position: ['center', 100],
-            modal: true,
-            buttons: {
-                Cancel: function() {
-                    $( this ).dialog( "close" );
-                },
-                "Duplicate": function() {
-                    $( this ).dialog( "close" );
-                    $.ajax({
-                        url: "/res/scripts/exp_duplicate",
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {id: $('#item_id').val()},
-                        success: function(data) {
-                            if (!data.error) {
-                                window.location = '/res/exp/info?id=' + data.new_id;
-                            } else {
-                                $('<div title="Problem with Duplication" />').html(data.error).dialog();
-                            }
-                        }
-                    });
-                },
-            }
-        });
     });
         
     $( "#image_list_toggle" ).buttonset();

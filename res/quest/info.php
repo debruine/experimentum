@@ -19,104 +19,6 @@ $styles = array(
     '.question_info' => 'margin-bottom: 1em; width: 100%;'
 );
 
-// !AJAX duplicate questionnaire
-if (array_key_exists('duplicate', $_GET) && validID($_GET['id'])) {
-    $old_id = $_GET['id'];
-    
-    // duplicate quest table entry
-    $q = new myQuery('SELECT * FROM quest WHERE id=' . $old_id);
-    $old_info = $q->get_one_array();
-    unset($old_info['id']);
-    unset($old_info['res_name']);
-    unset($old_info['status']);
-    unset($old_info['create_date']);
-    $fields = array_keys($old_info);
-    
-    $query = sprintf("INSERT INTO quest (create_date, status, res_name, %s) 
-        SELECT NOW(), 'test', CONCAT(res_name, ' (Duplicate)'), %s 
-        FROM quest WHERE id='%d'",
-        implode(", ", $fields),
-        implode(", ", $fields),
-        $old_id
-    );
-    $q = new myQuery($query);
-    $new_id = $q->get_insert_id();
-    
-    if (!validID($new_id)) {
-        echo "The questionnaire did not duplicate. The query was <blockquote>$query</blockquote>";
-        exit;
-    }
-    
-    $q = new myQuery("UPDATE quest SET feedback_query=REPLACE(feedback_query, 'quest_{$old_id}', 'quest_{$new_id}') WHERE id='{$new_id}'");
-    
-    $q = new myQuery("SELECT * FROM question WHERE quest_id={$old_id}");
-    $questions = $q->get_assoc();
-    if (count($questions) > 0) {
-        // get fields for question table
-        $fields = array_keys($questions[0]);
-        $fields = array_diff($fields, array('quest_id', 'id'));
-        
-        // get fields for options table
-        $q = new myQuery("SELECT * FROM options LIMIT 1");
-        $options = $q->get_one_array();
-        unset($options['q_id']);
-        unset($options['quest_id']);
-        $option_fields = array_keys($options);
-        
-        // set array for translating old to new
-        $old_to_new = array();
-        
-        // replace each question and set associated options
-        foreach ($questions as $question) {
-            $old_qid = $question['id'];
-        
-            $query = sprintf("INSERT INTO question (quest_id, %s) 
-                SELECT %d, %s 
-                FROM question WHERE id='%d' AND quest_id='%d'",
-                implode(", ", $fields),
-                $new_id,
-                implode(", ", $fields),
-                $old_qid,
-                $old_id
-            );
-            $q = new myQuery($query);
-            $new_qid = $q->get_insert_id();
-            
-            $old_to_new['q' . $old_qid] = 'q' . $new_qid;
-            
-            $query = sprintf("INSERT INTO options (q_id, quest_id, %s) 
-                SELECT %d, %d, %s 
-                FROM options WHERE q_id='%d' AND quest_id='%d'",
-                implode(", ", $option_fields),
-                $new_qid,
-                $new_id,
-                implode(", ", $option_fields),
-                $old_qid,
-                $old_id
-            );
-            $q = new myQuery($query);
-        }
-    }
-    
-    // duplicate tables
-    duplicateTable("radiorow_options", 'quest', $old_id, $new_id);
-    
-    // duplicate data table
-    $q = new myQuery("DESC quest_{$old_id}");
-    $table_schema = $q->get_assoc(false, 'Field', 'Type');
-    unset($table_schema['id']);
-    unset($table_schema['user_id']);
-    unset($table_schema['starttime']);
-    unset($table_schema['endtime']);
-    
-    // set owner/access
-    $q = new myQuery("INSERT INTO access (type, id, user_id) VALUES ('quest', $new_id, {$_SESSION['user_id']})");
-
-    echo "duplicated:$new_id";
-    exit;
-}
-
-
 /****************************************************
  * Get questionnaire Data
  ***************************************************/
@@ -284,8 +186,8 @@ $page->displayBody();
     <div id="function_buttonset"><?php
         echo '<button id="view-item">Go</button>';
         echo '<button id="edit-item">Edit</button>';
-        echo '<button id="delete-quest">Delete</button>';
-        echo '<button id="duplicate-quest">Duplicate</button>';
+        echo '<button id="delete-item">Delete</button>';
+        echo '<button id="duplicate-item">Duplicate</button>';
         echo '<button id="data-download">Data</button>';
         echo '<button id="get-json">Structure</button>';
     ?></div>
@@ -367,53 +269,6 @@ $page->displayBody();
     } else {
         $('#time_container').hide();
     }
-
-    $( "#delete-quest" ).click( function() {
-        $( "<div/>").html("Do you really want to delete this questionnaire?").dialog({
-            title: "Delete questionnaire",
-            position: ['center', 100],
-            modal: true,
-            buttons: {
-                Cancel: function() {
-                    $( this ).dialog( "close" );
-                },
-                "Delete": function() {
-                    $( this ).dialog( "close" );
-                    $.get("/res/scripts/delete_quest?id=" + $('#item_id').val(), function(data) {
-                        if (data == 'deleted') {
-                            window.location = '/res/quest/';
-                        } else {
-                            $('<div title="Problem with Deletion" />').html(data).dialog();
-                        }
-                    });
-                },
-            }
-        });
-    });
-    
-    $( "#duplicate-quest" ).click( function() {
-        $( "<div/>").html("Do you really want to duplicate this questionnaire?").dialog({
-            title: "Duplicate Questionnaire",
-            position: ['center', 100],
-            modal: true,
-            buttons: {
-                Cancel: function() {
-                    $( this ).dialog( "close" );
-                },
-                "Duplicate": function() {
-                    $( this ).dialog( "close" );
-                    $.get("?duplicate&id=<?= $itemdata['id'] ?>", function(data) {
-                        var resp = data.split(':');
-                        if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
-                            window.location = '/res/quest/info?id=' + resp[1];
-                        } else {
-                            $('<div title="Problem with Duplication" />').html(data).dialog();
-                        }
-                    });
-                },
-            }
-        });
-    });
     
     $('#owner-add-input').autocomplete({
         source: [<?= implode(",", $ownerlist) ?>],

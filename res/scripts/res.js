@@ -68,6 +68,76 @@ $( "#status" ).css('fontWeight', 'normal').change( function() {
     });
 });
 
+$( "#delete-item" ).click( function() {
+    var type = $('#item_type').val();
+    
+    $( "<div/>").html("Do you really want to delete this item?").dialog({
+        title: "Delete Item",
+        position: ['center', 100],
+        modal: true,
+        buttons: {
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            },
+            "Delete": function() {
+                $( this ).dialog( "close" );
+                $.ajax({
+                    url: "/res/scripts/item_delete",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        type: $('#item_type').val(),
+                        id: $('#item_id').val()
+                    },
+                    success: function(data) {
+                        if (!data.error) {
+                            type = (type=="sets") ? "set" : type;
+                            window.location = '/res/'+ type +'/';
+                        } else {
+                            $('<div title="Problem with Deletion" />').html(data.error).dialog();
+                        }
+                    }
+                });
+            },
+        }
+    });
+});
+
+$( "#duplicate-item" ).click( function() {
+    var type = $('#item_type').val();
+    
+    $( "<div/>").html("Do you really want to duplicate this item?").dialog({
+        title: "Duplicate Item",
+        position: ['center', 100],
+        modal: true,
+        buttons: {
+            Cancel: function() {
+                $( this ).dialog( "close" );
+            },
+            "Duplicate": function() {
+                $( this ).dialog( "close" );
+                $.ajax({
+                    url: "/res/scripts/item_duplicate",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        type: type,
+                        id: $('#item_id').val()
+                    },
+                    success: function(data) {
+                        if (!data.error) {
+                            type = (type=="sets") ? "set" : type;
+                            window.location = '/res/'+ type +'/info?id=' + data.new_id;
+                        } else {
+                            $('<div title="Problem with Duplication" />').html(data.error).dialog();
+                        }
+                    }
+                });
+            },
+        }
+    });
+});
+
 
 $( "#owner-add" ).click( function() {
     var owner_id = $('#owner-add-input').data('id');

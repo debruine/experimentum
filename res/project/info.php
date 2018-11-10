@@ -24,57 +24,6 @@ $styles = array(
     ".potential-error" => "color: hsl(0, 100%, 40%);"
 );
 
-// !AJAX delete set
-if (array_key_exists('delete', $_GET)) {
-    $item_id = intval($_GET['id']);
-    $delete = new myQuery("DELETE FROM project WHERE id=$item_id;
-                        DELETE FROM access WHERE type='project' AND id=$item_id;
-                        DELETE FROM dashboard WHERE type='project' AND id=$item_id;
-                        DELETE FROM project_items WHERE project_id=$item_id;",
-                        true);
-    
-    echo 'deleted';
-    exit;
-}
-
-// !AJAX duplicate set
-if (array_key_exists('duplicate', $_GET) && validID($_GET['id'])) {
-    $old_id = $_GET['id'];
-    
-    // duplicate exp table entry
-    $q = new myQuery('SELECT * FROM project WHERE id=' . $old_id);
-    $old_info = $q->get_one_array();
-    unset($old_info['id']);
-    unset($old_info['res_name']);
-    unset($old_info['status']);
-    unset($old_info['create_date']);
-    $fields = array_keys($old_info);
-    
-    $query = sprintf("INSERT INTO project (create_date, status, res_name, %s) 
-        SELECT NOW(), 'test', CONCAT(res_name, ' (Duplicate)'), %s 
-        FROM project WHERE id='%d'",
-        implode(", ", $fields),
-        implode(", ", $fields),
-        $old_id
-    );
-    $q = new myQuery($query);
-    $new_id = $q->get_insert_id();
-    
-    if (!validID($new_id)) {
-        echo "The project did not duplicate. The query was <blockquote>$query</blockquote>";
-        exit;
-    }
-    
-    // duplicate tables
-    duplicateTable("project_items", 'project', $old_id, $new_id);
-    
-    // set owner/access
-    $q = new myQuery("INSERT INTO access (type, id, user_id) VALUES ('project', $new_id, {$_SESSION['user_id']})");
-
-    
-    echo "duplicated:$new_id";
-    exit;
-}
 
 /***************************************************/
 /* !Get Project Data */
@@ -268,8 +217,8 @@ $page->displayBody();
     <div id="function_buttonset"><?php
         echo '<button id="view-project">Go</button>';
         echo '<button id="edit-item">Edit</button>';
-        echo '<button id="delete-project">Delete</button>';
-        echo '<button id="duplicate-project">Duplicate</button>';
+        echo '<button id="delete-item">Delete</button>';
+        echo '<button id="duplicate-item">Duplicate</button>';
         echo '<button id="download-exp">Exp Data</button>';
         echo '<button id="download-quest">Quest Data</button>';
         echo '<button id="get-json">Structure</button>';
@@ -356,52 +305,6 @@ $page->displayBody();
     $(function() {
         $( "#view-project" ).click(function() {
             window.location = '/project?' + $('#url').text();
-        });
-        $( "#delete-project" ).click( function() {
-            $( "<div/>").html("Do you really want to delete this project?").dialog({
-                title: "Delete Project",
-                position: ['center', 100],
-                modal: true,
-                buttons: {
-                    Cancel: function() {
-                        $( this ).dialog( "close" );
-                    },
-                    "Delete": function() {
-                        $( this ).dialog( "close" );
-                        $.get('?delete&id=' + $('#item_id').val(), function(data) {
-                            if (data == 'deleted') {
-                                window.location = '/res/project/';
-                            } else {
-                                $('<div title="Problem with Deletion" />').html(data).dialog();
-                            }
-                        });
-                    },
-                }
-            });
-        });
-        
-        $( "#duplicate-project" ).click( function() {
-            $( "<div/>").html("Do you really want to duplicate this project?").dialog({
-                title: "Duplicate Project",
-                position: ['center', 100],
-                modal: true,
-                buttons: {
-                    Cancel: function() {
-                        $( this ).dialog( "close" );
-                    },
-                    "Duplicate": function() {
-                        $( this ).dialog( "close" );
-                        $.get('?duplicate&id=' + $('#item_id').val(), function(data) {
-                            var resp = data.split(':');
-                            if (resp[0] == 'duplicated' && parseInt(resp[1]) > 1) {
-                                window.location = '/res/project/info?id=' + resp[1];
-                            } else {
-                                $('<div title="Problem with Duplication" />').html(data).dialog();
-                            }
-                        });
-                    },
-                }
-            });
         });
         
         $('span.set_nest').click( function() {

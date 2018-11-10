@@ -13,8 +13,9 @@ $title = array(
 );
 
 $styles = array(
-    '#myInformation_form'           => 'float:left; width: 35%; margin:0',
-    '.setlists'                     => 'font-size:85%; float:right; width: 30%; margin:1em 0 1em 1em;',
+    '#myInformation_form'           => 'width: 100%;',
+    '#myInformation_form td.question'  => 'max-width: 20em;',
+    '.setlists'                     => 'font-size:85%; float:left; width: 45%; margin:1em 0 1em 1em;',
     '.setlists h2, .setlists h3'    => 'padding:0',
     '.setlists ul, .setlists ol'    => 'height:400px; overflow:auto;',
     '.setlists ul'                  => 'box-shadow: 2px 2px 4px rgba(0,0,0,.5);',
@@ -23,15 +24,14 @@ $styles = array(
                                         border-radius: 0 .5em; float: right; 
                                         text-align: center; line-height: 1.2em; font-size:100%',
     '.setlists li.active .status'   => 'background-color: hsla(120,100%,50%, 50%);',
-    '.setlists li.archive .status' => 'background-color: hsla(120,0%,50%, 50%);',
+    '.setlists li.archive .status'  => 'background-color: hsla(120,0%,50%, 50%);',
     '.setlists li.test .status'     => 'background-color: hsla(0,100%,50%, 50%);',
     '.setlists li:hover'            => 'color:hsl(0, 100%, 40%); cursor:default;',
     '.setlists li+li'               => 'border-top:0;',
     '#new_set'                      => '',
     '#new_set li'                   => 'list-style-position: outside; margin-left:30px; cursor: url(/images/icons/ns-move), ns-resize;',
     '#labnotes'                     => 'vertical-align: text-top;',
-    '.search'                       => 'width: 94%; margin: 0 .5em;',
-    '#typeChanger'                  => 'float: right;'
+    '.search'                       => 'width: 94%; margin: 0 .5em;'
 );
 
 /****************************************************
@@ -148,7 +148,7 @@ if (array_key_exists('save', $_GET)) {
  * Set Table
  ***************************************************/
  
-$input_width = 250;
+$input_width = 550;
 
 $table_setup = array();
  
@@ -195,7 +195,7 @@ $table_setup['limits']->set_custom_input($ci);
 
 $table_setup['labnotes'] = new textarea('labnotes', 'labnotes', $set_info['labnotes']);
 $table_setup['labnotes']->set_question('Labnotes');
-$table_setup['labnotes']->set_dimensions($input_width, 18, true, 18, 300);
+$table_setup['labnotes']->set_dimensions($input_width, 50, true, 50, 300);
 
 $table_setup['feedback_general'] = new textarea('feedback_general', 'feedback_general', $set_info['feedback_general']);
 $table_setup['feedback_general']->set_question('General Feedback <div class="note">If blank, the feedback from the last item will be displayed to participants.</div>');
@@ -222,7 +222,23 @@ $form_table->set_title('Set Information');
 $form_table->set_action('');
 $form_table->set_questionList($table_setup);
 
-$q = new myQuery('SELECT id, res_name, status FROM sets ORDER BY id');
+$user_id = $_SESSION['user_id'];
+$is_admin = ($_SESSION['status'] == 'admin') ? "TRUE" : "FALSE";
+
+$q = new myQuery(
+     "SELECT sets.id, sets.res_name, sets.status
+        FROM access 
+        LEFT JOIN sets USING (id)
+       WHERE access.type='sets' 
+         AND (access.user_id=$user_id OR {$is_admin} OR
+           access.user_id IN (
+                SELECT supervisee_id 
+                  FROM supervise 
+                 WHERE supervisor_id=$user_id
+           )
+         )"
+);
+
 $sets = $q->get_assoc();
 foreach ($sets as $s) {
     $abr = ucwords(substr($s['status'], 0,1));
@@ -230,7 +246,19 @@ foreach ($sets as $s) {
                     <span class='status'>{$abr}</span></li>" . ENDLINE;
 }
 
-$q->set_query('SELECT id, res_name, status FROM exp ORDER BY id');
+$q = new myQuery(
+     "SELECT exp.id, exp.res_name, exp.status
+        FROM access 
+        LEFT JOIN exp USING (id)
+       WHERE access.type='exp' 
+         AND (access.user_id=$user_id OR {$is_admin} OR
+           access.user_id IN (
+                SELECT supervisee_id 
+                  FROM supervise 
+                 WHERE supervisor_id=$user_id
+           )
+         )"
+);
 $exps = $q->get_assoc();
 $exp_list = array();
 foreach ($exps as $s) {
@@ -239,7 +267,19 @@ foreach ($exps as $s) {
                     <span class='status'>{$abr}</span></li>" . ENDLINE;
 }
 
-$q->set_query('SELECT id, res_name, status FROM quest ORDER BY id');
+$q = new myQuery(
+     "SELECT quest.id, quest.res_name, quest.status
+        FROM access 
+        LEFT JOIN quest USING (id)
+       WHERE access.type='quest' 
+         AND (access.user_id=$user_id OR {$is_admin} OR
+           access.user_id IN (
+                SELECT supervisee_id 
+                  FROM supervise 
+                 WHERE supervisor_id=$user_id
+           )
+         )"
+);
 $quests = $q->get_assoc();
 $quest_list = array();
 foreach ($quests as $s) {
@@ -264,7 +304,11 @@ $page->displayBody();
 <div class='toolbar'>
     <button id='save-set'>Save</button>
     <button id='info-set'>Info</button>
-    
+</div>
+
+<?= $form_table->print_form() ?>
+
+<div class='toolbar'>
     <span id="typeChanger">View Items: 
         <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label><input 
         type="radio" id="viewQuest" name="typeChanger"><label for="viewQuest">Quest</label><input 
@@ -272,30 +316,28 @@ $page->displayBody();
     </span>
 </div>
 
-<?= $form_table->print_form() ?>
-
 <div class="setlists" id="expView">
-    <h2>Experiments</h2>
+    <h2>Available Experiments</h2>
     <h3 class="note">Click to add to Set List</h3>
-    <input type='text' class='search' onkeyup='search(this.value, "exp");' />
+    <input type='text' class='search' onkeyup='search(this.value, "exp");' placeholder="search" />
     <ul id="exp">
         <?= implode('', $exp_list) ?>
     </ul>
 </div>
 
 <div class="setlists" id="questView">
-    <h2>Questionnaires</h2>
+    <h2>Available Questionnaires</h2>
     <h3 class="note">Click to add to Set List</h3>
-    <input type='text' class='search' onkeyup='search(this.value, "quest");' />
+    <input type='text' class='search' onkeyup='search(this.value, "quest");' placeholder="search" />
     <ul id="quest">
         <?= implode('', $quest_list) ?>
     </ul>
 </div>
 
 <div class="setlists" id="setView"> 
-    <h2>Sets</h2>
+    <h2>Available Sets</h2>
     <h3 class="note">Click to add to Set List</h3>
-    <input type='text' class='search' onkeyup='search(this.value, "set");' />   
+    <input type='text' class='search' onkeyup='search(this.value, "set");' placeholder="search" />   
     <ul id="set">
         <?= implode('', $set_list) ?>
     </ul>

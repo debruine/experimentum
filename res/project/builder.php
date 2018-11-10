@@ -13,8 +13,9 @@ $title = array(
 );
 
 $styles = array(
-    '#myInformation_form'           => 'float:left; width: 35%; margin:0',
-    '.setlists'                     => 'font-size:85%; float:right; width: 30%; margin:1em 0 1em 1em;',
+    '#myInformation_form'           => 'width: 100%;',
+    '#myInformation_form td.question'  => 'max-width: 20em;',
+    '.setlists'                     => 'font-size:85%; float:left; width: 45%; margin:1em 0 1em 1em;',
     '#iconView li'                  => 'height: 45px; width: 45px; background: '. THEME .' no-repeat center center; float:left; margin: 2px; border: 1px solid white; overflow: hidden; color: rgba(0,0,0,0);',
     '#projectList li'               => 'min-height: 30px; padding-right: 30px; background-position: right center; background-repeat: no-repeat;',
     '.setlists h2, .setlists h3'    => 'padding:0',
@@ -31,8 +32,7 @@ $styles = array(
     '#new_set'                      => '',
     '#new_set li'                   => 'list-style-position: outside; margin-left:30px; cursor: ns-resize;',
     '#labnotes, #intro'             => 'vertical-align: text-top;',
-    '.search'                       => 'width: 94%; margin: 0 .5em;',
-    '#typeChanger'                  => 'float: right;'
+    '.search'                       => 'width: 94%; margin: 0 .5em;'
 );
 
 /****************************************************
@@ -164,7 +164,7 @@ if (array_key_exists('save', $_GET)) {
  * Project Table
  ***************************************************/
  
-$input_width = 250;
+$input_width = 550;
 
 $table_setup = array();
  
@@ -172,13 +172,13 @@ $table_setup['project_id'] = new hiddenInput('project_id', 'project_id', $projec
 
 $table_setup['project_name'] = new input('project_name', 'project_name', $project_info['project_name']);
 $table_setup['project_name']->set_width($input_width);
-$table_setup['project_name']->set_placeholder('Title for Participants');
-$table_setup['project_name']->set_question('Title for Participants');
+$table_setup['project_name']->set_placeholder('Name for Participants');
+$table_setup['project_name']->set_question('Name for Participants');
 
 $table_setup['res_name'] = new input('res_name', 'res_name', $project_info['res_name']);
 $table_setup['res_name']->set_width($input_width);
 $table_setup['res_name']->set_placeholder('Name for Researchers');
-$table_setup['res_name']->set_question('Title for Researchers');
+$table_setup['res_name']->set_question('Name for Researchers');
 
 $table_setup['url'] = new input('url', 'url', $project_info['url']);
 $table_setup['url']->set_width($input_width);
@@ -226,7 +226,22 @@ $form_table->set_action('');
 $form_table->set_questionList($table_setup);
 
 
-$q = new myQuery('SELECT id, res_name, name, status FROM sets ORDER BY id');
+$user_id = $_SESSION['user_id'];
+$is_admin = ($_SESSION['status'] == 'admin') ? "TRUE" : "FALSE";
+
+$q = new myQuery(
+     "SELECT sets.id, sets.res_name, sets.status
+        FROM access 
+        LEFT JOIN sets USING (id)
+       WHERE access.type='sets' 
+         AND (access.user_id=$user_id OR {$is_admin} OR
+           access.user_id IN (
+                SELECT supervisee_id 
+                  FROM supervise 
+                 WHERE supervisor_id=$user_id
+           )
+         )"
+);
 $sets = $q->get_assoc();
 $set_list = array();
 foreach ($sets as $s) {
@@ -235,7 +250,19 @@ foreach ($sets as $s) {
                         {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span></li>" . ENDLINE;
 }
 
-$q->set_query('SELECT id, res_name, name, status FROM exp ORDER BY id');
+$q = new myQuery(
+     "SELECT exp.id, exp.res_name, exp.status
+        FROM access 
+        LEFT JOIN exp USING (id)
+       WHERE access.type='exp' 
+         AND (access.user_id=$user_id OR {$is_admin} OR
+           access.user_id IN (
+                SELECT supervisee_id 
+                  FROM supervise 
+                 WHERE supervisor_id=$user_id
+           )
+         )"
+);
 $exps = $q->get_assoc();
 $exp_list = array();
 foreach ($exps as $s) {
@@ -244,7 +271,19 @@ foreach ($exps as $s) {
                         {$s['id']}: {$s['res_name']}<span class='status'>{$abr}</span></li>" . ENDLINE;
 }
 
-$q->set_query('SELECT id, res_name, name, status FROM quest ORDER BY id');
+$q = new myQuery(
+     "SELECT quest.id, quest.res_name, quest.status
+        FROM access 
+        LEFT JOIN quest USING (id)
+       WHERE access.type='quest' 
+         AND (access.user_id=$user_id OR {$is_admin} OR
+           access.user_id IN (
+                SELECT supervisee_id 
+                  FROM supervise 
+                 WHERE supervisor_id=$user_id
+           )
+         )"
+);
 $quests = $q->get_assoc();
 $quest_list = array();
 foreach ($quests as $s) {
@@ -290,9 +329,11 @@ $page->displayBody();
 <div class='toolbar'>
     <button id='save-project'>Save</button>
     <button id='info-project'>Info</button>
-    <!--<button id='delete-project'>Delete</button>
-    <button id='go-project'>Go</button>-->
-    
+</div>
+
+<?= $form_table->print_form() ?>
+
+<div class='toolbar'>
     <span id="typeChanger">View Items: 
         <input type="radio" id="viewExp" name="typeChanger" checked="checked"><label for="viewExp">Exp</label><input 
         type="radio" id="viewQuest" name="typeChanger"><label for="viewQuest">Quest</label><input 
@@ -301,39 +342,37 @@ $page->displayBody();
     </span>
 </div>
 
-<?= $form_table->print_form() ?>
-
 <div class="setlists" id="iconView">
     <h2>Icons</h2>
     <h3 class="note">Drag to an item in the Project List</h3>
-    <input type='text' class='search' onkeyup='search(this.value, "icons");' />
+    <input type='text' class='search' onkeyup='search(this.value, "icons");' placeholder="search" />
     <ul id="icons">
         <?= implode('', $icon_list) ?>
     </ul>
 </div>
 
 <div class="setlists"  id="expView">
-    <h2>Experiments</h2>
+    <h2>Available Experiments</h2>
     <h3 class="note">Click to add to Project List</h3>
-    <input type='text' class='search' onkeyup='search(this.value, "exp");' />
+    <input type='text' class='search' onkeyup='search(this.value, "exp");' placeholder="search" />
     <ul id="exp">
         <?= implode('', $exp_list) ?>
     </ul>
 </div>
 
 <div class="setlists" id="questView">
-    <h2>Questionnaires</h2> 
+    <h2>Available Questionnaires</h2> 
     <h3 class="note">Click to add to Project List</h3>
-    <input type='text' class='search' onkeyup='search(this.value, "quest");' />
+    <input type='text' class='search' onkeyup='search(this.value, "quest");' placeholder="search" />
     <ul id="quest">
         <?= implode('', $quest_list) ?>
     </ul>
 </div>
 
 <div class="setlists" id="setView"> 
-    <h2>Sets</h2>
+    <h2>Available Sets</h2>
     <h3 class="note">Click to add to Project List</h3>
-    <input type='text' class='search' onkeyup='search(this.value, "set");' />   
+    <input type='text' class='search' onkeyup='search(this.value, "set");' placeholder="search" />   
     <ul id="set">
         <?= implode('', $set_list) ?>
     </ul>
