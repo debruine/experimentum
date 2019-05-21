@@ -8,14 +8,14 @@
  *
  * http://api.jqueryui.com/category/theming/
  *
- * To view and modify this theme, visit http://jqueryui.com/themeroller/?scope=&folderName=custom-theme&bgImgOpacityError=95&bgImgOpacityHighlight=55&bgImgOpacityActive=75&bgImgOpacityHover=75&bgImgOpacityDefault=75&bgImgOpacityContent=0&bgImgOpacityHeader=0&cornerRadiusShadow=8px&offsetLeftShadow=-8px&offsetTopShadow=-8px&thicknessShadow=8px&opacityShadow=30&bgImgOpacityShadow=0&bgTextureShadow=flat&bgColorShadow=%23aaaaaa&opacityOverlay=30&bgImgOpacityOverlay=50&bgTextureOverlay=diagonals_medium&bgColorOverlay=%23aaaaaa&iconColorError=%23cd0a0a&fcError=%23cd0a0a&borderColorError=%23cd0a0a&bgTextureError=inset_soft&bgColorError=%23fef1ec&iconColorHighlight=%23333333&fcHighlight=%23222222&borderColorHighlight=%23dcda99&bgTextureHighlight=flat&bgColorHighlight=%23fbf9ee&iconColorActive=%23ffffff&fcActive=%23ffffff&borderColorActive=%23333333&bgTextureActive=flat&bgColorActive=%23333333&iconColorHover=%23ffffff&fcHover=%23ffffff&borderColorHover=%23333333&bgTextureHover=flat&bgColorHover=%23333333&iconColorDefault=%23333333&fcDefault=%23222222&borderColorDefault=%23333333&bgTextureDefault=flat&bgColorDefault=%23e3e6e8&iconColorContent=%23333333&fcContent=%23222222&borderColorContent=%23333333&bgTextureContent=flat&bgColorContent=%23e3e6e8&iconColorHeader=%23ffffff&fcHeader=%23ffffff&borderColorHeader=%23ffffff&bgTextureHeader=flat&bgColorHeader=%23333333&cornerRadius=3px&fwDefault=normal&fsDefault=1em&ffDefault=%22Fira%20Code%22%2C%20%22Lucida%20Grande%22%2C%20%22Lucida%20Sans%20Unicode%22%2C%20%22Lucida%20Sans%22%2C%20%22Lucida%22%2C%20%22Trebuchet%20MS%22%2C%20verdana%2C%20helvetica%2C%20arial%2C%20sans-serif
+ * To view and modify this theme, visit http://jqueryui.com/themeroller/?scope=&folderName=custom-theme&bgImgOpacityHeader=0&bgImgOpacityContent=0&bgImgOpacityDefault=75&bgImgOpacityHover=75&bgImgOpacityActive=75&bgImgOpacityHighlight=55&bgImgOpacityError=95&cornerRadiusShadow=8px&offsetLeftShadow=-8px&offsetTopShadow=-8px&thicknessShadow=8px&opacityShadow=30&bgImgOpacityShadow=0&bgTextureShadow=flat&bgColorShadow=%23aaaaaa&opacityOverlay=30&bgImgOpacityOverlay=50&bgTextureOverlay=diagonals_medium&bgColorOverlay=%23aaaaaa&iconColorError=%23cd0a0a&fcError=%23cd0a0a&borderColorError=%23cd0a0a&bgTextureError=inset_soft&bgColorError=%23fef1ec&iconColorHighlight=%23333333&fcHighlight=%23222222&borderColorHighlight=%23dcda99&bgTextureHighlight=flat&bgColorHighlight=%23fbf9ee&iconColorActive=%23ffffff&fcActive=%23ffffff&borderColorActive=%2311260D&bgTextureActive=flat&bgColorActive=%23337326&iconColorHover=%23ffffff&fcHover=%23ffffff&borderColorHover=%2311260D&bgTextureHover=flat&bgColorHover=%23337326&iconColorDefault=%23337326&fcDefault=%23222222&borderColorDefault=%2311260D&bgTextureDefault=flat&bgColorDefault=%23e3e6e8&iconColorContent=%23337326&fcContent=%23222222&borderColorContent=%2311260D&bgTextureContent=flat&bgColorContent=%23e3e6e8&iconColorHeader=%23ffffff&fcHeader=%23ffffff&borderColorHeader=%23ffffff&bgTextureHeader=flat&bgColorHeader=%23337326&cornerRadius=3px&fwDefault=normal&fsDefault=1em&ffDefault=%22Fira%20Code%22%2C%20%22Lucida%20Grande%22%2C%20%22Lucida%20Sans%20Unicode%22%2C%20%22Lucida%20Sans%22%2C%20%22Lucida%22%2C%20%22Trebuchet%20MS%22%2C%20verdana%2C%20helvetica%2C%20arial%2C%20sans-serif
  */
 
 
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-	font-family: "Fira Code", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
+	font-family: "Open Sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
 	font-size: 1em;
 }
 .ui-widget .ui-widget {
@@ -25,14 +25,14 @@
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-	font-family: "Fira Code", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
+	font-family: "Open Sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
 	font-size: 1em;
 }
 .ui-widget.ui-widget-content {
-	border: 1px solid #333333;
+	border: 1px solid #11260D;
 }
 .ui-widget-content {
-	border: 1px solid #333333;
+	border: 1px solid #11260D;
 	background: #e3e6e8;
 	color: #222222;
 }
@@ -41,7 +41,7 @@
 }
 .ui-widget-header {
 	border: 1px solid #ffffff;
-	background: #333333;
+	background: #337326;
 	color: #ffffff;
 	font-weight: bold;
 }
@@ -60,7 +60,7 @@
 works properly when clicked or hovered */
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
-	border: 1px solid #333333;
+	border: 1px solid #11260D;
 	background: #e3e6e8;
 	font-weight: normal;
 	color: #222222;
@@ -83,8 +83,8 @@ a:visited.ui-button,
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-	border: 1px solid #333333;
-	background: #333333;
+	border: 1px solid #11260D;
+	background: #337326;
 	font-weight: normal;
 	color: #ffffff;
 }
@@ -111,14 +111,14 @@ a.ui-button:focus {
 a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
-	border: 1px solid #333333;
-	background: #333333;
+	border: 1px solid #11260D;
+	background: #337326;
 	font-weight: normal;
 	color: #ffffff;
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {
-	border: #333333;
+	border: #11260D;
 	background-color: #ffffff;
 }
 .ui-state-active a,
@@ -196,7 +196,7 @@ a.ui-button:active,
 }
 .ui-icon,
 .ui-widget-content .ui-icon {
-	background-image: url("images/ui-icons_333333_256x240.png");
+	background-image: url("images/ui-icons_337326_256x240.png");
 }
 .ui-widget-header .ui-icon {
 	background-image: url("images/ui-icons_ffffff_256x240.png");
@@ -220,7 +220,7 @@ a.ui-button:active,
 	background-image: url("images/ui-icons_cd0a0a_256x240.png");
 }
 .ui-button .ui-icon {
-	background-image: url("images/ui-icons_333333_256x240.png");
+	background-image: url("images/ui-icons_337326_256x240.png");
 }
 
 /* positioning */

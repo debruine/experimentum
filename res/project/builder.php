@@ -102,13 +102,12 @@ if (array_key_exists('save', $_GET)) {
     // save a set
     $clean = my_clean($_POST);
     
-    $proj_query = sprintf('REPLACE INTO project (id, name, res_name, status, url, 
+    $proj_query = sprintf('REPLACE INTO project (id, name, res_name, url, 
                               intro, labnotes, sex, lower_age, upper_age, blurb, create_date) 
-                            VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
+                            VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
                             $clean['project_id'],
                             $clean['project_name'],
                             $clean['res_name'],
-                            ifEmpty($status, 'test'),
                             $clean['url'],
                             $clean['intro'],
                             $clean['labnotes'],

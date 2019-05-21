@@ -31,7 +31,8 @@ $page->displayBody();
 
 <h2><a href="#">Who runs this website?</a></h2>
 <div>
-<p>The University of Glasgow School of Psychology and Institute of Neuroscience and Psychology.</p>
+    <p>This website runs studies for the <a href="http://psysciacc.org">Psychological Science Accelerator</a>.</p>
+    <p>It is hosted by the University of Glasgow School of Psychology and Institute of Neuroscience and Psychology.</p>
 </div>
 
 <h2><a href="#">How do you use cookies?</a></h2>
@@ -93,7 +94,7 @@ $page->displayBody();
 <h2><a href="#">Can you host my experiment?</a></h2>
 <div>
 <p>Sorry, we cannot host your experiments unless you are a member of the 
-    University of Glasgow School of Psychology. However, the code used to run 
+    Psychological Science Accelerator. However, the code used to run 
     this website is open source at 
     <a href="https://github.com/debruine/experimentum">GitHub</a>.</p>
 </div>

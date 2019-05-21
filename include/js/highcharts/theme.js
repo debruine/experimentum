@@ -34,7 +34,7 @@ Highcharts.theme = {
 		plotBorderWidth: 0,
 		borderRadius: 4,
 		style: {
-			fontFamily: '"Fira Code", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif',
+			fontFamily: '"Open Sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif',
 			fontSize: '100%',
 		}
 	},

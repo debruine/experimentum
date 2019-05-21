@@ -165,7 +165,7 @@ class experiment {
         $text .= "<div id='continue_button' class='buttons' style='display:none;'>" . ENDLINE;
         if ($_SESSION['set_item_number'] > 0 || array_key_exists('project', $_SESSION)) {
             // remove option to escape during sets or projects
-            $text .= "    <input type='button' id='beginExp' onclick='beginExp();' value='" . loc('Begin the Experiment') . "' />" . ENDLINE;
+            $text .= "    <input type='button' id='beginExp' onclick='beginExp();' value='" . loc('Start') . "' />" . ENDLINE;
         } else if ($this->subtype == 'speeded') {
             $text .= "    <div>" . loc('Place your fingers on the keys<br>and press the space bar<br>to consent &amp; begin the experiment') . "</div>" . ENDLINE;
             $text .= "    <input type='button' onclick='noConsent();' value='" . loc('I Do Not Consent, Return to the Home Page') . "' />" . ENDLINE;
@@ -183,6 +183,8 @@ class experiment {
     function get_interface() {
         $text = '<div id="experiment" style="display:none;">' . ENDLINE;
         $text .= tag($this->question, 'div', 'id="question"');
+        $text .= '<a id="prev_trial" title="Previous Trial"><</a>' . ENDLINE;
+        $text .= '<a id="next_trial" title="Next Trial">></a>' . ENDLINE;
         $text .= '<table class="' . $this->exptype . '">' . ENDLINE;
         $text .= $this->get_input_interface();
         $text .= $this->get_stimuli_interface();
@@ -211,10 +213,13 @@ class experiment {
         $text =         '<script>' . ENDLINE;
         $text .=        '    window.onbeforeunload = function() {return "Using the back button will reset this experiment"; }' . ENDLINE;
         
+        $text .=        '   $("#next_trial, #prev_trial").button();' . ENDLINE;
         
         if (array_key_exists('go', $_GET)) { 
             $text .=     '    $(function() { beginExp(); });' . ENDTAG; 
         }
+        
+        $text .=        '   $("#beginExp").button({ showLabel: false, icon: "ui-icon-play"});' . ENDTAG;
 
         // get image loader
         if ($this->stimuli_type == 'image' && !array_key_exists('go', $_GET) && count($this->trials) > 0) {
@@ -545,7 +550,7 @@ class experiment {
         $text .= '
             if ($("#question").length > 0 && typeof(question) !== "undefined") $("#question").html(question[trialOrder[trial]]);
             $("#trial_n").html(trial);
-            $("#footer").text("Trial "+ trial +" of " + trialOrder.length);
+            $("#footer").text("Trial "+ trial +" of " + (trialOrder.length-1));
             
             var currentTime = new Date();
             beginTrial = currentTime.getTime();

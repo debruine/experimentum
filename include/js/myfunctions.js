@@ -185,6 +185,19 @@ $(function() {
     
     // format all horizontal radiobuttons
     $("ul.radio").buttonset();
+    
+    // setup sliders
+    $('div.slider').each( function() {
+        $(this).slider({
+            min: parseFloat($(this).attr('min')),
+            max: parseFloat($(this).attr('max')),
+            step: parseFloat($(this).attr('step')),
+            change: function(e, ui) {
+                $(ui.handle).show();
+                $(this).attr('title', '');
+            }
+        }).attr("title", "Click on the slider to show the handle");
+    });
 
  /*   
     $(document).keydown(function(e) {

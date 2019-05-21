@@ -168,19 +168,6 @@ $page->displayBody();
 
 echo $general_fb;
 echo $specific_fb;
- 
-?>
-
-<div class="buttons"><button id="home">Back</button></div>
-<script>
-    $(function() {
-        $('#home').button().click( function() { 
-            window.location = '<?= (!empty($_SESSION['project'])) ? '/project?' . $_SESSION['project'] : '/' ?>'; 
-        } );
-    });
-</script>
-    
-<?php 
     
 $page->displayFooter();
 

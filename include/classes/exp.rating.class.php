@@ -27,7 +27,7 @@ class exp_rating extends exp_buttons {
         $w = min($maxlength, 15);
         
         $text .= "            <input type='number' 
-                                min-'{1}' max='{$this->range}'
+                                min='1' max='{$this->range}'
                                 style='width: {$w}em' 
                                 class='rating' 
                                 name='rating' 
@@ -35,7 +35,7 @@ class exp_rating extends exp_buttons {
                                 value='' 
                                 autocomplete='off'
                                 maxlength='$maxlength'
-                                onkeypress='ratingKeyPress(this, event, 1, " . $this->range . ")' />" . ENDLINE;
+                                onkeypress='ratingKeyPress(this, event, 1, {$this->range})' />" . ENDLINE;
         $text .= "            <span id='high_anchor'>" . $this->anchors[1] . "</span>" . ENDLINE;
         $text .= '        </td>' . ENDLINE;
         $text .= '    </tr>' . ENDLINE;

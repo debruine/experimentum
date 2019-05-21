@@ -17,7 +17,7 @@ if ($type == 'exp') {
     $query = new myQuery('SELECT res_name, exptype, subtype FROM exp WHERE id=' . $id);
     $fname = $query->get_one_array();
         
-    $q = 'SELECT session_id, exp_id, user_id, sex as user_sex, status as user_status,
+    $q = 'SELECT session_id, project_id, exp_id, user_id, sex as user_sex, status as user_status,
             ROUND(DATEDIFF(dt, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
             trial.name as trial_name,
             trial_n,
@@ -29,12 +29,13 @@ if ($type == 'exp') {
             FROM exp_data AS ed
             LEFT JOIN user USING (user_id)
             LEFT JOIN trial USING (exp_id, trial_n)
+            LEFT JOIN session ON session.id = session_id
             WHERE exp_id = ' . $id;
 } else if ($type == 'quest') {
     $query = new myQuery('SELECT res_name FROM quest WHERE id=' . $id);
     $fname = $query->get_one_array();
     
-    $q = 'SELECT session_id, qd.quest_id, user_id, sex as user_sex, status as user_status,
+    $q = 'SELECT session_id, project_id, qd.quest_id, user_id, sex as user_sex, status as user_status,
             ROUND(DATEDIFF(endtime, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
             question.name as q_name,
             question_id as q_id,
@@ -44,12 +45,13 @@ if ($type == 'exp') {
             FROM quest_data AS qd
             LEFT JOIN user USING (user_id)
             LEFT JOIN question ON qd.quest_id = question.quest_id AND question_id = question.id
+            LEFT JOIN session ON session.id = session_id
             WHERE qd.quest_id = ' . $id;
 } else if ($type == 'project' && $_POST['download'] == 'quest') {
     $query = new myQuery('SELECT CONCAT(res_name, "_quests") AS res_name FROM project WHERE id=' . $id);
     $fname = $query->get_one_array();
     
-    $q = 'SELECT session_id, qd.quest_id, session.user_id, sex as user_sex, status as user_status,
+    $q = 'SELECT session_id, project_id, qd.quest_id, session.user_id, sex as user_sex, status as user_status,
             ROUND(DATEDIFF(endtime, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
             question.name as q_name,
             question_id as q_id,
@@ -65,7 +67,7 @@ if ($type == 'exp') {
     $query = new myQuery('SELECT CONCAT(res_name, "_exps") AS res_name FROM project WHERE id=' . $id);
     $fname = $query->get_one_array();
     
-    $q = 'SELECT session_id, exp_id, session.user_id, sex as user_sex, status as user_status,
+    $q = 'SELECT session_id, project_id, exp_id, session.user_id, sex as user_sex, status as user_status,
             ROUND(DATEDIFF(ed.dt, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
             trial.name as trial_name,
             trial_n,

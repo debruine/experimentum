@@ -190,7 +190,7 @@ class user {
         $_SESSION['user_id']    = $this->id;
         $_SESSION['username']   = $this->username;
         $_SESSION['sex']        = $this->sex;
-        $_SESSION['status']         = $this->status;
+        $_SESSION['status']     = $this->status;
         $_SESSION['age']        = $this->get_age();
     }
 }
@@ -224,6 +224,7 @@ class page {
     function get_menu() { return $this->menu; }
     
     function displayHead($styles = false, $header = false) {
+        header('Content-Type: text/html; charset=utf-8');
         $head_title = SITETITLE . (empty($this->title) ? '' : ': ') . implode(': ', $this->title);
 ?><!DOCTYPE html>
 
@@ -240,8 +241,9 @@ class page {
     <link rel="apple-touch-startup-image" href="/images/logos/logo.png" />
     <link rel="apple-touch-startup-image" sizes="640x920" href="/images/logos/logo@2x.png" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="shortcut icon" href="/images/logos/favicon.ico" />
+    <link rel="shortcut icon" href="/images/logos/favicon.png" />
     <link rel="apple-touch-icon-precomposed" href="/images/logos/apple-touch-icon-precomposed.png" />
+    <link rel="stylesheet" type="text/css" href="/include/css/opensans.css"> 
     <link rel="stylesheet" type="text/css" href="/include/js/jquery-ui-1.12.1.custom/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="/include/css/style.php">
     <!--
@@ -328,8 +330,7 @@ class page {
         } else {
 ?>
         <!--<li id='login'><a href='javascript: startLogin();'><?= loc("Login/Sign up") ?></a></li>-->
-        <li><a href='/login'><?= loc("Login") ?></a></li>
-        <li><a href='/consent'><?= loc("Sign up") ?></a></li>
+        <li><a href='/login'><?= loc("Login") ?></a> / <a href='/register'><?= loc("Sign up") ?></a></li>
 <?php
         } 
 ?>
@@ -362,7 +363,7 @@ class page {
             
             $menuList = array(
                 '/'             => 'Home',
-                '/studies/'     => 'Studies',
+                //'/studies/'     => 'Studies',
                 '/faq'          => 'About Us (FAQ)'
             );
             $menuClasses = array(
@@ -386,6 +387,7 @@ class page {
                 );
             }
             $menu .= '  </ul>' . ENDLINE;
+            $menu .= '<img src="/images/logos/psa.png" style="margin: 1em auto; max-width: 100%;" />' . ENDLINE;
             $menu .= '</nav> <!-- end of menu -->' . ENDLINE;
         }
                 

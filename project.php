@@ -1,13 +1,14 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
+require_once DOC_ROOT . '/include/classes/Parsedown.php';
 unset($_SESSION['session_id']);
 
 /****************************************************
  * Get Project Info
  ***************************************************/
- 
-if (count($_GET) == 1) {
+
+if (count($_GET) > 0) {
     $keys = array_keys($_GET);
     $projectname = $keys[0];
     if (in_array($_SESSION['status'], $RES_STATUS)) {
@@ -87,9 +88,12 @@ $title = loc($project['name']);
 $buttonwidth = count($items) * 11;
 $styles = array(
     '#fb-login' => 'display: none;',
+    '#logresauto' => 'max-width: 33em; margin: 1em auto;',
     '#logres' => 'max-width: 22em; margin: 1em auto;',
+    '#auto' => 'max-width: 11em; margin: 1em auto;',
     '.bigbuttons li a.registerbutton' => 'background-image: url(/images/linearicons/pencil?c=FFF);',
     '.bigbuttons li a.loginbutton' => 'background-image: url(/images/linearicons/lock?c=FFF);',
+    '.bigbuttons li a.autobutton' => 'background-image: url(/images/linearicons/0676-ghost-hipster?c=FFF);',
     '#itembuttons' => "margin: 1em auto; max-width: {$buttonwidth}em;"
 );
 $page = new page($title);
@@ -106,7 +110,8 @@ if (!$visitems) {
             It might be restricted by age or gender.</h3>";
 }
 
-echo '<p>' . $project['intro'] . '</p>' . ENDLINE;
+$Parsedown = new Parsedown();
+echo $Parsedown->text($project['intro']);
 
 if (!empty($_SESSION['status'])) {
     $res = in_array($_SESSION['status'], $RES_STATUS) ? ' res' : '';
@@ -131,18 +136,34 @@ if (!empty($_SESSION['status'])) {
         );
     }
     echo '</ul>';
-} else {
+} else if (array_key_exists("all", $_GET)) {
+    // not logged in
+    ?>
+    <ul class="bigbuttons" id="logresauto">
+        <li><a class="loginbutton" href="/login">Login</a></li>
+        <li><a class="registerbutton" href="/register">Register</a></li>
+        <li><a class="autobutton" href="javascript: guestLogin('<?= $projectname ?>');">Login as a Guest</a></li>
+    </ul>
+	<?php
+} else if (array_key_exists("noguest", $_GET)) {
     // participant is not logged in yet
     ?>
     
     <p>Please login or register if you do not yet have an account.</p>
     
     <ul class="bigbuttons" id="logres">
-        <li><a class="registerbutton" href="/consent">Register</a></li>
         <li><a class="loginbutton" href="/login">Login</a></li>
+        <li><a class="registerbutton" href="/register">Register</a></li>
     </ul>
     
     
+    <?php
+} else {
+    // participant should be auto-logged in
+    ?>
+    <ul class="bigbuttons" id="auto">
+		<li><a class="autobutton" href="javascript: guestLogin('<?= $projectname ?>');">Login as a Guest</a></li>
+	</ul>
     <?php
 }
 

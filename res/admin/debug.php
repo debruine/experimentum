@@ -25,6 +25,16 @@ $php_time = date('Y-m-d H:i:s');
 
 $_SESSION['debug'] = true;
 
+// prepare test
+$query = "SELECT * FROM res WHERE user_id = ? AND firstname = ?";
+$params = array('is', 1, 'Lisa');
+$q = new myQuery();
+$q->prepare($query, $params);
+echo $q->get_result_as_table();
+
+
+$q->prepare('SELECT * FROM res WHERE firstname = ?', array('s', 'Ben'));
+echo $q->get_result_as_table();
 
 ?>
 
@@ -38,6 +48,7 @@ $_SESSION['debug'] = true;
     <li>User agent: <?= $_SERVER['HTTP_USER_AGENT'] ?></li>
     <li>Window width: <span id="wwidth"></span></li>
     <li>Window height: <span id="wheight"></span></li>
+    <li>HTTP_HOST: <?= $_SERVER['HTTP_HOST'] ?></li>
 </ul>
 
 <script>
@@ -55,6 +66,13 @@ $_SESSION['debug'] = true;
 
 <?php
 htmlArray($_SESSION);
+
+    
+if ($_SESSION['status'] == 'admin') {
+    echo '<h2>$_SERVER Variables</h2>';
+    htmlArray($_SERVER);
+}
+        
 
 
 if (isset($_GET['phpinfo'])) {

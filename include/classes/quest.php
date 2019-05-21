@@ -175,6 +175,9 @@ class questionnaire extends formTable {
                     case 'radioanchor':
                         $questions[$qd['id']]->set_options($qd['maxlength'],$qd['low_anchor'],$qd['high_anchor']);
                         break;
+                    case 'slider':
+                        $questions[$qd['id']]->set_options($qd['startnum'], $qd['endnum'], $qd['step'],$qd['low_anchor'],$qd['high_anchor']);
+                        break;
                     case 'datemenu':    
                         $questions[$qd['id']]->set_years($qd['low_anchor'], $qd['high_anchor']);
                         break;
@@ -661,6 +664,43 @@ class radioanchor extends radio {
     }
 }
 
+class slider extends formElement {
+    public $startnum = 0;
+    public $endnum = 100;
+    public $step = 1;
+    public $low_anchor = "";
+    public $high_anchor = "";
+    public $randomize = false;
+    
+    function set_options($start=0, $end=100, $step=1, $low_anchor="", $high_anchor="") {
+        $this->startnum = $start;
+        $this->endnum = $end;
+        $this->step = $step;
+        $this->low_anchor = $low_anchor;
+        $this->high_anchor = $high_anchor;
+    }
+    
+    function set_randomize($x) { $this->randomize = $x; }
+    function get_randomize() { return $this->randomize; }
+    
+    function get_element() {        
+        $element_text .=     "      <table class='slider'><tr>" . ENDLINE;
+        
+        if ($this->randomize && rand(0,1)) {
+            $element_text .= "          <td class='anchor'>{$this->high_anchor}</td>" . ENDLINE;
+            $element_text .= "          <td><div class='slider' id='{$this->id}' min='{$this->endnum}' max='{$this->startnum}' step='{$this->step}'></div></td>" . ENDLINE;
+            $element_text .= "          <td class='anchor'>{$this->low_anchor}</td>" . ENDLINE;        
+        } else {
+            $element_text .= "          <td class='anchor'>{$this->low_anchor}</td>" . ENDLINE;
+            $element_text .= "          <td><div class='slider' id='{$this->id}' min='{$this->startnum}' max='{$this->endnum}' step='{$this->step}'></div></td>" . ENDLINE;
+            $element_text .= "          <td class='anchor'>{$this->high_anchor}</td>" . ENDLINE;
+        }
+        $element_text .=     "      </tr></table>\n";
+        
+        return $element_text;
+    }
+}
+
 class input extends formElement {
     public $type = 'text';
     public $maxlength = 255;
@@ -670,7 +710,9 @@ class input extends formElement {
     public $placeholder = '';
     
     function set_type($t) {
-        if (in_array($t, array('text', 'password', 'file', 'tel', 'search', 'url', 'email', 'datetime', 'date', 'month', 'week', 'time', 'datetime-local', 'number', 'range', 'color'))) {
+        if (in_array($t, array('text', 'password', 'file', 'tel', 'search', 'url', 
+                                'email', 'datetime', 'date', 'month', 'week', 'time', 
+                                'datetime-local', 'number', 'range', 'color'))) {
             $this->type = $t;
         }
     }

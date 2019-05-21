@@ -6,7 +6,7 @@ require_once DOC_ROOT . '/include/classes/Parsedown.php';
 auth($RES_STATUS);
 
 if (validID($_GET['id']) && !permit('project', $_GET['id'])) header('Location: /res/');
-
+$item_id = $_GET['id'];
 
 $title = array(
     '/res/' => 'Researchers',
@@ -23,178 +23,6 @@ $styles = array(
     "span.set_nest.hide_set"    => "background-image: url(/images/linearicons/arrow-right?c=000);",
     ".potential-error" => "color: hsl(0, 100%, 40%);"
 );
-
-
-/***************************************************/
-/* !Get Project Data */
-/***************************************************/
-
-if (validID($_GET['id'])) {
-    $item_id = intval($_GET['id']);
-} else {
-    header('Location: /res/project/');
-}
-
-$myset = new myQuery('SELECT * FROM project WHERE id=' . $item_id);
-
-if ($myset->get_num_rows() == 0) { header('Location: /res/project/'); }
-
-$itemdata = $myset->get_one_array();
-
-// convert markdown sections
-$Parsedown = new Parsedown();
-$itemdata['intro'] = $Parsedown->text($itemdata['intro']);
-
-$itemdata['sex'] = array(
-    'both' => 'All genders',
-    'male' => 'Men only',
-    'female' => 'Women only'
-)[$itemdata['sex']];
-
-// get status changer for admins
-if ($_SESSION['status'] == 'admin') {
-    $status_chooser = new select('status', 'status', $itemdata['status']);
-    $status_chooser->set_options(array(
-        'test' => 'test',
-        'active' => 'active',
-        'archive' => 'archive'
-    ));
-    $status_chooser->set_null(false);
-    $status = $status_chooser->get_element();
-} else {
-    $status = '(' . $itemdata['status'] . ')';
-}
-
-// owner functions
-$myowners = new myQuery('SELECT user_id, CONCAT(lastname, " ", firstname) as name 
-                        FROM access 
-                        LEFT JOIN res USING (user_id) 
-                        WHERE type="project" AND id=' . $item_id . '
-                        ORDER BY lastname, firstname');
-$owners = $myowners->get_assoc(false, 'user_id', 'name');
-$access = in_array($_SESSION['user_id'], array_keys($owners));
-
-$allowners = new myQuery('SELECT user_id, firstname, lastname, email 
-    FROM res 
-    LEFT JOIN user USING (user_id) 
-    WHERE status > 3');
-$ownerlisting = $allowners->get_assoc();
-$ownerlist = array();
-foreach($ownerlisting as $res) {
-    $user_id = $res['user_id'];
-    $lastname = htmlspecialchars($res['lastname'], ENT_QUOTES);
-    $firstname = htmlspecialchars($res['firstname'], ENT_QUOTES);
-    $email = htmlentities($res['email'], ENT_QUOTES);
-    
-    $ownerlist[] = "\n{ value: '{$user_id}', name: '{$lastname}, {$firstname}', label: '{$firstname} {$lastname} {$email}' }";
-}
-$owner_edit = "";
-foreach($owners as $id => $name) {
-    $owner_edit .= "<li><span>{$name}</span>";
-    if ($_SESSION['status'] != 'student') { 
-        $owner_edit .= " (<a class='owner-delete' owner-id='{$id}'>delete</a>)</li>";
-    }
-}
-
-
-// get data on all items
-$subset = 0.25;
-$items_for_data = array();
-
-function generate_project($id, $class="") {
-    global $subset, $items_for_data;
-
-    $myitems = new myQuery("SELECT item_type, item_id, 
-    IF(item_type='exp', exp.res_name, 
-        IF(item_type='quest', quest.res_name, 
-            IF(item_type='set', sets.res_name,'No such item'))) as name,
-    IF(item_type='exp', exp.status, 
-        IF(item_type='quest', quest.status, 
-            IF(item_type='set', sets.status,'No such item'))) as status,
-    IF(item_type='exp', CONCAT(exp.exptype, '-', exp.subtype,  IF(exp.design='between', '<br /><span class=\"potential-error\">between</span>', ': w/in')), 
-        IF(item_type='quest', quest.questtype, 
-            IF(item_type='set', sets.type,'No such item'))) as type,
-    icon
-    FROM project_items 
-    LEFT JOIN exp ON item_type='exp' AND exp.id=item_id
-    LEFT JOIN quest ON item_type='quest' AND quest.id=item_id
-    LEFT JOIN sets ON item_type='set' AND sets.id=item_id
-    WHERE project_id=$id ORDER BY item_n");
-    $items = $myitems->get_assoc();
-    
-    $itemlist = '';
-    
-    foreach ($items as $item) {
-        $table = $item['item_type'] . '_' . $item['item_id'];
-        $status_check = ($item['status'] == 'active') ? '' : 'potential-error';
-        
-        $itemlist .= "<tr id='$table' class='$class'><td style='padding-left: {$subset}em'>";
-        
-        if ($item['item_type'] == 'set') {
-            $itemlist .= "<span class='set_nest'></span>";
-        }
-        
-        $itemlist .= "<a href='/res/{$item['item_type']}/info?id={$item['item_id']}'>$table</a></td><td>{$item['name']}</td><td class='{$status_check}'>{$item['status']}</td><td>{$item['type']}</td>";
-
-        if ($item['item_type'] == 'set') {
-            $itemlist .= "<td colspan='100'></td></tr>\n";
-            $subset += 1;
-            $itemlist .= generate_set($item['item_id'], $class . ' ' . $table);
-            $subset -= 1;
-        } else {
-            $items_for_data[] = $table;
-            $itemlist .= "<td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>\n";
-        }
-    }
-    return $itemlist;
-}
-
-function generate_set($id, $class="") {
-    global $subset, $items_for_data;
-
-    $myitems = new myQuery("SELECT item_type, item_id, 
-    IF(item_type='exp', exp.res_name, 
-        IF(item_type='quest', quest.res_name, 
-            IF(item_type='set', sets.res_name,'No such item'))) as name,
-    IF(item_type='exp', exp.status, 
-        IF(item_type='quest', quest.status, 
-            IF(item_type='set', sets.status,'No such item'))) as status,
-    IF(item_type='exp', CONCAT(exp.exptype, '-', exp.subtype,  IF(exp.design='between', '<br /><span class=\"potential-error\">between</span>', ': w/in')), 
-        IF(item_type='quest', quest.questtype, 
-            IF(item_type='set', sets.type,'No such item'))) as type  
-    FROM set_items 
-    LEFT JOIN exp ON item_type='exp' AND exp.id=item_id
-    LEFT JOIN quest ON item_type='quest' AND quest.id=item_id
-    LEFT JOIN sets ON item_type='set' AND sets.id=item_id
-    WHERE set_id=$id ORDER BY item_n");
-    $items = $myitems->get_assoc();
-    
-    $itemlist = '';
-    
-    foreach ($items as $item) {
-        $table = $item['item_type'] . '_' . $item['item_id'];
-        $status_check = ($item['status'] == 'active') ? '' : 'potential-error';
-        
-        $itemlist .= "<tr id='$table' class='$class'><td style='padding-left: {$subset}em'>";
-        
-        if ($item['item_type'] == 'set') {
-            $itemlist .= "<span class='set_nest'></span>";
-        }
-        
-        $itemlist .= "<a href='/res/{$item['item_type']}/info?id={$item['item_id']}'>$table</a></td><td>{$item['name']}</td><td class='{$status_check}'>{$item['status']}</td><td>{$item['type']}</td>";
-
-        if ($item['item_type'] == 'set') {
-            $itemlist .= "<td colspan='100'></td></tr>\n";
-            $subset += 1;
-            $itemlist .= generate_set($item['item_id'], $class . ' ' . $table);
-            $subset -= 1;
-        } else {
-            $items_for_data[] = $table;
-            $itemlist .= "<td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>\n";
-        }
-    }
-    return $itemlist;
-}
     
 /****************************************************/
 /* !Display Page */
@@ -208,10 +36,10 @@ $page->displayBody();
 
 ?>
 
-<input type="hidden" id="item_id" value="<?= $itemdata['id'] ?>" />
+<input type="hidden" id="item_id" value="" />
 <input type="hidden" id="item_type" value="project" />
 
-<h2>Project <?= $itemdata['id'] ?>: <?= $itemdata['res_name'] ?></h2>
+<h2>Project <span id='id'></span>: <span id='res_name'></span></h2>
 
 <div class='toolbar'>
     <div id="function_buttonset"><?php
@@ -226,25 +54,24 @@ $page->displayBody();
 </div>
 
 <table class='info'> 
-    <tr><td>Name:</td><td><?= $itemdata['name'] ?></td></tr>
-    <tr><td>Status:</td> <td><?= $status ?></td></tr>
-    <tr><td>Created on:</td><td><?= $itemdata['create_date'] ?></td></tr>
-    <tr><td>Owners:<br><?php if ($_SESSION['status'] != 'student') { echo '<button class="tinybutton"  id="owner-change">Change</button>'; } ?></td> 
-        <td>
-            <ul id='owner-edit'>
-                <?= $owner_edit ?>
-            </ul>
+    <tr><td>Name:</td><td id='name'>...</td></tr>
+    <tr><td>Status:</td> <td><span id='status-select'>...</span></td></tr>
+    <tr><td>Created on:</td><td id='create_date'>...</td></tr>
+    <tr><td>Owners:</td> 
+        <td id='owners'>
+            <ul id='owner-edit'></ul>
             <?php if ($_SESSION['status'] != 'student') { ?>
-            <input id='owner-add-input' type='text' > (<a id='owner-add'>add</a>)
+            <input id='owner-add-input' type='text' > 
+            <button class='tinybutton' id='owner-add'>add</button>
+            <button class='tinybutton' id='owner-add-items'>add all items</button>
             <?php } ?>
         </td></tr>
-    <tr><td>Labnotes:</td><td><?= ifEmpty($itemdata['labnotes'], '<span class="error">Please add labnotes</span>') ?></td></tr>
-    <tr><td>URL:</td><td><span id='url'><?= $itemdata['url'] ?></span></td></tr>
-    <tr><td>Restrictions:</td><td><?= $itemdata['sex'] ?> 
-        ages <?= is_null($itemdata['lower_age']) ? 'any' : $itemdata['lower_age'] ?> 
-        to <?= is_null($itemdata['upper_age']) ? 'any' : $itemdata['upper_age'] ?> years</td></tr>
-    <tr><td>Blurb:</td><td><?= $itemdata['blurb'] ?></td></tr>
-    <tr><td>Intro:</td><td><?= $itemdata['intro'] ?></td></tr>
+    <tr><td>Labnotes:</td><td id='labnotes'> ...</td></tr>
+    <tr><td>URL:</td><td><span id='url'>...</span></td></tr>
+    <tr><td>Completion:</td><td id='completion'><span id='users'>...</span> users started <span id='sessions'>...</span> sessions</td></tr>
+    <tr><td>Restrictions:</td><td><span id='sex'>...</span> ages <span id='lower_age'>...</span> to <span id='upper_age'>...</span> years</td></tr>
+    <tr><td>Blurb:</td><td id='blurb'>...</td></tr>
+    <tr><td>Intro:</td><td id='intro'>...</td></tr>
 </table>
 
 <p class="fullwidth">The table below shows the number of total completions 
@@ -267,11 +94,7 @@ $page->displayBody();
             <td>90th Percentile</td>
         </tr>
     </thead>
-    <tbody>
-        <?php 
-            echo generate_project($item_id);
-        ?>
-    </tbody>
+    <tbody id='project_items'></tbody>
     <tfoot>
         <td>Totals</td>
         <td></td>
@@ -299,37 +122,112 @@ $page->displayBody();
 <!-- !Javascripts for this page -->
 <!--**************************************************-->
 
-<script src="/res/scripts/res.js"></script>
 
 <script>
-    $(function() {
-        $( "#view-project" ).click(function() {
-            window.location = '/project?' + $('#url').text();
-        });
-        
-        $('span.set_nest').click( function() {
-            var toggle_class = $(this).closest('tr').attr('id');
-            $('tr.' + toggle_class).toggle();
-            stripe('#setitems tbody');
-            $(this).toggleClass("hide_set");
-        });
-        
-        var items = ["<?= implode('","', $items_for_data) ?>"];
-        item_stats(items, $('#item_id').val());
-        
-        $('#owner-add-input').autocomplete({
-            source: [<?= implode(",", $ownerlist) ?>],
-            focus: function( event, ui ) {
-                $(this).val(ui.item.name);
-                return false;
-            },
-            select: function( event, ui ) {
-                $(this).val(ui.item.name).data('id', ui.item.value);
-                return false;
-            }
-        }).data('id', 0);
+    $( "#view-project" ).click(function() {
+        window.location = $('#url').text();
     });
+    
+    $('#owner-add-input').autocomplete({
+        source: [],
+        focus: function( event, ui ) {
+            $(this).val(ui.item.name);
+            return false;
+        },
+        select: function( event, ui ) {
+            $(this).val(ui.item.name).data('id', ui.item.value);
+            return false;
+        }
+    }).data('id', 0);
+    
+    function getProjectInfo() {
+        $.ajax({
+            url: '/res/scripts/project_info',
+            type: 'POST',
+            dataType: 'json',
+            data: {id: <?= $item_id ?>},
+            success: function(data) {
+                if (data.error) {
+                    $('<div />').dialog({
+                        width: 600
+                    }).html(data.error);
+                } else {
+                    $('#item_id').val(data.info.id);
+                    $('#id').html(data.info.id);
+                    $('#name').html(data.info.name);
+                    $('#res_name').html(data.info.res_name);
+                    $('#status').html(data.info.status);
+                    $('#create_date').html(data.info.create_date);
+                    $('#url').html(data.info.url);
+                    $('#labnotes').html(data.info.labnotes || '<span class="error">Please add labnotes</span>');
+                    $('#users').html(data.info.users);
+                    $('#sessions').html(data.info.sessions);
+                    $('#sex').html(data.info.sex);
+                    $('#lower_age').html(data.info.lower_age);
+                    $('#upper_age').html(data.info.upper_age);
+                    $('#intro').html(data.info.intro);
+                    $('#blurb').html(data.info.blurb);
+                    $('#status-select').html(data.status);
+                    
+                    $('#owner-edit').html(data.owners.owner_edit);
+                    $('#owner-add-input').autocomplete('option', 'source', data.owners.source);
+                    $('.tinybutton').button();
+                    
+                    $('#project_items').html(data.project_items);
+                    item_stats(data.items_for_data, $('#item_id').val());
+                    
+                    $('span.set_nest').click( function() {
+                        var hide = !$(this).hasClass("hide_set");
+                        var toggle_class = $(this).closest('tr').attr('id');
+                        console.log(hide, toggle_class);
+                        $('tr.' + toggle_class).toggle(!hide);
+                        stripe('#setitems tbody');
+                        
+                        $(this).toggleClass("hide_set", hide);
+                    }).click();
+                }
+            }
+        });
+    }
+    
+    getProjectInfo();
+
+    
+    $('#status-select').on('click', '#all-status-change', function() {
+        var projstatus = $('#status').val();
+        $('#project_items tr').each(function() {
+            var tr = this;
+            var item = tr.id.split("_");
+            var item_type = item[0];
+            var item_id = item[1];
+            if (item_type == "set") item_type = "sets";
+            $.ajax({
+                url: '/res/scripts/status',
+                type: 'POST',
+                data: {
+                    type: item_type,
+                    status: projstatus,
+                    id: item_id
+                },
+                success: function(data) {
+                    if (data.error) {
+                        $('<div title="Problem with Status Change" />').html(data.error).dialog();
+                    } else {
+                        console.log('changed', tr.id);
+                        var item_status = $(tr).find('> td.status')
+                                                 .html(projstatus)
+                                                 .toggleClass('potential-error'. projstatus != 'active');
+                    }
+                }
+            });
+        })
+    });
+    
+    
+    
 </script>
+
+<script src="/res/scripts/res.js"></script>
 
 <?php
 

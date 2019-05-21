@@ -23,41 +23,45 @@ class expChooser {
             $this_exp = new myQuery('SELECT exptype, subtype FROM exp WHERE id=' . $this->id);
             $info = $this_exp->get_assoc(0);
             
-            $this->exptype = ($info['exptype'] == '2afc') ? 'tafc' : $info['exptype'];    // '2afc','jnd','rating','buttons','xafc','sort','nback','interactive','motivation','adaptation','other'
+            $this->exptype = ($info['exptype'] == '2afc') ? 'tafc' : $info['exptype'];    // '2afc','jnd','rating','slider','buttons','xafc','sort','nback','interactive','motivation','adaptation','other'
             $this->subtype = $info['subtype'];    // 'standard','adapt','speeded','adapt_nopre','large_n'
 
             switch ($this->exptype) {
                 case 'xafc': 
                     require_once 'exp.xafc.class.php';
-                    $this->exp = new exp_xafc($i, $v); 
+                    $this->exp = new exp_xafc($i); 
                     break;
                 case 'tafc': 
                     require_once 'exp.tafc.class.php';
-                    $this->exp = new exp_tafc($i, $v); 
+                    $this->exp = new exp_tafc($i); 
                     break;
                 case 'sort':
                     require_once 'exp.sort.class.php';
-                    $this->exp = new exp_sort($i, $v); 
+                    $this->exp = new exp_sort($i); 
                     break;
                 case 'motivation':
                     require_once 'exp.motivation.class.php';
-                    $this->exp = new exp_motivation($i, $v); 
+                    $this->exp = new exp_motivation($i); 
                     break;
                 case 'jnd':
                     require_once 'exp.jnd.class.php';
-                    $this->exp = new exp_jnd($i, $v);
+                    $this->exp = new exp_jnd($i);
                     break;
                 case 'buttons':
                     require_once 'exp.buttons.class.php';
-                    $this->exp = new exp_buttons($i, $v); 
+                    $this->exp = new exp_buttons($i); 
                     break;
                 case 'rating':
                     require_once 'exp.rating.class.php';
-                    $this->exp = new exp_rating($i, $v); 
+                    $this->exp = new exp_rating($i); 
                     break;
                 case 'slideshow':
                     require_once 'exp.slideshow.class.php';
-                    $this->exp = new exp_slideshow($i, $v); 
+                    $this->exp = new exp_slideshow($i); 
+                    break;
+                case 'slider':
+                    require_once 'exp.slider.class.php';
+                    $this->exp = new exp_slider($i); 
                     break;
             }
         }
