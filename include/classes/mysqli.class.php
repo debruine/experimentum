@@ -61,11 +61,10 @@ class myQuery {
             }
         }
         
-        $this->data = array();
-        
         if (is_null($q)) {
             return true;
         } else {
+            $this->data = array();
             return $this->set_query($q);
         }
     }
@@ -120,39 +119,24 @@ class myQuery {
     function prepare($query, $params, $return = array()) {
         global $db;
         
-        $this->query = $query;
-        
-        $vartypes = array(
-            "integer" => "i",
-            "boolean" => "s",
-            "double" => "d",
-            "string" => "s"
-        );
-        //$p = array(""); // for automatic type checking
-        $p = array();
         foreach ($params as $key => $value) {
-            //$p[0] .= $vartypes[gettype($value)];  // for automatic type checking
-            $p[] = &$params[$key]; 
+            $p[$key] = &$params[$key]; 
         }
         
         if ($stmt = $db->prepare($query)) {
             call_user_func_array(array(&$stmt, 'bind_param'), $p);
             $stmt -> execute();
-            $result = $stmt->get_result();
             
-            $this->affected_rows = $stmt->affected_rows;
-            $this->insert_id = $stmt->insert_id;
-    
-            if (is_object($result)) {
-                $this->num_rows = $result->num_rows;
-                
-                // fetch result
-                $this->data = array();
-                if ($this->num_rows > 0) {
-                    while ($mydata = $result->fetch_assoc()) {
-                        $this->data[] = $mydata;
-                    }
+            if ($return) {
+                foreach ($return as $key => $value) {
+                    $r[$value] = &$return[$value]; 
                 }
+
+                call_user_func_array(array(&$stmt, 'bind_result'), $r); 
+
+                $stmt -> fetch();
+
+                $this->data = $r;
             }
             $stmt -> close();
         }

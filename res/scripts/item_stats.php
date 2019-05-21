@@ -12,15 +12,15 @@ if (substr($_GET['item'],0,4) == "exp_") {
      $einfo = $equery->get_assoc(0);
      
      $mydata = new myQuery(
-        "SELECT COUNT(DISTINCT session.id) as total_c,
+        "SELECT COUNT(DISTINCT session_id) as total_c,
                 COUNT(DISTINCT user.user_id) as total_dist,
-                COUNT(DISTINCT IF(sex='male',session.id,NULL)) as total_male,
-                COUNT(DISTINCT IF(sex='female',session.id,NULL)) as total_female,
+                COUNT(DISTINCT IF(sex='male',session_id,NULL)) as total_male,
+                COUNT(DISTINCT IF(sex='female',session_id,NULL)) as total_female,
                 COUNT(DISTINCT IF(sex='male',user.user_id,NULL)) as dist_male,
                 COUNT(DISTINCT IF(sex='female',user.user_id,NULL)) as dist_female
            FROM exp_data 
       LEFT JOIN user USING (user_id)
-      LEFT JOIN session ON session.id=exp_data.session_id
+      LEFT JOIN session ON session.id=session_id
           WHERE status>1 AND 
                 status<40 AND 
                 exp_id={$exp_id} AND 
@@ -86,15 +86,15 @@ if (substr($_GET['item'],0,4) == "exp_") {
 $quest_id = intval(substr($_GET['item'],6));
 
  $mydata = new myQuery(
-    "SELECT COUNT(DISTINCT session.id) as total_c,
+    "SELECT COUNT(DISTINCT session_id) as total_c,
             COUNT(DISTINCT user.user_id) as total_dist,
-            COUNT(DISTINCT IF(sex='male',session.id,NULL)) as total_male,
-            COUNT(DISTINCT IF(sex='female',session.id,NULL)) as total_female,
+            COUNT(DISTINCT IF(sex='male',session_id,NULL)) as total_male,
+            COUNT(DISTINCT IF(sex='female',session_id,NULL)) as total_female,
             COUNT(DISTINCT IF(sex='male',user.user_id,NULL)) as dist_male,
             COUNT(DISTINCT IF(sex='female',user.user_id,NULL)) as dist_female
        FROM quest_data 
   LEFT JOIN user USING (user_id)
-  LEFT JOIN session ON session.id=quest_data.session_id
+  LEFT JOIN session ON session.id=session_id
       WHERE status>1 AND 
             status<40 AND 
             quest_id={$quest_id} AND 
@@ -109,7 +109,7 @@ $data = $mydata->get_one_array();
                                 AVG(endtime-starttime) as val 
                            FROM quest_data
                       LEFT JOIN user USING (user_id) 
-                          WHERE quest_id={$quest_id}
+                          WHERE quest_id=5
                        GROUP BY user_id, starttime, endtime",
 
         "CREATE TEMPORARY TABLE tmp_ln2

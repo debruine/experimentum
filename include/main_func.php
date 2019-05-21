@@ -130,45 +130,6 @@
         echo '</dl>' . ENDLINE;
     }
     
-    function array_to_table($array, $header = true, $sortable=false, $rotate=false) {
-        if (empty($array)) return false;
-        
-        if ($rotate) {
-            $array = rotate_array($array);
-        }
-        
-        $sort = ($sortable) ? ' sortable' : '';
-        $return = '<table class="query' . $sort . '">' . PHP_EOL;
-        
-        // table header
-        if ($header) {
-        $return .= '<thead><tr>';
-            $keys = array_keys($array);
-            foreach ($array[$keys[0]] as $h => $v) {
-                $return .= "    <th>$h</th>" . PHP_EOL;
-            }
-            $return .= '</tr></thead>';
-        }
-        
-        // table data
-        $return .= "<tbody>";
-        foreach($array as $a) {
-            $return .= "<tr>";
-            foreach ($a as $v) {
-                $return .= "    <td>$v</td>" . PHP_EOL;
-            }
-            $return .= '</tr>' . PHP_EOL;
-        }
-        $return .= "</tbody>";
-        
-        $return .= '</table>' . PHP_EOL . PHP_EOL;
-        
-        // add sorting script
-        if ($sortable) $return .= '<script src="/include/js/sorttable.js"></script>' . PHP_EOL;
-        
-        return $return;
-    }
-    
     function multiFaces() {
         // return a randomised order of faces for the background
         
@@ -339,58 +300,6 @@
                  )"
         );
         return $query->get_num_rows();
-    }
-    
-    // human-readable file permissions
-    function perm($perms) {
-        switch ($perms & 0xF000) {
-            case 0xC000: // socket
-                $info = 's';
-                break;
-            case 0xA000: // symbolic link
-                $info = 'l';
-                break;
-            case 0x8000: // regular
-                $info = 'r';
-                break;
-            case 0x6000: // block special
-                $info = 'b';
-                break;
-            case 0x4000: // directory
-                $info = 'd';
-                break;
-            case 0x2000: // character special
-                $info = 'c';
-                break;
-            case 0x1000: // FIFO pipe
-                $info = 'p';
-                break;
-            default: // unknown
-                $info = 'u';
-        }
-        
-        // Owner
-        $info .= (($perms & 0x0100) ? 'r' : '-');
-        $info .= (($perms & 0x0080) ? 'w' : '-');
-        $info .= (($perms & 0x0040) ?
-                    (($perms & 0x0800) ? 's' : 'x' ) :
-                    (($perms & 0x0800) ? 'S' : '-'));
-        
-        // Group
-        $info .= (($perms & 0x0020) ? 'r' : '-');
-        $info .= (($perms & 0x0010) ? 'w' : '-');
-        $info .= (($perms & 0x0008) ?
-                    (($perms & 0x0400) ? 's' : 'x' ) :
-                    (($perms & 0x0400) ? 'S' : '-'));
-        
-        // World
-        $info .= (($perms & 0x0004) ? 'r' : '-');
-        $info .= (($perms & 0x0002) ? 'w' : '-');
-        $info .= (($perms & 0x0001) ?
-                    (($perms & 0x0200) ? 't' : 'x' ) :
-                    (($perms & 0x0200) ? 'T' : '-'));
-        
-        return( $info );
     }
 
     // finish a script, return values as json (or html), optionally close out the buffer

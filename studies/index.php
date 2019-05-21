@@ -1,7 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth($RES_STATUS);
+require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';  
 
 /****************************************************
  * Set up studies list

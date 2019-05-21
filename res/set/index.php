@@ -42,7 +42,7 @@ $my = new myQuery('SELECT CONCAT("<span class=\'fav",
         "</span>") as "Favs",
     CONCAT("<a href=\'info?id=", s.id, "\'>", s.id, "</a>") as "ID", 
     res_name as "Name",
-    CONCAT("<span class=\'labnotes\'>", labnotes, "</span><span class=\'item_text\'>", GROUP_CONCAT(CONCAT(item_type,"_",set_items.item_id) SEPARATOR " "), "</span>") as "Labnotes", 
+    CONCAT("<span class=\'labnotes\'>", labnotes, "</span><span class=\'item_text\'>", GROUP_CONCAT(CONCAT(item_type,"_",item_id) SEPARATOR " "), "</span>") as "Labnotes", 
     status, 
     DATE_FORMAT(create_date, "%Y-%m-%d") as "Date Created"
     FROM sets as s

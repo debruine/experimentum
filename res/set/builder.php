@@ -8,7 +8,7 @@ if (validID($_GET['id']) && !permit('sets', $_GET['id'])) header('Location: /res
 
 $title = array(
     '/res/' => 'Researchers',
-    '/res/set/' => 'Sets',
+    '/res/set/' => 'Set',
     '/res/set/builder' => 'Builder'
 );
 
@@ -168,8 +168,8 @@ $table_setup['set_type']->set_question('Type');
 $table_setup['set_type']->set_options(array(
     'fixed' => 'Fixed Order',
     'random' => 'Random Order',
-    'one_random' => 'One of (random)'
-    #'one_equal' => 'One of (equal)'
+    'one_random' => 'One of (random)',
+    'one_equal' => 'One of (equal)'
 ));
 
 $table_setup['sex'] = new select('sex', 'sex', $project_info['sex']);

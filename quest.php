@@ -127,18 +127,11 @@ $q->print_form();
     });
     
     // form is submitted
-    function submitQ(quest_id) {
-        recordAnswers();
-        return true;
-        
+    function submitQ(quest_id) {    
         // check for empty questions
         var fields = {};
         $.each($('#maincontent form').serializeArray(), function(index,value) {
             fields[value.name] = value.value;
-        });
-        
-        $('div.slider').each(function() {
-            fields[$(this).attr("id")] = $(this).slider("value");
         });
         
         var emptyFields = 0;
@@ -175,13 +168,7 @@ $q->print_form();
     }
     
     function recordAnswers() {
-        var theData = $('#maincontent form').serializeArray();
-        $('div.slider').each(function() {
-            theData[theData.length] = {
-                name: $(this).attr("id"), 
-                value: $(this).slider("value") 
-            };
-        });
+        var theData = $('#maincontent form').serialize();
         
         // record answers
         $.ajax({

@@ -18,7 +18,7 @@ $styles = array(
     "#setitems td+td+td+td+td" => "text-align: right;",
     "#setitems td" => "border-left: 1px dotted grey;",
     "#setitems tr" => "border-right: 1px dotted grey;",
-    "span.set_nest" => "display: inline-block; width: 20px; height: 20px; background: transparent no-repeat center center url(/images/linearicons/arrow-down?c=1f9c03);",
+    "span.set_nest" => "display: inline-block; width: 20px; height: 20px; background: transparent no-repeat center center url(/images/linearicons/arrow-down?c=F00);",
     "span.set_nest.hide_set"    => "background-image: url(/images/linearicons/arrow-right?c=000);",
     ".potential-error" => "color: hsl(0, 100%, 40%);"
 );
@@ -69,7 +69,7 @@ $myowners = new myQuery('SELECT user_id, CONCAT(lastname, ", ", firstname) as na
 $owners = $myowners->get_assoc(false, 'user_id', 'name');
 $access = in_array($_SESSION['user_id'], array_keys($owners));
 
-$allowners = new myQuery('SELECT user_id, firstname, lastname, email FROM res LEFT JOIN user USING (user_id) WHERE status > 3');
+$allowners = new myQuery('SELECT user_id, firstname, lastname, email FROM researcher LEFT JOIN user USING (user_id) WHERE status > 3');
 $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
 foreach($ownerlisting as $res) {

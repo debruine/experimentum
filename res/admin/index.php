@@ -18,6 +18,7 @@ $styles = array(
 	'.bigbuttons li a.merge' => 'background-image: url("/images/linearicons/list?c=FFF");',
 	'.bigbuttons li a.functions' => 'background-image: url("/images/linearicons/list?c=FFF");',
 	'.bigbuttons li a.processlist' => 'background-image: url("/images/linearicons/list?c=FFF");',
+	'.bigbuttons li a.status' => 'background-image: url("/images/linearicons/list?c=FFF");',
 	'.bigbuttons li a.usage' => 'background-image: url("/images/linearicons/users?c=FFF");',
 	'.bigbuttons li a.supervise' => 'background-image: url("/images/linearicons/0295-group-work?c=FFFFFF");',
 );
@@ -31,6 +32,7 @@ $page->displayBody();
 $links = array(
     'participant' => 'Participant Data',
     	'merge' => 'Merge',
+    	'status' => 'Change Status',
     	'supervise' => 'Supervision',
     'access' => 'Access',
     'stimuli' => 'Update Stimuli',
@@ -43,6 +45,7 @@ $links = array(
 
 $classes = array(
     'participant' => 'participant',
+	'status' => 'status',
 	'merge' => 'merge',
 	'stimuli' => 'stimuli',
 	'supervise' => 'supervise',

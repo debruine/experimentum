@@ -9,16 +9,15 @@ $return = array(
 );
 
 $clean = my_clean($_POST);
-$clean2 = my_clean($_GET);
 if (empty($clean)) $clean = array();
 $username = ifEmpty($clean['username']);
 $password = ifEmpty($clean['password']);
-$user_id = ifEmpty(intval($clean2['u']));
-$passcode = ifEmpty($clean2['p']);
+$user_id = ifEmpty($clean['u']);
+$passcode = ifEmpty($clean['p']);
 
 if (!empty($user_id) && !empty($passcode)) {
     // auto-login
-    $query = new myQuery("SELECT user_id FROM user  
+    $query = new myQuery("SELECT '' FROM user  
         WHERE user.user_id='$user_id' AND LEFT(MD5(regdate),10)='$passcode'
         LIMIT 1");
     
@@ -33,16 +32,16 @@ if (!empty($user_id) && !empty($passcode)) {
         
         // send to new page
         $newpage = '/';
-        if (array_key_exists('url', $clean2)) {
-            $newpage = urldecode($clean2['url']);
-        } else if (array_key_exists('exp', $clean2)) {
-            $newpage = '/exp?id=' . $clean2['exp'];
-        } else if (array_key_exists('quest', $clean2)) {
-            $newpage = '/quest?id=' . $clean2['quest'];
+        if (array_key_exists('url', $clean)) {
+            $newpage = urldecode($clean['url']);
+        } else if (array_key_exists('exp', $clean)) {
+            $newpage = '/exp?id=' . $clean['exp'];
+        } else if (array_key_exists('quest', $clean)) {
+            $newpage = '/quest?id=' . $clean['quest'];
         } else if (array_key_exists('set', $clean)) {
-            $newpage = '/include/scripts/set?id=' . $clean2['set'];
-        } else if (array_key_exists('project', $clean2)) {
-            $newpage = '/project?' . $clean2['project'];
+            $newpage = '/include/scripts/set?id=' . $clean['set'];
+        } else if (array_key_exists('project', $clean)) {
+            $newpage = '/project?' . $clean['project'];
         }
         if (!empty($newpage)) {
             header('Location: ' . $newpage);

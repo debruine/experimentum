@@ -5,13 +5,13 @@
 /*-------------------------------------------------
 PAGE COLORS 
 -------------------------------------------------*/
-    $saturation = "100";
+    $saturation = "70";
     $bgcolor = 'hsl(' . THEME_HUE . ",0%,95%)"; // very light grey
     $text = '#222';                     // (very dark grey)
-    $theme = 'hsl(' . THEME_HUE . ",50%,10%)"; // dark theme
-    $highlight = 'hsl(' . THEME_HUE . ",50%,30%)"; // bright theme
+    $theme = 'hsl(' . THEME_HUE . ",0%,10%)"; // dark grey
+    $highlight = 'hsl(' . THEME_HUE . ",{$saturation}%,30%)"; // bright theme
     $text_on_theme = 'white';
-    $shade = 'hsl(' . THEME_HUE . ",100%,75%)"; // light theme
+    $shade = 'hsl(' . THEME_HUE . ",{$saturation}%,75%)"; // light theme
     $border_color = 'white';
     
     $border = '3px solid ' . $border_color;
@@ -41,6 +41,51 @@ FONTS
     --rainbow-purple: hsl(280,<?= $saturation ?>%,30%);
 }
 
+@font-face{
+    font-family: 'Fira Code';
+    src: url('fonts/FiraCode-Light.eot');
+    src: url('fonts/FiraCode-Light.eot') format('embedded-opentype'),
+         url('fonts/FiraCode-Light.woff2') format('woff2'),
+         url('fonts/FiraCode-Light.woff') format('woff'),
+         url('fonts/FiraCode-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face{
+    font-family: 'Fira Code';
+    src: url('fonts/FiraCode-Regular.eot');
+    src: url('fonts/FiraCode-Regular.eot') format('embedded-opentype'),
+         url('fonts/FiraCode-Regular.woff2') format('woff2'),
+         url('fonts/FiraCode-Regular.woff') format('woff'),
+         url('fonts/FiraCode-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face{
+    font-family: 'Fira Code';
+    src: url('fonts/FiraCode-Medium.eot');
+    src: url('fonts/FiraCode-Medium.eot') format('embedded-opentype'),
+         url('fonts/FiraCode-Medium.woff2') format('woff2'),
+         url('fonts/FiraCode-Medium.woff') format('woff'),
+         url('fonts/FiraCode-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face{
+    font-family: 'Fira Code';
+    src: url('fonts/FiraCode-Bold.eot');
+    src: url('fonts/FiraCode-Bold.eot') format('embedded-opentype'),
+         url('fonts/FiraCode-Bold.woff2') format('woff2'),
+         url('fonts/FiraCode-Bold.woff') format('woff'),
+         url('fonts/FiraCode-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+
 /*-------------------------------------------------
 PAGE BODY and LAYOUT 
 -------------------------------------------------*/
@@ -62,7 +107,7 @@ PAGE BODY and LAYOUT
 }
 
 body {
-    font-family:"Open Sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
+    font-family:"Fira Code", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
     font-size:100%; 
     color:<?= $text ?>;
     background-color: <?= $bgcolor ?>;
@@ -70,7 +115,7 @@ body {
 }
 
 pre {
-    font-family:"Open Sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
+    font-family:"Fira Code", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Lucida", "Trebuchet MS", verdana, helvetica, arial, sans-serif;
     font-size:120%; 
     color:<?= $text ?>;
     white-space: pre-wrap;
@@ -78,10 +123,6 @@ pre {
     
 textarea, input, select, td { 
     font: inherit;
-}
-
-select {
-    font-size: 90%;
 }
 
 /* Heights for Sticky Footer */
@@ -95,9 +136,16 @@ html, body {height: 100%;}
     padding: 10px 0 0px;
     background-color: <?= $theme ?>;
     color: <?= $text_on_theme ?>;
-    border-bottom: <?= $border ?>;
+    /* border-bottom: <?= $border ?>; */
     <?= shadow(); ?>
     margin-bottom: 1em;
+    box-shadow: 0 1.5px 0 0px var(--rainbow-purple),
+                0 3px 0 0px var(--rainbow-blue),
+                0 4.5px 0 0px var(--rainbow-green),
+                0 6px 0 0px var(--rainbow-yellow),
+                0 7.5px 0 0px var(--rainbow-orange),
+                0 9px 0 0px var(--rainbow-red),
+                0 9.5px 1px 0px rgba(0,0,0,.5);
 }
 
 #breadcrumb { 
@@ -236,11 +284,18 @@ ul#login_info li input { display: block; text-align: left; }
     float:left;
     width:100%;
     padding:5px 0;
-    border-top: <?= $border ?>;
+    /*border-top: <?= $border ?>;*/
     background-color: <?= $theme ?>;
     color: <?= $text_on_theme ?>;
     text-align: center;
     <?= shadow(); ?>
+    box-shadow: 0 -1.5px 0 0px var(--rainbow-purple),
+                0 -3px 0 0px var(--rainbow-blue),
+                0 -4.5px 0 0px var(--rainbow-green),
+                0 -6px 0 0px var(--rainbow-yellow),
+                0 -7.5px 0 0px var(--rainbow-orange),
+                0 -9px 0 0px var(--rainbow-red),
+                0 -9.5px 1px 0px rgba(0,0,0,.5);
 }
 
 #footer a, #footer a:visited, 
@@ -342,7 +397,6 @@ li.home       { background-image: url("/images/linearicons/home?c=FFFFFF"); }
 li.exp        { background-image: url("/images/linearicons/chart-bars?c=FFFFFF"); }
 li.set        { background-image: url("/images/linearicons/layers?c=FFFFFF"); }
 li.project    { background-image: url("/images/linearicons/briefcase?c=FFFFFF"); }
-li.lab        { background-image: url("/images/linearicons/0295-group-work?c=FFFFFF"); }
 li.quest      { background-image: url("/images/linearicons/list?c=FFFFFF"); }
 li.faq        { background-image: url("/images/linearicons/star?c=FFFFFF"); }
 li.res        { background-image: url("/images/linearicons/graduation-hat?c=FFFFFF"); }
@@ -360,6 +414,14 @@ li.my         { background-image: url("/images/linearicons/user?c=FFFFFF"); }
     background-color: transparent;
     border-bottom: 2px solid white;
 }
+
+#menu ul li:nth-child(1) a:active, #menu ul li:nth-child(1) a:hover { border-color: var(--rainbow-red); }
+#menu ul li:nth-child(2) a:active, #menu ul li:nth-child(2) a:hover { border-color: var(--rainbow-orange); }
+#menu ul li:nth-child(3) a:active, #menu ul li:nth-child(3) a:hover { border-color: var(--rainbow-yellow); }
+#menu ul li:nth-child(4) a:active, #menu ul li:nth-child(4) a:hover { border-color: var(--rainbow-green); }
+#menu ul li:nth-child(5) a:active, #menu ul li:nth-child(5) a:hover { border-color: var(--rainbow-blue); }
+#menu ul li:nth-child(6) a:active, #menu ul li:nth-child(6) a:hover { border-color: var(--rainbow-purple); }
+
 
 /***** HEADERS AND TEXT *****/
 
@@ -481,6 +543,20 @@ hr.invisible { height:0; margin:0; }
 #faq h2 a:active { background-color: transparent; }
 div.ui-accordion-content { max-width: 40em; }
 
+#faq h2:nth-child(1):hover, #faq h2.ui-state-active:nth-child(1) { background-color: var(--rainbow-red); }
+#faq h2:nth-child(3):hover, #faq h2.ui-state-active:nth-child(3) { background-color: var(--rainbow-orange); }
+#faq h2:nth-child(5):hover, #faq h2.ui-state-active:nth-child(5) { background-color: var(--rainbow-yellow); }
+#faq h2:nth-child(7):hover, #faq h2.ui-state-active:nth-child(7) { background-color: var(--rainbow-green); }
+#faq h2:nth-child(9):hover, #faq h2.ui-state-active:nth-child(9) { background-color: var(--rainbow-blue); }
+#faq h2:nth-child(11):hover, #faq h2.ui-state-active:nth-child(11) { background-color: var(--rainbow-purple); }
+#faq h2:nth-child(13):hover, #faq h2.ui-state-active:nth-child(13) { background-color: var(--rainbow-red); }
+#faq h2:nth-child(15):hover, #faq h2.ui-state-active:nth-child(15) { background-color: var(--rainbow-orange); }
+#faq h2:nth-child(17):hover, #faq h2.ui-state-active:nth-child(17) { background-color: var(--rainbow-yellow); }
+#faq h2:nth-child(19):hover, #faq h2.ui-state-active:nth-child(19) { background-color: var(--rainbow-green); }
+#faq h2:nth-child(21):hover, #faq h2.ui-state-active:nth-child(21) { background-color: var(--rainbow-blue); }
+#faq h2:nth-child(23):hover, #faq h2.ui-state-active:nth-child(23) { background-color: var(--rainbow-purple); }
+
+
 /***** TEXT LINKS *****/
 a { 
     outline: none;
@@ -543,13 +619,10 @@ dt {
     text-align: right; 
     font-weight: bold;
     overflow: hidden;
-    min-height: 1.25em;
     
 }
 dd {
     margin: 0 1em .5em 10.5em;
-    display: block;
-    min-height: 1.25em;
 }
 
 dd > dl {
@@ -588,6 +661,19 @@ ul.bigbuttons {
     <?= $big_round_corners ?>
     <?= shadow() ?>
 }
+
+.bigbuttons > li:nth-child(1) a:hover { background-color: var(--rainbow-red); }
+.bigbuttons > li:nth-child(2) a:hover { background-color: var(--rainbow-orange); }
+.bigbuttons > li:nth-child(3) a:hover { background-color: var(--rainbow-yellow); }
+.bigbuttons > li:nth-child(4) a:hover { background-color: var(--rainbow-green); }
+.bigbuttons > li:nth-child(5) a:hover { background-color: var(--rainbow-blue); }
+.bigbuttons > li:nth-child(6) a:hover { background-color: var(--rainbow-purple); }
+.bigbuttons > li:nth-child(7) a:hover { background-color: var(--rainbow-red); }
+.bigbuttons > li:nth-child(8) a:hover { background-color: var(--rainbow-orange); }
+.bigbuttons > li:nth-child(9) a:hover { background-color: var(--rainbow-yellow); }
+.bigbuttons > li:nth-child(10) a:hover { background-color: var(--rainbow-green); }
+.bigbuttons > li:nth-child(11) a:hover { background-color: var(--rainbow-blue); }
+.bigbuttons > li:nth-child(12) a:hover { background-color: var(--rainbow-purple); }
 
 .bigbuttons li.hide, .bigbuttons li.test, .bigbuttons li.archive {
     display: none;
@@ -639,7 +725,6 @@ ul.bigbuttons {
 .bigbuttons li a.quest   { background-image: url("/images/linearicons/list?c=FFF"); }
 .bigbuttons li a.set     { background-image: url("/images/linearicons/layers?c=FFF"); }
 .bigbuttons li a.project { background-image: url("/images/linearicons/briefcase?c=FFF"); }
-.bigbuttons li a.lab     { background-image: url("/images/linearicons/0295-group-work?c=FFF"); }
 .bigbuttons li a.stimuli { background-image: url("/images/linearicons/picture?c=FFF"); }
 .bigbuttons li a.admin   { background-image: url("/images/linearicons/graduation-hat?c=FFF"); }
 
@@ -1129,52 +1214,10 @@ label {
     display: inline-block;
 }
 
-#prev_trial {
-    float: left;
-    display: none;
-}
-
-#next_trial {
-    float: right;
-    display: none;
-}
-
-#exp_slider {
-    display: inline-block;
-    width: 20em;
-    margin: 0 1em;
-}
-
-table.slider td {
-    width: 25%;
-    text-align: center;
-}
-table.slider td:eq(1) {
-    width: 50%;
-}
-div.slider {
-    min-width: 10em;
-}
-
-div.slider .ui-slider-handle {
-    display: none;
-}
-
-div.slider .ui-slider-handle {
-    width: 1.4em; 
-    height: 1.4em;
-    top: 50%;
-    margin-top: -.7em;
-    text-align: center;
-    line-height: 1.4em;
-    border-radius: 0.7em;
-    background-color: <?= $highlight ?>;
-}
-
 .buttonrow #low_anchor { text-align: right; }
 .buttonrow #high_anchor { text-align: left; }
 
-.radioanchor tr, .slider tr { background-color: transparent !important; }
+.radioanchor tr { background-color: transparent !important; }
 
 img.radio {
     width: 25px; height:25px;
@@ -1212,7 +1255,7 @@ td.anchor {
 }
 
 .helpbutton:hover, .helpbutton:active {
-    background-color: <?= $highlight ?>;
+    background-color: var(--rainbow-red);
 }
 
 .helpbutton:active {
@@ -1440,13 +1483,6 @@ img#center_image, .jnd img#left_image, .jnd img#right_image { margin: 0 auto; }
     font-size: 150%;
 }
 
-.buttons .input_interface input.ui-state-default,
-.buttons .input_interface input.ui-state-active,
-.buttons .input_interface input:hover {
-    background-color: hsl(0, 0%, 85%);
-    color: inherit;
-}
-
 input.rating {
     font-size: 200%;
     width: 2.5em;
@@ -1545,7 +1581,7 @@ MOBILE STYLES
 -------------------------------------------------*/
 @media screen and (max-width: 600px) {
     body {
-        font-family: "Open Sans", Helvetica;
+        font-family: "Fira Code", Helvetica;
         -webkit-text-size-adjust:none;
         font-size:16px; 
         background-image: none;

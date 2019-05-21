@@ -10,6 +10,12 @@ unset($_SESSION['set_item_number']);
 $title = loc('Researchers');
 
 $styles = array(
+    '.bigbuttons li a.exp:hover'   => 'background-color: var(--rainbow-red);',
+    '.bigbuttons li a.quest:hover' => 'background-color: var(--rainbow-orange);',
+    '.bigbuttons li a.set:hover'   => 'background-color: var(--rainbow-yellow);',
+    '.bigbuttons li a.project:hover' => 'background-color: var(--rainbow-green);',
+    '.bigbuttons li a.stimuli:hover' => 'background-color: var(--rainbow-blue);',
+    '.bigbuttons li a.admin:hover' => 'background-color: var(--rainbow-purple);',
     '.bigbuttons li' => 'position: relative;',
     '.bigbuttons li input' => 'width: 60%; 
                                display: block; 
@@ -19,8 +25,7 @@ $styles = array(
                                background-color: hsla(0, 0%, 100%, 20%);
                                border: 2px solid white;
                                text-align: center;',
-    '.bigbuttons li input:focus' => 'box-shadow: none;',
-    '.bigbuttons li a.study1' => 'background-image: url("/images/linearicons/smile?c=FFFFFF");'
+    '.bigbuttons li input:focus' => 'box-shadow: none;'
 );
 
 $links = array(
@@ -28,9 +33,7 @@ $links = array(
     '/res/quest/'    => 'Questionnaires',
     '/res/set/'      => 'Sets',
     '/res/project/'  => 'Projects',
-    '/res/lab/'      => 'Labs',
     '/res/stimuli/'  => 'Stimuli',
-    '/res/psa1'      => 'Study 1'
 );
 
 if (in_array($_SESSION['status'], array('res', 'admin'))) {
@@ -43,41 +46,25 @@ $class = array(
     '/res/quest/'    => 'quest',
     '/res/set/'      => 'set',
     '/res/project/'  => 'project',
-    '/res/admin/'    => 'admin',
-    '/res/lab/'      => 'lab',
-    '/res/psa1'      => 'study1'
+    '/res/admin/'    => 'admin'
 );
 
-$q = new myQuery();
-$q->prepare(
-    'SELECT IF(d.type="exp", e.res_name, 
-                IF(d.type="quest", q.res_name,
-                    IF(d.type="set", s.res_name,
-                        IF(d.type="project", p.res_name, "Unknown")))) AS res_name, 
-            IF(d.type="exp", e.name, 
-                IF(d.type="quest", q.name,
-                    IF(d.type="set", s.name,
-                        IF(d.type="project", p.name, "Unknown")))) AS name, 
-            d.id, 
-            d.type 
-    FROM dashboard AS d
-    LEFT JOIN exp AS e ON e.id = d.id AND d.type = "exp"
-    LEFT JOIN quest AS q ON q.id = d.id AND d.type = "quest"
-    LEFT JOIN sets AS s ON s.id = d.id AND d.type = "set"
-    LEFT JOIN project AS p ON p.id = d.id AND d.type = "project"
-    WHERE user_id=? 
-    ORDER BY type, res_name',
-    array('i', $_SESSION['user_id'])
+$my_dashboard = new myQuery('SELECT name, id, type FROM dashboard WHERE user_id=' . 
+                            $_SESSION['user_id'] . ' ORDER BY type, dt DESC');
+$dashboard = $my_dashboard->get_assoc();
+$dash = 'My Favorites<ul id="myfavs">' . ENDLINE;
+$url = array(
+    'query' => '/res/data/',
+    'exp' => '/res/exp/info',
+    'quest' => '/res/quest/info',
+    'set' => '/res/set/info',
+    'project' => '/res/project/info'
 );
-$dashboard = $q->get_assoc();
-$dash = 'My Pinned Items<ul id="myfavs">' . ENDLINE;
-
 foreach ($dashboard as $attr) {
-    $dash .= sprintf('    <li class="%s"><a href="/res/%s/info?id=%s">%s<br>%s</a></li>' . ENDLINE,
+    $dash .= sprintf('    <li class="%s"><a href="%s?id=%s">%s</a></li>' . ENDLINE,
         $attr['type'],
-        $attr['type'],
+        $url[$attr['type']],
         $attr['id'],
-        $attr['res_name'],
         $attr['name']
     );
 }
@@ -103,8 +90,8 @@ $page->displayBody();
     Chain them together by making new sets at the <a href="/res/set/builder">Set Builder</a>.
     Make a project page with the <a href="/res/project/builder">Project Builder</a> 
     so you can direct participants to your project with a custom URL. 
-    Browse our <a href="/res/stimuli/browse">open-access stimuli</a> or 
-    <a href="/res/stimuli/upload">upload your own stimuli</a>.
+    Browse our <a href="/res/stimuli/browse">open-access stimuli</a>. <!-- or
+    <a href="/res/stimuli/upload">upload your own stimuli</a>.-->
 </p>
 
 

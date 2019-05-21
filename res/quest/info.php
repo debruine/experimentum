@@ -85,11 +85,9 @@ foreach($owners as $id => $name) {
 $query = new myQuery("SELECT q.*,
                         IF(options.q_id IS NOT NULL, GROUP_CONCAT(CONCAT(opt_value, ':', display) SEPARATOR '</li><li>'), 
                             IF(q.type='text', CONCAT('text: limit ', maxlength, ' characters'), 
-                                IF(q.type='radioanchor', CONCAT('radioanchor: 1 (', low_anchor, ') to ', maxlength, ' (', high_anchor, ')'), 
-                                    IF(q.type='slider', CONCAT('slider: ', startnum,' (', low_anchor, ') to ', endnum, ' (', high_anchor, ') by ', step), 
-                                        IF(q.type='radiorow', 'FWD',  If(q.type='radiorev', '<span class=\"ui-state-highlight\">REV</span>',  
-                                            CONCAT(q.type, ': ', low_anchor, ' to ', high_anchor))
-                                        )
+                                If(q.type='radioanchor', CONCAT('1 (', low_anchor, ') to ', maxlength, ' (', high_anchor, ')'), 
+                                    If(q.type='radiorow', 'FWD',  If(q.type='radiorev', '<span class=\"ui-state-highlight\">REV</span>',  
+                                        CONCAT(q.type, ': ', low_anchor, ' to ', high_anchor))
                                     )
                                 )
                             )

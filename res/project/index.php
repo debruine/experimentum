@@ -35,15 +35,12 @@ $my = new myQuery('SELECT CONCAT("<span class=\'fav",
         "\' id=\'dash", p.id, "\'>",
         IF(d.id IS NOT NULL, "+", "-"), 
         "</span>") as "Favs",CONCAT("<a href=\'info?id=", p.id, "\'>", p.id, "</a>") as "ID", 
-	CONCAT("<a href=\'info?id=", p.id, "\'>", p.res_name, "</a>") AS "Name",
-	CONCAT("<a href=\'/project?", p.url, "\'>https://psa.psy.gla.ac.uk/project?", p.url, "</a>") AS "URL",
-	COUNT(DISTINCT session.id) AS Sessions,
+	p.res_name AS "Name",
 	CONCAT("<span class=\'labnotes\'>", labnotes, "</span>") as "Labnotes", 
 	status, 
 	DATE_FORMAT(create_date, "%Y-%m-%d") as "Date Created"
 	FROM project as p
 	LEFT JOIN access USING (id) 
-	LEFT JOIN session ON project_id = p.id
 	LEFT JOIN dashboard as d ON d.id = p.id AND d.type="project" AND d.user_id=' . $_SESSION['user_id'] . '
 	WHERE access.type="project" AND access.user_id IN(' . $access_user . ')
 	GROUP BY p.id ORDER BY d.user_id DESC, p.id DESC');

@@ -152,7 +152,6 @@ $info = array();
 $exptype_options = array(
     '2afc' => '2-Alternative Forced-choice (2AFC)',
     'jnd' => '2AFC with 8-Button Strength of Choice',
-    'slider' => 'Slider',
     'rating' => 'Numeric Rating',
     'buttons' => 'Labelled Buttons',
     'slideshow' => 'Slideshow',
@@ -209,9 +208,6 @@ if (validID($exp_id)) {
         'rating_range' => '7',
         'low_anchor' => 'Click Here to Set or Delete Low Anchor',
         'high_anchor' => 'Click Here to Set or Delete High Anchor',
-        'slider_min' => '0',
-        'slider_max' => '100',
-        'slider_step' => '1',
         'random_stim' => '20',
         'total_stim' => '20',
         'default_time' => '4000',
@@ -276,26 +272,6 @@ if ($eInfo['exptype'] == 'slideshow') {
     $info['increment_time']->set_int_only(true);
 }
 
-if ($eInfo['exptype'] == 'slider') {
-    $slider_min= new input('slider_min', 'slider_min', $eInfo['slider_min']);
-    $slider_min->set_width(50);
-    $slider_min->set_type('number');
-    
-    $slider_max = new input('slider_max', 'slider_max', $eInfo['slider_max']);
-    $slider_max->set_width(50);
-    $slider_max->set_type('number');
-    
-    $slider_step = new input('slider_step', 'slider_step', $eInfo['slider_step']);
-    $slider_step->set_width(50);
-    $slider_step->set_type('number');
-    
-    $slider = $slider_min->get_element() . ' to ' . $slider_max->get_element() . 
-              ' by steps of ' . $slider_step->get_element();
-    $info['slider'] = new formElement('slider','slider');
-    $info['slider']->set_question("Slider range");
-    $info['slider']->set_custom_input($slider);
-}
-
 // trial_order
 $info['trial_order'] = new radio('trial_order', 'trial_order', $eInfo['trial_order']);
 $info['trial_order']->set_question('Trial Order');
@@ -355,7 +331,6 @@ $min_max_images = array(
     'slideshow' => array(1, 3),
     'jnd'       => array(2, 3),
     'rating'    => array(1, 3),
-    'slider'    => array(1, 3),
     'buttons'   => array(1, 3),
     'xafc'      => array(3, 10),
     'sort'      => array(2, 10),
@@ -377,7 +352,6 @@ if (is_array($trialInfo) && array_key_exists('nimages', $trialInfo)) {
         case 'rating':
         case 'motivation':
         case 'slideshow':
-        case 'slider':
             $nImages = 1;
             break;
         case 'xafc':
@@ -509,15 +483,6 @@ switch ($eInfo['exptype']) {
         $text .= '      </div></td>' . ENDLINE;
         $text .= '  </tr>' . ENDLINE;
         break;
-    case 'slider':
-        $text .= '  <tr class="input_interface">' . ENDLINE;
-        $text .= '      <td colspan="3">' . ENDLINE;
-        $text .= '          <span class="editText" id="low_anchor">' . $eInfo['low_anchor'] . '</span>' . ENDLINE;
-        $text .= '              <div id="exp_slider" /><div class="slider_handle ui-slider-handle"></div></div>' . ENDLINE;
-        $text .= '          <span class="editText" id="high_anchor">' . $eInfo['high_anchor'] . '</span>' . ENDLINE;
-        $text .= '      </div></td>' . ENDLINE;
-        $text .= '  </tr>' . ENDLINE;
-        break;
     case 'buttons':
         $text .= '  <tr class="input_interface">' . ENDLINE;    
         $text .= '      <td colspan="3"><div class="buttons">' . ENDLINE;
@@ -576,7 +541,6 @@ switch ($eInfo['exptype']) {
     case 'slideshow': 
     case 'buttons':
     case 'rating':
-    case 'slider':
         echo '      <td id="left_image" style="display:none;"><img src="/stimuli/blankface" /></td>' . ENDLINE;
         echo '      <td id="center_image"><img src="/stimuli/blankface"/></td>' . ENDLINE;
         echo '      <td id="right_image" style="display:none;"><img src="/stimuli/blankface" /></td>' . ENDLINE;
@@ -668,35 +632,6 @@ Trial x of <span id="random_stim_top"><?= $eInfo['random_stim'] ?></span>
     $(function() {
         
         $( "#tabs" ).tabs();
-        $("#exp_slider").slider({
-            min: parseFloat($("#slider_min").val()),
-            max: parseFloat($("#slider_max").val()),
-            step: parseFloat($("#slider_step").val()),
-            change: function(e, ui) {
-                $(ui.handle).show();
-                //$(ui.handle).text( ui.value );
-            },
-            create: function(e, ui) {
-                //$(ui.handle).text( ui.value );
-            },
-            slide: function(e, ui) {
-                //$(ui.handle).text( ui.value );
-            }
-        });
-        
-        $(".slider_handle").hide();
-        
-        $('#slider_min').change(function() {
-            $( "#exp_slider" ).slider( "option", "min", $('#slider_min').val() );
-        });
-        
-        $('#slider_max').change(function() {
-            $( "#exp_slider" ).slider( "option", "max", $('#slider_max').val() );
-        });
-        
-        $('#slider_step').change(function() {
-            $( "#exp_slider" ).slider( "option", "step", $('#slider_step').val() );
-        });
     
         setOriginalValues('myInformation'); 
         

@@ -5,6 +5,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 // set up user object and login
 $user = new user();
 $user->set_username('Guest');
+$user->set_code($clean['code']);
 $user->set_status('guest');
 $user->register("");
 $user->login_table();

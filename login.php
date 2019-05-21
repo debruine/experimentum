@@ -21,6 +21,7 @@ $l->set_questionList($login_input);
 $l->set_method('post');
 $l->set_buttons(array(
     'Login' => 'login();',
+    //'Sign Up for an Account' => 'window.location.href="/consent"'
 ));
 $l->set_button_location('bottom');
 

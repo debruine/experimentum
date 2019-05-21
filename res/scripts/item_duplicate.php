@@ -166,13 +166,12 @@ if ($type == "exp") {
     $old_info = $q->get_one_array();
     unset($old_info['id']);
     unset($old_info['res_name']);
-    unset($old_info['url']);
     unset($old_info['status']);
     unset($old_info['create_date']);
     $fields = array_keys($old_info);
     
-    $query = sprintf("INSERT INTO project (create_date, status, res_name, url, %s) 
-        SELECT NOW(), 'test', CONCAT(res_name, ' (Duplicate)'), CONCAT(url, '_duplicate'), %s 
+    $query = sprintf("INSERT INTO project (create_date, status, res_name, %s) 
+        SELECT NOW(), 'test', CONCAT(res_name, ' (Duplicate)'), %s 
         FROM project WHERE id='%d'",
         implode(", ", $fields),
         implode(", ", $fields),

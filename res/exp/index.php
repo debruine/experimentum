@@ -119,7 +119,6 @@ $new_exp_buttons = array(
     "builder?exptype=2afc" => "2-Alternative Forced-choice (2AFC)",
     "builder?exptype=jnd" => "2AFC with 8-Button Strength of Choice",
     "builder?exptype=buttons" => "Labelled Buttons",
-    "builder?exptype=slider" => "Slider",
     //"builder?exptype=rating" => "Numeric Rating",
     //"builder?exptype=interactive" => "Interactive",
     "builder?exptype=xafc" => "X-Alternative Forced-choice (XAFC)",
