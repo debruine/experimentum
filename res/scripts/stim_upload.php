@@ -3,23 +3,40 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 auth($RES_STATUS);
 
+$return = array();
+
 if (count($_FILES) > 0) {
 
     $mydir = DOC_ROOT . '/stimuli/uploads/' . $_SESSION['user_id'];
     
-    //if (!is_dir(DOC_ROOT . '/stimuli/uploads')) mkdir(DOC_ROOT . '/stimuli/uploads', 0755);
+    //if (!is_dir(DOC_ROOT . '/stimuli/uploads')) mkdir(DOC_ROOT . '/stimuli/uploads', 0775);
     
-    if (!is_dir($mydir)) mkdir($mydir, 0755);
+    if (!is_dir($mydir)) mkdir($mydir, 0775);
+    
+    chmod($mydir, 0775);
+    
+    $return['mydir'] = array(
+        'dir' => $mydir,
+        "perms" => perm(fileperms($mydir)),
+        "owner" => fileowner($mydir),
+        "me" => getmyuid()
+    );
     
     $subdir = $mydir . '/' . $_POST['subdir'];
     $subdir = preg_replace('/\/+/', '/', $subdir);
     $subdir = safeFileName($subdir);
     if (substr($subdir, -1) == '/') $subdir = substr($subdir, 0, -1);
-    if (!is_dir($subdir))  mkdir($subdir, 0755, true);
+    if (!is_dir($subdir))  mkdir($subdir, 0775, true);
+    
+    $return['subdir'] = array(
+        'dir' => $subdir,
+        "perms" => perm(fileperms($subdir)),
+        "owner" => fileowner($subdir),
+        "me" => getmyuid()
+    );
     
     $description = my_clean($_POST['description']);
     
-    $uploaded = array();
     $okfiles = array();
     
     foreach ($_FILES['uploads']['name'] as $n => $name) {
@@ -61,7 +78,7 @@ if (count($_FILES) > 0) {
     ksort($okfiles);
     foreach ($okfiles as $file) {
         if (copy($file['tmp_name'], $file['newname'])) {
-            chmod($file['newname'], 0744);
+            chmod($file['newname'], 0774);
             $stimname = str_replace(array(DOC_ROOT, '.jpg','.gif','.png','.mp3'), '', $file['newname']);
             $q = new myQuery("SELECT id FROM stimuli WHERE path='{$stimname}'");
             if ($q->get_num_rows() > 0) {
@@ -75,12 +92,14 @@ if (count($_FILES) > 0) {
                 $q = new myQuery($query);
                 $newid = $q->get_insert_id();
             }
-            $uploaded[$newid] = $stimname;
+            $return['uploaded'][$newid] = $stimname;
+        } else {
+            $return['error'][] = $file['newname'];
         }
     }
     
-    header('Location: /res/stimuli/upload?updated=' .  count($uploaded)); 
-    //scriptReturn($uploaded);
+    //header('Location: /res/stimuli/upload?updated=' .  count($uploaded)); 
+    scriptReturn($return);
     exit;
 }
 

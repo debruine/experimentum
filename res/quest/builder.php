@@ -47,7 +47,9 @@ $styles = array(
                                 color: white; 
                                 font-size: 20px; line-height: 20px; 
                                 text-align: center;',
-    'td.input.beingedited' => 'background-color: hsl(60,100%, 90%);'
+    'td.input.beingedited' => 'background-color: hsl(60,100%, 90%);',
+    '.slider_settings input' => 'width: 3em; display: inline;',
+    '.slider_settings' => 'width: 15em;'
 );
 
 /****************************************************/
@@ -147,9 +149,11 @@ if (array_key_exists('save', $_GET)) {
     $query = new myQuery("DELETE FROM options WHERE quest_id=" . $quest_id);
     foreach ($cleanq as $i => $q) {
         $question_update_query = sprintf('REPLACE INTO question (quest_id, id, n, name, question, 
-                                                                 type, maxlength, low_anchor, high_anchor) 
+                                                                 type, maxlength, low_anchor, high_anchor, 
+                                                                 startnum, endnum, step) 
                                           VALUES ("%s", %s, %s, "%s", "%s", 
-                                                  "%s", %s, "%s", "%s")' . ENDLINE,
+                                                  "%s", %s, "%s", "%s", 
+                                                  %s, %s, %s)' . ENDLINE,
             $quest_id,
             $q['newQ']=='true' ? 'NULL' : $q['id'],
             intval($q['n']),
@@ -158,7 +162,10 @@ if (array_key_exists('save', $_GET)) {
             ($clean['questtype'] == 'ranking') ? 'ranking' : $q['type'],
             intval($q['maxlength']),
             $q['low_anchor'],
-            $q['high_anchor']
+            $q['high_anchor'],
+            floatval($q['startnum']),
+            floatval($q['endnum']),
+            floatval($q['step'])
         );
         
         $query = new myQuery($question_update_query);
@@ -375,6 +382,10 @@ $page->set_menu(false);
 $page->displayHead($styles);
 $page->displayBody();
 
+if ($qInfo['status'] == 'active') { 
+    echo "<h3 class='warning'>Saving an active questionnaire will make it inactive</h3>"; 
+}
+
 echo $infoTable->print_form();
 
 // !    editable questionnaire
@@ -441,11 +452,12 @@ $type_options = array(
     'select' => 'Pulldown Menu',
     'selectnum' => 'Numeric Pulldown Menu',
     //'radio' => 'Radio Buttons',
+    'slider' => 'Slider',
     'radioanchor' => 'Radio Buttons With Anchors',
     'datemenu' => 'Date Menu',
     'countries' => 'Countries',
-    'text' => 'Text',
-    //'textarea' => 'Text (>255 characters)'
+    'text' => 'Short Text (<=255 characters)',
+    'textarea' => 'Long Text (>255 characters)'
 );
 
 // !    questions
@@ -495,6 +507,9 @@ foreach ($questions as $n => $q) {
             break;
         case 'radioanchor':
             $input->set_options($q['maxlength'],$q['low_anchor'],$q['high_anchor']);
+            break;
+        case 'slider':
+            $input->set_options($q['startnum'],$q['endnum'],$q['step'],$q['low_anchor'],$q['high_anchor']);
             break;
         case 'selectnum':
             $input->set_options(null, $q['low_anchor'], $q['high_anchor']);
@@ -647,6 +662,12 @@ foreach ($questions as $n => $q) {
         $(this).find('.anchor:last').wrapInner($('<span class="editText" id="high_anchor_' + qid + '" />'));
     });
     
+    $('table.slider').each( function() {
+        var qid = $(this).find('div.slider').attr('id').replace('q','');
+        $(this).find('.anchor:first').wrapInner($('<span class="editText" id="low_anchor_' + qid + '" />'));
+        $(this).find('.anchor:last').wrapInner($('<span class="editText" id="high_anchor_' + qid + '" />'));
+    });
+    
     $('.view-typechooser span').click( function() {
         $(this).hide().siblings('select').show().focus();
     });
@@ -672,6 +693,22 @@ foreach ($questions as $n => $q) {
             } else {
                 theSelect   .val('maxlength:' + theSelect.attr('maxlength'))
                             .attr('maxlength', 13).focus();  // set so that you can't input more than 3 digits
+            }
+        } else if ($input.find('div.slider').length > 0) { 
+            // !        edit slider
+            var theSlider = $input.find('div.slider');
+            if (!$input.hasClass('beingedited')) {
+                theSlider.slider("option", {
+                    min: parseFloat($input.find('.slidermin').val()),
+                    max: parseFloat($input.find('.slidermax').val()),
+                    step: parseFloat($input.find('.sliderstep').val())
+                }).show();
+                $input.find('.slider_settings').remove();
+            } else {
+                theSlider.hide();
+                theSlider.after("<div class='slider_settings'><input class='slidermin' type='number' value='"+theSlider.slider("option","min")+"'> to " +
+                                "<input class='slidermax' type='number' value='"+theSlider.slider("option","max")+"'> by " +
+                                "<input class='sliderstep' type='number' value='"+theSlider.slider("option","step")+"'></div>");
             }
         } else if ($input.find('table.radioanchor').length > 0) {
             // !        edit radioanchor (table.radioanchor)
@@ -1030,7 +1067,27 @@ foreach ($questions as $n => $q) {
             
             theInput.replaceWith(newInput);
             editbox_init();
-        } else if (theType == 'datemenu') {     
+        } else if (theType == 'slider') { 
+            // !        Change to slider
+            
+            // convert everything to a new slider
+            newInput = $('<table class="slider" />').attr('id', 'q' + qid);
+            var ra = newInput.append('<tbody />').find('tbody').append('<tr />').find('tr');
+            $('<td />').addClass('anchor').html('<span class="editText" id="low_anchor_'+qid+'">low anchor</span>').appendTo(ra);
+            
+            $slider = $("<div class='slider' />").slider({
+                min: 0,
+                max: 100,
+                step: 1
+            });
+            
+            ra.append($('<td />').append($slider));
+             
+            ra.append($('<td />').addClass('anchor editText')
+                                .html('<span class="editText" id="high_anchor_'+qid+'">high anchor</span>'));
+            theInput.replaceWith(newInput);
+            editbox_init();
+        } else if (theType == 'datemenu') {
             // !        Change to datemenu
             newInput = $('<input />')
                         .attr('type', 'text')
@@ -1056,7 +1113,11 @@ foreach ($questions as $n => $q) {
                             .attr('placeholder', 'maxlength:255');
             theInput.replaceWith(newInput);
         } else if (theType == 'textarea') { 
-            alert('change to textarea');
+            // !        Change to textarea
+            newInput = $('<textarea />')
+                            .attr('name', theInput.attr('id'))
+                            .attr('id', theInput.attr('id'));
+            theInput.replaceWith(newInput);
         }
         
         if (theType != 'radiorow' && theType != 'radiorev') {
@@ -1208,7 +1269,7 @@ foreach ($questions as $n => $q) {
                     for (var i = newMin; i <= newMax; i++) {
                         $('<option />').attr({'value':i}).html(i).appendTo(theInput);
                     }
-                } else if (newType == 'radioanchor') {
+                } else if (newType == 'radioanchor' || newType == 'slider') {
                     theInput.find('td.anchor:first input').val(newMin);
                     theInput.find('td.anchor:first span').text(newMin);
                     theInput.find('td.anchor:last input').val(newMax);
@@ -1235,15 +1296,34 @@ foreach ($questions as $n => $q) {
     // !    saveQuestionnaire()
     function saveQuestionnaire() {
         // check that all the inputs are in participant view
-        // [TODO] make this automatic or unnecessary 
-        if ($('#quest_table tr td.input.beingedited').length) {
-            $('<div />').html('You need to set the questionnaire to participant view before you save it. (Click the edit pencil next to all the yellow items.)').dialog();
-            return false;
-        }
+        $('#quest_table > tbody > tr td.input').each( function() {
+            if ($(this).hasClass('beingedited')) {
+                // remove editing styles
+                editQuestion(this);
+            }
+        });
         
         $('input.instantedit').each( function() {
             $(this).val(unescape($(this).val()));
         });
+        
+        // check all dv names are unique
+        var dv_names = [];
+        $('input.instantedit[id^="i_name_"]').each(function(i){
+            dv_names[i] = this.value;
+        });
+        dv_names = dv_names.sort();
+        var duplicate_names = [];
+        $.each(dv_names, function(i) {
+            if (i >0 && dv_names[i] == dv_names[i-1]) {
+                duplicate_names[duplicate_names.length] = dv_names[i];
+                $('span.editText[id^="name_"]:contains('+dv_names[i]+')').addClass('warning');
+            }
+        });
+        if (duplicate_names.length) {
+            $('<div />').html('Please make all row names unique.').dialog();
+            return false;
+        }
         
         var qInfo = [];
         // get specific question info for each question
@@ -1286,11 +1366,19 @@ foreach ($questions as $n => $q) {
                 theQ['high_anchor'] = $('#q' + theID).datepicker('option', 'maxDate');
             } else if (theType == 'text') {
                 theQ['maxlength'] = $('#q' + theID).attr('maxlength');
+            } else if (theType == 'textarea') {
+                // no attributes yet
             } else if (theType == 'selectnum') {
                 theQ['low_anchor'] = $('select#q' + theID).find('option:eq(1)').val();
                 theQ['high_anchor'] = $('select#q' + theID).find('option:last').val();
             } else if (theType == 'radioanchor') {
                 theQ['maxlength'] = $('#q' + theID + ' td label').length;
+                theQ['low_anchor'] = $('#i_low_anchor_' + theID).val();
+                theQ['high_anchor'] = $('#i_high_anchor_' + theID).val();
+            } else if (theType == 'slider') {
+                theQ['startnum'] = $(this).find('div.slider').slider('option', 'min');
+                theQ['endnum'] = $(this).find('div.slider').slider('option', 'max');
+                theQ['step'] = $(this).find('div.slider').slider('option', 'step');
                 theQ['low_anchor'] = $('#i_low_anchor_' + theID).val();
                 theQ['high_anchor'] = $('#i_high_anchor_' + theID).val();
             }
@@ -1335,13 +1423,19 @@ foreach ($questions as $n => $q) {
     
     // !    addQuestion()
     function addQuestion() {
-        var oldID = parseInt($('#quest_table > tbody > tr:last').attr('id').replace('row_', ''));
+        var $lastTr = $('#quest_table > tbody > tr:last');
+        if ($lastTr.find('td.input').hasClass('beingedited')) {
+            // remove editing styles
+            editQuestion($lastTr.find('td.input')[0]);
+        }
+        
+        var oldID = parseInt($lastTr.attr('id').replace('row_', ''));
         //var newID = oldID + 1;
         newID = Math.floor(Math.random()*100000000);
         
         var oldRegex = new RegExp('_' + oldID, 'g');
-        $('#quest_table > tbody').append($('#quest_table > tbody > tr:last').clone(true));
-        var $lastTr = $('#quest_table > tbody > tr:last');
+        $('#quest_table > tbody').append($lastTr.clone(true));
+        $lastTr = $('#quest_table > tbody > tr:last');
         $lastTr.attr('id', 'row_' + newID).addClass('newQ');
         
         // remove instantedit and unbind its functions

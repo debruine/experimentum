@@ -22,8 +22,6 @@ $styles = array(
 if (array_key_exists('tables', $_GET)) {
 
     // get list of all tables
-    $query = new myQuery("SHOW TABLES WHERE LOCATE('exp_', Tables_in_exp) OR LOCATE('quest_', Tables_in_exp)");
-    $all_tables = $query->get_assoc(false, 'Tables_in_exp', 'Tables_in_exp'); 
 
     $sections = array(
         "exp" => "Experiments",
@@ -38,18 +36,23 @@ if (array_key_exists('tables', $_GET)) {
         $rows = $query->get_assoc();
         
         foreach ($rows as $myrow) {
-            if (in_array($section . "_" . $myrow['id'], $all_tables)) {
-                $query = sprintf("SELECT count(*) as c, MAX(endtime) as maxdate FROM %s_%d WHERE user_id='%d' GROUP BY NULL", 
-                    $section, $myrow['id'], $_GET['user_id']
+            $query = sprintf("SELECT count(DISTINCT session_id) as c, 
+                                     MAX(%s) as maxdate 
+                                FROM %s_data 
+                               WHERE %s_id=? AND user_id=?
+                            GROUP BY NULL", 
+                ($section=='exp'? 'dt' : 'endtime'), 
+                $section, 
+                $section
+            );
+            $q2 = new myQuery();
+            $q2->prepare($query, array('ii', $myrow['id'], $_GET['user_id']));
+            
+            if ($q2->get_num_rows() > 0) {
+                $rows2 = $q2->get_row();
+                echo sprintf("<tr><td><a href='../%s/info?id=%d'>%s</a></td><td>%s</td><td>%s</td><td>%s</td><?tr>\n\n", 
+                    $section, $myrow['id'], $myrow['id'], $myrow['res_name'], $rows2['c'], $rows2['maxdate']
                 );
-                ($result2 = @mysql_query($query, $db)) || myerror($query);
-                
-                if (@mysql_num_rows($result2) > 0) {
-                    $myrow2 = @mysql_fetch_assoc($result2);
-                    echo sprintf("<tr><td><a href='../%s/info?id=%d'>%s</a></td><td>%s</td><td>%s</td><td>%s</td><?tr>\n\n", 
-                        $section, $myrow['id'], $myrow['id'], $myrow['res_name'], $myrow2['c'], $myrow2['maxdate']
-                    );
-                }
             }
         }
         
@@ -60,31 +63,40 @@ if (array_key_exists('tables', $_GET)) {
 }
 
 if (array_key_exists('find', $_GET)) {
-    $clean = ($_POST);
-    if (empty($clean)) $clean = array();
-    $status_list = array('test','guest','registered','student','res','admin');
-    $mystatus = array_search($_SESSION['status'], $status_list);
+    $mystatus = array_search($_SESSION['status'], $ALL_STATUS);
         
     // get user data
     $id = ($_GET['id']) ? $_GET['id'] : $_POST['id'];
     
-    if ($_POST['code'] && $_POST['code'] != $_POST['old_code']) {
-        $query = "SELECT user.*, IF(status<={$mystatus}, LEFT(MD5(regdate),10), '') as p FROM user LEFT JOIN code USING (user_id) WHERE code.code='$_POST[code]'";
-        $searched_on = "code = $_POST[code]";
-    } else if ($_POST['username'] && $_POST['username'] != $_POST['old_username']) {
+    if ($_POST['username'] && $_POST['username'] != $_POST['old_username']) {
         if ($_POST['findcontaining'] == 'true') {
-            $query = "SELECT user.*, IF(status<={$mystatus}, LEFT(MD5(regdate),10), '') as p FROM user WHERE LOCATE('$_POST[username]', username)";
+            $query = "SELECT user.*, IF(status<=? OR 
+                                    'admin'=? OR 
+                                    user.user_id=?,
+                                    LEFT(MD5(regdate),10), '') as p
+                            FROM user WHERE LOCATE(?, username)";
+            $params = array('isis', $mystatus, $_SESSION['status'], $_SESSION['user_id'], $_POST['username']);
             $searched_on = "username containing $_POST[username]";
         } else {
-            $query = "SELECT user.*, IF(status<={$mystatus}, LEFT(MD5(regdate),10), '') as p FROM user WHERE username='$_POST[username]'";
+            $query = "SELECT user.*, IF(status<=? OR 
+                                    ?='admin' OR 
+                                    user.user_id=?,
+                                    LEFT(MD5(regdate),10), '') as p 
+                            FROM user WHERE username=?";
+            $params = array('isis', $mystatus, $_SESSION['status'], $_SESSION['user_id'], $_POST['username']);
             $searched_on = "username = $_POST[username]";
         }
     } else {
-        $query = "SELECT user.*, IF(status<={$mystatus}, LEFT(MD5(regdate),10), '') as p FROM user WHERE user_id='$id'";
+        $query = "SELECT user.*, IF(status<=? OR 
+                                    ?='admin' OR 
+                                    user.user_id=?,
+                                    LEFT(MD5(regdate),10), '') as p FROM user WHERE user_id=?";
+        $params = array('isii', $mystatus, $_SESSION['status'], $_SESSION['user_id'], $id);
         $searched_on = "user_id = $id"; 
     }
     
-    $q = new myQuery($query);
+    $q = new myQuery();
+    $q->prepare($query, $params);
     
     if ($q->get_num_rows() == 0) { // change user form
         echo 'error:Could not find the user with ' . $searched_on;
@@ -122,17 +134,6 @@ if (array_key_exists("resetpswd", $_GET)) {
     exit;
 }
 
-//change code
-if (array_key_exists("changecode", $_GET)) {
-    $query = new myQuery("UPDATE user set code='{$_POST[code]}' WHERE user_id={$_POST[id]}");
-    if ($query->get_affected_rows() > 0) {
-        echo "Code changed to {$_POST[code]}";
-    } else {
-        echo 'Error--code not changed';
-    }
-    exit;
-}
-
 
 /****************************************************/
 /* !Display Page */
@@ -154,14 +155,11 @@ $page->displayBody();
             <input type='checkbox' id='findcontaining' name='findcontaining' value='true' /> <label for='findcontaining'>containing</label>
         </dd>
     <dt><label for='id'>id</label>:</dt>                
-        <dd><input type='text' id='id' name='id' value='' maxlength='8' size='8' /></dd>
-    <dt><label for='code'>code</label>:</dt>            
-        <dd><input type='text' id='code' name='code' value='' maxlength='16' size='8' /></dd>
+        <dd><input type='text' id='id' name='id' value='<?= $_GET['id'] ?>' maxlength='8' size='8' /></dd>
 </dl>
 <div class="buttonset">
     <button id='finduser'>find user</button>
     <button id='resetpswd'>reset password</button>
-    <!--<button id='changecode'>change code</button>-->
 </div>
 
 <p id="msgtext"></p>
@@ -185,107 +183,127 @@ $page->displayBody();
 
 <script>
 
-$(function() {
-    $('#userinfo').hide();
-    $('.buttonset').buttonset();
-    $('#finduser').click( function() {
-        if ($('#finduser span').html() == 'reset search') {
-            $('#msgtext').html("");
-            $('#id,#code,#username').val('');
-            $('#userinfo,#show_comp_tables').hide();
-            $('#finduser span').html('find user');
-            $('#resetpswd,#changecode').button({disabled: true});
-            $('#completed_tables').html('');
-            $('#findcontaining').attr('checked', false);
-            $('#username, #findcontaining, label[for="findcontaining"]').show();
-            $('#userlist').remove();
-        } else {
-            $.ajax({
-                url: 'participant?find',
-                data: $('.usersearch input').serialize(),
-                type: 'POST',
-                dataType: 'json',
-                success: function(data) {
-                    $('#msgtext').html("");
-                    if (data.userlist) {
-                        var userlist = $('<select id="userlist" />');
-                        
-                        var n = 0;
-                        $.each(data, function(user) {
-                            if (user != 'userlist') {
-                                userlist.append('<option value="' + data[user].username + '">'+ data[user].username + '</option>');
-                                n++;
-                            }
-                        });
-                        userlist.prepend('<option value="" selected="selected">' + n + ' matching usernames found</option>');
-                        $('#username').after(userlist);
-                        $('#userlist').change( function() {
-                            $('#username').val($('#userlist').val());
-                            $('#username, #findcontaining, label[for="findcontaining"]').show();
-                            $('#finduser span').html('find user');
-                            $('#finduser').click();
-                            $('#userlist').remove();
-                        });
-                        $('#findcontaining').attr('checked', false);
-                        $('#finduser span').html('reset search');
-                        $('#username, #findcontaining, label[for="findcontaining"]').hide();
-                    } else {
-                        $('#id').val(data.user_id);
-                        $('#code').val(data.code);
-                        $('#username').val(data.username);
-                        $('#sex').html(data.sex);
-                        $('#birthdate').html(data.birthday);
-                        $('#status').html(data.status);
-                        if (data.p == '') {
-                            $('#autologin').html('You do not have authorisation to get the autologin for ' + data.status + 's');
-                        } else {
-                            $('#autologin').html('<a href="/include/scripts/login?u=' + data.user_id + '&p=' + data.p + '&url=/">http://faceresearch.org/include/scripts/login?u=' + data.user_id + '&p=' + data.p + '&url=/</a>');
-                        }
-                        $('#userinfo').show();
-                        $('#resetpswd').button({disabled: false});
-                        $('#changecode').button({disabled: false});
-                        $('#show_comp_tables').show();
-                        $('#finduser span').html('reset search');
-                    }
-                }
-            });
-        }
-    });
-    
-    $('#resetpswd').click( function() {
+$('#userinfo').hide();
+$('.buttonset').buttonset();
+$('#id, #username').keydown(function(e){
+    if (e.which == KEYCODE.enter || e.which == KEYCODE.tab) $('#finduser').click();
+    if ($('#finduser span').html() == 'reset search') { return false; }
+});
+$('#finduser').click( function() {
+    if ($('#finduser span').html() == 'reset search') {
+        $('#msgtext').html("");
+        $('#id,#username').val('');
+        $('#userinfo,#show_comp_tables').hide();
+        $('#finduser span').html('find user');
+        $('#resetpswd').button({disabled: true});
+        $('#completed_tables').html('');
+        $('#findcontaining').attr('checked', false);
+        $('#username, #findcontaining, label[for="findcontaining"]').show();
+        $('#userlist').remove();
+    } else {
         $.ajax({
-            url: 'participant?resetpswd',
-            data: $('#id').serialize(),
-            type: 'POST',
-            success: function(data) {
-                $('#msgtext').html(data);
-            }
-        });
-    }).button({disabled: true});
-    
-    $('#changecode').click( function() {
-        $.ajax({
-            url: 'participant?changecode',
+            url: 'participant?find',
             data: $('.usersearch input').serialize(),
             type: 'POST',
+            dataType: 'json',
             success: function(data) {
-                $('#msgtext').html(data);
+                $('#msgtext').html("");
+                if (data.userlist) {
+                    var userlist = $('<select id="userlist" />');
+                    
+                    var n = 0;
+                    $.each(data, function(user) {
+                        if (user != 'userlist') {
+                            userlist.append('<option value="' + data[user].username + '">'+ data[user].username + '</option>');
+                            n++;
+                        }
+                    });
+                    userlist.prepend('<option value="" selected="selected">' + n + ' matching usernames found</option>');
+                    $('#username').after(userlist);
+                    $('#userlist').change( function() {
+                        $('#username').val($('#userlist').val());
+                        $('#username, #findcontaining, label[for="findcontaining"]').show();
+                        $('#finduser span').html('find user');
+                        $('#finduser').click();
+                        $('#userlist').remove();
+                    });
+                    $('#findcontaining').attr('checked', false);
+                    $('#finduser span').html('reset search');
+                    $('#username, #findcontaining, label[for="findcontaining"]').hide();
+                } else {
+                    $('#id').val(data.user_id);
+                    $('#username').val(data.username);
+                    $('#sex').html(data.sex);
+                    $('#birthdate').html(data.birthday);
+                    if (data.p == '' || data.user_id == <?= $_SESSION['user_id'] ?>) {
+                        $('#status').html(data.status);
+                    } else {
+                        var $status = $('<select/>');
+                        $status.append('<option value="test">test</option>');
+                        $status.append('<option value="guest">guest</option>');
+                        $status.append('<option value="registered">registered</option>');
+                        <?php if ($_SESSION['status'] == 'admin' || $_SESSION['status'] == 'res') { ?> $status.append('<option value="student">student</option>'); <?php } ?>
+                        <?php if ($_SESSION['status'] == 'admin') { ?> $status.append('<option value="res">researcher</option>'); <?php } ?>
+                        <?php if ($_SESSION['status'] == 'admin') { ?> $status.append('<option value="admin">admin</option>'); <?php } ?>
+                        $status.val(data.status);
+                        $('#status').html("").append($status);
+                    }
+                    if (data.p == '') {
+                        $('#autologin').html('You do not have authorisation to get the autologin for ' + data.status + 's');
+                    } else {
+                        $('#autologin').html('<a href="/include/scripts/login?u=' + data.user_id + '&p=' + data.p + '&url=/">http://<?= $_SERVER['HTTP_HOST'] ?>/include/scripts/login?u=' + data.user_id + '&p=' + data.p + '&url=/</a>');
+                    }
+                    $('#userinfo').show();
+                    $('#resetpswd').button({disabled: false});
+                    $('#show_comp_tables').show();
+                    $('#finduser span').html('reset search');
+                }
             }
         });
-    }).button({disabled: true});
-
-    $('#show_comp_tables').button().click(function() {
-        $('#completed_tables').html("<img src='/images/loaders/loading.gif' />").load('participant?tables&user_id=' + $('#id').val(), function() {
-            stripe('#completed_tables tbody');
-            
-            $('#completed_tables table.sortable').each(function() {
-                var t = $(this).get(0);
-                sorttable.makeSortable(t);
-            });
-            $('#show_comp_tables').hide();
-        });
-    }).hide();
+    }
 });
+
+if ($('#id').val()) {
+    $('#finduser').click();
+}
+
+$('#status').on('change', 'select', function() {
+    $.ajax({
+        url: '/res/scripts/resstatus',
+        data: {
+            id: $('#id').val(),
+            status: $('#status select').val()
+        },
+        type: 'POST',
+        dataType: 'json',
+        success: function(data) {
+            growl(data, 3000);
+        }
+    });
+});
+
+$('#resetpswd').click( function() {
+    $.ajax({
+        url: 'participant?resetpswd',
+        data: $('#id').serialize(),
+        type: 'POST',
+        success: function(data) {
+            $('#msgtext').html(data);
+        }
+    });
+}).button({disabled: true});
+
+$('#show_comp_tables').button().click(function() {
+    $('#completed_tables').html("<img src='/images/loaders/loading.gif' />").load('participant?tables&user_id=' + $('#id').val(), function() {
+        stripe('#completed_tables tbody');
+        
+        $('#completed_tables table.sortable').each(function() {
+            var t = $(this).get(0);
+            sorttable.makeSortable(t);
+        });
+        $('#show_comp_tables').hide();
+    });
+}).hide();
 
 </script>
 

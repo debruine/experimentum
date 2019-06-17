@@ -33,7 +33,7 @@ $formTable = new formTable();
 $formTable->set_table_id('folderInfo');
 $formTable->set_enctype('multipart/form-data');
 $formTable->set_title('Folder to Upload');
-$formTable->set_action('/res/scripts/stim_upload');
+//$formTable->set_action('/res/scripts/stim_upload');
 $formTable->set_questionList($form);
 $formTable->set_method('post');
 $formTable->set_submit_text('Upload');
@@ -122,7 +122,9 @@ $page->displayBody();
                     isdir: isdir
                 },
                 success: function(data) {
-                    console.log(data);
+                    if (data.error) {
+                        $('<div />').html(JSON.stringify(data.error)).dialog();
+                    }
                 },
                 error: function() {
                 },
@@ -132,7 +134,7 @@ $page->displayBody();
             });
         });
         
-        /*
+        
         $('#folderInfo_form').submit(function(e) {
             console.log("submit");
             var selectedfiles = document.getElementById('uploads[]').files;
@@ -143,8 +145,6 @@ $page->displayBody();
                 formData.append('uploads[0]', selectedfiles.item(i));
                 formData.append('subdir', $('#subdir').val());
                 formData.append('description', $('#description').val());
-                
-                console.log(formData);
 
                 $.ajax({
                     data: formData,
@@ -153,7 +153,6 @@ $page->displayBody();
                     contentType: false,
                     processData: false,
                     success: function(data) {
-                        console.log(data);
                     },
                     error: function() {
                     },
@@ -165,11 +164,12 @@ $page->displayBody();
             });
             return false;
         });
-        */
+    
         
         $('#imagebox video').click( function() {
             $('#imagebox video').get(0).play();
         });
+        
         function reloadFinder() {
             $('#finder').html("");
             $.ajax({

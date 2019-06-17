@@ -183,6 +183,8 @@ class experiment {
     function get_interface() {
         $text = '<div id="experiment" style="display:none;">' . ENDLINE;
         $text .= tag($this->question, 'div', 'id="question"');
+        $text .= '<a id="prev_trial" title="Previous Trial"><</a>' . ENDLINE;
+        $text .= '<a id="next_trial" title="Next Trial">></a>' . ENDLINE;
         $text .= '<table class="' . $this->exptype . '">' . ENDLINE;
         $text .= $this->get_input_interface();
         $text .= $this->get_stimuli_interface();
@@ -211,6 +213,7 @@ class experiment {
         $text =         '<script>' . ENDLINE;
         $text .=        '    window.onbeforeunload = function() {return "Using the back button will reset this experiment"; }' . ENDLINE;
         
+        $text .=        '   $("#next_trial, #prev_trial").button();' . ENDLINE;
         
         if (array_key_exists('go', $_GET)) { 
             $text .=     '    $(function() { beginExp(); });' . ENDTAG; 
@@ -545,7 +548,7 @@ class experiment {
         $text .= '
             if ($("#question").length > 0 && typeof(question) !== "undefined") $("#question").html(question[trialOrder[trial]]);
             $("#trial_n").html(trial);
-            $("#footer").text("Trial "+ trial +" of " + trialOrder.length);
+            $("#footer").text("Trial "+ trial +" of " + trialOrder.length-1);
             
             var currentTime = new Date();
             beginTrial = currentTime.getTime();

@@ -27,14 +27,17 @@ if (array_key_exists('update', $_GET)) {
     $clean = my_clean($_POST);
     
     if (!empty($clean['firstname']) && !empty($clean['lastname']) && !empty($clean['email']) ) {
-        $q = sprintf('REPLACE INTO res (user_id, firstname, lastname, email) VALUES (%d, "%s", "%s", "%s")',
-            $_SESSION['user_id'],
-            $clean['firstname'],
-            $clean['lastname'],
-            $clean['email']
+        $query = new myQuery();
+        $query->prepare(
+            'REPLACE INTO res (user_id, firstname, lastname, email, supervisor_id) VALUES (?, ?, ?, ?, ?)',
+            array('isssi',
+                  $_SESSION['user_id'],
+                  $clean['firstname'],
+                  $clean['lastname'],
+                  $clean['email'],
+                  $clean['supervisor']
+            )
         );
-        
-        $query = new myQuery($q);
         
             
         if (0 == $query->get_affected_rows()) {
@@ -92,20 +95,24 @@ if (array_key_exists('update', $_GET)) {
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/quest.php';
 
 // get my data
-$query = new myQuery('SELECT user.*, res.*,
-    COUNT(login.id) as logins
+$query = new myQuery();
+$query->prepare('SELECT user.*, res.*,
+    COUNT(login.id) as logins,
+    supervisor_id
     FROM user 
     LEFT JOIN res USING (user_id)
     LEFT JOIN login USING (user_id)
-    WHERE user.user_id=' . $_SESSION['user_id'] .
-    ' GROUP BY user.user_id LIMIT 1'
+    WHERE user.user_id=?
+    GROUP BY user.user_id LIMIT 1',
+    array('i', $_SESSION['user_id'])
 );
 
 $mydata = $query->get_assoc(0);
 
-$login_info = sprintf(loc('You first registered on %s and have logged in %d times.'),
+$login_info = sprintf(loc('You first registered on %s and have logged in %d times. You have <code>%s</code> status.'),
     $mydata['regdate'],
-    $mydata['logins']
+    $mydata['logins'],
+    $mydata['status']
 );
 
 $input = array();
@@ -187,6 +194,34 @@ $input['email']->set_question('Email Address');
 $input['email']->set_maxlength(255);
 $input['email']->set_width(200);
 
+// supervisor
+/*if (in_array($_SESSION['status'], $RES_STATUS)) {
+    $superlabel = 'Share With';
+    $q = new myQuery();
+    $q->prepare(
+        "SELECT user_id, CONCAT(lastname, ', ', firstname) as name 
+           FROM res 
+      LEFT JOIN user USING (user_id)
+          WHERE status IN ('res','admin', 'student')
+            AND user_id != ?
+       ORDER BY lastname, firstname",
+         array('i', $_SESSION['user_id'])
+    );
+} else {*/
+    $superlabel = 'Supervisor';
+    $q = new myQuery(
+        "SELECT user_id, CONCAT(lastname, ', ', firstname) as name 
+           FROM res 
+      LEFT JOIN user USING (user_id)
+          WHERE status IN ('res','admin')
+       ORDER BY lastname, firstname"
+    );
+//}
+$supervisors = $q->get_key_val("user_id", "name");
+$input['supervisor'] = new select('supervisor', 'supervisor', $mydata['supervisor_id']);
+$input['supervisor']->set_question($superlabel);
+$input['supervisor']->set_options($supervisors);
+
 
 // set up form table
 $q = new formTable();
@@ -214,6 +249,11 @@ $page->set_menu(true);
 $page->displayHead();
 $page->displayBody();
 
+if (!in_array($_SESSION['status'], $RES_STATUS) && $mydata['supervisor_id'] != "") {
+    echo "<p>Your researcher status request has been received. You can request 
+    researcher status again to send a reminder email to your supervisor.</p>";
+}
+
 echo '<p id="response" style="display:none;"></p>' , ENDLINE;
 
 $q->print_form();
@@ -238,6 +278,7 @@ echo "<p>$login_info</p>", ENDLINE;
             $('#firstname_row').hide();
             $('#lastname_row').hide();
             $('#email_row').hide();
+            $('#supervisor_row').hide();
         }
         
         $('#response').addClass('error').click( function() {
@@ -259,14 +300,17 @@ echo "<p>$login_info</p>", ENDLINE;
             $('#firstname_row').show();
             $('#lastname_row').show();
             $('#email_row').show();
+            $('#supervisor_row').show();
         } else if ($('#firstname').val() != "" & 
                    $('#lastname').val() != "" &
-                   $('#email').val() != "" ) {
+                   $('#email').val() != "" &
+                   $('#supervisor').val() != "NULL") {
             updateInfo();
         } else {
             $('#firstname_row').hide();
             $('#lastname_row').hide();
             $('#email_row').hide();
+            $('#supervisor_row').hide();
         }
     }
         

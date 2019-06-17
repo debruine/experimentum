@@ -20,8 +20,9 @@ if (empty($_SESSION['session_id'])) {
 }
 
 // record data in quest_data
-foreach ($clean as $qu => $a) {
+foreach ($_POST as $qu => $a) {
     if (substr($qu, 0, 1) == 'q' && is_numeric(substr($qu, 1))) {
+        /*
         $q = sprintf('INSERT INTO quest_data (quest_id, user_id, session_id, question_id, dv, `order`, starttime, endtime) 
              VALUES(%d, %d, %d, %d, "%s", %d, "%s", "%s")',
              $clean['quest_id'],
@@ -35,6 +36,24 @@ foreach ($clean as $qu => $a) {
         );
         $q = str_replace('"NULL"', 'NULL', $q);
         $query = new myQuery($q);
+        */
+        
+        $query = new myQuery();
+        $query->prepare(
+            "INSERT INTO quest_data (quest_id, user_id, session_id, question_id, dv, `order`, starttime, endtime) 
+             VALUES(?, ?, ?, ?, ?, ?, ?, ?)",
+             array(
+                 'iiiisiss',
+                 $clean['quest_id'],
+                 $_SESSION['user_id'],
+                 $_SESSION['session_id'],
+                 str_replace('q', '', $qu),
+                 $a,
+                 $order[$qu] + 1,
+                 $clean['starttime'],
+                 $endtime
+             )
+        );
     }
 }
 

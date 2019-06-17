@@ -43,10 +43,12 @@ $('#gosets').click( function() {
     window.location.href = "/res/set/info?id=" + s;
 });
 
-$( "#status" ).css('fontWeight', 'normal').change( function() {
+$( "html" ).on("change", "#status", function() {
     var $sel = $(this);
     var item_id = $('#item_id').val();
     var item_type = $('#item_type').val();
+    
+    if (item_type == "set") item_type = "sets";
     
     $sel.css('color', 'red');
 
@@ -59,10 +61,10 @@ $( "#status" ).css('fontWeight', 'normal').change( function() {
             id: item_id
         },
         success: function(data) {
-            if (data == 'Status of ' + item_type + '_' + item_id + ' changed to '+ $sel.val() ) {
-                $sel.css('color', 'inherit');
+            if (data.error) {
+                $('<div title="Problem with Status Change" />').html(data.error).dialog();
             } else {
-                growl(data, 30);
+                $sel.css('color', 'inherit');
             }
         }
     });
@@ -139,57 +141,50 @@ $( "#duplicate-item" ).click( function() {
 });
 
 
-$( "#owner-add" ).click( function() {
+$( "#owner-add, #owner-add-items" ).click( function() {
     var owner_id = $('#owner-add-input').data('id');
+    var owner_name = $('#owner-add-input').val();
     
     if (owner_id == '' || owner_id == 0) { return false; }
     
     if ($('#owner-edit .owner-delete[owner-id=' + owner_id + ']').length == 0) {
-        var new_owner = "<li><span class='new-owner'>" + $('#owner-add-input').val() + "</span> (<a class='owner-delete' owner-id='"+owner_id+"'>delete</a>)</li>";
-        $('#owner-edit').append(new_owner);
+        // not a duplicate, so add now
+        
+        $.ajax({
+            url: '/res/scripts/owners',
+            type: 'POST',
+            data: {
+                type: $('#item_type').val(),
+                id: $('#item_id').val(),
+                add: [owner_id],
+                add_project_items: this.id == 'owner-add-items'
+            },
+            success: function(data) {
+                if (data) {
+                    growl(data);
+                } else {
+                    var new_owner = "<li><span>" + owner_name + "</span> " +
+                    "<button class='tinybutton owner-delete' owner-id='"+owner_id+"'>remove</button>" + 
+                    "<button class='tinybutton owner-delete-items' owner-id='"+owner_id+"'>remove from all items</button>" +
+                    "</li>";
+                    $('#owner-edit').append(new_owner).find('.tinybutton').button();
+                    $('#owner-add-input').val('').data('id','');
+                }
+            }
+        });
+        
     } else {
         growl("You can't add a duplicate owner.");
-    }
-    $('#owner-add-input').val('').data('id','');
-});
-
-$('html').on("click", ".owner-delete", function() {
-    if ($(this).text() == 'delete') {
-        $(this).text('undelete');
-        $(this).prev().addClass('delete-owner');
-    } else {
-        $(this).text('delete');
-        $(this).prev().removeClass('delete-owner');
+        $('#owner-add-input').val('').data('id','');
     }
 });
 
-$('html').on("click", ".owner-delete", function() {
-    if ($(this).text() == 'delete') {
-        $(this).text('undelete');
-        $(this).prev().addClass('delete-owner');
-    } else {
-        $(this).text('delete');
-        $(this).prev().removeClass('delete-owner');
-    }
-});
-
-$('button.tinybutton').button();
-
-$( "#owner-change" ).click( function() {
-    var to_add = [];
-    var to_delete = [];
-    $('#owner-edit .owner-delete').each( function() {
-        var $this = $(this);
-        
-        if ($this.text() == "delete") {
-            to_add.push($this.attr('owner-id'));
-        } else {
-            to_delete.push($this.attr('owner-id'));
-        }
-    });
+$('html').on("click", ".owner-delete, .owner-delete-items", function() {
+    var owner_id = $(this).attr('owner-id');
+    var $li = $(this).closest('li');
     
-    if (to_add.length == 0) {
-        growl("You have to keep at least one owner.");
+    if ($('#owner-edit li').length < 2) {
+        growl("You have to keep one owner.");
         return false;
     }
     
@@ -199,19 +194,21 @@ $( "#owner-change" ).click( function() {
         data: {
             type: $('#item_type').val(),
             id: $('#item_id').val(),
-            add: to_add,
-            delete: to_delete
+            delete: [owner_id],
+            delete_project_items: $(this).hasClass('owner-delete-items')
         },
         success: function(data) {
             if (data) {
                 growl(data);
             } else {
-                $('#owner-edit .delete-owner').closest('li').remove();
-                $('#owner-edit span').removeClass('new-owner');
+                console.log('deleted');
+                $li.remove();
             }
         }
     });
 });
+
+$('button.tinybutton').button();
 
 function item_stats(items, proj_id) {
     console.log('item_stats', items);

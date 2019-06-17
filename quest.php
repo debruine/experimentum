@@ -134,6 +134,10 @@ $q->print_form();
             fields[value.name] = value.value;
         });
         
+        $('div.slider').each(function() {
+            fields[$(this).attr("id")] = $(this).slider("value");
+        });
+        
         var emptyFields = 0;
         // look through visible questionnaire rows (only rows that have id and not ranking rows) for empty variables
         $('#qTable > tbody > tr[id]:not(.ranking):visible').each( function(i) {
@@ -168,7 +172,13 @@ $q->print_form();
     }
     
     function recordAnswers() {
-        var theData = $('#maincontent form').serialize();
+        var theData = $('#maincontent form').serializeArray();
+        $('div.slider').each(function() {
+            theData[theData.length] = {
+                name: $(this).attr("id"), 
+                value: $(this).slider("value") 
+            };
+        });
         
         // record answers
         $.ajax({

@@ -190,7 +190,7 @@ class user {
         $_SESSION['user_id']    = $this->id;
         $_SESSION['username']   = $this->username;
         $_SESSION['sex']        = $this->sex;
-        $_SESSION['status']         = $this->status;
+        $_SESSION['status']     = $this->status;
         $_SESSION['age']        = $this->get_age();
     }
 }

@@ -266,12 +266,12 @@ $page->displayBody();
     <tr><td>Name:</td> <td><?= $itemdata['name'] ?></td></tr>
     <tr><td>Status:</td> <td><?= $status ?></td></tr>
     <tr><td>Created on:</td> <td><?= $itemdata['create_date'] ?></td></tr>
-    <tr><td>Owners:<br><?php if ($_SESSION['status'] == 'admin') { echo '<button class="tinybutton"  id="owner-change">Change</button>'; } ?></td> 
+    <tr><td>Owners:</td> 
         <td>
             <ul id='owner-edit'>
                 <?= $owner_edit ?>
             </ul>
-            <?php if ($_SESSION['status'] == 'admin') { ?>
+            <?php if ($_SESSION['status'] != 'student') { ?>
             <input id='owner-add-input' type='text' > (<a id='owner-add'>add</a>)
             <?php } ?>
         </td></tr>

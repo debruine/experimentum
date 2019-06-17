@@ -55,7 +55,7 @@ if (array_key_exists('id', $_GET)) {
                             res_name, name as 'set_name', labnotes, 
                             sex, lower_age, upper_age,
                             feedback_general, feedback_specific, 
-                            feedback_query, forward 
+                            feedback_query, status 
                             FROM sets WHERE id='{$id}'");
         $set_info = $q->get_assoc(0);
         
@@ -224,19 +224,22 @@ $form_table->set_questionList($table_setup);
 
 $user_id = $_SESSION['user_id'];
 $is_admin = ($_SESSION['status'] == 'admin') ? "TRUE" : "FALSE";
+$notin = $set_info['set_id'] == "NULL" ? 0 : $set_info['set_id'];
 
 $q = new myQuery(
      "SELECT sets.id, sets.res_name, sets.status
         FROM access 
         LEFT JOIN sets USING (id)
        WHERE access.type='sets' 
+         AND sets.id != $notin
          AND (access.user_id=$user_id OR {$is_admin} OR
            access.user_id IN (
-                SELECT supervisee_id 
-                  FROM supervise 
+                SELECT user_id 
+                  FROM res 
                  WHERE supervisor_id=$user_id
            )
-         )"
+         )
+    GROUP BY sets.id"
 );
 
 $sets = $q->get_assoc();
@@ -253,11 +256,12 @@ $q = new myQuery(
        WHERE access.type='exp' 
          AND (access.user_id=$user_id OR {$is_admin} OR
            access.user_id IN (
-                SELECT supervisee_id 
-                  FROM supervise 
+                SELECT user_id 
+                  FROM res 
                  WHERE supervisor_id=$user_id
            )
-         )"
+         )
+    GROUP BY exp.id"
 );
 $exps = $q->get_assoc();
 $exp_list = array();
@@ -274,11 +278,12 @@ $q = new myQuery(
        WHERE access.type='quest' 
          AND (access.user_id=$user_id OR {$is_admin} OR
            access.user_id IN (
-                SELECT supervisee_id 
-                  FROM supervise 
+                SELECT user_id 
+                  FROM res 
                  WHERE supervisor_id=$user_id
            )
-         )"
+         )
+    GROUP BY quest.id"
 );
 $quests = $q->get_assoc();
 $quest_list = array();
@@ -304,6 +309,9 @@ $page->displayBody();
 <div class='toolbar'>
     <button id='save-set'>Save</button>
     <button id='info-set'>Info</button>
+    <?php if ($set_info['status'] == 'active') { 
+        echo "<span class='warning'>Saving an active set will make it inactive</span>"; 
+    } ?>
 </div>
 
 <?= $form_table->print_form() ?>

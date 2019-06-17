@@ -96,9 +96,10 @@ CREATE TABLE `question` (
   `n` int(3) NOT NULL DEFAULT 0,
   `name` varchar(32) DEFAULT NULL,
   `question` text DEFAULT NULL,
-  `type` enum('radio','select','selectnum','datemenu','text','radiorow','radiorev','radioanchor','ranking','countries') DEFAULT NULL,
-  `startnum` smallint(4) unsigned DEFAULT NULL,
-  `endnum` smallint(4) unsigned DEFAULT NULL,
+  `type` enum('radio','select','selectnum','datemenu','text','radiorow','radiorev','radioanchor','ranking','countries','slider') DEFAULT NULL,
+  `startnum` double DEFAULT NULL,
+  `endnum` double DEFAULT NULL,
+  `step` double DEFAULT NULL,
   `maxlength` tinyint(3) unsigned DEFAULT NULL,
   `include_path` varchar(50) DEFAULT NULL,
   `low_anchor` varchar(255) DEFAULT NULL,
@@ -270,9 +271,6 @@ CREATE TABLE yoke (
     `other` varchar(255)
 );
 
-DROP TABLE IF EXISTS `versions`;
-ALTER TABLE exp_data drop column version;
-
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
@@ -298,6 +296,7 @@ CREATE TABLE `res` (
   `lastname` varchar(100) DEFAULT NULL,
   `institution` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
+  `supervisor_id` int(11),
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -326,7 +325,7 @@ CREATE TABLE `login` (
 
 DROP TABLE IF EXISTS `access`;
 CREATE TABLE `access` (
-  `type` enum('exp','quest','set','project') NOT NULL DEFAULT 'exp',
+  `type` enum('exp','quest','sets','project') NOT NULL DEFAULT 'exp',
   `id` int(11) NOT NULL DEFAULT 0,
   `user_id` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`type`,`id`,`user_id`)
@@ -350,6 +349,21 @@ CREATE TABLE `downloads` (
   `id` int(11) DEFAULT NULL,
   `dt` datetime DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `lab`;
+CREATE TABLE `lab` (
+  `lab_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(20) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `language` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `country` varchar(2) DEFAULT NULL,
+  `create_date` date DEFAULT NULL,
+  `labnotes` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code` (`code`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `countries`;

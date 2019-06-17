@@ -9,24 +9,7 @@ unset($_SESSION['set_item_number']);
 
 $title = loc('Researchers');
 
-$styles = array(
-    '.bigbuttons li a.exp:hover'   => 'background-color: var(--rainbow-red);',
-    '.bigbuttons li a.quest:hover' => 'background-color: var(--rainbow-orange);',
-    '.bigbuttons li a.set:hover'   => 'background-color: var(--rainbow-yellow);',
-    '.bigbuttons li a.project:hover' => 'background-color: var(--rainbow-green);',
-    '.bigbuttons li a.stimuli:hover' => 'background-color: var(--rainbow-blue);',
-    '.bigbuttons li a.admin:hover' => 'background-color: var(--rainbow-purple);',
-    '.bigbuttons li' => 'position: relative;',
-    '.bigbuttons li input' => 'width: 60%; 
-                               display: block; 
-                               position: absolute; 
-                               top: 2.5em; left: 20%; 
-                               color: white;
-                               background-color: hsla(0, 0%, 100%, 20%);
-                               border: 2px solid white;
-                               text-align: center;',
-    '.bigbuttons li input:focus' => 'box-shadow: none;'
-);
+$styles = array();
 
 $links = array(
     '/res/exp/'      => 'Experiments',
@@ -34,6 +17,7 @@ $links = array(
     '/res/set/'      => 'Sets',
     '/res/project/'  => 'Projects',
     '/res/stimuli/'  => 'Stimuli',
+    '/res/tutorial/'  => 'Tutorial',
 );
 
 if (in_array($_SESSION['status'], array('res', 'admin'))) {
@@ -46,13 +30,33 @@ $class = array(
     '/res/quest/'    => 'quest',
     '/res/set/'      => 'set',
     '/res/project/'  => 'project',
-    '/res/admin/'    => 'admin'
+    '/res/admin/'    => 'admin',
+    '/res/tutorial/' => 'tutorial'
 );
 
-$my_dashboard = new myQuery('SELECT name, id, type FROM dashboard WHERE user_id=' . 
-                            $_SESSION['user_id'] . ' ORDER BY type, dt DESC');
-$dashboard = $my_dashboard->get_assoc();
-$dash = 'My Favorites<ul id="myfavs">' . ENDLINE;
+$q = new myQuery();
+$q->prepare(
+    'SELECT IF(d.type="exp", e.res_name, 
+                IF(d.type="quest", q.res_name,
+                    IF(d.type="set", s.res_name,
+                        IF(d.type="project", p.res_name, "Unknown")))) AS res_name, 
+            IF(d.type="exp", e.name, 
+                IF(d.type="quest", q.name,
+                    IF(d.type="set", s.name,
+                        IF(d.type="project", p.name, "Unknown")))) AS name, 
+            d.id, 
+            d.type 
+    FROM dashboard AS d
+    LEFT JOIN exp AS e ON e.id = d.id AND d.type = "exp"
+    LEFT JOIN quest AS q ON q.id = d.id AND d.type = "quest"
+    LEFT JOIN sets AS s ON s.id = d.id AND d.type = "set"
+    LEFT JOIN project AS p ON p.id = d.id AND d.type = "project"
+    WHERE user_id=? 
+    ORDER BY type, res_name',
+    array('i', $_SESSION['user_id'])
+);
+$dashboard = $q->get_assoc();
+$dash = 'My Pinned Items<ul id="myfavs">' . ENDLINE;
 $url = array(
     'query' => '/res/data/',
     'exp' => '/res/exp/info',
@@ -61,11 +65,11 @@ $url = array(
     'project' => '/res/project/info'
 );
 foreach ($dashboard as $attr) {
-    $dash .= sprintf('    <li class="%s"><a href="%s?id=%s">%s</a></li>' . ENDLINE,
+    $dash .= sprintf('    <li class="%s"><a href="/res/%s/info?id=%s">%s</a></li>' . ENDLINE,
         $attr['type'],
-        $url[$attr['type']],
+        $attr['type'],
         $attr['id'],
-        $attr['name']
+        $attr['res_name']
     );
 }
 $dash .= '</ul>';
@@ -83,40 +87,28 @@ $page->displayBody();
 ?>
 
 <div id="dash"><?= $dash ?></div>
-<?= linkList($links, 'bigbuttons', 'ul', $class) ?>
-
-<p class="fullwidth" style="clear:both;">You can make new experiments or questionnaires at the 
-    <a href="/res/exp/">Experiment</a>  or <a href="/res/quest/">Questionnaire</a> lists above. 
-    Chain them together by making new sets at the <a href="/res/set/builder">Set Builder</a>.
-    Make a project page with the <a href="/res/project/builder">Project Builder</a> 
-    so you can direct participants to your project with a custom URL. 
-    Browse our <a href="/res/stimuli/browse">open-access stimuli</a>. <!-- or
-    <a href="/res/stimuli/upload">upload your own stimuli</a>.-->
-</p>
-
+<?= linkList($links, 'bigbuttons resbuttons', 'ul', $class) ?>
 
 <script>
-    $(function() {
-        $("#dash").prependTo('ul.bigbuttons');
-        
-        $('.bigbuttons a.exp').closest('li').append('<input data-type="exp" />');
-        $('.bigbuttons a.quest').closest('li').append('<input data-type="quest" />');
-        $('.bigbuttons a.set').closest('li').append('<input data-type="set" />');
-        $('.bigbuttons a.project').closest('li').append('<input data-type="project" />');
-        
-        $('.bigbuttons input').keydown( function(e) {
-            if (e.which == 13) {
-                var n = this.value;
-                var isValid = Math.floor(n) == n && $.isNumeric(n) && n>0;
-                if (isValid) {
-                    var theType = $(this).data('type');
-                    
-                    location.href = '/res/' + theType + '/info?id=' + n;
-                } else {
-                    this.value = '';
-                }
+    //$("#dash").prependTo('ul.resbuttons');
+    
+    $('.resbuttons a.exp').closest('li').append('<input data-type="exp" />');
+    $('.resbuttons a.quest').closest('li').append('<input data-type="quest" />');
+    $('.resbuttons a.set').closest('li').append('<input data-type="set" />');
+    $('.resbuttons a.project').closest('li').append('<input data-type="project" />');
+    
+    $('.resbuttons input').keydown( function(e) {
+        if (e.which == 13) {
+            var n = this.value;
+            var isValid = Math.floor(n) == n && $.isNumeric(n) && n>0;
+            if (isValid) {
+                var theType = $(this).data('type');
+                
+                location.href = '/res/' + theType + '/info?id=' + n;
+            } else {
+                this.value = '';
             }
-        });
+        }
     });
 </script>
 

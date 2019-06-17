@@ -29,7 +29,7 @@ if (array_key_exists('owner', $_GET)) {
             $access_user = 'access.user_id';
         } else {
             $access_user = 'SELECT ' . $_SESSION['user_id'] . ' AS supervisee_id UNION
-            SELECT supervisee_id FROM supervise WHERE supervisor_id=' . $_SESSION['user_id'];
+            SELECT user_id AS supervisee_id FROM res WHERE supervisor_id=' . $_SESSION['user_id'];
         }
 	} elseif (validID($_GET['owner'])) {
 		$access_user = $_GET['owner'];
@@ -73,7 +73,6 @@ if ($_SESSION['status'] == 'admin') {
         CONCAT(lastname, ', ', firstname) as name 
         FROM res 
         LEFT JOIN access USING (user_id)
-        LEFT JOIN supervise ON res.user_id=supervisee_id
         WHERE (access.type='exp' AND access.user_id IS NOT NULL 
         AND (supervisor_id={$user_id} OR access.user_id={$user_id})) 
         OR res.user_id={$user_id}
@@ -119,6 +118,7 @@ $new_exp_buttons = array(
     "builder?exptype=2afc" => "2-Alternative Forced-choice (2AFC)",
     "builder?exptype=jnd" => "2AFC with 8-Button Strength of Choice",
     "builder?exptype=buttons" => "Labelled Buttons",
+    "builder?exptype=slider" => "Slider",
     //"builder?exptype=rating" => "Numeric Rating",
     //"builder?exptype=interactive" => "Interactive",
     "builder?exptype=xafc" => "X-Alternative Forced-choice (XAFC)",

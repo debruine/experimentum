@@ -7,13 +7,16 @@ if (array_key_exists('add', $_GET)) {
 	$types = array('exp','quest','sets','project');
 	if (validID($_GET['user_id']) && validID($_GET['id']) && in_array($_GET['type'], $types)) {
 	
-		$query = sprintf('REPLACE INTO access (user_id, id, type) VALUES (%d, %d, "%s")',
-			$_GET['user_id'],
-			$_GET['id'],
-			$_GET['type']
+		$q = new myQuery();
+		$q->prepare(
+		    'REPLACE INTO access (user_id, id, type) VALUES (?, ?, ?)',
+            array(
+        		    'iis',
+        			$_GET['user_id'],
+        			$_GET['id'],
+        			$_GET['type']
+            )
 		);
-
-		$q = new myQuery($query);
 		
 		if ($q->get_affected_rows() == 1) {
 			echo 'added';

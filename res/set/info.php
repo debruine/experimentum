@@ -69,7 +69,7 @@ $myowners = new myQuery('SELECT user_id, CONCAT(lastname, ", ", firstname) as na
 $owners = $myowners->get_assoc(false, 'user_id', 'name');
 $access = in_array($_SESSION['user_id'], array_keys($owners));
 
-$allowners = new myQuery('SELECT user_id, firstname, lastname, email FROM researcher LEFT JOIN user USING (user_id) WHERE status > 3');
+$allowners = new myQuery('SELECT user_id, firstname, lastname, email FROM res LEFT JOIN user USING (user_id) WHERE status > 3');
 $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
 foreach($ownerlisting as $res) {
@@ -182,7 +182,7 @@ $page->displayBody();
     <tr><td>Status:</td> <td><?= $status ?></td></tr>
     <tr><td>Created on:</td><td><?= $itemdata['create_date'] ?></td></tr>
     <tr><td>Type:</td><td id='itemtype'><?= $types[$itemdata['type']] ?></td></tr>
-    <tr><td>Owners:<br><?php if ($_SESSION['status'] != 'student') { echo '<button class="tinybutton"  id="owner-change">Change</button>'; } ?></td> 
+    <tr><td>Owners:</td> 
         <td>
             <ul id='owner-edit'>
                 <?= $owner_edit ?>

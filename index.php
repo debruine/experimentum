@@ -28,7 +28,7 @@ $page->displayBody();
 
 <p>Experimentum is an online platform for psychology studies.</p>
 
-<p>Try the <a href="project?test">Test Studies</a></p>
+<p>Try the <a href="project?test&all">Test Studies</a></p>
 
 <?php
 

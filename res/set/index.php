@@ -28,7 +28,7 @@ if (array_key_exists('owner', $_GET)) {
             $access_user = 'access.user_id';
         } else {
             $access_user = 'SELECT ' . $_SESSION['user_id'] . ' AS supervisee_id UNION
-            SELECT supervisee_id FROM supervise WHERE supervisor_id=' . $_SESSION['user_id'];
+            SELECT user_id AS supervisee_id FROM res WHERE supervisor_id=' . $_SESSION['user_id'];
         }
     } elseif (validID($_GET['owner'])) {
         $access_user = $_GET['owner'];
@@ -42,7 +42,7 @@ $my = new myQuery('SELECT CONCAT("<span class=\'fav",
         "</span>") as "Favs",
     CONCAT("<a href=\'info?id=", s.id, "\'>", s.id, "</a>") as "ID", 
     res_name as "Name",
-    CONCAT("<span class=\'labnotes\'>", labnotes, "</span><span class=\'item_text\'>", GROUP_CONCAT(CONCAT(item_type,"_",item_id) SEPARATOR " "), "</span>") as "Labnotes", 
+    CONCAT("<span class=\'labnotes\'>", labnotes, "</span><span class=\'item_text\'>", GROUP_CONCAT(CONCAT(item_type,"_",set_items.item_id) SEPARATOR " "), "</span>") as "Labnotes", 
     status, 
     DATE_FORMAT(create_date, "%Y-%m-%d") as "Date Created"
     FROM sets as s
@@ -68,7 +68,6 @@ if ($_SESSION['status'] == 'admin') {
         CONCAT(lastname, ', ', firstname) as name 
         FROM res 
         LEFT JOIN access USING (user_id)
-        LEFT JOIN supervise ON res.user_id=supervisee_id
         WHERE (access.type='sets' AND access.user_id IS NOT NULL 
         AND (supervisor_id={$user_id} OR access.user_id={$user_id})) 
         OR res.user_id={$user_id}

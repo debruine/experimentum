@@ -9,31 +9,29 @@ $title = array(
 );
 
 $styles = array(
-    '.bigbuttons li a.participant' 	=> 'background-image: url("/images/linearicons/users?c=FFF");',
+    '.bigbuttons li a.participant' 	=> 'background-image: url("/images/linearicons/0209-clipboard-user?c=FFF");',
 	'.bigbuttons li a.debug' => 'background-image: url("/images/linearicons/bug?c=FFF");',
-	'.bigbuttons li a.access' => 'background-image: url("/images/linearicons/list?c=FFF");',
+	'.bigbuttons li a.access' => 'background-image: url("/images/linearicons/0634-accessibility?c=FFF");',
 	'.bigbuttons li a.status' => 'background-image: url("/images/linearicons/list?c=FFF");',
 	'.bigbuttons li a.stimuli' => 'background-image: url("/images/linearicons/picture?c=FFF");',
 	'.bigbuttons li a.yoke' => 'background-image: url("/images/linearicons/list?c=FFF");',
-	'.bigbuttons li a.merge' => 'background-image: url("/images/linearicons/list?c=FFF");',
+	'.bigbuttons li a.merge' => 'background-image: url("/images/linearicons/0839-arrows-merge?c=FFF");',
 	'.bigbuttons li a.functions' => 'background-image: url("/images/linearicons/list?c=FFF");',
-	'.bigbuttons li a.processlist' => 'background-image: url("/images/linearicons/list?c=FFF");',
-	'.bigbuttons li a.status' => 'background-image: url("/images/linearicons/list?c=FFF");',
+	'.bigbuttons li a.processlist' => 'background-image: url("/images/linearicons/0099-database-check?c=FFF");',
 	'.bigbuttons li a.usage' => 'background-image: url("/images/linearicons/users?c=FFF");',
-	'.bigbuttons li a.supervise' => 'background-image: url("/images/linearicons/0295-group-work?c=FFFFFF");',
+	'.bigbuttons li a.supervise' => 'background-image: url("/images/linearicons/eye?c=FFFFFF");',
 );
 
 $page = new page($title);
-$page->set_menu(true);
+$page->set_menu(false);
 
 $page->displayHead($styles);
 $page->displayBody();
 
 $links = array(
+    'supervise' => 'Supervision',
     'participant' => 'Participant Data',
     	'merge' => 'Merge',
-    	'status' => 'Change Status',
-    	'supervise' => 'Supervision',
     'access' => 'Access',
     'stimuli' => 'Update Stimuli',
     'usage' => 'Usage',
@@ -45,7 +43,6 @@ $links = array(
 
 $classes = array(
     'participant' => 'participant',
-	'status' => 'status',
 	'merge' => 'merge',
 	'stimuli' => 'stimuli',
 	'supervise' => 'supervise',
