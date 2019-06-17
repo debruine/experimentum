@@ -44,10 +44,10 @@ $text_message = "Dear {$sor['firstname']} {$sor['lastname']} and {$see['firstnam
 
 $mail = new PHPMailer();    //Create a new PHPMailer instance
 
-$mail->setFrom('lisa.debruine@glasgow.ac.uk', 'Lisa DeBruine');
+$mail->setFrom(ADMIN_EMAIL, ADMIN_NAME);
 $mail->addAddress($sor['email'], "{$sor['firstname']} {$sor['lastname']}");
 $mail->addAddress($see['email'], "{$see['firstname']} {$see['lastname']}");
-$mail->addBCC('lisa.debruine@glasgow.ac.uk', 'Lisa DeBruine');
+$mail->addBCC(ADMIN_EMAIL, ADMIN_NAME);
 $mail->Subject = 'Experimentum Supervision';
 $mail->msgHTML($message);
 $mail->AltBody = $text_message;

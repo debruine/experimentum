@@ -361,7 +361,7 @@ CREATE TABLE `lab` (
   `country` varchar(2) DEFAULT NULL,
   `create_date` date DEFAULT NULL,
   `labnotes` text DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`lab_id`),
   UNIQUE KEY `code` (`code`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 

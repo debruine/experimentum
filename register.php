@@ -104,9 +104,9 @@ if (array_key_exists('register', $_GET)) {
             
                 $mail = new PHPMailer();    //Create a new PHPMailer instance
     
-                $mail->setFrom('lisa.debruine@glasgow.ac.uk', 'Lisa DeBruine');
+                $mail->setFrom(ADMIN_EMAIL, ADMIN_NAME);
                 $mail->addAddress($email, $email);
-                $mail->addBCC('lisa.debruine@glasgow.ac.uk', 'Lisa DeBruine');
+                $mail->addBCC(ADMIN_EMAIL, ADMIN_NAME);
                 $mail->Subject = 'Experimentum Researcher Status Request: ' . $clean['firstname'] . " " . $clean['lastname'];
                 $mail->msgHTML($message);
                 $mail->AltBody = $text_message;

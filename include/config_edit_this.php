@@ -11,6 +11,9 @@
     define('THEME_HUE', '280');  // theme hue 
     define('THEME', 'hsl('. THEME_HUE . ',100%,20%)'); // theme colour 
     
+    define('ADMIN_NAME', '** CHANGE TO ADMIN NAME **');
+    define('ADMIN_EMAIL', '** CHANGE TO ADMIN EMAIL **');
+    
     define('SITETITLE', '** CHANGE TO TITLE OF YOUR WEBSITE **');
     define('FOOTERTEXT', '** CHANGE TO TEXT FOR THE WEBSITE FOOTER **');
     

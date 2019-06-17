@@ -16,9 +16,7 @@ git clone https://github.com/debruine/experimentum.git
 
 You can rename the directory from `experimentum` to the name of your website.
 
-## Server Setup
-
-### Mac OS X
+## Server Setup (Mac OS X)
 
 Install XCode
 
@@ -119,6 +117,14 @@ Search for `DirectoryIndex` (ctrl-W) and edit it to look like:
 </IfModule>
 ```
 
+Search for `mod_negotiation` and make sure this line is not commented (remove the #).
+
+```
+LoadModule negotiation_module lib/httpd/modules/mod_negotiation.so
+```
+
+Save this file and exit (crtl-O, ctrl-X).
+
 
 Set date.timezone in `php.ini`
 
@@ -144,7 +150,7 @@ Do not delete anything, just add a line with the URL of your new test site, e.g.
 Save with ctrl-O, ctrl-X
 
 
-Eit the vhosts file
+Edit the vhosts file
 
 ```
 nano /usr/local/etc/httpd/extra/httpd-vhosts.conf 
@@ -165,7 +171,7 @@ Edit the first example for your test server. The important parts are getting the
 Restart apache
 
 ```
-sudo apachectl restart 
+brew services start httpd
 ```
 
 ## Databases
@@ -189,10 +195,21 @@ mysqladmin -u root password 'MYPASSWORD'
 
 Create databases:
 
+Go to the directory where you saved experimentum and into the `setup/mysql` directory
+
+```
+cd /Users/lisad/experimentum/setup/mysql
+```
+Create the exp database
+
 ```
 mysql -u root -pMYPASSWORD
 CREATE DATABASE exp;
+USE exp;
+\. exp_setup.sql
 ```
+
+
 
 Edit config file:
 
@@ -202,4 +219,15 @@ Set the MYSQL_USER to `root` and MYSQL_PSWD` to the admin password you set above
 
 Look at your website at http://name.test:8080
 
+Sign up for an account, requesting researcher status.
 
+Log into MySQL from the command line:
+
+```
+mysql -u root -p
+USE exp;
+SELECT * from user;
+UPDATE user SET status = "admin" WHERE user_id = 1;
+```
+
+Log out and log back into your website. It should take you straight to the resaercher section.

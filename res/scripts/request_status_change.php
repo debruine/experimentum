@@ -43,7 +43,7 @@ $mail = new PHPMailer();    //Create a new PHPMailer instance
 $mail->setFrom($see['email'], "{$see['firstname']} {$see['lastname']}");
 $mail->addAddress($sor['email'], "{$sor['firstname']} {$sor['lastname']}");
 $mail->addAddress($see['email'], "{$see['firstname']} {$see['lastname']}");
-$mail->addBCC('lisa.debruine@glasgow.ac.uk', 'Lisa DeBruine');
+$mail->addBCC(ADMIN_EMAIL, ADMIN_NAME);
 $mail->Subject = 'Experimentum Project Status Change Request: ' . $_POST['id'];
 $mail->msgHTML($message);
 $mail->AltBody = $text_message;
