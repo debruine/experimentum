@@ -6,6 +6,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 $user = new user();
 $user->set_username('Guest');
 $user->set_status('guest');
+$user->set_sex($_POST['sex']);
+if ($_POST['age']) {
+    $year = date('Y') - intval($_POST['age']);
+    $user->set_birthday($year, date('m'), date('d'));
+}
 $user->register("");
 $user->login_table();
 $user->get_info();

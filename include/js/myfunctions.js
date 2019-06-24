@@ -292,18 +292,48 @@ function login() {
 }
 
 function guestLogin(project_id) {
-    var url ="/include/scripts/login_guest";
-    
-    $.get(url, function(data) {
-        if (data == "login") {
-            $("#login_error_header").dialog("close").css('background', 'none');
-            window.location.reload(false);
-        } else {
-            var parsedResponse = data.split(":");
-            if (parsedResponse[0] == "newpage") {
-                window.location = parsedResponse[1];
-            } else {
-                $("#login_error_header").html( data ).css('background', 'none').dialog("open");;
+    $('<div />').append('<p>Please indicate your age and gender. Providing this information is optional, but some studies have restrictions or different versions depending on this information.</p>\n')
+                .append('<table><tr><td>Age:</td><td><input id="guest_age" name="guest_age" type="number" min="0" max="120" /></td></tr>\n' +
+                        "<tr><td>Gender:</td><td><select name='guest_sex' id='guest_sex'>\n" +
+                        "    <option value='NULL'></option>\n" +
+                        "    <option value='male'>male</option>\n" +
+                        "    <option value='female'>female</option>\n" + 
+                        "    <option value='nonbinary'>non-binary</option>\n" + 
+                        "    <option value='na'>prefer not to answer</option>\n" + 
+                        "</select></td></tr></table>\n")
+                .dialog({
+        title: 'Guest Login',
+        modal: true,
+        position: ['center', 100],
+        width: 500,
+        buttons: {
+            "Cancel": function() {
+                $(this).dialog('close');
+            },
+            "Login": function() {
+                $.ajax({
+                    url: '/include/scripts/login_guest',
+                    type: 'POST',
+                    data: {
+                        sex: $('#guest_sex').val(),
+                        age: $('#guest_age').val()
+                    },
+                    success: function(data) {
+                        if (data == "login") {
+                            $("#login_error_header").dialog("close").css('background', 'none');
+                            window.location.reload(false);
+                        } else {
+                            var parsedResponse = data.split(":");
+                            if (parsedResponse[0] == "newpage") {
+                                window.location = parsedResponse[1];
+                            } else {
+                                $("#login_error_header").html( data ).css('background', 'none').dialog("open");;
+                            }
+                        }
+                    }
+                });
+
+                $(this).dialog('close');
             }
         }
     });

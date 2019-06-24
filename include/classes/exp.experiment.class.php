@@ -361,7 +361,9 @@ class experiment {
         // next trial function
         $text .=           '    function nextTrial(r) {' . ENDLINE .
                            '        console.log("nextTrial(" + r + ")");'. ENDLINE .
-                           '        $(".input_interface input").removeClass("ui-state-active").removeClass("ui-state-hover");' . ENDLINE;
+                           '        $(".input_interface input").removeClass("ui-state-active")' . ENDLINE .
+                           '                                   .removeClass("ui-state-hover")' . ENDLINE .
+                           '                                   .removeClass("ui-state-focus").blur();' . ENDLINE;
         
         if ($this->stimuli_type == 'audio') {
             $text .=       '        if ($("#experiment .audio.unplayed").length > 0) {' . ENDLINE .
