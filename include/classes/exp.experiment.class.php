@@ -61,7 +61,10 @@ class experiment {
             $this->orient = $info['orient'];
             $this->random_stim = $info['random_stim'];
             $this->default_time = $info['default_time'];
-            $this->increment_time = $info['increment_time'];                
+            $this->increment_time = $info['increment_time'];
+            $this->slider_min = $info['slider_min'];
+            $this->slider_max = $info['slider_max'];
+            $this->slider_step = $info['slider_step'];
             
             // get trial info
             $trials_query = new myQuery('SELECT trial_n, t.name, 

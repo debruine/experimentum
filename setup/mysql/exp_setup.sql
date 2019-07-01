@@ -34,6 +34,9 @@ CREATE TABLE `exp` (
   `feedback_specific` text DEFAULT NULL,
   `feedback_general` text DEFAULT NULL,
   `labnotes` text DEFAULT NULL,
+  `slider_min` int(4) DEFAULT 0,
+  `slider_max` int(4) DEFAULT 100,
+  `slider_step` int(4) DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
