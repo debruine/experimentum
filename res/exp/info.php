@@ -295,7 +295,7 @@ $page->displayBody();
     <tr><td>Stimulus Path:</td> <td><?= $common_path ?></td></tr>
     
     <tr><td>Type:</td> <td><?= $itemdata['subtype'] ?> <?= $itemdata['exptype'] ?> with <?= $itemdata['orient'] ?> image orientation</td></tr>
-    <?php if (count($exposure) > 0) { ?>
+    <?php if (is_array($exposure) && count($exposure) > 0) { ?>
         <tr><td>Adapt time:</td> <td><?= implode(', ', array_keys($exposure)) ?> ms per trial</td></tr>
     <?php } 
         if (!empty($itemdata['label1'])) { ?>

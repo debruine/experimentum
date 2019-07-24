@@ -186,8 +186,8 @@ class experiment {
     function get_interface() {
         $text = '<div id="experiment" style="display:none;">' . ENDLINE;
         $text .= tag($this->question, 'div', 'id="question"');
-        $text .= '<a id="prev_trial" title="Previous Trial"><</a>' . ENDLINE;
-        $text .= '<a id="next_trial" title="Next Trial">></a>' . ENDLINE;
+        $text .= '<a id="prev_trial" title="Previous Trial">&lt;</a>' . ENDLINE;
+        $text .= '<a id="next_trial" title="Next Trial">&gt;</a>' . ENDLINE;
         $text .= '<table class="' . $this->exptype . '">' . ENDLINE;
         $text .= $this->get_input_interface();
         $text .= $this->get_stimuli_interface();
@@ -553,7 +553,7 @@ class experiment {
         $text .= '
             if ($("#question").length > 0 && typeof(question) !== "undefined") $("#question").html(question[trialOrder[trial]]);
             $("#trial_n").html(trial);
-            $("#footer").text("Trial "+ trial +" of " + trialOrder.length-1);
+            $("#footer").text("Trial "+ trial +" of " + (trialOrder.length-1));
             
             var currentTime = new Date();
             beginTrial = currentTime.getTime();
