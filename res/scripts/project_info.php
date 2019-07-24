@@ -41,7 +41,7 @@ $itemdata = $myset->get_one_array();
 // convert markdown sections
 $Parsedown = new Parsedown();
 $itemdata['intro'] = $Parsedown->text($itemdata['intro']);
-$itemdata['url'] = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . "/project?" . $itemdata['url'];
+$itemdata['url'] = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/project?" . $itemdata['url'];
 
 $itemdata['sex'] = array(
     'both' => 'All genders',

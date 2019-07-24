@@ -16,6 +16,14 @@ if (validID($_POST['project_id']) && !permit('project', $_POST['project_id'])) {
 // save a project
 $clean = my_clean($_POST);
 
+// check for duplicate URL
+$q = new myQuery("SELECT id FROM project WHERE url='{$clean['url']}'");
+if ($q->get_num_rows() > 0 && $q->get_one() != $clean['project_id']) {
+    $return['error'] = 'Your URL is already taken.';
+    scriptReturn($return);
+    exit;
+}
+
 $proj_query = sprintf('REPLACE INTO project (id, name, res_name, url, 
                           intro, labnotes, sex, lower_age, upper_age, blurb, create_date) 
                         VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", NOW())',

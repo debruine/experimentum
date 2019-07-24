@@ -441,6 +441,11 @@ $(function() {
     });
     
     $('#save-project').button().click( function() { 
+        if ($('#url').hasClass('error')) {
+            $('<div />').html("Please enter a valid URL").dialog();
+            return(false);
+        }
+        
         // serialize the new project order
         var setitems = '';
         var icons = '';
@@ -463,8 +468,6 @@ $(function() {
                 if (data.error) {
                     $('<div />').html(data.error).dialog();
                 } else {
-                    //growl('Project Saved', 500);
-                    //$('#project_id').val(data.id);
                     location.href = "./info?id=" + data.id;
                 }
             }
