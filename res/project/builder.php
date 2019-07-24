@@ -134,6 +134,9 @@ $table_setup['url']->set_width($input_width);
 $table_setup['url']->set_placeholder('shortname');
 $table_setup['url']->set_question('URL');
 
+$table_setup['url_fb'] = new msgRow('url_fb', 'url_fb', '&nbsp;');
+$table_setup['url_fb']->set_question(' ');
+
 $table_setup['blurb'] = new textarea('blurb', 'blurb', $project_info['blurb']);
 $table_setup['blurb']->set_dimensions($input_width, 40, true, 40, 300);
 $table_setup['blurb']->set_question('Blurb');
@@ -401,27 +404,33 @@ $(function() {
 
     $('.setlists ul li').click(function() { add(this); });
     
-    $('#url').change( function() {
-        var nonWord = $('#url').val().replace(/^\w+$/, '');
+    $('#url').on("keyup", function() {
+        var nonWord = $('#url').val().replace(/^(\w|-)+$/, '');
         
         $('#url').removeClass('error');
-    
-        if (nonWord != '') {
-            $('<div />').html('<i>' + $('#url').val() + 
-                              '</i> is not a valid URL. Please make sure there are no spaces or symbols.')
-                         .dialog({modal:true});
+        
+        if ($('#url').val() == '') {
+            $('#url_fb').html('&nbsp;');
+        } else if (nonWord != '') {
+            $('#url_fb').html('<i>' + $('#url').val() + '</i> is not a valid URL. ' +
+                              'Please make sure there are no spaces or symbols.');
             $('#url').addClass('error');
         } else {
             // check if short url is unique
             var url = '/res/project/builder?checkurl=' + $('#url').val() + '&id=' + $('#project_id').val();
             $.get(url, function(data) {
                 if (data != '') { 
-                    $('<div />').html(data).dialog({modal:true}); 
+                    $('#url_fb').html(data); 
                     $('#url').addClass('error');
+                } else {
+                   $('#url_fb').html('The URL <i><?= $_SERVER['SERVER_NAME'] ?>' + '/project?' + 
+                                     $('#url').val() + '</i> is available'); 
                 }
             });
         }
     });
+    $('#url').trigger("keyup");
+    
     
     $('#go-project').button().click( function() { 
         if ($('#url').val() != '') { window.location='/project?' + $('#url').val(); }
