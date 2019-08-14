@@ -18,14 +18,14 @@ if ($type == 'exp') {
     $fname = $query->get_one_array();
         
     $q = 'SELECT ed.session_id, project_id, exp_id, session.user_id, sex as user_sex, status as user_status,
-            ROUND(DATEDIFF(dt, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
+            ROUND(DATEDIFF(ed.dt, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
             trial.name as trial_name,
-            trial_n,
+            ed.trial_n,
             `order`,
-            dv,
-            rt,
-            side,
-            dt
+            ed.dv,
+            ed.rt,
+            ed.side,
+            ed.dt
             FROM exp_data AS ed
             LEFT JOIN user USING (user_id)
             LEFT JOIN trial USING (exp_id, trial_n)
