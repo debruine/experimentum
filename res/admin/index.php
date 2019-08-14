@@ -20,6 +20,7 @@ $styles = array(
 	'.bigbuttons li a.processlist' => 'background-image: url("/images/linearicons/0099-database-check?c=FFF");',
 	'.bigbuttons li a.usage' => 'background-image: url("/images/linearicons/users?c=FFF");',
 	'.bigbuttons li a.supervise' => 'background-image: url("/images/linearicons/eye?c=FFFFFF");',
+	'.bigbuttons li a.query' => 'background-image: url("/images/linearicons/database?c=FFFFFF");',
 );
 
 $page = new page($title);
@@ -31,13 +32,14 @@ $page->displayBody();
 $links = array(
     'supervise' => 'Supervision',
     'participant' => 'Participant Data',
-    	'merge' => 'Merge',
+    'merge' => 'Merge',
     'access' => 'Access',
     'stimuli' => 'Update Stimuli',
     'usage' => 'Usage',
 	'debug' => 'Debug',
 	#'yoke' => 'Yoke',
 	#'functions' => 'Periodic Functions',
+	'query' => 'Custom Query',
 	'processlist' => 'Active Queries'
 );
 
@@ -51,6 +53,7 @@ $classes = array(
 	'upload' => 'upload',
 	'yoke' => 'yoke',
 	'usage' => 'usage',
+	'query' => 'query',
 	'functions' => 'functions',
 	'processlist' => 'processlist'
 );

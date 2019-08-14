@@ -9,7 +9,7 @@ auth($RES_STATUS);
 
 $title = array(
 	'/res/' => loc('Researchers'),
-	'/res/data/' => loc('Data'),
+	'/res/admin/' => loc('Admin'),
 	'' => loc('Stats')
 );
 
