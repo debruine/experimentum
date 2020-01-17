@@ -151,12 +151,14 @@ class questionnaire extends formTable {
                 switch ($qd['type']) {
                     case 'countries':
                     case 'ranking':
-                    case 'input':
-                    case 'text':
                     case 'msgRow':
                         break;
                     case 'textarea':
                         //$questions[$qd['id']]->set_dimensions($qd['startnum'], $qd['endnum'], true);
+                        break;
+                    case 'input':
+                    case 'text':
+                        $questions[$qd['id']]->set_maxlength($qd['maxlength']);
                         break;
                     case 'select':
                     case 'radio':
@@ -369,19 +371,28 @@ class msgRow extends formElement {
         echo "<tr id='{$this->id}_row' title='{$this->tip}'>" . ENDLINE;
         // display question cell
         if (!empty($this->question)) {
-            echo "<td class='question'><label for='{$this->id}'>{$this->question}</label>" . ENDLINE;
+            $colspan = empty($content) ? "colspan='10'" : "";
+            echo "<td class='question' {$colspan}><label for='{$this->id}'>{$this->question}</label>" . ENDLINE;
         }
-        echo "  <td colspan='10' id='{$this->id}'>{$content}</td>", ENDLINE;
+        if (!empty($content)) {
+            echo "  <td colspan='10' id='{$this->id}'>{$content}</td>", ENDLINE;
+            }
         echo "</tr>" , ENDTAG;
     }
 }
 
 class hiddenInput extends formElement {
+    function get_element() {
+        $element_text  = "<input type='hidden'" . ENDLINE;
+        $element_text .= "  name='"     . $this->id     . "'" . ENDLINE;
+        $element_text .= "  id='"       . $this->id     . "'" . ENDLINE;
+        $element_text .= "  value='"    . $this->value  . "' />" . ENDLINE;
+        
+        return $element_text;
+    }
+    
     function print_formLine($editable=false) {
-        echo "<input type='hidden'" . ENDLINE;
-        echo "  name='"     . $this->id     . "'" . ENDLINE;
-        echo "  id='"       . $this->id     . "'" . ENDLINE;
-        echo "  value='"    . $this->value  . "' />" . ENDLINE;
+        echo $this->get_element();
     }
 }
 
@@ -410,6 +421,32 @@ class ranking extends formElement {
     }
 }
 
+class time extends formElement {
+    public $step = 1;
+    
+    function get_element() {
+        $hm = explode(":", $this->value);
+        $time = new hiddenInput($this->id, $this->id, $this->value);
+        
+        $hour = new selectnum($this->id . '_hour', $this->id . '_hour', $hm[0]);
+        $hour->set_pad(2);
+        $hour->set_options(array("NULL" => "HOUR"), 0, 23);
+        $hour->set_null(false);
+        
+        $minute = new selectnum($this->id . '_minute', $this->id . '_minute', $hm[1]);
+        $minute->set_pad(2);
+        $minute->set_options(array("NULL" => "MIN"), 0, 59, $this->step);
+        $minute->set_null(false);
+        
+        
+        $element_text = "<div class='time'>" . $time->get_element() . "\n" . 
+            $hour->get_element() . ":" . $minute->get_element() . "</div>\n\n";
+        
+        return $element_text;
+    }
+    
+}
+
 class datemenu extends formElement {
     public $minDate = '-120y';
     public $maxDate = '+0y';
@@ -423,7 +460,7 @@ class datemenu extends formElement {
         $this->set_maxdate($max);
     }
     
-    function get_element() {            
+    function get_element() {
         $default = (empty($this->value)) ? '' : $this->value['year'] . "-" . $this->value['month'] . "-" . $this->value['day'];
         
         preg_match('/[+-]\d+y/', $this->minDate, $minY);
@@ -525,15 +562,22 @@ class countries extends select{
 class selectnum extends select {
     public $startnum;
     public $endnum;
+    public $step;
+    public $pad = false;
+    
+    function set_pad($n) { $this->pad = $n; }
+    function get_pad() { return $this->pad; }
 
-    function set_options($opts, $start=null, $end=null) {
+    function set_options($opts, $start=null, $end=null, $step=1) {
         $this->startnum = $start;
         $this->endnum = $end;
+        $this->step = $step;
     
         $numberoptions = array();
         
-        $range = range($start, $end);
+        $range = range($start, $end, $step);
         foreach($range as $k=>$v) {
+            $v = $this->pad > strlen($v) ? str_pad($v, $this->pad, '0', STR_PAD_LEFT) : $v;
             $numberoptions[$v] = $v;
         }
         
