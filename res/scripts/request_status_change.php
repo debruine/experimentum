@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(array('admin', 'res'));
+auth(array('admin', 'res', 'student'));
 
 $return = array('error' => false);
 
@@ -40,7 +40,7 @@ $text_message = "Dear {$sor['firstname']} {$sor['lastname']},\n" .
 
 $mail = new PHPMailer();    //Create a new PHPMailer instance
 
-$mail->setFrom($see['email'], "{$see['firstname']} {$see['lastname']}");
+$mail->setFrom(ADMIN_EMAIL, ADMIN_NAME);
 $mail->addAddress($sor['email'], "{$sor['firstname']} {$sor['lastname']}");
 $mail->addAddress($see['email'], "{$see['firstname']} {$see['lastname']}");
 $mail->addBCC(ADMIN_EMAIL, ADMIN_NAME);

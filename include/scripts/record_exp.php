@@ -32,12 +32,12 @@
                     (exp_id, user_id, session_id, trial_n, 
                     dv, rt, side, `order`, dt) VALUES 
                     (%d, %d, %d, %d, 
-                    '%s', %s, %s, %s, '%s')",
+                    %s, %s, %s, %s, '%s')",
                     $id,
                     $_SESSION['user_id'],
                     $_SESSION['session_id'],
                     $trial,
-                    $response,
+                    $response == "null" ? 'NULL' : "'" . $response . "'",
                     ifEmpty($rt, 'NULL', true),
                     ifEmpty($side, 'NULL', true),
                     ifEmpty($order, 'NULL', true),
@@ -50,6 +50,7 @@
     } else {
         // next trial
         //echo $query->get_query();
+        echo  $_SESSION['session_id'];
     }
     
     exit;

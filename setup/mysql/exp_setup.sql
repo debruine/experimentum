@@ -193,6 +193,17 @@ CREATE TABLE `trial` (
   PRIMARY KEY (`exp_id`,`trial_n`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `frame`;
+CREATE TABLE `frame` (
+  `exp_id` int(11) NOT NULL DEFAULT 0,
+  `trial_n` int(3) NOT NULL DEFAULT 0,
+  `frame_n` int(3) DEFAULT 1,
+  `display` int(11) DEFAULT NULL,
+  `duration` int(4) DEFAULT NULL,
+  `show_resp` boolean DEFAULT TRUE,
+  PRIMARY KEY (`exp_id`,`trial_n`, `frame_n`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `adapt_trial`;
 CREATE TABLE `adapt_trial` (
   `exp_id` int(11) NOT NULL DEFAULT 0,
@@ -628,5 +639,49 @@ INSERT INTO `countries` VALUES
 ('ZW','Zimbabwe'),
 ('--','none');
 UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `frame`;
+CREATE TABLE `frame` (
+    `exp_id`    int(11) NOT NULL,
+    `trial_n`   int(3)  NOT NULL,
+    `frame_n`   int(3)  NOT NULL DEFAULT 1,
+    `display`   int(11) DEFAULT NULL,
+    `duration`  int(4)  DEFAULT NULL,
+    `show_resp` tinyint(1) DEFAULT 1,
+    PRIMARY KEY (`exp_id`, `trial_n`, `frame_n`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+update trial set name = replace(replace(name, "&amp;", "_"), ".jpg", "") WHERE exp_id = 188;
+update exp set subtype = 'speeded' where id = 188;
+update trial set center_img = 16448 WHERE exp_id = 188;
+delete from frame where exp_id = 188;
+insert into frame select exp_id, trial_n, 1, 16448, 500, 0 FROM trial where exp_id = 188 order by trial_n;
+insert into frame select exp_id, trial_n, 2, trial_n+16171, 4500, 1 FROM trial where exp_id = 188 order by trial_n;
+insert into frame select exp_id, trial_n, 3, NULL, 7000, 1 FROM trial where exp_id = 188 order by trial_n;
+insert into frame select exp_id, trial_n, 4, NULL, NULL, 0 FROM trial where exp_id = 188 order by trial_n;
+
+update exp set subtype = 'speeded' where id = 190;
+delete from frame where exp_id = 190;
+insert into frame select exp_id, trial_n, 1, 16448, 500, 0 FROM trial where exp_id = 190 order by trial_n;
+insert into frame select exp_id, trial_n, 2, trial_n+16171, 4500, 1 FROM trial where exp_id = 190 order by trial_n;
+insert into frame select exp_id, trial_n, 3, NULL, 7000, 1 FROM trial where exp_id = 190 order by trial_n;
+insert into frame select exp_id, trial_n, 4, NULL, NULL, 0 FROM trial where exp_id = 190 order by trial_n;
+
+update trial set center_img = 16447 WHERE exp_id = 189;
+delete from frame where exp_id = 189;
+insert into frame select exp_id, trial_n, 1, 16448, 500, 0 FROM trial where exp_id = 189 order by trial_n;
+insert into frame select exp_id, trial_n, 2, trial_n+16575, 400, 1 FROM trial where exp_id = 189 order by trial_n;
+insert into frame select exp_id, trial_n, 3, NULL, 7000, 1 FROM trial where exp_id = 189 order by trial_n;
+insert into frame select exp_id, trial_n, 4, NULL, NULL, 0 FROM trial where exp_id = 189 order by trial_n;
+
+delete from frame where exp_id = 191;
+insert into frame select exp_id, trial_n, 1, 16448, 500, 0 FROM trial where exp_id = 191 order by trial_n;
+insert into frame select exp_id, trial_n, 2, trial_n+16575, 400, 1 FROM trial where exp_id = 191 order by trial_n;
+insert into frame select exp_id, trial_n, 3, NULL, 7000, 1 FROM trial where exp_id = 191 order by trial_n;
+insert into frame select exp_id, trial_n, 4, NULL, NULL, 0 FROM trial where exp_id = 191 order by trial_n;
+
+
 
 

@@ -83,6 +83,7 @@ class experiment {
                             LEFT JOIN stimuli AS x ON (x.id=xafc.image)
                             LEFT JOIN yoke ON (yoke.type="exp" AND t.exp_id=yoke.id AND yoke.user_id="' . $_SESSION['user_id'] . '")
                             WHERE t.exp_id=' . $this->id . ' GROUP BY trial_n');
+            
             $trial_list = array();
             $types = array();
             foreach ($trials_query->get_assoc() as $trial) {
@@ -97,6 +98,14 @@ class experiment {
                 unset($trial['ctype']);
                 unset($trial['rtype']);
                 unset($trial['xtype']);
+                
+                // add frames
+                $frame_query = new myQuery('SELECT frame.*, s.path FROM frame 
+                                           LEFT JOIN stimuli AS s ON (s.id=display)
+                                           WHERE exp_id = ' . $this->id . 
+                                           ' AND trial_n = ' . $trial['trial_n'] . 
+                                           ' ORDER BY frame_n');
+                $trial['frames'] = $frame_query->get_assoc();
                 
                 $trial_list[$trial['trial_n']] = new trial($trial);
             }
@@ -134,16 +143,21 @@ class experiment {
         $text .= "</div>" . ENDLINE;
         
         // image loader
+        $frame_stim = array();
         foreach ($this->trials as $trial) {
-            if ($trial->get_left_image() != '')     $this->left_images[]     = $trial->get_left_image();
-            if ($trial->get_center_image() != '')     $this->center_images[]     = $trial->get_center_image();
-            if ($trial->get_right_image() != '')     $this->right_images[]     = $trial->get_right_image();
-            if ($trial->get_xafc_images() != '')    $this->xafc_images[]    = $trial->get_xafc_images();
+            if ($trial->get_left_image() != '')   $this->left_images[]   = $trial->get_left_image();
+            if ($trial->get_center_image() != '') $this->center_images[] = $trial->get_center_image();
+            if ($trial->get_right_image() != '')  $this->right_images[]  = $trial->get_right_image();
+            if ($trial->get_xafc_images() != '')  $this->xafc_images[]   = $trial->get_xafc_images();
+            
+            foreach($trial->frames as $frame) {
+                if (!is_null($frame['display'])) $frame_stim[] = $frame['path'];
+            }
         }
         $xafc_merged = (count($this->xafc_images)) ?
             call_user_func_array('array_merge', $this->xafc_images) :
             array();
-        $stimuli = array_unique(array_merge($this->left_images, $this->center_images, $this->right_images, $xafc_merged));
+        $stimuli = array_unique(array_merge($this->left_images, $this->center_images, $this->right_images, $frame_stim, $xafc_merged));
         $stimuli = array_filter($stimuli, "strlen");
         
         $text .= "<div id='image_loader'>\n\t<div>Loading stimuli...</div>";
@@ -171,11 +185,11 @@ class experiment {
             $text .= "    <input type='button' id='beginExp' onclick='beginExp();' value='" . loc('Begin the Experiment') . "' />" . ENDLINE;
         } else if ($this->subtype == 'speeded') {
             $text .= "    <div>" . loc('Place your fingers on the keys<br>and press the space bar<br>to consent &amp; begin the experiment') . "</div>" . ENDLINE;
-            $text .= "    <input type='button' onclick='noConsent();' value='" . loc('I Do Not Consent, Return to the Home Page') . "' />" . ENDLINE;
+            $text .= "    <input style='position: fixed; bottom: 4em; left: 0; right:0; margin: 1em auto;' type='button' onclick='noConsent();' value='" . loc('I Do Not Consent, Return to the Home Page') . "' />" . ENDLINE;
         } else {
             $text .= '<p>' . loc("Please indicate whether you consent to this experiment by clicking on the appropriate button below.") . '</p>';
             $text .= "    <input type='button' id='beginExp' onclick='beginExp();' value='" . loc('I Consent, Begin the Experiment') . "' />" . ENDLINE;
-            $text .= "    <input type='button' onclick='noConsent();' value='" . loc('I Do Not Consent, Return to the Home Page') . "' />" . ENDLINE;
+            $text .= "    <input style='position: fixed; bottom: 4em; left: 0; right:0; margin: 1em auto;' type='button' onclick='noConsent();' value='" . loc('I Do Not Consent, Return to the Home Page') . "' />" . ENDLINE;
         }
         
         $text .= "</div>" . ENDLINE;
@@ -320,6 +334,7 @@ class experiment {
         
         // trial list and randomisation list
         $text .=         '    // trial attributes list' . ENDLINE;
+        $text .=         '    var frameTO;' . ENDLINE;
         $text .=         '    trial = 0;' . ENDLINE;
         $text .=         '    response = [0];' . ENDLINE;
         $text .=         '    rt = [0];' . ENDLINE;
@@ -352,7 +367,7 @@ class experiment {
                 // array is not empty, add values
                 if (is_array($values[1])) {
                     foreach ($values as $n => $v) {
-                        $values[$n] = "['" . implode("',\n\t\t\t'", $v) . "']";
+                        $values[$n] = "['" . implode("', '", $v) . "']";
                     }
                     $text .= "    $att = ['',\n\t\t"     . implode(",\n\t\t", $values)     . "\n\t];" . ENDLINE;
                 } else {
@@ -468,6 +483,12 @@ class experiment {
             $trial_att['center_image'][$n] = $trial->get_center_image();
             $trial_att['right_image'][$n] = $trial->get_right_image();
             $trial_att['question'][$n] = $trial->get_question();
+            
+            foreach ($trial->frames as $nn => $frame) {
+                $trial_att['frames_path'][$n][$nn] = $frame['path'];
+                $trial_att['frames_duration'][$n][$nn] = $frame['duration'];
+                $trial_att['frames_show_resp'][$n][$nn] = $frame['show_resp'];
+            }
         }
         
         return $trial_att;
@@ -475,6 +496,42 @@ class experiment {
     
     function set_up_next_trial() {
         $text = '// set up next trial' . ENDLINE;
+        
+        $text .= '
+                clearTimeout(frameTO);
+                console.log("clear frameTO");
+                if (typeof frames_show_resp !== "undefined") {
+                    show_resp = frames_show_resp[trialOrder[trial]];
+                    display = frames_path[trialOrder[trial]];
+                    duration = frames_duration[trialOrder[trial]];
+                    frames = duration.length;
+                
+                    function nextFrame(i) {
+                        $("#time_out").hide();
+                        console.log("nextFrame:", i, duration[i], display[i], show_resp[i]);
+                        
+                        if (display[i] == "") {
+                            $("#center_image").hide();
+                        } else {
+                            $("#center_image").attr("src", display[i]).show();
+                        }
+                        
+                        if (show_resp[i] == 1) { 
+                            $(".input_interface").show();
+                        } else {
+                            $(".input_interface").hide();
+                            if (i == frames - 1) {
+                                $("#time_out").show();
+                            }
+                        }
+                        
+                        if (duration[i] != "" && i < frames) {
+                            frameTO =  setTimeout(function() { nextFrame(i+1) }, duration[i]);
+                        }
+                    }
+                    nextFrame(0);
+                }';
+        
         if ($this->stimuli_type == 'image') {
             $text .= '
                 if ($("#center_image").length > 0) $("#center_image").attr("src", center_image[trialOrder[trial]]);

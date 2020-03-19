@@ -32,6 +32,13 @@ class exp_buttons extends experiment {
             $text .= '    </tr>' . ENDLINE;
         }
         
+        $text .=     '    <tr id="time_out" style="display: none;">' . ENDLINE;
+        $text .=     "        <td colspan='$cols_to_span'>" . ENDLINE;
+        $text .=     "            <h2>Time Out<h2>" . ENDLINE;
+        $text .=     "            <input type='button' value='Next Trial' onclick='nextTrial(null)'/>" . ENDLINE;
+        $text .=     '        </td>' . ENDLINE;
+        $text .=     '    </tr>' . ENDLINE;
+        
         return $text;
     }
     

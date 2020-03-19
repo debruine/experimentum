@@ -37,7 +37,7 @@ class user {
         $year = ($y>1900 && $y<=date('Y')) ? $y : 0;
         $month = ($m>0 && $m<13) ? $m : 0;
         $day = ($d>0 && $d<32) ? $d : 0;
-        $this->birthday = ($year == 0) ? '' : "{$year}-{$month}-{$day}"; 
+        $this->birthday = ($year == 0) ? 'NULL' : "{$year}-{$month}-{$day}"; 
     }
     function get_birthday() { return $this->birthday; }
     function set_pq_and_a($q, $a) { 

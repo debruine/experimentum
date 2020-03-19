@@ -210,7 +210,7 @@ $('html').on("click", ".owner-delete, .owner-delete-items", function() {
 
 $('button.tinybutton').button();
 
-function item_stats(items, proj_id) {
+function item_stats(items, proj_id, all_status = false) {
     console.log('item_stats', items);
     
     var totals = {
@@ -224,32 +224,37 @@ function item_stats(items, proj_id) {
         upper: 0
     };
     
+    if (typeof proj_id !== "undefined") {
+        var proj_url = '/res/scripts/proj_stats?id=' + proj_id;
+        if (all_status == true) proj_url += "&all";
+        
+        // get project stats
+        $.ajax({
+            url: proj_url,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('#total_people').html(data.people + " (" + data.peopled + ")");
+                $('#total_men').html(data.men + " (" + data.mend + ")");
+                $('#total_women').html(data.women + " (" + data.womend + ")");
+            }
+        });
+    }
     
-
+    // get stats for each item
     $.each(items, function(idx, item) {
         var url = '/res/scripts/item_stats?item=' + item;
-        if (typeof proj_id !== "undefined") {
-            url += '&proj=' + proj_id;
-        }
+        if (typeof proj_id !== "undefined") url += '&proj=' + proj_id;
+        if (all_status == true) url += "&all";
         
         $.ajax({
             url: url,
             type: 'GET',
             dataType: 'json',
             success: function(data) {
-                totals.people += data.total_c;
-                totals.men += data.total_male;
-                totals.women += data.total_female;
-                totals.peopled += data.total_dist;
-                totals.mend += data.dist_male;
-                totals.womend += data.dist_female;
+                if (data.median != "No info") totals.median += parseInt(data.median * 10);
+                if (data.upper != "No info")totals.upper += parseInt(data.upper * 10);
                 
-                totals.median += parseInt(data.median * 10);
-                totals.upper += parseInt(data.upper * 10);
-                
-                $('#total_people').html(totals.people + " (" + totals.peopled + ")");
-                $('#total_men').html(totals.men + " (" + totals.mend + ")");
-                $('#total_women').html(totals.women + " (" + totals.womend + ")");
                 console.log($('#itemtype').text().substr(0, 3));
                 if ($('#itemtype').text().substr(0, 3) == "One") {
                     $('#total_median').html(parseInt(totals.median/items.length)/10 + ' min');

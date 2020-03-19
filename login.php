@@ -7,7 +7,7 @@ $login_input = array();
 $input_width = 250;
 
 $login_input['login_username'] = new input('login_username', 'login_username');
-$login_input['login_username']->set_question('Username');
+$login_input['login_username']->set_question('Username<small>Or email if a researcher</small>');
 $login_input['login_password'] = new input('login_password', 'login_password');
 $login_input['login_password']->set_question('Password');
 $login_input['login_password']->set_type('password');
@@ -21,7 +21,7 @@ $l->set_questionList($login_input);
 $l->set_method('post');
 $l->set_buttons(array(
     'Login' => 'login();',
-    //'Sign Up for an Account' => 'window.location.href="/consent"'
+    'Reset Password' => 'reset_password();'
 ));
 $l->set_button_location('bottom');
 

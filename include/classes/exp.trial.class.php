@@ -22,6 +22,7 @@ class trial {
     public $label3;
     public $label4;
     public $q_image;
+    public $frames;
     
     function __construct($info = array()) {
         foreach ($info as $var => $value) {
@@ -40,6 +41,7 @@ class trial {
     function get_label3() { return $this->label3; }
     function get_label4() { return $this->label4; }
     function get_q_image() { return $this->q_image; }
+    function get_frames() { return $this->frames; }
 }
 
 ?>

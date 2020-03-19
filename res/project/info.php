@@ -34,7 +34,6 @@ $page->set_menu(false);
 
 $page->displayHead($styles);
 $page->displayBody();
-
 ?>
 
 <input type="hidden" id="item_id" value="" />
@@ -79,7 +78,8 @@ $page->displayBody();
     (and unique participants) for the items from this project. If the items are 
     used in other projects, data collected via the other projects will not count 
     towards the participant numbers below (but will count towards the timing estimates).</p>
-    
+
+<button id="info-status">Guest/Registered Only</button>
 
 <table id="setitems">
     <thead>
@@ -141,6 +141,8 @@ $page->displayBody();
         }
     }).data('id', 0);
     
+    var items_for_data = [];
+    
     function getProjectInfo() {
         $.ajax({
             url: '/res/scripts/project_info',
@@ -175,7 +177,8 @@ $page->displayBody();
                     $('#owner-add-input').autocomplete('option', 'source', data.owners.source);
                     
                     $('#project_items').html(data.project_items);
-                    item_stats(data.items_for_data, $('#item_id').val());
+                    item_stats(data.items_for_data, $('#item_id').val(), $('#info-status').html() == "All");
+                    items_for_data = data.items_for_data;
                     
                     $('span.set_nest').click( function() {
                         var hide = !$(this).hasClass("hide_set");
@@ -192,6 +195,15 @@ $page->displayBody();
     }
     
     getProjectInfo();
+    
+    $('#info-status').button().click(function() {
+        if ($(this).html() == "All") {
+            $(this).html("Guest/Registered Only");
+        } else {
+            $(this).html("All");
+        }
+        item_stats(items_for_data, $('#item_id').val(), $('#info-status').html() == "All");
+    });
 
     
     $('table.info').on('click', '#request-status-change', function() {

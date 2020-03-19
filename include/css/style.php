@@ -496,7 +496,7 @@ h1 {
 
 h3, h4, h5, h6 { font-size:90%; }
 
-p, ul.p, ol.p {
+p, ul.p, ol.p, .fb_text ul, .fb_text ol {
     margin:1em auto;
     text-align:left;
     line-height:1.5;
@@ -1114,7 +1114,7 @@ div.instructions ol {
     list-style-position: outside;
 }
 
-div.instructions ul {
+div.instructions ul, div.fb_text ul {
     list-style-type: circle;
     list-style-position: outside;
 }

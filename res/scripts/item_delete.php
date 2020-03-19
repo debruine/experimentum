@@ -62,7 +62,7 @@ if ($type == "exp") {
         // there is data from non-researchers
         $return['error'] =  "There is data from $non_researchers non-researchers, so this questionnaire has not been deleted.";
     }
-} else if ($type == "sets") {
+} else if ($type == "sets" || $type == "set") {
     $query = new myQuery("DELETE FROM sets WHERE id=$id");
     $query = new myQuery("DELETE FROM set_items WHERE item_type='set' AND item_id=$id");
     $query = new myQuery("DELETE FROM access WHERE type='sets' AND id=$id");

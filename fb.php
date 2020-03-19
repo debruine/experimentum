@@ -166,12 +166,15 @@ $page->set_menu(false);
 $page->displayHead();
 $page->displayBody();
 
+echo "<div class='fb_text'>\n";
 echo $general_fb;
 echo $specific_fb;
  
 ?>
 
-<div class="buttons"><button id="home">Back</button></div>
+</div>
+
+<!--<div class="buttons"><button id="home">Back</button></div>-->
 <script>
     $(function() {
         $('#home').button().click( function() { 

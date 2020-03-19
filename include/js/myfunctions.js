@@ -245,6 +245,19 @@ $(function() {
 /* !EVERY PAGE FUNCTIONS                            */
 /****************************************************/
 
+// pad a number with leading zeros (or other chararcter)
+String.prototype.pad = function(width, padder) {
+    var len;
+
+    padder = padder || '0';
+    len = this.length;
+    return (len >= width) ? this : new Array(width - len + 1).join(padder) + this;
+}
+Number.prototype.pad = function(width, padder) {
+    str = this + ''; // turn numbers into strings
+    return(str.pad(width, padder));
+}
+
 // change the height of a textarea to fit the amount of text in it
 function textarea_expand(ta, min, max) {
     if (ta.scrollHeight>ta.clientHeight){
@@ -289,6 +302,26 @@ function login() {
             }
         });
     }
+}
+
+function reset_password() {
+    var un = $("#login_username").val();
+    console.log('resetting password for ' + un);
+    
+    $.ajax({
+        url: '/include/scripts/password_reset',
+        dataType: 'json',
+        data: {
+            username: un
+        },
+        success: function(data) {
+            if (data.error) {
+                $("#login_error").html( data.error ).show();
+            } else {
+                $("#login_error").html( data.msg ).show();
+            }
+        }
+    });
 }
 
 function guestLogin(project_id) {

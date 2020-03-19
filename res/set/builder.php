@@ -168,8 +168,8 @@ $table_setup['set_type']->set_question('Type');
 $table_setup['set_type']->set_options(array(
     'fixed' => 'Fixed Order',
     'random' => 'Random Order',
-    'one_random' => 'One of (random)',
-    'one_equal' => 'One of (equal)'
+    'one_random' => 'One of (random)'
+    #'one_equal' => 'One of (equal)'
 ));
 
 $table_setup['sex'] = new select('sex', 'sex', $project_info['sex']);
@@ -369,7 +369,7 @@ $page->displayBody();
             <li>&ldquo;Fixed Order&rdquo; presents each item in the order you set.</li>
             <li>&ldquo;Random Order&rdquo; presents each item in a randomised order.</li>
             <li>&ldquo;One of (random)&rdquo; presents only a single random item from your list.</li>
-            <li>&ldquo;One of (equal)&rdquo; presents only a single item from your list and tries to ensure that an equal number of men and women participate in each item. Do not use this option if some of your items already have different numbers of participants.</li>
+            <!--<li>&ldquo;One of (equal)&rdquo; presents only a single item from your list and tries to ensure that an equal number of men and women participate in each item. Do not use this option if some of your items already have different numbers of participants.</li>-->
         </ul></li>
     </ul>
 </div>

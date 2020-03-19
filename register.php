@@ -38,11 +38,15 @@ if (array_key_exists('register', $_GET)) {
     $user->set_sex($clean['sex']);
     $user->set_birthday(intval($clean['year']), intval($clean['month']), intval($clean['day']));
     $user->set_pq_and_a($clean['pquestion'], $clean['panswer']);
-    $user->set_status('registered');
+    if ($clean['status'] == 'test') {
+        $user->set_status('test');
+    } else {
+        $user->set_status('registered');
+    }
     
     $return['user_id'] = $user->register($clean['password']);
     
-    if ($return['user_id'] && !empty($clean['firstname']) && !empty($clean['lastname']) && !empty($clean['email']) ) {
+    if ($return['user_id'] && $clean['status'] == 'researcher') {
         $query = 'REPLACE INTO res (user_id, firstname, lastname, email, supervisor_id) VALUES (?, ?, ?, ?, ?)';
         $vals = array(
             'isssi',
@@ -211,6 +215,12 @@ $day->set_null(false);
 $input['birthday']->set_custom_input( $year->get_element() . ' ' .
                                       $month->get_element() . ' ' .
                                       $day->get_element() );
+
+$input['status'] = new select('status', 'status');
+$input['status']->set_question('Type of account');
+$input['status']->set_options(array('registered' => 'Regular', 'test' => 'Test', 'researcher' => 'Researcher'));
+$input['status']->set_value('registered');
+
 /*
 // pquestion
 $input['pquestion'] = new input('pquestion', 'pquestion');
@@ -263,8 +273,8 @@ $q->set_action('');
 $q->set_questionList($input);
 $q->set_method('post');
 $q->set_buttons(array(
-    'Register' => 'register();',
-    'Request Researcher Status' => 'requestres();'
+    'Register' => 'register();'
+    #'Request Researcher Status' => 'requestres();'
 ));
 $q->set_button_location('bottom');
 
@@ -281,6 +291,8 @@ $page->set_menu(true);
 
 $page->displayHead($styles);
 $page->displayBody();
+
+echo '<p>Regular accounts are for experimental participants. Test accounts will record data for testing purposes, but this data will not be included in research. Sign up for a researcher account to create studies on experimentum.</p>';
 
 echo '<p class="alert" id="response" style="display:none;" onclick="this.toggle()"></p>' , ENDLINE;
 
@@ -300,6 +312,22 @@ echo '<h3>This website requires cookies to allow you to log in.<br>Registering i
     $('#lastname_row').hide();
     $('#email_row').hide();
     $('#supervisor_row').hide();
+
+    // show requestres if status is researcher
+    $('select[name="status"]').change(function() {
+        if ($('select[name="status"]').val() == 'researcher') {
+            $('#firstname_row').show();
+            $('#lastname_row').show();
+            $('#email_row').show();
+            $('#supervisor_row').show();
+        } else {
+            $('#firstname_row').hide();
+            $('#lastname_row').hide();
+            $('#email_row').hide();
+            $('#supervisor_row').hide();
+        }
+        stripe('#myInformation tbody');
+    });
 
     // add username availability check-as-you-type
     $('input[name="username"]').keyup(function() {
@@ -365,27 +393,6 @@ echo '<h3>This website requires cookies to allow you to log in.<br>Registering i
                     }
                 }
             });
-        }
-    }
-    
-    function requestres() {
-        var vis = $('#firstname_row:visible').length;
-        
-        if (!vis) {
-            $('#firstname_row').show();
-            $('#lastname_row').show();
-            $('#email_row').show();
-            $('#supervisor_row').show();
-        } else if ($('#firstname').val() != "" & 
-                   $('#lastname').val() != "" &
-                   $('#email').val() != "" &
-                   $('#supervisor').val() != "NULL") {
-            register();
-        } else {
-            $('#firstname_row').hide();
-            $('#lastname_row').hide();
-            $('#email_row').hide();
-            $('#supervisor_row').hide();
         }
     }
     

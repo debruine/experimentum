@@ -368,7 +368,7 @@ class msgRow extends formElement {
     function print_formLine($editable=false) {
         $content = (!empty($this->custom_input)) ? $this->custom_input : $this->value;
         
-        echo "<tr id='{$this->id}_row' title='{$this->tip}'>" . ENDLINE;
+        echo "<tr id='{$this->id}_row' title='{$this->tip}' class='msg'>" . ENDLINE;
         // display question cell
         if (!empty($this->question)) {
             $colspan = empty($content) ? "colspan='10'" : "";

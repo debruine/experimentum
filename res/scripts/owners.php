@@ -14,6 +14,7 @@ if (!in_array($type, array('exp','quest','project','sets', 'set'))) {
 if ($type == 'set') { $type = 'sets'; }
 
 // if a researcher, check if they have access to this one
+/*
 if ($_SESSION['status'] == 'res') {
     $query = new myQuery();
     $query->prepare(
@@ -25,6 +26,7 @@ if ($_SESSION['status'] == 'res') {
         exit;
     }
 }
+*/
 
 function addSetAccess($user_id, $set_id) {
     $query = new myQuery();

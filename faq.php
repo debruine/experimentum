@@ -32,6 +32,9 @@ $page->displayBody();
 <h2><a href="#">Who runs this website?</a></h2>
 <div>
 <p>The University of Glasgow School of Psychology and Institute of Neuroscience and Psychology.</p>
+<p>Citation:</p>
+<p>DeBruine. L.M. (2019, April 9). Experimentum: Beta release 1 (Version v.0.1). Zenodo. 
+    <a href="http://doi.org/10.5281/zenodo.2634356">http://doi.org/10.5281/zenodo.2634356</a></p>
 </div>
 
 <h2><a href="#">How do you use cookies?</a></h2>
@@ -55,7 +58,8 @@ $page->displayBody();
 
 <h2><a href="#">Can I retrieve my password if I forgot it?</a></h2>
 <div>	
-<p>No. We protect user anonymity, so we do not collect email or IP addresses. Therefore,
+<p>Only if you are a researcher and your email address is stored with your account. 
+    We protect user anonymity, so we do not collect email or IP addresses. Therefore,
     there is no way to securely retrieve your account details. If you are participating 
     in a long-term study, please contact the experimenter. Otherwise, you can just 
     make a new account.</p>

@@ -123,6 +123,16 @@ $q->print_form();
                 $(this).closest('#qTable > tbody > tr').removeClass('emptyAlert');
             }
         });
+        
+        // update time fields
+        $('.time').on('change', '.selectnum', function() {
+            var t = $(this).siblings("input:hidden");
+            console.log(t.attr('id'));
+            var h = t.siblings('.selectnum').eq(0).val();
+            var m = t.siblings('.selectnum').eq(1).val();
+            t.val(h + ":" + m);
+            console.log("set time to ", h + ":" + m);
+        });
     
     });
     
@@ -140,7 +150,7 @@ $q->print_form();
         
         var emptyFields = 0;
         // look through visible questionnaire rows (only rows that have id and not ranking rows) for empty variables
-        $('#qTable > tbody > tr[id]:not(.ranking):visible').each( function(i) {
+        $('#qTable > tbody > tr[id]:not(.ranking):not(.msg):visible').each( function(i) {
             $(this).removeClass('emptyAlert');
             var qid = $(this).attr('id').replace('_row','');
 
