@@ -9,10 +9,11 @@ date_default_timezone_set('Europe/London');
 include DOC_ROOT . '/include/classes/PHPMailer/PHPMailerAutoload.php';
 
 $q = new myQuery();
-$q->prepare("SELECT * FROM res WHERE user_id = ?", array('i', $_POST['supervisor_id']));
-$sor = $q->get_one_row();
 $q->prepare("SELECT * FROM res WHERE user_id = ?", array('i', $_POST['supervisee_id']));
 $see = $q->get_one_row();
+$q->prepare("SELECT * FROM res WHERE user_id = ?", array('i', $see['supervisor_id']));
+$sor = $q->get_one_row();
+
 
 if (!count($see) || !count($sor)) {
     $return['error'] = "The supervisor or supervisee could not be found";
