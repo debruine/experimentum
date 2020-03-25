@@ -8,7 +8,7 @@
     $response = $_POST['response'];
     $side = $_POST['side'];
     $rt = $_POST['rt'];
-    $starttime = date('Y-m-d H:i:s'); //$_POST['starttime'];
+    $starttime = date('Y-m-d H:i:s'); ;
     $exptype = $_POST['exptype'];
         
     if (is_array($side)) {

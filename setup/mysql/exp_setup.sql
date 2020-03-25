@@ -140,6 +140,7 @@ CREATE TABLE `session` (
   `project_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `dt` datetime DEFAULT NULL,
+  `endtime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 

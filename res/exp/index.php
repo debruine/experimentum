@@ -150,6 +150,8 @@ $new_exp_buttons = array(
 <!-- !Javascripts for this page -->
 <!--*************************************************-->
 
+<script src="/res/scripts/res.js"></script>
+
 <script>
     
     $(function() {
@@ -164,9 +166,9 @@ $new_exp_buttons = array(
         
         $('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
         
-        dashboard_checkboxes('exp'); // function defined in myfunctions.js
+        dashboard_checkboxes('exp'); // function defined in res.js
         
-        <?= $status_changer ?> // function defined in myfunctions.js
+        <?= $status_changer ?> // function defined in res.js
         
     });
     

@@ -97,6 +97,17 @@ $page->displayBody();
     </thead>
     <tbody id='project_items'></tbody>
     <tfoot>
+        <td>Completed</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td id="compl_people">...</td>
+        <td id="compl_men">...</td>
+        <td id="compl_women">...</td>
+        <td id="compl_median">...</td>
+        <td id="compl_upper">...</td>
+    </tfoot>
+    <tfoot>
         <td>Totals</td>
         <td></td>
         <td></td>
@@ -106,7 +117,18 @@ $page->displayBody();
         <td id="total_women">...</td>
         <td id="total_median">...</td>
         <td id="total_upper">...</td>
+    </tfoot>
+    
 </table>
+
+<p class="warning">Completion stats are only valid for project starting data 
+    collection after 24 March 2020, which is when we first started collecting 
+    the time that people access the feedback page for a project. </p>
+<p>These time estimates are for the time from clicking the 
+    start button on a project to the final submit button. The numbers do not take 
+    into account missing data if people didn't fill in questionnaires. </p>
+<p>Sessions previous to this date have an end time equal to the last completed 
+    question or experimental trial, even if the user did not complete the entire project.</p>
 
 <div id="help" title="Set Info Help">
     

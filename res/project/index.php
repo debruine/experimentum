@@ -4,7 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/quest.php';
 auth($RES_STATUS);
 
-$status_changer = ($_SESSION['status'] == 'admin') ? "statusChanger(5,'project');" : "";
+$status_changer = ($_SESSION['status'] == 'admin') ? "statusChanger(6,'project');" : "";
 
 $title = array(
     '/res/' => 'Researchers',
@@ -121,6 +121,8 @@ echo $my->get_result_as_table(true, true);
 <!-- !Javascripts for this page -->
 <!--*************************************************-->
 
+<script src="/res/scripts/res.js"></script>
+
 <script>
     
     $(function() {
@@ -128,9 +130,9 @@ echo $my->get_result_as_table(true, true);
         
         $('#search').keyup( function() { narrowTable('table.query tbody', this.value); } );
         
-        dashboard_checkboxes('project'); // function defined in myfunctions.js
+        dashboard_checkboxes('project'); // function defined in res.js
         
-        <?= $status_changer ?> // function defined in myfunctions.js
+        <?= $status_changer ?> // function defined in res.js
     });
     
     function setOwner(owner) {

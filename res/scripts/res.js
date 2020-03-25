@@ -55,6 +55,7 @@ $( "html" ).on("change", "#status", function() {
     $.ajax({
         url: '/res/scripts/status',
         type: 'POST',
+        dataType: 'json',
         data: {
             type: item_type,
             status: $sel.val(),
@@ -69,6 +70,76 @@ $( "html" ).on("change", "#status", function() {
         }
     });
 });
+
+// set up status changer in index pages
+function statusChanger(column, theType) {
+    var status_menu = '<select class="status_changer">' +
+                      '<option value="test">test</option>' +
+                      '<option value="active">active</option>' +
+                      '<option value="archive">archive</option>' +
+                      '</select>';
+    
+    
+    $('table.query tbody tr').each( function(i) {
+        var status_cell = $(this).find('td:nth-child(' + column + ')');
+        var the_id = $(this).find('td:nth-child(2)').find('a').html();
+        var the_status = status_cell.html();
+        status_cell.wrapInner('<span />').find('span').click(function() {
+            $('select.status_changer').hide().prev('span').show();
+            $(this).hide().next('select').show();
+        });
+        status_cell.append(status_menu);
+        status_cell.find('select').hide().val(the_status).change(function() {
+            var $sel = $(this);
+            $.ajax({
+                url: '/res/scripts/status',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    type: theType,
+                    status: $sel.val(),
+                    id: the_id
+                },
+                success: function(data) {
+                    if (data.error) {
+                        $('<div title="Problem with Status Change" />').html(data.error).dialog();
+                        $sel.hide().prev('span').show();
+                    } else {
+                        $sel.hide().prev('span').show().html($sel.val());
+                    }
+                }
+            });
+            
+            
+        });
+    });
+}
+
+// set up dashboard checkboxes in lists
+function dashboard_checkboxes(type) {
+    $(".fav").each( function() {
+        $(this).click( function() {
+            var dash_id = $(this).attr("id").replace("dash", "");
+            
+            if ($(this).hasClass("heart")) {
+                // remove from dashboard
+                $.get('/res/scripts/dashboard?delete&type=' + type + '&id=' + dash_id, function(data) { if (data != '') alert(data); });
+                
+                // change hidden label to - for sorting
+                $(this).removeClass("heart").text("-");
+            } else {
+                // add to dashboard
+                $.get('/res/scripts/dashboard?add&type=' + type + '&id=' + dash_id, function(data) { if (data != '') alert(data); });
+                
+                // change hidden label to + for sorting
+                $(this).addClass("heart").text('+');
+            }
+            
+            $(this).blur(); // prevents icon getting stuck in focus state
+        });
+    });
+}
+
 
 $( "#delete-item" ).click( function() {
     var type = $('#item_type').val();
@@ -234,9 +305,16 @@ function item_stats(items, proj_id, all_status = false) {
             type: 'GET',
             dataType: 'json',
             success: function(data) {
-                $('#total_people').html(data.people + " (" + data.peopled + ")");
-                $('#total_men').html(data.men + " (" + data.mend + ")");
-                $('#total_women').html(data.women + " (" + data.womend + ")");
+                $('#total_people').html(data.total.people + " (" + data.total.peopled + ")");
+                $('#total_men').html(data.total.men + " (" + data.total.mend + ")");
+                $('#total_women').html(data.total.women + " (" + data.total.womend + ")");
+                
+                $('#compl_people').html(data.compl.people + " (" + data.compl.peopled + ")");
+                $('#compl_men').html(data.compl.men + " (" + data.compl.mend + ")");
+                $('#compl_women').html(data.compl.women + " (" + data.compl.womend + ")");
+                
+                $('#compl_median').html(data.timings.median);
+                $('#compl_upper').html(data.timings.upper);
             }
         });
     }

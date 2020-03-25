@@ -36,12 +36,12 @@ if ($type == 'exp') {
     $fname = $query->get_one_array();
     
     $q = 'SELECT qd.session_id, project_id, qd.quest_id, session.user_id, sex as user_sex, status as user_status,
-            ROUND(DATEDIFF(endtime, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
+            ROUND(DATEDIFF(qd.endtime, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
             question.name as q_name,
             question_id as q_id,
             `order`,
             dv,
-            starttime, endtime
+            qd.starttime, qd.endtime
             FROM quest_data AS qd
             LEFT JOIN user USING (user_id)
             LEFT JOIN question ON qd.quest_id = question.quest_id AND question_id = question.id
@@ -76,12 +76,12 @@ if ($type == 'exp') {
         $fname = $query->get_one_array();
         
         $q = 'SELECT session.id as session_id, project_id, qd.quest_id, session.user_id, sex as user_sex, status as user_status,
-                ROUND(DATEDIFF(endtime, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
+                ROUND(DATEDIFF(qd.endtime, REPLACE(birthday, "-00","-01"))/365.25, 1) AS user_age,
                 question.name as q_name,
                 question_id as q_id,
                 `order`,
                 dv,
-                starttime, endtime
+                qd.starttime, qd.endtime
                 FROM session 
                 LEFT JOIN user USING (user_id)
                 LEFT JOIN quest_data AS qd ON qd.session_id = session.id

@@ -34,6 +34,14 @@ if (array_key_exists('set_item_number', $_SESSION) && array_key_exists('set_list
     }
 }
 
+// record end of session
+
+if (!empty($_SESSION['session_id'])) {
+    $q = new myQuery("UPDATE session SET endtime = NOW() WHERE user_id = {$_SESSION['user_id']} and id = {$_SESSION['session_id']}");
+    
+    unset($_SESSION['session_id']);
+}
+
 // !if ineligible to do that item, return to homepage
 if (array_key_exists('ineligible', $_GET)) {
     header('Location: /');
