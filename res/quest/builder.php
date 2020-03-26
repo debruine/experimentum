@@ -237,17 +237,18 @@ if (validID($quest_id)) {
     $questions = $question_data->get_assoc(false, 'n');
 } else {
     $query = new myQuery('SELECT MAX(id) as m FROM quest');
-    $max_quest_id = $query->get_assoc(0);
+    $max_quest_id = $query->get_one();
+    $questions = array();
 }
 if (count($questions) == 0) {
     $query = new myQuery('SELECT MAX(id) as m FROM question');
-    $max_q_id = $query->get_assoc(0);
+    $max_q_id = $query->get_one();
     
     if (array_key_exists('radiopage', $_GET) || $qInfo['questtype'] == 'radiopage') {
         // default question for a radiopage questionnaire
         $questions = array(1 => array(
-            'id'            => $max_q_id['m'] + 1,       
-            'quest_id'      => $max_quest_id['m'] + 1,
+            'id'            => $max_q_id + 1,       
+            'quest_id'      => $max_quest_id + 1,
             'n'             => 1,      
             'name'          => 'dv_name',   
             'question'      => 'Click here to type your question',
@@ -260,8 +261,8 @@ if (count($questions) == 0) {
     } else if (array_key_exists('ranking', $_GET) || $qInfo['questtype'] == 'ranking') {
         // default question for a ranking questionnaire
         $questions = array(1 => array(
-            'id'            => $max_q_id['m'] + 1,       
-            'quest_id'      => $max_quest_id['m'] + 1,
+            'id'            => $max_q_id + 1,       
+            'quest_id'      => $max_quest_id + 1,
             'n'             => 1,      
             'name'          => 'dv_name',   
             'question'      => 'Click here to type your question',

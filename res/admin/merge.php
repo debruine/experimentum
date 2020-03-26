@@ -130,7 +130,8 @@ if (($clean['username1'] && $clean['username2']) || ($clean['userid1'] && $clean
 
                 if ($q2->get_num_rows() == 1 && $table != "user") {
                     $q3 = new myQuery("UPDATE $table SET user_id=$user1 WHERE user_id=$user2");
-                    if ($q3->get_affected_rows() > 0 ) $affected_tables[] = $table;
+                    $afrows = $q3->get_affected_rows();
+                    if ($afrows > 0 ) $affected_tables[] = "{$table} ({$afrows} rows changed)";
                 }
             }
             

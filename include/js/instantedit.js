@@ -665,7 +665,7 @@ function fieldBlur(campo,idfld) {
 function fieldBlurMd(campo,idfld) {
     var viz = '{{blank}}';
     if (campo.value!="") { 
-            viz = markdownConvert(campo.value);
+        viz = markdownConvert(campo.value);
     }
 
     $('#' + idfld).html(viz);
@@ -677,7 +677,7 @@ function fieldBlurMd(campo,idfld) {
 
 //edit field created
 function editBox(actual) {
-    if(!changing){
+    if (!changing) {
         var md = ($(actual).hasClass("md")) ? "Md" : "";
         var contents = unescape($('#i_' + $(actual).attr('id')).val());
         var id = $(actual).attr('id');
@@ -696,9 +696,9 @@ function editBox(actual) {
         // tab between editTexts
         $inputEl.keydown( function(e) {
             if (e.which == 9) {
-                var $allEditTexts = $('span.editText');
+                var $allEditTexts = $('span.editText:visible');
                 var index = $allEditTexts.index(actual);
-                if (index <= $allEditTexts.length) {
+                if (index < $allEditTexts.length-1) {
                     var $nextEditText = $allEditTexts.eq(index + 1);
                 } else {
                     var $nextEditText = $allEditTexts.eq(0);
@@ -710,7 +710,6 @@ function editBox(actual) {
         });
         $inputEl.focus();
     }
-    
 }
 
 
@@ -733,11 +732,10 @@ function editbox_init(){
             $this.click().find('textarea').blur();
         }
     });
-        
 }
 
 function highLight(span){
-    span.style.border = "1px solid red";      
+    span.style.border = "1px solid red";
 }
 
 function noLight(span){
