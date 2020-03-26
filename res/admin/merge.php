@@ -134,6 +134,8 @@ if (($clean['username1'] && $clean['username2']) || ($clean['userid1'] && $clean
                 }
             }
             
+            $q = new myQuery("DELETE FROM res WHERE user_id={$user2}");
+            
             // set username2 to unused
             $q = new myQuery("DELETE FROM user WHERE user_id=$user2");
         
