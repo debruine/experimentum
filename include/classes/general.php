@@ -79,7 +79,10 @@ class user {
         
     function login($pw) {
         // login a user, return 'login' on success, error message on failure
-        $q = sprintf('SELECT user_id FROM user WHERE username="%s" AND password=MD5("%s")',
+        $q = sprintf('SELECT user_id FROM user 
+                      LEFT JOIN res USING (user_id)
+                      WHERE (username="%s" OR email="%s") AND password=MD5("%s")',
+            $this->username,
             $this->username,
             $pw
         );
@@ -89,24 +92,30 @@ class user {
         if (0 == $login->get_num_rows()) {
             // login failed
     
-            $query = new myQuery("SELECT '' FROM user WHERE username='{$this->username}'");
+            $query = new myQuery(sprintf(
+                        'SELECT username FROM user 
+                        LEFT JOIN res USING (user_id)
+                        WHERE (username="%s" OR email="%s")',
+                        $this->username,
+                        $this->username
+                     ));
             if (0 == $query->get_num_rows()) { 
                 // there is no registered user by that name
                 return "username:" . sprintf(
-                    loc("Sorry %s, that is not a current username. Maybe you need to sign up for an account first?"), 
+                    loc("Sorry %s, that is not a current username or email. Maybe you need to sign up for an account first?"), 
                     $this->username);
                 exit;
             } else {
                 // there is a registered user, but the password is wrong
                 return "password:" . sprintf(
                     loc("Sorry %s, that is the wrong password"),
-                    $username);
+                    $this->username);
                 exit;
             }
         } else {
             // login succeeded, add entry to login table and set user variables
-            $user = $login->get_assoc();
-            $this->id = $user[0]['user_id'];
+            $user = $login->get_one_row();
+            $this->id = $user['user_id'];
             $this->login_table();
             $this->get_info();
             $this->set_session_variables();
