@@ -48,7 +48,7 @@ function addSetAccess($user_id, $set_id) {
     }
 }
 
-if (count($_POST['add'])) {
+if (array_key_exists('add', $_POST)) {
     $query = new myQuery();
     
     foreach($_POST['add'] as $user_id) {
@@ -58,7 +58,7 @@ if (count($_POST['add'])) {
             array('sii', $type, $id, $user_id)
         );
     
-        if ($_POST['add_project_items'] == 'true' && $type == 'project') {
+        if ($_POST['add_items'] == 'true' && $type == 'project') {
             $query->prepare(
                 "REPLACE INTO access (type, id, user_id) SELECT 
                 IF(item_type='set','sets',item_type), item_id, ? 
@@ -74,6 +74,8 @@ if (count($_POST['add'])) {
             foreach ($proj_items as $set_id) {
                 addSetAccess($user_id, $set_id);
             }
+        } else if ($_POST['add_items'] == 'true' && $type == 'sets') {
+            addSetAccess($user_id, $id);
         }
     }
 }
@@ -99,13 +101,13 @@ function deleteSetAccess($user_id, $set_id) {
 }
 
 
-if (count($_POST['delete'])) {
+if (array_key_exists('delete', $_POST)) {
     $del_ids = implode(",", $_POST['delete']);
+    $user_id = $_POST['delete'][0];
+    
     $query = new myQuery("DELETE FROM access WHERE type='{$type}' AND id={$id} AND user_id IN({$del_ids})");
     
-    if ($_POST['delete_project_items'] == 'true' && $type == 'project') {
-        $user_id = $_POST['delete'][0];
-        
+    if ($_POST['delete_items'] == 'true' && $type == 'project') {
         $query->prepare("SELECT IF(item_type='set','sets',item_type) AS item_type, item_id 
                          FROM project_items WHERE project_id = ?",
                         array('i', $id));
@@ -121,6 +123,8 @@ if (count($_POST['delete'])) {
                 deleteSetAccess($user_id, $pitem['item_id']);
             }
         }
+    } else if ($_POST['delete_items'] == 'true' && $type == 'sets') {
+        deleteSetAccess($user_id, $id);
     }
 }
    

@@ -63,7 +63,7 @@ $page->displayBody();
             <?php if ($_SESSION['status'] != 'student') { ?>
             <input id='owner-add-input' type='text' > 
             <button class='tinybutton' id='owner-add'>add</button>
-            <button class='tinybutton' id='owner-add-items'>add all items</button>
+            <button class='tinybutton' id='owner-add-items'>add to all items</button>
             <?php } ?>
         </td></tr>
     <tr><td>Labnotes:</td><td id='labnotes'> ...</td></tr>

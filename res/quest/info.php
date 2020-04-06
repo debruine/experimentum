@@ -16,7 +16,8 @@ $title = array(
 
 $styles = array( 
     'br' => 'margin: 0 0 .5em 0;',
-    '.question_info' => 'margin-bottom: 1em; width: 100%;'
+    '.question_info' => 'margin-bottom: 1em; width: 100%;',
+    "#owner-edit" => "margin: 0;"
 );
 
 /****************************************************
@@ -62,7 +63,7 @@ $access = in_array($_SESSION['user_id'], array_keys($owners));
 $allowners = new myQuery('SELECT user_id, firstname, lastname, email 
                             FROM res 
                             LEFT JOIN user USING (user_id) 
-                            WHERE status > 4');
+                            WHERE status IN ("admin", "res", "student")');
 $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
 foreach($ownerlisting as $res) {
@@ -73,12 +74,14 @@ foreach($ownerlisting as $res) {
     
     $ownerlist[] = "\n{ value: '{$user_id}', name: '{$lastname}, {$firstname}', label: '{$firstname} {$lastname} {$email}' }";
 }
+
 $owner_edit = "";
 foreach($owners as $id => $name) {
-    $owner_edit .= "<li><span>{$name}</span>";
-    if ($_SESSION['status'] == 'admin') { 
-        $owner_edit .= " (<a class='owner-delete' owner-id='{$id}'>delete</a>)</li>";
+    $owner_edit .= "<tr><td>{$name}</td>";
+    if ($_SESSION['status'] != 'student') { 
+        $owner_edit .= "<td><button class='tinybutton owner-delete' owner-id='{$id}'>remove</button></td>";
     }
+    $owner_edit .= "</tr>";
 }
 
 // get data on questions
@@ -200,12 +203,11 @@ $page->displayBody();
     <tr><td>Status:</td> <td><?= $status ?></td></tr>
     <tr><td>Created on:</td> <td><?= $itemdata['create_date'] ?></td></tr>
     <tr><td>Owners:</td> 
-        <td>
-            <ul id='owner-edit'>
-                <?= $owner_edit ?>
-            </ul>
+        <td id='owners'>
+            <table id='owner-edit'><?= $owner_edit ?></table>
             <?php if ($_SESSION['status'] != 'student') { ?>
-            <input id='owner-add-input' type='text' > (<a id='owner-add'>add</a>)
+            <input id='owner-add-input' type='text' > 
+            <button class='tinybutton' id='owner-add'>add</button>
             <?php } ?>
         </td></tr>
     <?php

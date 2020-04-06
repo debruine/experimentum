@@ -22,7 +22,8 @@ $styles = array(
     '#stim_table .trial' => 'border-top: 1px solid grey;',
     "select" => "max-width: 25em",
     '#function_buttonset, #image_list_toggle' => 'display: inline-block; float: left;',
-    "video" => "max-width: 25%;"
+    "video" => "max-width: 25%;",
+    "#owner-edit" => "margin: 0;"
 );
 
 
@@ -71,7 +72,7 @@ $allowners = new myQuery(
     'SELECT user_id, firstname, lastname, email 
        FROM res 
   LEFT JOIN user USING (user_id) 
-      WHERE status > 4'
+      WHERE status IN ("admin", "res", "student")'
 );
 $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
@@ -86,10 +87,11 @@ foreach($ownerlisting as $res) {
 
 $owner_edit = "";
 foreach($owners as $id => $name) {
-    $owner_edit .= "<li><span>{$name}</span>";
-    if ($_SESSION['status'] == 'admin') { 
-        $owner_edit .= " (<a class='owner-delete' owner-id='{$id}'>delete</a>)</li>";
+    $owner_edit .= "<tr><td>{$name}</td>";
+    if ($_SESSION['status'] != 'student') { 
+        $owner_edit .= "<td><button class='tinybutton owner-delete' owner-id='{$id}'>remove</button></td>";
     }
+    $owner_edit .= "</tr>";
 }
 
 // get status changer for admins
@@ -267,12 +269,11 @@ $page->displayBody();
     <tr><td>Status:</td> <td><?= $status ?></td></tr>
     <tr><td>Created on:</td> <td><?= $itemdata['create_date'] ?></td></tr>
     <tr><td>Owners:</td> 
-        <td>
-            <ul id='owner-edit'>
-                <?= $owner_edit ?>
-            </ul>
+        <td id='owners'>
+            <table id='owner-edit'><?= $owner_edit ?></table>
             <?php if ($_SESSION['status'] != 'student') { ?>
-            <input id='owner-add-input' type='text' > (<a id='owner-add'>add</a>)
+            <input id='owner-add-input' type='text' > 
+            <button class='tinybutton' id='owner-add'>add</button>
             <?php } ?>
         </td></tr>
     <tr><td>Labnotes:</td> <td><pre><?= ifEmpty($itemdata['labnotes'], '<span class="error">Please add labnotes</span>') ?></pre></td></tr>

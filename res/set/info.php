@@ -20,7 +20,8 @@ $styles = array(
     "#setitems tr" => "border-right: 1px dotted grey;",
     "span.set_nest" => "display: inline-block; width: 20px; height: 20px; background: transparent no-repeat center center url(/images/linearicons/arrow-down?c=F00);",
     "span.set_nest.hide_set"    => "background-image: url(/images/linearicons/arrow-right?c=000);",
-    ".potential-error" => "color: hsl(0, 100%, 40%);"
+    ".potential-error" => "color: hsl(0, 100%, 40%);",
+    "#owner-edit" => "margin: 0;"
 );
 
 
@@ -69,7 +70,10 @@ $myowners = new myQuery('SELECT user_id, CONCAT(lastname, ", ", firstname) as na
 $owners = $myowners->get_assoc(false, 'user_id', 'name');
 $access = in_array($_SESSION['user_id'], array_keys($owners));
 
-$allowners = new myQuery('SELECT user_id, firstname, lastname, email FROM res LEFT JOIN user USING (user_id) WHERE status > 3');
+$allowners = new myQuery('SELECT user_id, firstname, lastname, email 
+                            FROM res 
+                       LEFT JOIN user USING (user_id) 
+                           WHERE status IN ("admin", "res", "student")');
 $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
 foreach($ownerlisting as $res) {
@@ -82,10 +86,12 @@ foreach($ownerlisting as $res) {
 }
 $owner_edit = "";
 foreach($owners as $id => $name) {
-    $owner_edit .= "<li><span>{$name}</span>";
+    $owner_edit .= "<tr><td>{$name}</td>";
     if ($_SESSION['status'] != 'student') { 
-        $owner_edit .= " (<a class='owner-delete' owner-id='{$id}'>delete</a>)</li>";
+        $owner_edit .= "<td><button class='tinybutton owner-delete' owner-id='{$id}'>remove</button></td>";
+        $owner_edit .= "<td><button class='tinybutton owner-delete-items' owner-id='{$id}'>remove from all items</button></td>";
     }
+    $owner_edit .= "</tr>";
 }
 
 
@@ -183,12 +189,12 @@ $page->displayBody();
     <tr><td>Created on:</td><td><?= $itemdata['create_date'] ?></td></tr>
     <tr><td>Type:</td><td id='itemtype'><?= $types[$itemdata['type']] ?></td></tr>
     <tr><td>Owners:</td> 
-        <td>
-            <ul id='owner-edit'>
-                <?= $owner_edit ?>
-            </ul>
+        <td id='owners'>
+            <table id='owner-edit'><?= $owner_edit ?></table>
             <?php if ($_SESSION['status'] != 'student') { ?>
-            <input id='owner-add-input' type='text' > (<a id='owner-add'>add</a>)
+            <input id='owner-add-input' type='text' > 
+            <button class='tinybutton' id='owner-add'>add</button>
+            <button class='tinybutton' id='owner-add-items'>add to all items</button>
             <?php } ?>
         </td></tr>
     <tr><td>Restrictions:</td><td><?= $itemdata['sex'] ?> 

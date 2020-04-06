@@ -228,16 +228,18 @@ $( "#owner-add, #owner-add-items" ).click( function() {
                 type: $('#item_type').val(),
                 id: $('#item_id').val(),
                 add: [owner_id],
-                add_project_items: this.id == 'owner-add-items'
+                add_items: this.id == 'owner-add-items'
             },
             success: function(data) {
                 if (data) {
                     growl(data);
                 } else {
-                    var new_owner = "<li><span>" + owner_name + "</span> " +
-                    "<button class='tinybutton owner-delete' owner-id='"+owner_id+"'>remove</button>" + 
-                    "<button class='tinybutton owner-delete-items' owner-id='"+owner_id+"'>remove from all items</button>" +
-                    "</li>";
+                    var new_owner = "<tr><td>" + owner_name + "</td> " +
+                    "<td><button class='tinybutton owner-delete' owner-id='"+owner_id+"'>remove</button></td>";
+                    if ($('#item_type').val() == "set" || $('#item_type').val() == "project") { 
+                        new_owner += "<td><button class='tinybutton owner-delete-items' owner-id='"+owner_id+"'>remove from all items</button></td>";
+                    }
+                    new_owner += "</tr>";
                     $('#owner-edit').append(new_owner).find('.tinybutton').button();
                     $('#owner-add-input').val('').data('id','');
                 }
@@ -252,9 +254,9 @@ $( "#owner-add, #owner-add-items" ).click( function() {
 
 $('html').on("click", ".owner-delete, .owner-delete-items", function() {
     var owner_id = $(this).attr('owner-id');
-    var $li = $(this).closest('li');
+    var $row = $(this).closest('tr');
     
-    if ($('#owner-edit li').length < 2) {
+    if ($('#owner-edit tr').length < 2) {
         growl("You have to keep one owner.");
         return false;
     }
@@ -266,14 +268,14 @@ $('html').on("click", ".owner-delete, .owner-delete-items", function() {
             type: $('#item_type').val(),
             id: $('#item_id').val(),
             delete: [owner_id],
-            delete_project_items: $(this).hasClass('owner-delete-items')
+            delete_items: $(this).hasClass('owner-delete-items')
         },
         success: function(data) {
             if (data) {
                 growl(data);
             } else {
                 console.log('deleted');
-                $li.remove();
+                $row.remove();
             }
         }
     });
