@@ -19,7 +19,7 @@ $oldstatus = $query->get_one();
 
 // if a researcher, check if they have access to this one
 if ($_SESSION['status'] == 'res') {
-    if ($oldstatus == 'admin' || $oldstatus == 'res') {
+    if (in_array($oldstatus, array('admin','super','res'))) {
         $return['error'] = "You do not have permission to change the status of a {$oldstatus}.";
         scriptReturn($return);
         exit;
@@ -27,7 +27,7 @@ if ($_SESSION['status'] == 'res') {
 }
 
 if ($_SESSION['status'] == 'res') {
-    if ($status == 'admin' || $status == 'res') {
+    if (in_array($status, array('admin', 'super', 'res'))) {
         $return['error'] = "You do not have permission to change a status to {$status}. Please ask an administrator.";
         scriptReturn($return);
         exit;
