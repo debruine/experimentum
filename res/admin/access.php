@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(array('admin', 'res'), "/res/");
+auth(array('admin', 'super', 'res'), "/res/");
 
 if (array_key_exists('add', $_GET)) {
 	$types = array('exp','quest','sets','project');

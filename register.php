@@ -46,7 +46,7 @@ if (array_key_exists('register', $_GET)) {
     
     $return['user_id'] = $user->register($clean['password']);
     
-    if ($return['user_id'] && $clean['status'] == 'researcher') {
+    if ($return['user_id'] && $clean['status'] == 'res') {
         $query = 'REPLACE INTO res (user_id, firstname, lastname, email, supervisor_id) VALUES (?, ?, ?, ?, ?)';
         $vals = array(
             'isssi',
@@ -218,8 +218,9 @@ $input['birthday']->set_custom_input( $year->get_element() . ' ' .
 
 $input['status'] = new select('status', 'status');
 $input['status']->set_question('Type of account');
-$input['status']->set_options(array('registered' => 'Regular', 'test' => 'Test', 'researcher' => 'Researcher'));
+$input['status']->set_options(array('registered' => 'Participant', 'test' => 'Test', 'res' => 'Researcher'));
 $input['status']->set_value('registered');
+$input['status']->set_null(false);
 
 /*
 // pquestion
@@ -258,7 +259,7 @@ $input['email']->set_width($input_width);
 $q = new myQuery("SELECT user_id, CONCAT(lastname, ', ', firstname) as name 
                 FROM res 
                 LEFT JOIN user USING (user_id)
-                WHERE status IN ('res','admin')
+                WHERE status IN ('super','admin')
                 ORDER BY lastname, firstname");
 $supervisors = $q->get_key_val("user_id", "name");
 $input['supervisor'] = new select('supervisor', 'supervisor');
@@ -292,7 +293,11 @@ $page->set_menu(true);
 $page->displayHead($styles);
 $page->displayBody();
 
-echo '<p>Regular accounts are for experimental participants. Test accounts will record data for testing purposes, but this data will not be included in research. Sign up for a researcher account to create studies on experimentum.</p>';
+echo '<p>Participant accounts let you log in to the site in order to anonymously 
+    link data across sessions (we never track potentially identifying information 
+    like your IP address). Test accounts will record data for testing purposes, but 
+    this data will not be included in research. Sign up for a researcher account 
+    to create studies on experimentum.</p>';
 
 echo '<p class="alert" id="response" style="display:none;" onclick="this.toggle()"></p>' , ENDLINE;
 
@@ -315,7 +320,7 @@ echo '<h3>This website requires cookies to allow you to log in.<br>Registering i
 
     // show requestres if status is researcher
     $('select[name="status"]').change(function() {
-        if ($('select[name="status"]').val() == 'researcher') {
+        if ($('select[name="status"]').val() == 'res') {
             $('#firstname_row').show();
             $('#lastname_row').show();
             $('#email_row').show();

@@ -1,6 +1,6 @@
 <?php
     require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';	
-    auth(array('admin'));
+    auth(array('admin'), '/res/');
     
     exit;
     

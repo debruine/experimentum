@@ -26,16 +26,11 @@ $php_time = date('Y-m-d H:i:s');
 $_SESSION['debug'] = true;
 
 // prepare test
-$query = "SELECT * FROM res WHERE user_id = ? AND firstname = ?";
-$params = array('is', 1, 'Lisa');
+$query = "SELECT * FROM res WHERE user_id = ?";
+$params = array('i', 1);
 $q = new myQuery();
 $q->prepare($query, $params);
 echo $q->get_result_as_table();
-
-
-$q->prepare('SELECT * FROM res WHERE firstname = ?', array('s', 'Ben'));
-echo $q->get_result_as_table();
-
 ?>
 
 <ul>
@@ -49,6 +44,7 @@ echo $q->get_result_as_table();
     <li>Window width: <span id="wwidth"></span></li>
     <li>Window height: <span id="wheight"></span></li>
     <li>HTTP_HOST: <?= $_SERVER['HTTP_HOST'] ?></li>
+    <li>PHP version: <?= PHP_VERSION ?></li>
 </ul>
 
 <script>

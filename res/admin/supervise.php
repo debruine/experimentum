@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(array('res','admin'), "/res/");
+auth(array('admin', 'super'), "/res/");
 
 /****************************************************/
 /* !Display Page */
@@ -44,7 +44,7 @@ if ($_SESSION['status'] == 'admin') {
                 r.email as Email,
                 s.user_id as Supervisor,
                 status as Status,
-                r.supervisor_id as `Send Email`
+                r.supervisor_id as ` `
            FROM res AS r 
       LEFT JOIN user AS u   ON u.user_id = r.user_id
       LEFT JOIN res AS s    ON s.user_id = r.supervisor_id
@@ -56,7 +56,7 @@ if ($_SESSION['status'] == 'admin') {
                 r.email as Email,
                 CONCAT(s.lastname, ", ", s.firstname) as Supervisor,
                 status as Status,
-                r.supervisor_id as `Send Email`
+                r.supervisor_id as ` `
            FROM res AS r
       LEFT JOIN user AS u   ON u.user_id = r.user_id
       LEFT JOIN res AS s    ON s.user_id = r.supervisor_id
@@ -70,7 +70,7 @@ if ($_SESSION['status'] == 'admin') {
 $q = new myQuery("SELECT user_id, CONCAT(lastname, ', ', firstname) as name 
                             FROM res
                        LEFT JOIN user USING (user_id) 
-                           WHERE status IN ('admin', 'res')
+                           WHERE status IN ('admin', 'super')
                         ORDER BY lastname, firstname");
 $super = $q->get_key_val('user_id', 'name');
 $supermenu = "var super_menu =  '<select class=\"super_changer\">' +" . ENDLINE;
@@ -110,7 +110,8 @@ var status_menu = '<select class="status_changer">' +
                   '<option value="registered" style="color: var(--rainbow3)">registered</option>' + 
                   '<option value="student" style="color: var(--rainbow4)">student</option>' + 
                   '<option value="res" style="color: var(--rainbow5)">researcher</option>' + 
-                  '<option value="admin" style="color: var(--rainbow6)">admin</option>' + 
+                  '<option value="super" style="color: var(--rainbow6)">supervisor</option>' + 
+                  '<option value="admin" style="color: black">admin</option>' + 
                   '</select>';
 
 <?= $supermenu ?>
@@ -191,12 +192,59 @@ function changeResStatus(sel, the_id) {
                     $sel.css('color', 'var(--rainbow4)');
                 } else if (sel.value == "res") {
                     $sel.css('color', 'var(--rainbow5)');
-                } else if (sel.value == "admin") {
+                } else if (sel.value == "super") {
                     $sel.css('color', 'var(--rainbow6)');
+                } else if (sel.value == "admin") {
+                    $sel.css('color', 'black');
                 }
             }
         }
     });
+}
+
+function removeRes(button, supervisee_id) {
+    var $row = $(button).closest("tr");
+    var theStatus = $row.find('select.status_changer').val();
+    if (!['test','guest','registered'].includes(theStatus)) {
+        $('<div />').dialog({ width: 600 }).html("Change the status to test, guest, or registered first");
+        return false;
+    }
+    
+    var theName = $row.find('td').eq(1).text();
+    
+    $('<div />').dialog({
+        resizable: false,
+        modal: true,
+        width: 600,
+        title: "Remove",
+        show: 'fade',
+        buttons: {
+            "Cancel": function() {
+                $(this).dialog("close");
+            },
+            "Remove": function() {
+                $(this).dialog("close");
+                
+                $.ajax({
+                    url: '/res/scripts/removeres',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        supervisee_id: supervisee_id
+                    },
+                    success: function(data) {
+                        if (data.error) {
+                            $('<div />').dialog({
+                                width: 600
+                            }).html(data.error);
+                        } else {
+                            $row.remove();
+                        }
+                    }
+                });
+            }
+        }
+    }).html('Are you sure you want to remove ' + theName + ' from consideration for researcher status?');;
 }
 
 $('table.query tbody tr td:nth-child(2)').wrapInner("<a></a>").find('a').click(function() {
@@ -207,13 +255,16 @@ $('table.query tbody tr td:nth-child(2)').wrapInner("<a></a>").find('a').click(f
 $('table.query tbody tr').each( function(i) {
     var the_id = $(this).find('td:nth-child(1)').html();
     
-    // replace sendmail with button
-    var mail_cell = $(this).find('td:nth-child(6)');
-    var $button = $("<button />").html("Send").button();
-    $button.click( function() {
-        sendMail(this, the_id);
-    });
-    mail_cell.html("").append($button);
+    // add function buttons
+    var $mailbutton = $("<button class='tinybutton' />")
+                        .html("Send Email").button().click( function() {
+                            sendMail(this, the_id);
+                        });
+    var $rembutton = $("<button class='tinybutton' />")
+                        .html("Remove").button().click( function() {
+                            removeRes(this, the_id);
+                        });
+    $(this).find('td:nth-child(6)').html("").append($mailbutton).append($rembutton);
     
     
     // replace status with drop-down menu
@@ -234,8 +285,10 @@ $('table.query tbody tr').each( function(i) {
         $sel.css('color', 'var(--rainbow4)');
     } else if (the_status == "res") {
         $sel.css('color', 'var(--rainbow5)');
-    } else if (the_status == "admin") {
+    } else if (the_status == "super") {
         $sel.css('color', 'var(--rainbow6)');
+    } else if (the_status == "admin") {
+        $sel.css('color', 'black');
     }
 <?php if ($_SESSION['status'] == 'admin') { ?>
     // get supervisor list

@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(array('admin', 'res'));
+auth(array('admin', 'super', 'res'), '/res/');
 
 $return = array('error' => false);
 

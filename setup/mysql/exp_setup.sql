@@ -297,7 +297,7 @@ CREATE TABLE `user` (
   `birthday` date DEFAULT NULL,
   `pquestion` varchar(100) DEFAULT NULL,
   `panswer` varchar(100) DEFAULT NULL,
-  `status` enum('test','guest','registered','student','res','admin') DEFAULT NULL,
+  `status` enum('test','guest','registered','student','res','super','admin') DEFAULT NULL,
   `gender` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `username` (`username`)
