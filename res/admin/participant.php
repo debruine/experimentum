@@ -242,8 +242,9 @@ $('#finduser').click( function() {
                         $status.append('<option value="test">test</option>');
                         $status.append('<option value="guest">guest</option>');
                         $status.append('<option value="registered">registered</option>');
-                        <?php if ($_SESSION['status'] == 'admin' || $_SESSION['status'] == 'res') { ?> $status.append('<option value="student">student</option>'); <?php } ?>
-                        <?php if ($_SESSION['status'] == 'admin') { ?> $status.append('<option value="res">researcher</option>'); <?php } ?>
+                        <?php if (in_array($_SESSION['status'], array('admin', 'super', 'res'))) { ?> $status.append('<option value="student">student</option>'); <?php } ?>
+                        <?php if (in_array($_SESSION['status'], array('admin', 'super'))) { ?> $status.append('<option value="res">researcher</option>'); <?php } ?>
+                        <?php if ($_SESSION['status'] == 'admin') { ?> $status.append('<option value="super">supervisor</option>'); <?php } ?>
                         <?php if ($_SESSION['status'] == 'admin') { ?> $status.append('<option value="admin">admin</option>'); <?php } ?>
                         $status.val(data.status);
                         $('#status').html("").append($status);

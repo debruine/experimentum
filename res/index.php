@@ -20,7 +20,7 @@ $links = array(
     '/res/tutorial/'  => 'Tutorial',
 );
 
-if (in_array($_SESSION['status'], array('res', 'admin'))) {
+if (in_array($_SESSION['status'], array('res', 'super', 'admin'))) {
     $links['/res/admin/'] = 'Admin';
 }
 

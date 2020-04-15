@@ -97,7 +97,7 @@ $return['owners']['owner_edit'] = $owner_edit;
 $allowners = new myQuery('SELECT user_id, firstname, lastname, email 
     FROM res 
     LEFT JOIN user USING (user_id) 
-    WHERE status IN ("admin", "res", "student")');
+    WHERE status IN ("admin", "super", "res", "student")');
 $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
 $return['owners']['list'] = array();

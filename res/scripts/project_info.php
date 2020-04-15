@@ -55,7 +55,7 @@ $itemdata['lower_age'] = is_null($itemdata['lower_age']) ? 'any' : $itemdata['lo
 $return['info'] = $itemdata;
 
 // get status changer for admins and res
-if (in_array($_SESSION['status'], array('admin', 'res'))) {
+if (in_array($_SESSION['status'], array('admin', 'super', 'res'))) {
     $status_chooser = new select('status', 'status', $itemdata['status']);
     $status_chooser->set_options(array(
         'test' => 'test',
@@ -101,7 +101,7 @@ $return['owners']['owner_edit'] = $owner_edit;
 $allowners = new myQuery('SELECT user_id, firstname, lastname, email 
     FROM res 
     LEFT JOIN user USING (user_id) 
-    WHERE status IN ("admin", "res", "student")');
+    WHERE status IN ("admin", "super", "res", "student")');
 $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
 $return['owners']['list'] = array();

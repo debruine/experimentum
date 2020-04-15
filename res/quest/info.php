@@ -63,7 +63,7 @@ $access = in_array($_SESSION['user_id'], array_keys($owners));
 $allowners = new myQuery('SELECT user_id, firstname, lastname, email 
                             FROM res 
                             LEFT JOIN user USING (user_id) 
-                            WHERE status IN ("admin", "res", "student")');
+                            WHERE status IN ("admin", "super", "res", "student")');
 $ownerlisting = $allowners->get_assoc();
 $ownerlist = array();
 foreach($ownerlisting as $res) {
