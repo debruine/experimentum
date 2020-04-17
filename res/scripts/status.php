@@ -20,7 +20,7 @@ if (!in_array($type, array('exp','quest','project','sets'))) {
 }
 
 // if a researcher, check if they have access to this one
-if ($_SESSION['status'] == 'res') {
+if ($_SESSION['status'] == 'res' || $_SESSION['status'] == 'super') {
     $query = new myQuery();
     $query->prepare("SELECT user_id FROM access
                      WHERE type = ? AND id = ?

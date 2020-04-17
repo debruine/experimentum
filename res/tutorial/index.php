@@ -22,6 +22,8 @@ $page->displayBody();
 <p>Help and announcements are on the 
     <a href="https://experimentum-web.slack.com/signup" target="_blank">Experimentum slack forum</a>. 
     Any email address ending in @glasgow.ac.uk or @student.gla.ac.uk can sign up.</p>
+    
+    <p><a href="https://gla-my.sharepoint.com/:w:/g/personal/2087153l_student_gla_ac_uk/EfFPtssPMV9HkrZALfdln8wBhXU0A7mKUhaE1n6ug1M7gA?e=sOh370">Manual</a> by Rebecca Lai.</p>
 
 <p>You can make new experiments or questionnaires at the 
     <a href="/res/exp/">Experiment</a>  or <a href="/res/quest/">Questionnaire</a> lists above. 

@@ -24,10 +24,22 @@ if ($_SESSION['status'] == 'res') {
         scriptReturn($return);
         exit;
     }
+} else if ($_SESSION['status'] == 'super') {
+    if (in_array($oldstatus, array('admin','super'))) {
+        $return['error'] = "You do not have permission to change the status of a {$oldstatus}.";
+        scriptReturn($return);
+        exit;
+    }
 }
 
 if ($_SESSION['status'] == 'res') {
     if (in_array($status, array('admin', 'super', 'res'))) {
+        $return['error'] = "You do not have permission to change a status to {$status}. Please ask an administrator.";
+        scriptReturn($return);
+        exit;
+    }
+} else if ($_SESSION['status'] == 'super') {
+    if (in_array($status, array('admin', 'super'))) {
         $return['error'] = "You do not have permission to change a status to {$status}. Please ask an administrator.";
         scriptReturn($return);
         exit;

@@ -62,15 +62,17 @@ if ($_SESSION['status'] == 'admin') {
         LEFT JOIN access USING (user_id)
         WHERE (access.type='sets' AND access.user_id IS NOT NULL) 
           OR res.user_id={$user_id} 
+        GROUP BY res.user_id
         ORDER BY lastname, firstname";
-} else if ($_SESSION['status'] == 'res') {
+} else {
     $ownerquery = "SELECT res.user_id as user_id, 
         CONCAT(lastname, ', ', firstname) as name 
         FROM res 
         LEFT JOIN access USING (user_id)
         WHERE (access.type='sets' AND access.user_id IS NOT NULL 
-        AND (supervisor_id={$user_id} OR access.user_id={$user_id})) 
-        OR res.user_id={$user_id}
+          AND (supervisor_id={$user_id} OR access.user_id={$user_id})) 
+           OR res.user_id={$user_id}
+        GROUP BY res.user_id
         ORDER BY lastname, firstname";
 }
 
