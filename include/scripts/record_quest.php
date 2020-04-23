@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(1);
+auth(0);
 
 // save data and return nextpage
 $clean = my_clean($_POST);

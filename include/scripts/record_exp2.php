@@ -2,7 +2,7 @@
     // update to record to long format exp_data table
     
 	require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-	auth(1);
+	auth(0);
 
 	$id = intval($_POST['id']);
 	$order = $_POST['order'];

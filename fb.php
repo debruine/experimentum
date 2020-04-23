@@ -2,7 +2,7 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/Parsedown.php';
-auth(1);
+auth(0);
 
 // !Next item in within_adapt, if within_adapt exists
 if (array_key_exists('within_adapt_number', $_SESSION) && array_key_exists('within_adapt', $_SESSION)) {

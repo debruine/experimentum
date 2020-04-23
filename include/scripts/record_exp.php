@@ -1,6 +1,6 @@
 <?php
     require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-    auth(1);
+    auth(0);
 
     $id = intval($_POST['id']);
     $trial = intval($_POST['trial']);

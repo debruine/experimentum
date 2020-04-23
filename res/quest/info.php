@@ -109,7 +109,7 @@ foreach($questlist as $q) {
 }
 
 // get status changer for researchers
-if (in_array($_SESSION['status'], array('researcher', 'admin'))) {
+if (in_array($_SESSION['status'], array('res', 'super', 'admin'))) {
     $status_chooser = new select('status', 'status', $itemdata['status']);
     $status_chooser->set_null(false);
     $status_chooser->set_options(array(

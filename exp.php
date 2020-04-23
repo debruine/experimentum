@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(1);
+auth(0);
 
 // set up experiment
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/classes/exp.php';

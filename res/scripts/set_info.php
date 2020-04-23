@@ -51,7 +51,7 @@ $itemdata['lower_age'] = is_null($itemdata['lower_age']) ? 'any' : $itemdata['lo
 $return['info'] = $itemdata;
 
 // get status changer for admins and res
-if (in_array($_SESSION['status'], array('admin', 'res'))) {
+if (in_array($_SESSION['status'], array('admin', 'super', 'res'))) {
     $status_chooser = new select('status', 'status', $itemdata['status']);
     $status_chooser->set_options(array(
         'test' => 'test',

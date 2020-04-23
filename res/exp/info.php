@@ -95,7 +95,7 @@ foreach($owners as $id => $name) {
 }
 
 // get status changer for admins
-if ($_SESSION['status'] == 'admin') {
+if (in_array($_SESSION['status'], array('admin', 'super', 'res'))) {
     $status_chooser = new select('status', 'status', $itemdata['status']);
     $status_chooser->set_null(false);
     $status_chooser->set_options(array(

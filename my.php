@@ -1,7 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
-auth(1);
+auth(0);
 
 /****************************************************
  * AJAX Responses
@@ -213,7 +213,7 @@ $input['email']->set_width(200);
         "SELECT user_id, CONCAT(lastname, ', ', firstname) as name 
            FROM res 
       LEFT JOIN user USING (user_id)
-          WHERE status IN ('res','admin')
+          WHERE status IN ('super','admin')
        ORDER BY lastname, firstname"
     );
 //}
