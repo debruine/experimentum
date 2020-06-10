@@ -114,6 +114,11 @@ $q->print_form();
 <!--*************************************************-->
 
 <script>
+    // prevent back button
+    history.pushState(null, document.title, location.href);
+    window.addEventListener('popstate', function (event) {
+      history.pushState(null, document.title, location.href);
+    });
 
     $(function() {
 

@@ -184,6 +184,12 @@ echo $specific_fb;
 
 <!--<div class="buttons"><button id="home">Back</button></div>-->
 <script>
+    // prevent back button
+    history.pushState(null, document.title, location.href);
+    window.addEventListener('popstate', function (event) {
+      history.pushState(null, document.title, location.href);
+    });
+    
     $(function() {
         $('#home').button().click( function() { 
             window.location = '<?= (!empty($_SESSION['project'])) ? '/project?' . $_SESSION['project'] : '/' ?>'; 
