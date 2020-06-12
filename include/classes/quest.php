@@ -263,22 +263,27 @@ class questionnaire extends formTable {
         echo "<input type='hidden' name='starttime' id='starttime' value='$starttime' />" . ENDLINE;
         echo "<input type='hidden' name='order' id='order' value='", $this->order, "' />" . ENDLINE;
         
-        echo "<table class='questionnaire {$this->type}' id='qTable'>" . ENDLINE;
-        
-        // questions
-        $n = 0;
-        $num_questions = count($this->questionList);
-        foreach ($this->questionList as $q) {
-            // print radiorow option row every 10 lines, but not if there are <5 questions left (unless there are <5 questions total)
-            if ( ( ( (++$n%10) == 1 &&  $n < $num_questions - 5) || $n == 1) && !empty($this->options)) { echo $this->get_option_row(); }
+        if ($this->type == 'info') {
+            echo "<div class='buttons'><input type='button' value='continue' onclick='submitQ({$this->id});' /></div>", ENDLINE,
+                 "</form>" , ENDTAG;
+        } else {
+            echo "<table class='questionnaire {$this->type}' id='qTable'>" . ENDLINE;
             
-            if (1 == $n) { echo "<tbody id='qTableBody'>", ENDLINE; }  // start body after first header
-            
-            $q->print_formLine();
+            // questions
+            $n = 0;
+            $num_questions = count($this->questionList);
+            foreach ($this->questionList as $q) {
+                // print radiorow option row every 10 lines, but not if there are <5 questions left (unless there are <5 questions total)
+                if ( ( ( (++$n%10) == 1 &&  $n < $num_questions - 5) || $n == 1) && !empty($this->options)) { echo $this->get_option_row(); }
+                
+                if (1 == $n) { echo "<tbody id='qTableBody'>", ENDLINE; }  // start body after first header
+                
+                $q->print_formLine();
+            }
+            echo "</tbody></table>", ENDLINE,
+                 "<div class='buttons'><input type='button' value='submit' onclick='submitQ({$this->id});' /></div>", ENDLINE,
+                 "</form>" , ENDTAG;
         }
-        echo "</tbody></table>", ENDLINE,
-             "<div class='buttons'><input type='button' value='submit' onclick='submitQ({$this->id});' /></div>", ENDLINE,
-             "</form>" , ENDTAG;
         
         // javascripts for ranking
         if ('ranking' == $this->type) {

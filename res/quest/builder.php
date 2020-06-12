@@ -226,6 +226,9 @@ if (validID($quest_id)) {
 } elseif (array_key_exists('ranking', $_GET)) {
     // default quest info for ranking
     $qInfo['questtype'] = 'ranking';
+} elseif (array_key_exists('info', $_GET)) {
+    // default quest info for info
+    $qInfo['questtype'] = 'info';
 } else {
     // default quest info for mixed
     $qInfo['questtype'] = 'mixed';
@@ -240,7 +243,7 @@ if (validID($quest_id)) {
     $max_quest_id = $query->get_one();
     $questions = array();
 }
-if (count($questions) == 0) {
+if (count($questions) == 0 & $qInfo['questtype'] != 'info') {
     $query = new myQuery('SELECT MAX(id) as m FROM question');
     $max_q_id = $query->get_one();
     
@@ -316,10 +319,12 @@ $info['questtype2']->set_question('Questionnaire Type');
 #$info['questtype']->set_options(array('mixed'=>'mixed', 'radiopage'=>'page of radio buttons', 'ranking'=>'ranking items'));
 #$info['questtype']->set_orientation('horiz'); 
 
-$info['quest_order'] = new radio('quest_order', 'quest_order', $qInfo['quest_order']);
-$info['quest_order']->set_question('Question Order');
-$info['quest_order']->set_options(array('fixed'=>'fixed', 'random'=>'random'));
-$info['quest_order']->set_orientation('horiz'); 
+if ($qInfo['questtype'] != 'info') {
+    $info['quest_order'] = new radio('quest_order', 'quest_order', $qInfo['quest_order']);
+    $info['quest_order']->set_question('Question Order');
+    $info['quest_order']->set_options(array('fixed'=>'fixed', 'random'=>'random'));
+    $info['quest_order']->set_orientation('horiz'); 
+}
 
 // set up limits: sex, lower_age, upper_age
 $sex = new select('sex', 'sex', $qInfo['sex']);
@@ -390,6 +395,14 @@ if ($qInfo['status'] == 'active') {
 echo $infoTable->print_form();
 
 // !    editable questionnaire
+
+if ($qInfo['questtype'] == 'info') {
+    echo '<div id="tabs">' . ENDLINE;
+    echo "<form action='' method='post' id='quest_form'>" . ENDLINE;
+    echo "<div class='instructions'><span id='instructions' class='editText md'>" . htmlspecialchars($qInfo['instructions']). "</span></div>" . ENDLINE;
+    echo "<input type='hidden' name='quest_id' id='quest_id' value='{$quest_id}' />" . ENDLINE;
+    echo "</form></div>" . ENDLINE;
+} else {
 
 echo '<div id="tabs">
   <ul>
@@ -572,6 +585,9 @@ foreach ($questions as $n => $q) {
             title='Feedback'><?= htmlspecialchars($qInfo['feedback_general']) ?></span></p>
     </div>
 </div>
+
+<?php } ?>
+
 
 <div id="excel_input">
     Drag a header to reorder or double-click to remove it.

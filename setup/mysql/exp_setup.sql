@@ -62,7 +62,7 @@ CREATE TABLE `quest` (
   `res_name` varchar(255) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `status` enum('test','active','archive') DEFAULT 'test',
-  `questtype` enum('mixed','radiopage','ranking') DEFAULT NULL,
+  `questtype` enum('mixed','radiopage','ranking','info') DEFAULT NULL,
   `quest_order` enum('fixed','random') DEFAULT 'fixed',
   `instructions` text DEFAULT NULL,
   `sex` enum('both','male','female') DEFAULT 'both',

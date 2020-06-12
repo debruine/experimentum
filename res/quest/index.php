@@ -116,7 +116,8 @@ echo $my->get_result_as_table(true, true);
 $new_quest_buttons = array(
     "builder" => "Mixed (different question types)",
     "builder?radiopage" => "Radiopage (response options across top)",
-    "builder?ranking" => "Ranking (order a list of items)"
+    "builder?ranking" => "Ranking (order a list of items)",
+    "builder?info" => "Info (no questions)",
 );
 
 ?>

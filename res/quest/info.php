@@ -225,10 +225,14 @@ $page->displayBody();
     <tr><td>Time to complete:<div class="note">(excluding slowest 5%)</div></td> <td><div id="time_container"></div></td></tr>
     
     <tr><td>Type:</td> <td><?= $itemdata['questtype'] ?></td></tr>
-    <tr><td>Order:</td> <td><?= $itemdata['quest_order'] ?></td></tr>
-    <?php if (!empty($itemdata['url'])) { ?>
-        <tr><td>URL:</td> <td><?= $itemdata['url'] ?></td></tr>
-    <?php } ?>
+    <?php 
+        if ($itemdata['questtype'] != 'info') { 
+            echo '    <tr><td>Order:</td> <td>' . $itemdata['quest_order'] . '</td></tr>' . ENDLINE;
+        }
+        if (!empty($itemdata['url'])) {
+            echo '    <tr><td>URL:</td> <td>' . $itemdata['url'] . '</td></tr>' . ENDLINE;
+        } 
+    ?>
     <tr><td>Restrictions:</td> <td><?= $itemdata['sex'] ?> 
         ages <?= is_null($itemdata['lower_age']) ? 'any' : $itemdata['lower_age'] ?> 
         to <?= is_null($itemdata['upper_age']) ? 'any' : $itemdata['upper_age'] ?> years</td></tr>

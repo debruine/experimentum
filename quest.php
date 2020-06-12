@@ -21,20 +21,6 @@ if (array_key_exists('submit', $_GET)) {
         }
     }
     
-    // record data
-    /*
-    $q = sprintf('INSERT INTO quest_%d (%s starttime, endtime, user_id) VALUES (%s "%s", "%s", "%d")',
-        $clean['quest_id'],
-        (count($questions) > 0) ? implode(',', $questions) . ',' : '',
-        (count($answers) > 0) ? implode(',', $answers) . ',' : '',
-        $clean['starttime'],
-        date('Y-m-d H:i:s'),
-        $_SESSION['user_id']
-    );
-    $q = str_replace('"NULL"', 'NULL', $q);
-    $query = new myQuery($q);
-    */
-    
     // record data in quest_data
     foreach ($clean as $qu => $a) {
         if (substr($qu, 0, 1) == 'q' && is_numeric(substr($qu, 1))) {
