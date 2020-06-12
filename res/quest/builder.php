@@ -275,8 +275,8 @@ if (count($questions) == 0) {
     } else {
         // default question for a mixed questionnaire
         $questions = array(1 => array(
-            'id'            => $max_q_id['m'] + 1,       
-            'quest_id'      => $max_quest_id['m'] + 1,
+            'id'            => $max_q_id + 1,       
+            'quest_id'      => $max_quest_id + 1,
             'n'             => 1,      
             'name'          => 'dv_name',   
             'question'      => 'Click here to type your question',

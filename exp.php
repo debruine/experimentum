@@ -43,6 +43,12 @@ echo $ineligible;
 ?>
 
 <script>
+    // prevent back button
+    history.pushState(null, null, location.href); 
+    history.back(); 
+    history.forward(); 
+    window.onpopstate = function () { history.go(1); };
+    
     function maxstimsize() {
         var w = $(window).width();
         var h = $(window).height();

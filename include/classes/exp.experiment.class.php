@@ -228,11 +228,6 @@ class experiment {
     
     function get_javascript() {
         $text =         '<script>' . ENDLINE;
-        $text .=        '    // prevent back button' . ENDLINE;
-        $text .=        '    history.pushState(null, document.title, location.href);' . ENDLINE;
-        $text .=        '    window.addEventListener("popstate", function (event) {' . ENDLINE;
-        $text .=        '        history.pushState(null, document.title, location.href);' . ENDLINE;
-        $text .=        '    });' . ENDLINE;
         $text .=        '    window.onbeforeunload = function() {return "Using the back button will reset this experiment"; }' . ENDLINE;
         
         $text .=        '   $("#next_trial, #prev_trial").button();' . ENDLINE;
