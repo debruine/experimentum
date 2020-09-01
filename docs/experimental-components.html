@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 Experimental Components | Experimentum: Web-based Software for Psychological Studies</title>
+  <meta name="description" content="Chapter 6 Experimental Components | Experimentum: Web-based Software for Psychological Studies" />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 Experimental Components | Experimentum: Web-based Software for Psychological Studies" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Experimental Components | Experimentum: Web-based Software for Psychological Studies" />
+  
+  
+  
+
+<meta name="author" content="Rebecca J. Lai, Rifah Abdullah, Gaby Mahrholz, Lisa DeBruine" />
+
+
+<meta name="date" content="2020-08-31" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="questionnaire-components.html"/>
+<link rel="next" href="sets.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<img src="images/logos/widelogo.png" width="250px" height>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>About Experimentum</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#support"><i class="fa fa-check"></i>Getting Support</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#for-experimentum-university-of-glasgow-users"><i class="fa fa-check"></i>For Experimentum @ University of Glasgow Users</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#lost_password"><i class="fa fa-check"></i>Lost Passwords</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#changing-your-password"><i class="fa fa-check"></i>Changing Your Password</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#tutorial-sessions"><i class="fa fa-check"></i>Tutorial Sessions</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#for-other-users-other-institutions"><i class="fa fa-check"></i>For Other Users @ Other Institutions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#privacy-notices"><i class="fa fa-check"></i>Privacy Notices</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#cookies"><i class="fa fa-check"></i>Cookies</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#data-management"><i class="fa fa-check"></i>Data Management</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#for-participants"><i class="fa fa-check"></i>For Participants</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#for-researchers"><i class="fa fa-check"></i>For Researchers</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#consent"><i class="fa fa-check"></i>Consent</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#citing-experimentum"><i class="fa fa-check"></i>Citing Experimentum</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#codebase"><i class="fa fa-check"></i>Codebase</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#author-contributions"><i class="fa fa-check"></i>Author Contributions</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i>Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html"><i class="fa fa-check"></i><b>1</b> Quick Reference Guide</a><ul>
+<li class="chapter" data-level="1.1" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#most-common-issues"><i class="fa fa-check"></i><b>1.1</b> Most Common Issues</a></li>
+<li class="chapter" data-level="1.2" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#questionnaire-component-types"><i class="fa fa-check"></i><b>1.2</b> Questionnaire Component Types</a></li>
+<li class="chapter" data-level="1.3" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#experiment-component-types"><i class="fa fa-check"></i><b>1.3</b> Experiment Component Types</a></li>
+<li class="chapter" data-level="1.4" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#structuring-your-study"><i class="fa fa-check"></i><b>1.4</b> Structuring Your Study</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#sets"><i class="fa fa-check"></i><b>1.4.1</b> Sets</a></li>
+<li class="chapter" data-level="1.4.2" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#projects"><i class="fa fa-check"></i><b>1.4.2</b> Projects</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#testing-your-study"><i class="fa fa-check"></i><b>1.5</b> Testing Your Study</a></li>
+<li class="chapter" data-level="1.6" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#activating-projects"><i class="fa fa-check"></i><b>1.6</b> Activating Projects</a></li>
+<li class="chapter" data-level="1.7" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#favouritespinned-items"><i class="fa fa-check"></i><b>1.7</b> Favourites/Pinned Items</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="accounts.html"><a href="accounts.html"><i class="fa fa-check"></i><b>2</b> User Accounts</a><ul>
+<li class="chapter" data-level="2.1" data-path="accounts.html"><a href="accounts.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
+<li class="chapter" data-level="2.2" data-path="accounts.html"><a href="accounts.html#accounttypes"><i class="fa fa-check"></i><b>2.2</b> Account Types</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="accounts.html"><a href="accounts.html#guest-accounts"><i class="fa fa-check"></i><b>2.2.1</b> “Guest” Accounts</a></li>
+<li class="chapter" data-level="2.2.2" data-path="accounts.html"><a href="accounts.html#registered-accounts"><i class="fa fa-check"></i><b>2.2.2</b> “Registered” Accounts</a></li>
+<li class="chapter" data-level="2.2.3" data-path="accounts.html"><a href="accounts.html#student-accounts"><i class="fa fa-check"></i><b>2.2.3</b> “Student” Accounts</a></li>
+<li class="chapter" data-level="2.2.4" data-path="accounts.html"><a href="accounts.html#researcher-accounts"><i class="fa fa-check"></i><b>2.2.4</b> “Researcher” Accounts</a></li>
+<li class="chapter" data-level="2.2.5" data-path="accounts.html"><a href="accounts.html#supervisor-accounts"><i class="fa fa-check"></i><b>2.2.5</b> “Supervisor” Accounts</a></li>
+<li class="chapter" data-level="2.2.6" data-path="accounts.html"><a href="accounts.html#test-accounts"><i class="fa fa-check"></i><b>2.2.6</b> “Test” Accounts</a></li>
+<li class="chapter" data-level="2.2.7" data-path="accounts.html"><a href="accounts.html#admin-accounts"><i class="fa fa-check"></i><b>2.2.7</b> “Admin” Accounts</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="accounts.html"><a href="accounts.html#registration-process"><i class="fa fa-check"></i><b>2.3</b> Registration Process</a></li>
+<li class="chapter" data-level="2.4" data-path="accounts.html"><a href="accounts.html#requesting-researcher-status"><i class="fa fa-check"></i><b>2.4</b> Requesting Researcher Status</a></li>
+<li class="chapter" data-level="2.5" data-path="accounts.html"><a href="accounts.html#checking-your-account-status"><i class="fa fa-check"></i><b>2.5</b> Checking your account status</a></li>
+<li class="chapter" data-level="2.6" data-path="accounts.html"><a href="accounts.html#approving-student-and-researcher-status-requests"><i class="fa fa-check"></i><b>2.6</b> Approving Student and Researcher Status Requests</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="stimuli.html"><a href="stimuli.html"><i class="fa fa-check"></i><b>3</b> Stimuli</a><ul>
+<li class="chapter" data-level="3.1" data-path="stimuli.html"><a href="stimuli.html#overview-1"><i class="fa fa-check"></i><b>3.1</b> Overview</a></li>
+<li class="chapter" data-level="3.2" data-path="stimuli.html"><a href="stimuli.html#accepted-file-formats"><i class="fa fa-check"></i><b>3.2</b> Accepted File Formats</a></li>
+<li class="chapter" data-level="3.3" data-path="stimuli.html"><a href="stimuli.html#naming"><i class="fa fa-check"></i><b>3.3</b> Naming Conventions</a></li>
+<li class="chapter" data-level="3.4" data-path="stimuli.html"><a href="stimuli.html#pre-processing"><i class="fa fa-check"></i><b>3.4</b> Pre-Processing</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="stimuli.html"><a href="stimuli.html#images"><i class="fa fa-check"></i><b>3.4.1</b> Images</a><ul>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#creating-images"><i class="fa fa-check"></i>Creating Images</a></li>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#converting-pre-existing-images"><i class="fa fa-check"></i>Converting Pre-Existing Images</a></li>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#gimp_export"><i class="fa fa-check"></i>Exporting Images</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#batch-procesing-images"><i class="fa fa-check"></i>Batch Procesing Images</a><ul>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#batch-conversion"><i class="fa fa-check"></i>Batch Conversion</a></li>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#batch-resize"><i class="fa fa-check"></i>Batch Resize</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4.2" data-path="stimuli.html"><a href="stimuli.html#audio"><i class="fa fa-check"></i><b>3.4.2</b> Audio</a><ul>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#audacity-2.1.2"><i class="fa fa-check"></i>Audacity 2.1.2</a></li>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#audacity-2.3.0"><i class="fa fa-check"></i>Audacity 2.3.0</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4.3" data-path="stimuli.html"><a href="stimuli.html#video"><i class="fa fa-check"></i><b>3.4.3</b> Video</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="stimuli.html"><a href="stimuli.html#stimupload"><i class="fa fa-check"></i><b>3.5</b> Uploading Stimuli</a></li>
+<li class="chapter" data-level="3.6" data-path="stimuli.html"><a href="stimuli.html#using-stimuli"><i class="fa fa-check"></i><b>3.6</b> Using Stimuli</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="stimuli.html"><a href="stimuli.html#htmlstim"><i class="fa fa-check"></i><b>3.6.1</b> Using Stimuli Items In Questionnaires, Set and Component Introductions</a></li>
+<li class="chapter" data-level="3.6.2" data-path="stimuli.html"><a href="stimuli.html#assigning-stimuli-to-experimental-trials"><i class="fa fa-check"></i><b>3.6.2</b> Assigning Stimuli to Experimental Trials</a></li>
+<li class="chapter" data-level="3.6.3" data-path="stimuli.html"><a href="stimuli.html#using-stimuli-in-questionnaires"><i class="fa fa-check"></i><b>3.6.3</b> Using Stimuli in Questionnaires</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="planning-your-project.html"><a href="planning-your-project.html"><i class="fa fa-check"></i><b>4</b> Planning Your Project</a><ul>
+<li class="chapter" data-level="4.1" data-path="planning-your-project.html"><a href="planning-your-project.html#overview-2"><i class="fa fa-check"></i><b>4.1</b> Overview</a></li>
+<li class="chapter" data-level="4.2" data-path="planning-your-project.html"><a href="planning-your-project.html#planning-your-project-1"><i class="fa fa-check"></i><b>4.2</b> Planning Your Project</a></li>
+<li class="chapter" data-level="4.3" data-path="planning-your-project.html"><a href="planning-your-project.html#agegender-limitations"><i class="fa fa-check"></i><b>4.3</b> Age/Gender Limitations</a></li>
+<li class="chapter" data-level="4.4" data-path="stimuli.html"><a href="stimuli.html#stimuli"><i class="fa fa-check"></i><b>4.4</b> Stimuli</a></li>
+<li class="chapter" data-level="4.5" data-path="planning-your-project.html"><a href="planning-your-project.html#individual-components"><i class="fa fa-check"></i><b>4.5</b> Individual Components</a></li>
+<li class="chapter" data-level="4.6" data-path="planning-your-project.html"><a href="planning-your-project.html#sets-and-supersets"><i class="fa fa-check"></i><b>4.6</b> Sets and Supersets</a></li>
+<li class="chapter" data-level="4.7" data-path="planning-your-project.html"><a href="planning-your-project.html#info_sheet"><i class="fa fa-check"></i><b>4.7</b> Information Sheet</a></li>
+<li class="chapter" data-level="4.8" data-path="planning-your-project.html"><a href="planning-your-project.html#debrief"><i class="fa fa-check"></i><b>4.8</b> Debriefing</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="questionnaire-components.html"><a href="questionnaire-components.html"><i class="fa fa-check"></i><b>5</b> Questionnaire Components</a><ul>
+<li class="chapter" data-level="5.1" data-path="questionnaire-components.html"><a href="questionnaire-components.html#overview-3"><i class="fa fa-check"></i><b>5.1</b> Overview</a></li>
+<li class="chapter" data-level="5.2" data-path="questionnaire-components.html"><a href="questionnaire-components.html#new-questionnaire"><i class="fa fa-check"></i><b>5.2</b> New Questionnaire</a></li>
+<li class="chapter" data-level="5.3" data-path="questionnaire-components.html"><a href="questionnaire-components.html#save-questionnaire-and-reset-buttons"><i class="fa fa-check"></i><b>5.3</b> Save Questionnaire and Reset Buttons</a></li>
+<li class="chapter" data-level="5.4" data-path="questionnaire-components.html"><a href="questionnaire-components.html#accessing-and-editing-previously-saved-questionnaires"><i class="fa fa-check"></i><b>5.4</b> Accessing and Editing Previously Saved Questionnaires</a></li>
+<li class="chapter" data-level="5.5" data-path="questionnaire-components.html"><a href="questionnaire-components.html#questionnaire-information"><i class="fa fa-check"></i><b>5.5</b> Questionnaire Information</a></li>
+<li class="chapter" data-level="5.6" data-path="questionnaire-components.html"><a href="questionnaire-components.html#questionnaire-tab"><i class="fa fa-check"></i><b>5.6</b> Questionnaire Tab</a></li>
+<li class="chapter" data-level="5.7" data-path="questionnaire-components.html"><a href="questionnaire-components.html#feedback-tab"><i class="fa fa-check"></i><b>5.7</b> Feedback Tab</a></li>
+<li class="chapter" data-level="5.8" data-path="questionnaire-components.html"><a href="questionnaire-components.html#addingdeleting-questions"><i class="fa fa-check"></i><b>5.8</b> Adding/Deleting Questions</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="questionnaire-components.html"><a href="questionnaire-components.html#adding-individually"><i class="fa fa-check"></i><b>5.8.1</b> Adding Individually</a></li>
+<li class="chapter" data-level="5.8.2" data-path="questionnaire-components.html"><a href="questionnaire-components.html#addfromspreadsheet"><i class="fa fa-check"></i><b>5.8.2</b> Adding in Bulk</a></li>
+<li class="chapter" data-level="5.8.3" data-path="questionnaire-components.html"><a href="questionnaire-components.html#re-order-questions"><i class="fa fa-check"></i><b>5.8.3</b> Re-Order Questions</a></li>
+<li class="chapter" data-level="5.8.4" data-path="questionnaire-components.html"><a href="questionnaire-components.html#deleting-questions"><i class="fa fa-check"></i><b>5.8.4</b> Deleting Questions</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9" data-path="questionnaire-components.html"><a href="questionnaire-components.html#quest_types"><i class="fa fa-check"></i><b>5.9</b> Questionnaire Types</a><ul>
+<li class="chapter" data-level="5.9.1" data-path="questionnaire-components.html"><a href="questionnaire-components.html#mixed-questionnaire"><i class="fa fa-check"></i><b>5.9.1</b> Mixed Questionnaire</a><ul>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#attributes"><i class="fa fa-check"></i>Attributes</a></li>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#changing-question-and-response-type"><i class="fa fa-check"></i>Changing Question and Response Type</a></li>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#question-types"><i class="fa fa-check"></i>Question Types</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9.2" data-path="questionnaire-components.html"><a href="questionnaire-components.html#radiopage"><i class="fa fa-check"></i><b>5.9.2</b> Radiopage</a><ul>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#attributes-1"><i class="fa fa-check"></i>Attributes</a></li>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#fwdrev"><i class="fa fa-check"></i>Forward and Reverse Scoring</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9.3" data-path="questionnaire-components.html"><a href="questionnaire-components.html#rank-order"><i class="fa fa-check"></i><b>5.9.3</b> Rank Order</a><ul>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#attributes-2"><i class="fa fa-check"></i>Attributes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5.10" data-path="questionnaire-components.html"><a href="questionnaire-components.html#assignstimquest"><i class="fa fa-check"></i><b>5.10</b> Using Stimuli with Questionnaires</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="experimental-components.html"><a href="experimental-components.html"><i class="fa fa-check"></i><b>6</b> Experimental Components</a><ul>
+<li class="chapter" data-level="6.1" data-path="experimental-components.html"><a href="experimental-components.html#overview-4"><i class="fa fa-check"></i><b>6.1</b> Overview</a></li>
+<li class="chapter" data-level="6.2" data-path="experimental-components.html"><a href="experimental-components.html#creating-a-new-component"><i class="fa fa-check"></i><b>6.2</b> Creating a New Component</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="experimental-components.html"><a href="experimental-components.html#experiment-information"><i class="fa fa-check"></i><b>6.2.1</b> Experiment Information</a><ul>
+<li class="chapter" data-level="6.2.1.1" data-path="experimental-components.html"><a href="experimental-components.html#experiment-info-what-are-these-tabs"><i class="fa fa-check"></i><b>6.2.1.1</b> Experiment info: what are these tabs?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="experimental-components.html"><a href="experimental-components.html#saving-your-component"><i class="fa fa-check"></i><b>6.3</b> Saving your Component</a></li>
+<li class="chapter" data-level="6.4" data-path="experimental-components.html"><a href="experimental-components.html#accessing-and-editing-previously-saved-experiments"><i class="fa fa-check"></i><b>6.4</b> Accessing and Editing Previously Saved Experiments</a></li>
+<li class="chapter" data-level="6.5" data-path="experimental-components.html"><a href="experimental-components.html#exp_types"><i class="fa fa-check"></i><b>6.5</b> Types of Experiments</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="experimental-components.html"><a href="experimental-components.html#afc"><i class="fa fa-check"></i><b>6.5.1</b> 2-AFC</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#twoafc_notes"><i class="fa fa-check"></i>Notes Specific to 2-AFC</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.2" data-path="experimental-components.html"><a href="experimental-components.html#afc-with-8-button-strength-of-choice-jnd"><i class="fa fa-check"></i><b>6.5.2</b> 2-AFC with 8-Button Strength of Choice (JND)</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-2-afc-with-8-button-strength-of-choice"><i class="fa fa-check"></i>Notes Specific to 2-AFC with 8-Button Strength of Choice</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-1"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.3" data-path="experimental-components.html"><a href="experimental-components.html#labelled-buttons"><i class="fa fa-check"></i><b>6.5.3</b> Labelled Buttons</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-labelled-buttons"><i class="fa fa-check"></i>Notes Specific to Labelled Buttons</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-2"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.4" data-path="experimental-components.html"><a href="experimental-components.html#sliders"><i class="fa fa-check"></i><b>6.5.4</b> Sliders</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-sliders"><i class="fa fa-check"></i>Notes Specific to Sliders</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-3"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.5" data-path="experimental-components.html"><a href="experimental-components.html#x-alternative-forced-choice-x-afc"><i class="fa fa-check"></i><b>6.5.5</b> X-Alternative Forced Choice (X-AFC)</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-x-afc"><i class="fa fa-check"></i>Notes Specific to X-AFC</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-4"><i class="fa fa-check"></i>Participant view</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.6" data-path="experimental-components.html"><a href="experimental-components.html#sorting"><i class="fa fa-check"></i><b>6.5.6</b> Sorting</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-sorting-components"><i class="fa fa-check"></i>Notes Specific to Sorting Components</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-5"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.7" data-path="experimental-components.html"><a href="experimental-components.html#slideshow"><i class="fa fa-check"></i><b>6.5.7</b> Slideshow</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-slideshows"><i class="fa fa-check"></i>Notes Specific to Slideshows</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-6"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="experimental-components.html"><a href="experimental-components.html#assignstimexp"><i class="fa fa-check"></i><b>6.6</b> Assigning Stimuli to Trials</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#sets"><i class="fa fa-check"></i><b>7</b> Sets</a><ul>
+<li class="chapter" data-level="7.1" data-path="sets.html"><a href="sets.html"><i class="fa fa-check"></i><b>7.1</b> Overview</a></li>
+<li class="chapter" data-level="7.2" data-path="sets.html"><a href="sets.html#new_sets"><i class="fa fa-check"></i><b>7.2</b> Creating a New Set</a></li>
+<li class="chapter" data-level="7.3" data-path="sets.html"><a href="sets.html#saving-your-sets"><i class="fa fa-check"></i><b>7.3</b> Saving Your Sets</a></li>
+<li class="chapter" data-level="7.4" data-path="sets.html"><a href="sets.html#viewing-and-editing-existing-sets"><i class="fa fa-check"></i><b>7.4</b> Viewing and Editing Existing Sets</a></li>
+<li class="chapter" data-level="7.5" data-path="sets.html"><a href="sets.html#adding-components-to-your-set"><i class="fa fa-check"></i><b>7.5</b> Adding Components to Your Set</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="sets.html"><a href="sets.html#component-statuses"><i class="fa fa-check"></i><b>7.5.1</b> Component Statuses</a></li>
+</ul></li>
+<li class="chapter" data-level="7.6" data-path="sets.html"><a href="sets.html#supersets"><i class="fa fa-check"></i><b>7.6</b> Supersets: Sets of Sets</a></li>
+<li class="chapter" data-level="7.7" data-path="sets.html"><a href="sets.html#setsuperset-structure"><i class="fa fa-check"></i><b>7.7</b> Set/Superset Structure</a><ul>
+<li class="chapter" data-level="7.7.1" data-path="sets.html"><a href="sets.html#type_rules"><i class="fa fa-check"></i><b>7.7.1</b> “Type” Rules</a></li>
+<li class="chapter" data-level="7.7.2" data-path="sets.html"><a href="sets.html#participant-view-7"><i class="fa fa-check"></i><b>7.7.2</b> Participant View</a></li>
+<li class="chapter" data-level="7.7.3" data-path="sets.html"><a href="sets.html#info_page_structure"><i class="fa fa-check"></i><b>7.7.3</b> Info Page View</a></li>
+<li class="chapter" data-level="7.7.4" data-path="sets.html"><a href="sets.html#sample_order"><i class="fa fa-check"></i><b>7.7.4</b> Sample Order</a></li>
+</ul></li>
+<li class="chapter" data-level="7.8" data-path="sets.html"><a href="sets.html#filtering-participants-using-sets"><i class="fa fa-check"></i><b>7.8</b> Filtering Participants Using Sets</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="projs.html"><a href="projs.html"><i class="fa fa-check"></i><b>8</b> Projects: Making your study go!</a><ul>
+<li class="chapter" data-level="8.1" data-path="projs.html"><a href="projs.html#overview-6"><i class="fa fa-check"></i><b>8.1</b> Overview</a></li>
+<li class="chapter" data-level="8.2" data-path="projs.html"><a href="projs.html#creating-a-new-project"><i class="fa fa-check"></i><b>8.2</b> Creating a New Project</a></li>
+<li class="chapter" data-level="8.3" data-path="projs.html"><a href="projs.html#viewing-and-editing-existing-projects"><i class="fa fa-check"></i><b>8.3</b> Viewing and Editing Existing Projects</a></li>
+<li class="chapter" data-level="8.4" data-path="projs.html"><a href="projs.html#adding-sets-and-components"><i class="fa fa-check"></i><b>8.4</b> Adding Sets and Components</a><ul>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#component-statuses-1"><i class="fa fa-check"></i>Component Statuses</a></li>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#filtering"><i class="fa fa-check"></i>Filtering Participants Using Sets</a></li>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#icons"><i class="fa fa-check"></i>Icons</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="projs.html"><a href="projs.html#debriefs"><i class="fa fa-check"></i><b>8.5</b> Debriefs</a></li>
+<li class="chapter" data-level="8.6" data-path="projs.html"><a href="projs.html#project-urls"><i class="fa fa-check"></i><b>8.6</b> Project URLs</a></li>
+<li class="chapter" data-level="8.7" data-path="projs.html"><a href="projs.html#project_structure"><i class="fa fa-check"></i><b>8.7</b> Project Structure</a></li>
+<li class="chapter" data-level="8.8" data-path="projs.html"><a href="projs.html#testingyourstudy"><i class="fa fa-check"></i><b>8.8</b> Testing Your Study</a><ul>
+<li class="chapter" data-level="8.8.1" data-path="projs.html"><a href="projs.html#examining-structure"><i class="fa fa-check"></i><b>8.8.1</b> Examining Structure</a><ul>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#participant_view"><i class="fa fa-check"></i>Participant View</a></li>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#info-page-view"><i class="fa fa-check"></i>Info Page View</a></li>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#sample-order"><i class="fa fa-check"></i>Sample Order</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8.9" data-path="projs.html"><a href="projs.html#activating-projects-1"><i class="fa fa-check"></i><b>8.9</b> Activating Projects</a><ul>
+<li class="chapter" data-level="8.9.1" data-path="projs.html"><a href="projs.html#checlist"><i class="fa fa-check"></i><b>8.9.1</b> “Is my study ready?”: Student Checklist</a></li>
+</ul></li>
+<li class="chapter" data-level="8.10" data-path="projs.html"><a href="projs.html#anon"><i class="fa fa-check"></i><b>8.10</b> Anonymous Participation</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>9</b> Data</a><ul>
+<li class="chapter" data-level="9.1" data-path="data.html"><a href="data.html#data-formats"><i class="fa fa-check"></i><b>9.1</b> Data Formats</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="data.html"><a href="data.html#data-outputs"><i class="fa fa-check"></i><b>9.1.1</b> Data Outputs</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="data.html"><a href="data.html#downloading-your-data"><i class="fa fa-check"></i><b>9.2</b> Downloading Your Data</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="data.html"><a href="data.html#from-individual-components"><i class="fa fa-check"></i><b>9.2.1</b> From Individual Components</a></li>
+<li class="chapter" data-level="9.2.2" data-path="data.html"><a href="data.html#from-the-entire-project"><i class="fa fa-check"></i><b>9.2.2</b> From the Entire Project</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="data.html"><a href="data.html#test-data"><i class="fa fa-check"></i><b>9.3</b> Test Data</a></li>
+<li class="chapter" data-level="9.4" data-path="data.html"><a href="data.html#number-of-participants"><i class="fa fa-check"></i><b>9.4</b> Number of Participants</a></li>
+<li class="chapter" data-level="9.5" data-path="data.html"><a href="data.html#help-with-data"><i class="fa fa-check"></i><b>9.5</b> Help with Data</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="data.html"><a href="data.html#commoncode"><i class="fa fa-check"></i><b>9.5.1</b> Commonly Used Code</a><ul>
+<li class="chapter" data-level="" data-path="data.html"><a href="data.html#first-completion-only"><i class="fa fa-check"></i>First completion only</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html"><i class="fa fa-check"></i>FAQs</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#overview-7"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#about-support"><i class="fa fa-check"></i>About Support</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#i-emailed-an-admin-and-havent-received-a-response"><i class="fa fa-check"></i>I emailed an admin and haven’t received a response</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#about-accounts"><i class="fa fa-check"></i>About Accounts</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#i-have-requested-researcher-status-and-havent-received-it"><i class="fa fa-check"></i>I have requested researcher status and haven’t received it</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#my-supervisor-approved-my-researcher-status-but-my-account-doesnt-have-updated-privileges"><i class="fa fa-check"></i>My supervisor approved my researcher status, but my account doesn’t have updated privileges</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#i-have-lost-my-password"><i class="fa fa-check"></i>I have lost my password</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#about-study-constructionactivation"><i class="fa fa-check"></i>About Study Construction/Activation</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#my-questionnaireresponses-to-questions-wont-save"><i class="fa fa-check"></i>My questionnaire/responses to questions won’t save</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#can-the-system-make-studies-which-branch-depending-on-the-responses-given-by-participants"><i class="fa fa-check"></i>Can the system make studies which branch depending on the responses given by participants?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#i-edited-my-study-and-it-changed-from-active-to-test.-how-do-i-change-it-back"><i class="fa fa-check"></i>I edited my study and it changed from active to test. How do I change it back?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#my-studycomponents-of-my-study-are-set-to-test.-how-do-i-make-it-active"><i class="fa fa-check"></i>My study/components of my study are set to test. How do I make it active?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#where-do-i-put-my-informationdebrief-sheet"><i class="fa fa-check"></i>Where do I put my information/debrief sheet?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#can-i-have-multiple-response-scales-on-a-single-radiopage-questionnaire"><i class="fa fa-check"></i>Can I have multiple response scales on a single radiopage questionnaire?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#does-my-experimentum-questionnaire-need-to-look-exactly-like-the-paper-version"><i class="fa fa-check"></i>Does my Experimentum questionnaire need to look exactly like the paper version?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#about-study-participation"><i class="fa fa-check"></i>About Study Participation</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#can-participants-skip-questions"><i class="fa fa-check"></i>Can participants skip questions?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#my-participants-are-not-being-allowed-to-take-part-in-my-studya-part-of-my-study"><i class="fa fa-check"></i>My participants are not being allowed to take part in my study/a part of my study</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#about-data"><i class="fa fa-check"></i>About Data</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#missing-data"><i class="fa fa-check"></i>Missing Data</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#where-is-my-data-stored"><i class="fa fa-check"></i>Where is my data stored?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html"><i class="fa fa-check"></i>Known Issues, Bugs and Common Errors</a><ul>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#overview-8"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#common-errors"><i class="fa fa-check"></i>Common Errors</a><ul>
+<li class="chapter" data-level="9.5.2" data-path="knownissues.html"><a href="knownissues.html#data-not-being-saved-despite-questions-being-completed."><i class="fa fa-check"></i><b>9.5.2</b> Data not being saved despite questions being completed.</a></li>
+<li class="chapter" data-level="9.5.3" data-path="knownissues.html"><a href="knownissues.html#n-in-question-names-in-downloaded-data"><i class="fa fa-check"></i><b>9.5.3</b> <code>/n</code> in Question Names in Downloaded Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#issues"><i class="fa fa-check"></i>Issues…</a><ul>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#which-do-not-interfere-with-the-operation-of-the-site"><i class="fa fa-check"></i>Which do NOT interfere with the operation of the site</a><ul>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#notfound"><i class="fa fa-check"></i>“The supervisor or supervised could not be found” when changing account type</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#which-do-interfere-with-the-operation-of-the-site"><i class="fa fa-check"></i>Which DO interfere with the operation of the site</a><ul>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#missing-data-1"><i class="fa fa-check"></i>Missing Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#my-questionnaireresponses-to-questions-wont-save-1"><i class="fa fa-check"></i>My questionnaire/responses to questions won’t save</a><ul>
+<li><a href="knownissues.html#user_age"><code>user_age</code> displayed as “2020.1”</a></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#video-stimuli-is-not-loading"><i class="fa fa-check"></i>Video stimuli is not loading</a></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#email-notifications"><i class="fa fa-check"></i>Email Notifications</a></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#cannot-share-ownership-of-components-with-students"><i class="fa fa-check"></i>Cannot Share Ownership of Components With Students</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5.4" data-path="knownissues.html"><a href="knownissues.html#solved-issues"><i class="fa fa-check"></i><b>9.5.4</b> Solved Issues</a><ul>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#oneofequal"><i class="fa fa-check"></i>One of (equal) preventing sets from running</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html"><i class="fa fa-check"></i>Supervisor Cheatsheet</a><ul>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#overview-9"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#roles"><i class="fa fa-check"></i>Admins</a><ul>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#admin-responsibilities"><i class="fa fa-check"></i>Admin Responsibilities</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#supervisor-responsibilities"><i class="fa fa-check"></i>Supervisor Responsibilities</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#accessing-supervisees-projects-sets-and-components"><i class="fa fa-check"></i>Accessing Supervisees Projects, Sets and Components</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#approving-student-and-researcher-status-requests-1"><i class="fa fa-check"></i>Approving Student and Researcher Status Requests</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#activating"><i class="fa fa-check"></i>Activating Studies</a><ul>
+<li class="chapter" data-level="9.5.5" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#is-this-study-ready-student-checklist"><i class="fa fa-check"></i><b>9.5.5</b> Is this study ready?: Student Checklist</a></li>
+<li class="chapter" data-level="9.5.6" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#making-a-study-active"><i class="fa fa-check"></i><b>9.5.6</b> Making a Study Active</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#sharing-components"><i class="fa fa-check"></i>Sharing Components</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#resetting-passwords"><i class="fa fa-check"></i>Resetting Passwords</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#autologin-links"><i class="fa fa-check"></i>Autologin Links</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html"><i class="fa fa-check"></i>Appendices</a><ul>
+<li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html#appendices-1"><i class="fa fa-check"></i>Appendices</a><ul>
+<li class="chapter" data-level="9.5.7" data-path="appendices.html"><a href="appendices.html#image-sources"><i class="fa fa-check"></i><b>9.5.7</b> Image Sources</a></li>
+<li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html#software"><i class="fa fa-check"></i>Software</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html#references"><i class="fa fa-check"></i>References</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Experimentum: Web-based Software for Psychological Studies</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="experimental-components" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> Experimental Components</h1>
+<div id="overview-4" class="section level2">
+<h2><span class="header-section-number">6.1</span> Overview</h2>
+<p>Simple behavioural experiments can also be run through Experimentum, using a variety of different stimuli media and with a wide selection of design choices that can be combined. To create a new experiment component, navigate to the “researchers” section by using the menu on the right side of the page.</p>
+<p>This is an overview of the types of experimental components avaible to you:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Experiment Type</th>
+<th align="left">Response Type</th>
+<th align="left">DV</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2AFC</td>
+<td align="left">Alternative forced-choice with 2 options.</td>
+<td align="left">Binary, defaulted to 0 or 1 assigned depending on how you assign the stimuli to trials.</td>
+</tr>
+<tr class="even">
+<td align="left">2-AFC with 8 button strength of choice</td>
+<td align="left">Alternative forced-choice between two stimuli, but with the addition of strength of preference for the choice made on an 8-point scale.</td>
+<td align="left">Out of 8, with 0-3 indicating strength of choice in one direction for one piece of stimuli and 4-7 indicating strength of choice in the other direction for the other piece of stimuli.</td>
+</tr>
+<tr class="odd">
+<td align="left">Labelled Buttons</td>
+<td align="left">Display 1, 2 or 3 stimuli items and participants respond on a scale set by the researcher. Akin to a Likert scale.</td>
+<td align="left">A numerical value corresponding to the values set by the researcher.</td>
+</tr>
+<tr class="even">
+<td align="left">Slider</td>
+<td align="left">A sliding scale between two numerical points where the number is not displayed to participants.</td>
+<td align="left">Numerical, between upper and lower bounds and at increments set by the researcher.</td>
+</tr>
+<tr class="odd">
+<td align="left">X-AFC</td>
+<td align="left">Alternative forced-choice with more than 2 options. Participants pick only one.</td>
+<td align="left">DV is a number which corresponds to the column the chosen stimuli item is assigned to on the stimuli assignment page, ranging from 1 to X.</td>
+</tr>
+<tr class="even">
+<td align="left">Sorting</td>
+<td align="left">Participants put stimuli in order of some specified preference by dragging them into position on the screen</td>
+<td align="left">Number of times participants changed the order and the order the stimuli was placed in. Also provides stimuli original order of presentation.</td>
+</tr>
+<tr class="odd">
+<td align="left">Slideshow</td>
+<td align="left">Timed display of stimuli items where participants are only asked to watch, with no data collected or rendered. Usually used as a precursor to another component.</td>
+<td align="left">None.</td>
+</tr>
+</tbody>
+</table>
+<p>These will be covered in further detail in the section on <a href="experimental-components.html#exp_types">experimental component types</a>.</p>
+<p>Some types require specific considerations in the interpretation of the data, assignment of stimuli, etc. Please read the one(s) that concern you carefully.</p>
+<p>You are also given a look at the view the participants will see in an individual trial for each type.</p>
+</div>
+<div id="creating-a-new-component" class="section level2">
+<h2><span class="header-section-number">6.2</span> Creating a New Component</h2>
+<p>Click on the “New experiment” button at the top of the page to create a new experiment, and select the type of experiment that you want to make from the dialogue box:</p>
+<center>
+<img src="images/screenshots/exp_1.png" />
+</center>
+<center>
+<img src="images/screenshots/exp_2.png" />
+</center>
+<p>This displays all of currently available experimental component types available for you to use.</p>
+<div id="experiment-information" class="section level3">
+<h3><span class="header-section-number">6.2.1</span> Experiment Information</h3>
+<p>All experiment types have a generic information fields in common, but some have extra depending on their functionality. Each of the options common across all types of experiment will be discussed in the following section. Where information is specific to a certain type of experiment it will be specified in brackets what type of experiment it refers to.</p>
+<p>You should make your information section as detailed as possible to remind your future self of what you have done, but also to explain what you have done to your supervisor(s) and the admins who will use this information to provide support. Here is an information section from a 2-AFC questionnaire for reference:</p>
+<center>
+<img src="images/screenshots/exp_6.png" />
+</center>
+<ul>
+<li><strong>Name for Users</strong>: this is the name of this component that will be displayed to users. Please ensure that it is suitable.</li>
+<li><p><strong>Name for Researchers</strong>: this is the name of this component for researchers. It will be displayed on lists and visible to you, your supervisor and admin staff. It should be informative and appropriate.</p></li>
+<li><strong>Design</strong>: within or between subjects, allow for multiple completions or single completion only.</li>
+<li><p><strong>Slider range</strong>: (slider only). This determines the numerical value associated with each position on the slider, and the increments along it.</p></li>
+<li><strong>Trial Order</strong>: this indicates how you want Experimentum to display the individual trials contained in this component only. Fixed will display the trials in the order set on the “edit trials” section later. Random will mix the order of question presentation up automatically. Order of presentation will be recorded in your data when you download it.</li>
+<li><strong>Image side</strong>: (2-AFC, 2-AFC with 8 button strength of choice only). Fixed will display images on the side specified in the “edit trials” section later. Random will switch the side of presentation randomly. Side of presentation will be recorded in your data.</li>
+<li><strong>Images</strong>: allows you to present a subset of your stimuli to your participants. For example, if you have 40 pairs of faces from which to choose the more trustworthy, you can present a subset of 20 pairs of faces to each participant by setting this to “Show 20 of 40 total images”.</li>
+<li><strong>Limited to</strong>: limitations will only allow people in a certain age range and with a certain gender identity to complete this component of the study. If you are planning on allowing anonymous participation you should not set limitations as age and gender identity of these users will be unknown, and they will not be allowed to do these sections of the study if they refuse to submit this information.</li>
+<li><strong>Labnotes</strong>: this is a short blurb about this component of your study. You should always add lab notes so that you, your supervisor and the admins will be able to tell what this component is about.</li>
+<li><p><strong>Number of images to display</strong>: this specifies the number of images to display per trial. You may wish to display 1, 2 or more depending on your design.</p></li>
+</ul>
+<div id="experiment-info-what-are-these-tabs" class="section level4">
+<h4><span class="header-section-number">6.2.1.1</span> Experiment info: what are these tabs?</h4>
+<p>All experiment components will present you with 3 tabs under the experiment information section. The following section discusses when the participants will see them, and make suggestions on how you may want to use these.</p>
+<div id="introduction-tab" class="section level5 unnumbered">
+<h5>Introduction Tab</h5>
+<p>Before each component starts to run participants will be greeted with a short introduction to the component. You should include some instructions to the participants here. Here is an example from the 2 AFC type of experiment:</p>
+<center>
+<img src="images/screenshots/exp_7.png" />
+</center>
+<p>The text above will appear to the participants immediately prior to the start of the first trial:</p>
+<center>
+<img src="images/screenshots/exp_8.png" />
+</center>
+<p>This text can be formatted with HTML or Markdown code. If you use HTML tags you must ensure that you have matching opening and closing tags, as unmatched ones will prevent the component from recording data.</p>
+</div>
+<div id="experiment-tab" class="section level5 unnumbered">
+<h5>Experiment Tab</h5>
+<p>Once you have written your instructions to your participants, click on the experiment tab next to introduction. Set the question here if the question is to remain the same across all trials within this component.</p>
+<center>
+<img src="images/screenshots/exp_9.png" />
+</center>
+<p>If you choose to leave the question blank, delete the question and “{{blank}}” will be displayed above the stimuli images on this tab, and will be empty on each trial displayed to participants. If you wish to have the question vary by trial, you should leave the question blank. When you come to assign stimuli to trials you can type in questions according to which trial is being displayed.</p>
+<p>If your experiment uses a scale with anchor points or text labels for buttons, you would click them to edit in the same way as the questions. Here is an example from the Slider type experiment, where there are anchors at the left and right most extremes of the scale:</p>
+<center>
+<img src="images/screenshots/exp_10.png" />
+</center>
+<p>An example of changing participant-facing button labels in a labelled button experiment:</p>
+<center>
+<img src="images/screenshots/exp_11.png" />
+</center>
+<p>Check that the number of stimuli displayed on this page are correct. Here, the “blankface” image is displayed as a placeholder for your own stimuli, regardless of the type of stimuli you are placing/have already placed. Then check that the number of trials is correct at the bottom of the page too.</p>
+</div>
+<div id="feedback-tab-1" class="section level5 unnumbered">
+<h5>Feedback Tab</h5>
+<p>Generally, the feedback tab in individual components should be left alone. This will be covered later in the section covering Debriefing.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="saving-your-component" class="section level2">
+<h2><span class="header-section-number">6.3</span> Saving your Component</h2>
+<p>Saving experiments differs slightly from saving questionnaires. When you save an experiment, you will be taken to the trial editing page (see individual experiment types on how to fill in your stimuli). The reset button remains the same, it will revert to the last saved version of the experiment:</p>
+<center>
+<img src="images/screenshots/exp_3.png" />
+</center>
+</div>
+<div id="accessing-and-editing-previously-saved-experiments" class="section level2">
+<h2><span class="header-section-number">6.4</span> Accessing and Editing Previously Saved Experiments</h2>
+<p>To access your previously saved experiment component, navigate to the researcher’s area of the site by selecting “Researchers” from the menu on the right-hand side of the page.</p>
+<p>You can access your experiments by accessing the experiments section of the page by using the button below:</p>
+<center>
+<img src="images/screenshots/exp_4.png" />
+</center>
+<p>Alternatively, if you remember the number of the experiment component, you can type it in to the grey rectangle in the experiments button. When you press return you will be taken straight to the information page of the experiment.</p>
+<p>To edit the experiment, press the “edit” button at the top of the page and you will be taken back into the editable version:</p>
+<center>
+<img src="images/screenshots/exp_5.png" />
+</center>
+<div class="warning">
+<p>
+If you edit and save changes to a component which is currently active you will deactivate it.
+</p>
+<p>
+If you are a student researcher this will mean you will need to contact your supervisor again to re-activate it.
+</p>
+</div>
+</div>
+<div id="exp_types" class="section level2">
+<h2><span class="header-section-number">6.5</span> Types of Experiments</h2>
+<p>There are different types of experimental components for you to choose from. They each have their own features, response types and type of DV that they return in your data. The following section will discuss each of the options available to you.</p>
+<div id="afc" class="section level3">
+<h3><span class="header-section-number">6.5.1</span> 2-AFC</h3>
+<p>2-AFC experiments present participants with 2 options and ask them to make a choice between them. Here you will present 2 stimuli items together and ask participants to make a binary judgment between the two by clicking on one item only. The DV returned will be either a 1 or a 0, depending on the choice the participant makes and what stimuli item you define as a 1 or a 0 when you assign stimuli to trials (see <a href="experimental-components.html#twoafc_notes">Notes specific to 2-AFC</a> below).</p>
+<p>Open a new experiment by clicking the “new experiment” button on the researcher’s page and select 2-AFC from the dialogue box:</p>
+<center>
+<img src="images/screenshots/exp_1.png" />
+</center>
+<center>
+<img src="images/screenshots/exp_2.png" />
+</center>
+<p>First, you should complete the experiment information at the top of the page, then set instructions on the introduction tab. For example, I have 12 pairs of faces in my Mooney faces set that I uploaded in the <a href="stimuli.html#stimupload">uploading stimuli</a> section, so I would change the number of total images to 12.</p>
+<p>Once you have finished on this page and press “Save” you will be taken to the page that allows you to assign stimuli , assign trial names and (if applicable) individual questions for the trials.</p>
+<div id="twoafc_notes" class="section level4 unnumbered">
+<h4>Notes Specific to 2-AFC</h4>
+<div id="assigning-stimuli-to-trials" class="section level5 unnumbered">
+<h5>Assigning Stimuli to Trials</h5>
+<div class="warning">
+<p>
+NEEDS SOMETHING HERE
+</p>
+</div>
+</div>
+<div id="interpretting-the-data" class="section level5 unnumbered">
+<h5>Interpretting the Data</h5>
+<p>When you assign stimuli to the 2-AFC be sure that you assign the correct stimuli according to the DV that you expect to be returned.</p>
+<p>In the screenshot below you can see that one column corresponds to a DV of 1 and the other a DV of 0. Ensure that you assign the stimuli you wish to return a DV of 1 and the stimuli you wish to return a DV of 0 to the appropriate columns.</p>
+<center>
+<img src="images/screenshots/stim_2afc.png" />
+</center>
+</div>
+</div>
+<div id="participant-view" class="section level4 unnumbered">
+<h4>Participant View</h4>
+<p>When this experimental component is presented to the participants it will look like this:</p>
+<center>
+<img src="images/screenshots/view_2afc.png" />
+</center>
+</div>
+</div>
+<div id="afc-with-8-button-strength-of-choice-jnd" class="section level3">
+<h3><span class="header-section-number">6.5.2</span> 2-AFC with 8-Button Strength of Choice (JND)</h3>
+<p>For the most part, the 2-AFC with 8 button strength of choice is largely the same as the binary 2-ACF experiment type in its presentation, but the question being asked and the DV rendered by participants differ.</p>
+<p>You will still be asking participants to compare the two stimuli pieces and render a judgement. Instead of asking them to pick one, you will be asking them to pick one <em>and</em> indicate the strength of their choice. This type is also referred to as the large_n JND type in the component information page.</p>
+<center>
+<img src="images/screenshots/jnd.png" />
+</center>
+<p>Open a new experiment by clicking the “new experiment” button on the researchers’ page and select 2-AFC with 8-button strength of choice from the dialogue box:</p>
+<center>
+<img src="images/screenshots/exp_2.png" />
+</center>
+<p>First, you should complete the experiment information at the top of the page, then set instructions on the introduction tab. For example, I have 12 pairs of faces in my Mooney faces set that I uploaded earlier in the uploading stimuli section, so I would change the number of total images to 12.</p>
+<p>Once you have finished on this page and press “Save” you will be taken to the page that allows you to assign stimuli , assign trial names and (if applicable) individual questions for the trials.</p>
+<div id="notes-specific-to-2-afc-with-8-button-strength-of-choice" class="section level4 unnumbered">
+<h4>Notes Specific to 2-AFC with 8-Button Strength of Choice</h4>
+<div id="assigning-stimuli" class="section level5 unnumbered">
+<h5>Assigning Stimuli</h5>
+<p>As in the 2-AFC, the way that you assign stimuli matters. Stimuli assigned to the first column will return a DV from the range of 4 to 7 if chosen and those assigned to the second column will return a DV from the range of 0-3 if chosen, depending on the strength of choice indicated by participants.</p>
+<center>
+<img src="images/screenshots/stim_jnd.png" />
+</center>
+</div>
+<div id="interpreting-the-data-output" class="section level5 unnumbered">
+<h5>Interpreting the Data Output</h5>
+<p>What I have done here is assign the female images to return a higher range of the DV than the male images, treating the threshold between 3 and 4 to be the cut-off between judgments of male and female. In the data it looks like this:</p>
+<center>
+<img src="images/screenshots/data_jnd.png" />
+</center>
+<p>You can see from the combination of my assignment of the stimuli to specific DV ranges and strength of choice indicated in the data that I perceive the females from pair_7 and pair_1 to be more feminine in appearance than females from pair_5 and pair_10.</p>
+</div>
+</div>
+<div id="participant-view-1" class="section level4 unnumbered">
+<h4>Participant View</h4>
+<p>The two stimuli items are displayed as below, with the buttons that participants would press being the text in the 8 boxes at the top. It looks like this:</p>
+<center>
+<img src="images/screenshots/view_jnd.png" />
+</center>
+<p>Considering how I assigned my stimuli, the strength of choice buttons on the left side:</p>
+<ul>
+<li>Much more = 7</li>
+<li>More = 6</li>
+<li>Somewhat more = 5</li>
+<li>Slightly more = 4</li>
+</ul>
+<p>And on the right side:</p>
+<ul>
+<li>Slightly more = 3</li>
+<li>Somewhat more = 2</li>
+<li>More = 1</li>
+<li>Much more = 0</li>
+</ul>
+</div>
+</div>
+<div id="labelled-buttons" class="section level3">
+<h3><span class="header-section-number">6.5.3</span> Labelled Buttons</h3>
+<p>The Labelled Buttons experiment type allows you to work with 1, 2 or 3 pieces of stimuli and participants to make a response akin to a Likert scale response. Open a new experiment by clicking the “new experiment” button on the researchers’ page and select Labelled Buttons from the dialogue box:</p>
+<center>
+<img src="images/screenshots/exp_2.png" />
+</center>
+<p>First, you should complete the experiment information at the top of the page, then set instructions on the introduction tab. For example, I have 12 pairs of faces in my Mooney faces set that I uploaded earlier in the uploading stimuli section, so I would change the number of total images to 12. Once you have finished on this page and press “Save” you will be taken to the page that allows you to assign stimuli , assign trial names and (if applicable) individual questions for the trials.</p>
+<div id="notes-specific-to-labelled-buttons" class="section level4 unnumbered">
+<h4>Notes Specific to Labelled Buttons</h4>
+<div id="length-of-the-scale-setting-text-labels-dv-values-and-scale-anchors" class="section level5 unnumbered">
+<h5>Length of the Scale, Setting Text Labels, DV values and Scale Anchors</h5>
+<p>When can add or remove points along the DV scale by pressing the + or - buttons, and either delete or set high and low anchors for the scale.</p>
+<center>
+<img src="images/screenshots/lb.png" />
+</center>
+<p>As you can see, each point is associated with a numerical DV. This can also be changed by clicking on it if you wish. Each point on the scale is set as numerical by default, but you can also include text prompts.</p>
+<center>
+<img src="images/screenshots/exp_11.png" />
+</center>
+<p>The DV returned in the data is displayed above each of the labelled buttons. This can also be changed:</p>
+<center>
+<img src="images/screenshots/exp_12.png" />
+</center>
+</div>
+<div id="assigning-stimuli-to-trials-1" class="section level5 unnumbered">
+<h5>Assigning Stimuli to Trials</h5>
+<p>Assigning stimuli to trials does not impact the DV in the same way as the 2-AFC options do in that the columns do not correspond to the value returned. Notice there are no black panels with DVs or DV ranges specified above the columns:</p>
+<center>
+<img src="images/screenshots/stim_lb.png" />
+</center>
+<p>The value of the DV will come from the buttons of the scale. The DV value is the one that is displayed above the scale when you are viewing the eperiment tab.</p>
+<center>
+<img src="images/screenshots/exp_12.png" />
+</center>
+</div>
+<div id="interpretting-the-data-1" class="section level5 unnumbered">
+<h5>Interpretting the Data</h5>
+<div class="warning">
+<p>
+NEEDS SOMETHING HERE
+</p>
+</div>
+</div>
+</div>
+<div id="participant-view-2" class="section level4 unnumbered">
+<h4>Participant View</h4>
+<p>This is how a 7 labelled button scale appears to participants:</p>
+<center>
+<img src="images/screenshots/view_lb.png" />
+</center>
+</div>
+</div>
+<div id="sliders" class="section level3">
+<h3><span class="header-section-number">6.5.4</span> Sliders</h3>
+<p>Slider experimental components allow you to display 1, 2 or 3 pieces of stimuli and allow participants to make a response along an unlabelled slider, which returns a numerical value depending on where they place the knob of the slider. Open a new experiment by clicking the “new experiment” button on the researchers’ page and select Slider from the dialogue box:</p>
+<center>
+<img src="images/screenshots/exp_2.png" />
+</center>
+<p>First, you should complete the experiment information at the top of the page, then set instructions on the introduction tab. For example, I have 12 pairs of faces in my Mooney faces set that I uploaded earlier in the uploading stimuli section. In this example I am presenting them one at a time rather than in pairs, so I change the number of images to 24.</p>
+<p>Sliders ranges will accept numerical values over a very wide range (tested -9999 to +9999), but you should be realistic about the values that you set. You should also change the increment to one that is suitable.</p>
+<p>Once you have finished on this page and press “Save” you will be taken to the page that allows you to assign stimuli , assign trial names and (if applicable) individual questions for the trials.</p>
+<div id="notes-specific-to-sliders" class="section level4 unnumbered">
+<h4>Notes Specific to Sliders</h4>
+<div id="assigning-stimuli-to-trials-2" class="section level5 unnumbered">
+<h5>Assigning Stimuli to Trials</h5>
+<p>Specific columns on the assignment screen do not carry specific DV values, as indicated by the lack of the black panels above them:</p>
+<center>
+<img src="images/screenshots/stim_lb.png" />
+</center>
+</div>
+<div id="interpretting-the-data-2" class="section level5 unnumbered">
+<h5>Interpretting the Data</h5>
+<div class="warning">
+<p>
+NEEDS SOMETHING HERE
+</p>
+</div>
+</div>
+</div>
+<div id="participant-view-3" class="section level4 unnumbered">
+<h4>Participant View</h4>
+<p>This is what the slider experiment with a single image looks like to participants:</p>
+<center>
+<img src="images/screenshots/view_slider.png" />
+</center>
+<p>The knob on the slider will only appear once the participant clicks on the scale for the first time.</p>
+<p>Note that the DV (the numerical value associated with the position the knob is placed in) is not displayed to participants.</p>
+<p>Once they have moved the knob to a position and they are happy with their decision they should press the forward arrow on the top of the right-hand side of the screen to progress to the next trial (circled above).</p>
+</div>
+</div>
+<div id="x-alternative-forced-choice-x-afc" class="section level3">
+<h3><span class="header-section-number">6.5.5</span> X-Alternative Forced Choice (X-AFC)</h3>
+<p>The XAFC is essentially an extension of the 2-AFC experiment type, allowing you to present anywhere from 3 to 10 stimuli items to participants per trial and to pick one of the items presented. Open a new experiment by clicking the “new experiment” button on the researchers’ page and select X-AFC from the dialogue box:</p>
+<center>
+<img src="images/screenshots/exp_2.png" />
+</center>
+<p>First, you should complete the experiment information at the top of the page, then set instructions on the introduction tab. Here I am presenting a subset of 6 trials using the stimuli I uploaded earlier in the uploading stimuli section. In this example I am presenting triplets of images, the Mooney faces with some photographic images from the Face Research Lab London image set (DeBruine and Jones, 2017). Participants will be asked to select the photograph.</p>
+<div id="notes-specific-to-x-afc" class="section level4 unnumbered">
+<h4>Notes Specific to X-AFC</h4>
+<div id="assigning-stimuli-to-trials-3" class="section level5 unnumbered">
+<h5>Assigning Stimuli to Trials</h5>
+<p>Despite the lack of black panels above the columns on the assignment page, the DV values do correspond to specific items of stimuli.</p>
+<p>If, for example, participants experiencing the first trial (first row) from the screenshot above choose option 3, the value of 3 will be presented in the data under the DV column.</p>
+</div>
+<div id="interpretting-the-data-3" class="section level5 unnumbered">
+<h5>Interpretting the Data</h5>
+<div class="warning">
+<p>
+NEEDS SOMETHING HERE
+</p>
+</div>
+</div>
+</div>
+<div id="participant-view-4" class="section level4 unnumbered">
+<h4>Participant view</h4>
+<p>This is what the X-AFC looks like, with 3 stimuli items displayed:</p>
+<div class="warning">
+<p>
+new image required
+</p>
+</div>
+</div>
+</div>
+<div id="sorting" class="section level3">
+<h3><span class="header-section-number">6.5.6</span> Sorting</h3>
+<p>The sorting experimental component type asks participants to place items of stimuli in an order that you specify to them. This is like a rank ordering questionnaire, but it records slightly different data and allows you to use stimuli other than text. Open a new experiment by clicking the “new experiment” button on the researchers’ page and select Sorting from the dialogue box:</p>
+<center>
+<img src="images/screenshots/exp_2.png" />
+</center>
+<p>First, you should complete the experiment information at the top of the page, then set instructions on the introduction tab.</p>
+<p>Once you have finished on this page and press “Save” you will be taken to the page that allows you to assign stimuli , assign trial names and (if applicable) individual questions for the trials.</p>
+<p>Here you can see that each row (representing an individual trial) will have 5 images presented. I set image side to randomisation on the information page so the presentation will not be kept in order of the columns here.</p>
+<center>
+<img src="images/screenshots/stim_sorting.png" />
+</center>
+<div id="notes-specific-to-sorting-components" class="section level4 unnumbered">
+<h4>Notes Specific to Sorting Components</h4>
+<div id="assigning-stimuli-and-dv-values" class="section level5 unnumbered">
+<h5>Assigning Stimuli and DV Values</h5>
+<p>For this experiment I am using Ishihara colour deficiency plate test items. These use images of numbers made up of dots in specific colours, which cannot be perceived by those who experience colour perception deficiency. This example contains numbers which the participant should sort into order.</p>
+<p>If the participant can successfully order the numbers in a small number of changes then we should be able to assume that they can perceive the shape of the number in the circle. Those who cannot experience colour deficiency may make more mistakes in ordering the numbers. The sets used here test for deuteranopia, the most common type of colour deficiency.</p>
+<p>As you can see, I have numbered the stimuli in a systematic way: “ishihara_x_y.jpg”, where x is the number displayed in the circle and y is the set that it belongs in.</p>
+<p>By searching for “ishihara_5” I have found all images which have this string in their file name, resulting in the display of two images of the number 5 from set one and two, displayed on the right of the image below.</p>
+<center>
+<img src="images/screenshots/stim_sorting.png" />
+</center>
+<p>As I am displaying 5 images per trial, there are 5 columns on the stimuli assignment page.</p>
+<p>By double clicking on the first box in column 5, the system inserts all of the files found into that column in the order shown in the search results.</p>
+<center>
+<img src="images/screenshots/stim_sorting_2.png" />
+</center>
+<p>Stimuli items set in the first column return a DV of 1, the second a DV of 2 and so on, even though there is no black block at the top of each column to specify this. This will mean that the order of assignment on this page will influence how you come to interpret your data output. This is partially why I have named my stimuli as “ishihara_x_y.jpg”, where x represents the number displayed in the image. It helps me establish where to place the item in the stimuli assignment columns.</p>
+</div>
+<div id="interpretting-the-data-4" class="section level5 unnumbered">
+<h5>Interpretting the Data</h5>
+<p>The DV and side variables in the downloaded datasets for the sorting experiments are slightly different and need to be interpreted differently.</p>
+<ul>
+<li><strong>session_id</strong>: experimental session ID. Each time a participant completes the study they will be assigned a new session ID. You should discourage participants from completing more than one study at a time to ensure that the session ID remains unique to your project. Please instruct users to close their browser between studies to ensure this happens.</li>
+<li><strong>project_id</strong>: the number of the project that contained the component when this line of data was generated. Here it displays 0 because the component was not in a project when I tested it.</li>
+<li><strong>exp_id</strong>: the number assigned to the experiment by the system.</li>
+<li><strong>user_id</strong>: the user number. For registered users this will be a permanent assignment, for anonymous users a throwaway number will be assigned for this session only.</li>
+<li><strong>user_sex</strong>: user sex, as taken from either a registered user’s profile or submitted in the dialogue box for anonymous users displayed at the start of each study.</li>
+<li><strong>user_status</strong>: the users’ status. Admin, res, student or guest profile types.</li>
+<li><strong>user_age</strong>: user age, as taken from either a registered user’s profile or submitted in the dialogue box for anonymous users displayed at the start of each study.</li>
+<li><strong>trial_name</strong>: name of the trial assigned by you in the stimuli assignment page, or the default of t1, t2, etc.</li>
+<li><strong>trial_n</strong>: the number of the trial, indicating row from the stimuli assignment page.</li>
+<li><strong>order</strong>: the number of the trial encountered by the user, indicating the order which the participant completed the trials.</li>
+<li><strong>dv</strong>: a series of numbers is provided in the sorting experiment. Taking the first data line displayed below, indicating “3:1;2;3;4;5”, the 3 preceding the colon (:) indicates that the user moved the stimuli items 3 times in total to settle on the order that they did. The numbers after the colon, separated by the semi-colons (;) indicate the order that the stimuli items were placed in. In our Ishihara example, the stimuli were assigned in the order of 1,2,3,4 and 5. This means that on this trial the participant was able to place the stimuli in the correct order using only 3 moves.</li>
+<li><strong>rt</strong>: reaction time. Only serves as an indicator, as you cannot really predict the conditions of each participant’s internet connection and any latency issues associated with them.</li>
+<li><strong>side</strong>: the original order of the stimuli displayed on the page before the participant manipulated them.</li>
+<li><strong>dt</strong>: date and time of the submission of this line of the data.</li>
+</ul>
+<center>
+<img src="images/screenshots/data_sorting.png" />
+</center>
+</div>
+</div>
+<div id="participant-view-5" class="section level4 unnumbered">
+<h4>Participant View</h4>
+<p>Here is what the sorting task looks like to participants, with the top image is the initial presentation, and the second image shows one image being dragged to a different position in the presentation:</p>
+<center>
+<img src="images/screenshots/view_sorting.png" />
+</center>
+</div>
+</div>
+<div id="slideshow" class="section level3">
+<h3><span class="header-section-number">6.5.7</span> Slideshow</h3>
+<p>Slideshows are used to display stimuli to participants in combination with other experimental components or questionnaires. They do not allow participants to make any decisions and collect no data from them. Later, you will learn about <a href="quick-reference-guide.html#sets">sets</a> where you can combine this sort of stimuli presentation with other components.</p>
+<p>Open a new experiment by clicking the “new experiment” button on the researcher’s page and select Slideshow from the dialogue box:</p>
+<center>
+<img src="images/screenshots/exp_2.png" />
+</center>
+<p>First, you should complete the experiment information at the top of the page, then set instructions on the introduction tab. Once you have finished on this page and press “Save” you will be taken to the page that allows you to assign stimuli , assign trial names and (if applicable) individual questions for the trials. Here you can see that each row (representing an individual trial) will have 3 images presented.</p>
+<div id="notes-specific-to-slideshows" class="section level4 unnumbered">
+<h4>Notes Specific to Slideshows</h4>
+<div id="interpretting-the-data-output" class="section level5 unnumbered">
+<h5>Interpretting the Data Output</h5>
+<p>The slideshow is a way to present stimuli to participants, <strong>but it does not allow participants to provide any sort of input and as a result it does not return any DV based on a participant response</strong>.</p>
+<p>Depending on your aim, you may wish to pay more attention to variables such as order and side which give you information about how the stimuli was presented. This might be useful when you combine slideshows with components which do take collect data from participants.</p>
+<ul>
+<li><strong>session_id</strong>: experimental session ID. Each time a participant completes the study they will be assigned a new session ID. You should discourage participants from completing more than one study at a time to ensure that the session ID remains unique to your project. Please instruct users to close their browser between studies to ensure this happens.</li>
+<li><strong>project_id</strong>: the number of the project that contained the component when this line of data was generated. Here it displays 0 because the component was not in a project when I tested it.</li>
+<li><strong>exp_id</strong>: the number assigned to the experiment by the system.</li>
+<li><strong>user_id</strong>: the user number. For registered users this will be a permanent assignment, for anonymous users a throwaway number will be assigned for this session only.</li>
+<li><strong>user_sex</strong>: user sex, as taken from either a registered user’s profile or submitted in the dialogue box for anonymous users displayed at the start of each study.</li>
+<li><strong>user_status</strong>: the users’ status. Admin, res, student or guest profile types.</li>
+<li><strong>user_age</strong>: user age, as taken from either a registered user’s profile or submitted in the dialogue box for anonymous users displayed at the start of each study.</li>
+<li><strong>trial_name</strong>: name of the trial assigned by you in the stimuli assignment page, or the default of t1, t2, etc.</li>
+<li><strong>trial_n</strong>: the number of the trial, indicating row from the stimuli assignment page.</li>
+<li><strong>order</strong>: the number of the trial encountered by the user, indicating the order which the participant completed the trials.</li>
+<li><strong>dv</strong>: will all be zero on a slideshow, as there is no response recorded from the participants.</li>
+<li><strong>rt</strong>: reaction time, in this case should be almost equivalent to the increment time that you set on the information page. It won’t be a perfect match due to issues with internet connectivity.</li>
+<li><strong>side</strong>: the side that the stimuli was displayed on. Irrelevant in this case.</li>
+<li><strong>dt</strong>: date and time of the submission of this line of the data.</li>
+</ul>
+</div>
+</div>
+<div id="participant-view-6" class="section level4 unnumbered">
+<h4>Participant View</h4>
+<p>A slideshow with no questions on each trial will look like this:</p>
+<center>
+<img src="images/screenshots/view_slideshow.png" />
+</center>
+<p>Images are displayed without a question and the participant cannot make any responses, they only view the stimuli.</p>
+</div>
+</div>
+</div>
+<div id="assignstimexp" class="section level2">
+<h2><span class="header-section-number">6.6</span> Assigning Stimuli to Trials</h2>
+<p>Once you have constructed an experiment you will assign stimuli to the trials. This is what the page to assign stimuli to trials looks like for a simple 2-AFC experiment:</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="questionnaire-components.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="sets.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

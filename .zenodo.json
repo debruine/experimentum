@@ -1,0 +1,43 @@
+{
+    "description": "Reproducibly create online experiments.", 
+    "license": "MIT", 
+    "title": "Experimentum: ", 
+    "version": "0.2",
+    "upload_type": "software", 
+    "publication_date": "2020-09-01", 
+    "creators": [
+        {
+            "name": "Lisa DeBruine",
+            "affiliation": "University of Glasgow",
+            "orcid": "0000-0002-7523-5539"
+        },
+        {
+            "name": "Rebecca Lai",
+            "affiliation": "University of Glasgow",
+            "orcid": "0000-0001-7055-2036"
+        },
+        {
+            "name": "Benedict Jones",
+            "affiliation": "University of Strathclyde",
+            "orcid": "0000-0001-7777-0220"
+        },
+        {
+            "name": "Rifah Abdullah",
+            "affiliation": "University of Glasgow",
+            "orcid": "0000-0001-8966-2171"
+        },
+        {
+            "name": "Gaby Mahrholz",
+            "affiliation": "University of Glasgow",
+            "orcid": "0000-0002-2135-6888"
+        }
+    ], 
+    "access_right": "open", 
+    "related_identifiers": [
+        {
+            "scheme": "url", 
+            "identifier": "https://debruine.github.io/experimentum/", 
+            "relation": "isSupplementTo"
+        }
+    ]
+}

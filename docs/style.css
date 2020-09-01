@@ -1,0 +1,120 @@
+p.caption {
+  color: #777;
+  margin-top: 10px;
+}
+
+p code {
+  white-space: inherit;
+}
+
+pre {
+  word-break: normal;
+  word-wrap: normal;
+}
+
+pre code {
+  white-space: inherit;
+}
+
+pre {
+  /*word-break: normal;*/
+  /*word-wrap: normal;*/
+  border: 1px solid grey !important;
+  border-radius: 5px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+pre code {
+  white-space: inherit;
+}
+
+.logo {
+  height: 300px;
+  width: 300px;
+  float: right;
+}
+
+.join {
+  height: 300px;
+  width: 300px;
+  float: right;
+  clear: right;
+}
+
+/* set styles for alert boxes */
+
+.danger, .security, .info, .warning, .question, .rainbow, .workaround, .bug {
+  color: black;
+  padding: 1em 1em 1em 4em;
+  margin-bottom: 10px;
+  background: #ffffff 5px center/3em no-repeat;
+}
+
+.danger {
+  background-image: url("images/alerts/danger.png");
+  background-color: hsl(360, 80%, 85%);
+  border: 3px solid hsl(360, 80%, 50%);
+  border-radius: 5px;
+}
+
+.security {
+  background-image: url("images/alerts/security.png");
+  background-color: hsl(340, 80%, 95%);
+  border: 2px solid hsl(340, 80%, 90%);
+  border-radius: 5px;
+}
+
+.info {
+  background-image: url("images/alerts/info.png");
+  background-color: hsl(220, 80%, 95%);
+  border: 2px solid hsl(220, 80%, 90%);
+  border-radius: 5px;
+}
+
+.warning {
+  background-image: url("images/alerts/warning.png");
+  background-color: hsl(45, 100%, 80%);
+  border: 3px solid hsl(360, 80%, 50%);
+  border-radius: 5px;
+}
+
+.bug {
+  background-image: url("images/alerts/bug.png");
+  background-color: hsl(45, 100%, 80%);
+  border: 3px solid hsl(360, 80%, 50%);
+  border-radius: 5px;
+}
+
+.question {
+  background-image: url("images/alerts/question.png");
+  background-color: hsl(100, 80%, 90%);
+  border: 2px solid hsl(100, 80%, 85%);
+  border-radius: 5px;
+}
+
+.rainbow {
+  background-image: url("images/alerts/rainbow.png");
+  background-color: hsl(0, 0%, 100%);
+  border: 2px solid hsl(0, 0%, 0%);
+  border-radius: 5px;
+}
+
+.workaround {
+  background-image: url("images/alerts/traffic-cone.png");
+  background-color: hsl(0, 0%, 100%);
+  border: 2px solid hsl(0, 0%, 0%);
+  border-radius: 5px;
+}
+
+/* change the width of the toc to make the logo look better*/
+.book .book-summary {
+  width: 250px;
+}
+
+.book.with-summary .book-header.fixed {
+    left: 250px;
+}
+
+.book.with-summary .book-body {
+    left: 250px;
+}

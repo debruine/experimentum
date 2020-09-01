@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 7 Sets | Experimentum: Web-based Software for Psychological Studies</title>
+  <meta name="description" content="Chapter 7 Sets | Experimentum: Web-based Software for Psychological Studies" />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 7 Sets | Experimentum: Web-based Software for Psychological Studies" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 7 Sets | Experimentum: Web-based Software for Psychological Studies" />
+  
+  
+  
+
+<meta name="author" content="Rebecca J. Lai, Rifah Abdullah, Gaby Mahrholz, Lisa DeBruine" />
+
+
+<meta name="date" content="2020-08-31" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="experimental-components.html"/>
+<link rel="next" href="projs.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<img src="images/logos/widelogo.png" width="250px" height>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>About Experimentum</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#support"><i class="fa fa-check"></i>Getting Support</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#for-experimentum-university-of-glasgow-users"><i class="fa fa-check"></i>For Experimentum @ University of Glasgow Users</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#lost_password"><i class="fa fa-check"></i>Lost Passwords</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#changing-your-password"><i class="fa fa-check"></i>Changing Your Password</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#tutorial-sessions"><i class="fa fa-check"></i>Tutorial Sessions</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#for-other-users-other-institutions"><i class="fa fa-check"></i>For Other Users @ Other Institutions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#privacy-notices"><i class="fa fa-check"></i>Privacy Notices</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#cookies"><i class="fa fa-check"></i>Cookies</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#data-management"><i class="fa fa-check"></i>Data Management</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#for-participants"><i class="fa fa-check"></i>For Participants</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#for-researchers"><i class="fa fa-check"></i>For Researchers</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#consent"><i class="fa fa-check"></i>Consent</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#citing-experimentum"><i class="fa fa-check"></i>Citing Experimentum</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#codebase"><i class="fa fa-check"></i>Codebase</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#author-contributions"><i class="fa fa-check"></i>Author Contributions</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i>Acknowledgements</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html"><i class="fa fa-check"></i><b>1</b> Quick Reference Guide</a><ul>
+<li class="chapter" data-level="1.1" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#most-common-issues"><i class="fa fa-check"></i><b>1.1</b> Most Common Issues</a></li>
+<li class="chapter" data-level="1.2" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#questionnaire-component-types"><i class="fa fa-check"></i><b>1.2</b> Questionnaire Component Types</a></li>
+<li class="chapter" data-level="1.3" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#experiment-component-types"><i class="fa fa-check"></i><b>1.3</b> Experiment Component Types</a></li>
+<li class="chapter" data-level="1.4" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#structuring-your-study"><i class="fa fa-check"></i><b>1.4</b> Structuring Your Study</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#sets"><i class="fa fa-check"></i><b>1.4.1</b> Sets</a></li>
+<li class="chapter" data-level="1.4.2" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#projects"><i class="fa fa-check"></i><b>1.4.2</b> Projects</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#testing-your-study"><i class="fa fa-check"></i><b>1.5</b> Testing Your Study</a></li>
+<li class="chapter" data-level="1.6" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#activating-projects"><i class="fa fa-check"></i><b>1.6</b> Activating Projects</a></li>
+<li class="chapter" data-level="1.7" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#favouritespinned-items"><i class="fa fa-check"></i><b>1.7</b> Favourites/Pinned Items</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="accounts.html"><a href="accounts.html"><i class="fa fa-check"></i><b>2</b> User Accounts</a><ul>
+<li class="chapter" data-level="2.1" data-path="accounts.html"><a href="accounts.html#overview"><i class="fa fa-check"></i><b>2.1</b> Overview</a></li>
+<li class="chapter" data-level="2.2" data-path="accounts.html"><a href="accounts.html#accounttypes"><i class="fa fa-check"></i><b>2.2</b> Account Types</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="accounts.html"><a href="accounts.html#guest-accounts"><i class="fa fa-check"></i><b>2.2.1</b> “Guest” Accounts</a></li>
+<li class="chapter" data-level="2.2.2" data-path="accounts.html"><a href="accounts.html#registered-accounts"><i class="fa fa-check"></i><b>2.2.2</b> “Registered” Accounts</a></li>
+<li class="chapter" data-level="2.2.3" data-path="accounts.html"><a href="accounts.html#student-accounts"><i class="fa fa-check"></i><b>2.2.3</b> “Student” Accounts</a></li>
+<li class="chapter" data-level="2.2.4" data-path="accounts.html"><a href="accounts.html#researcher-accounts"><i class="fa fa-check"></i><b>2.2.4</b> “Researcher” Accounts</a></li>
+<li class="chapter" data-level="2.2.5" data-path="accounts.html"><a href="accounts.html#supervisor-accounts"><i class="fa fa-check"></i><b>2.2.5</b> “Supervisor” Accounts</a></li>
+<li class="chapter" data-level="2.2.6" data-path="accounts.html"><a href="accounts.html#test-accounts"><i class="fa fa-check"></i><b>2.2.6</b> “Test” Accounts</a></li>
+<li class="chapter" data-level="2.2.7" data-path="accounts.html"><a href="accounts.html#admin-accounts"><i class="fa fa-check"></i><b>2.2.7</b> “Admin” Accounts</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="accounts.html"><a href="accounts.html#registration-process"><i class="fa fa-check"></i><b>2.3</b> Registration Process</a></li>
+<li class="chapter" data-level="2.4" data-path="accounts.html"><a href="accounts.html#requesting-researcher-status"><i class="fa fa-check"></i><b>2.4</b> Requesting Researcher Status</a></li>
+<li class="chapter" data-level="2.5" data-path="accounts.html"><a href="accounts.html#checking-your-account-status"><i class="fa fa-check"></i><b>2.5</b> Checking your account status</a></li>
+<li class="chapter" data-level="2.6" data-path="accounts.html"><a href="accounts.html#approving-student-and-researcher-status-requests"><i class="fa fa-check"></i><b>2.6</b> Approving Student and Researcher Status Requests</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="stimuli.html"><a href="stimuli.html"><i class="fa fa-check"></i><b>3</b> Stimuli</a><ul>
+<li class="chapter" data-level="3.1" data-path="stimuli.html"><a href="stimuli.html#overview-1"><i class="fa fa-check"></i><b>3.1</b> Overview</a></li>
+<li class="chapter" data-level="3.2" data-path="stimuli.html"><a href="stimuli.html#accepted-file-formats"><i class="fa fa-check"></i><b>3.2</b> Accepted File Formats</a></li>
+<li class="chapter" data-level="3.3" data-path="stimuli.html"><a href="stimuli.html#naming"><i class="fa fa-check"></i><b>3.3</b> Naming Conventions</a></li>
+<li class="chapter" data-level="3.4" data-path="stimuli.html"><a href="stimuli.html#pre-processing"><i class="fa fa-check"></i><b>3.4</b> Pre-Processing</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="stimuli.html"><a href="stimuli.html#images"><i class="fa fa-check"></i><b>3.4.1</b> Images</a><ul>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#creating-images"><i class="fa fa-check"></i>Creating Images</a></li>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#converting-pre-existing-images"><i class="fa fa-check"></i>Converting Pre-Existing Images</a></li>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#gimp_export"><i class="fa fa-check"></i>Exporting Images</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#batch-procesing-images"><i class="fa fa-check"></i>Batch Procesing Images</a><ul>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#batch-conversion"><i class="fa fa-check"></i>Batch Conversion</a></li>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#batch-resize"><i class="fa fa-check"></i>Batch Resize</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4.2" data-path="stimuli.html"><a href="stimuli.html#audio"><i class="fa fa-check"></i><b>3.4.2</b> Audio</a><ul>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#audacity-2.1.2"><i class="fa fa-check"></i>Audacity 2.1.2</a></li>
+<li class="chapter" data-level="" data-path="stimuli.html"><a href="stimuli.html#audacity-2.3.0"><i class="fa fa-check"></i>Audacity 2.3.0</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4.3" data-path="stimuli.html"><a href="stimuli.html#video"><i class="fa fa-check"></i><b>3.4.3</b> Video</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="stimuli.html"><a href="stimuli.html#stimupload"><i class="fa fa-check"></i><b>3.5</b> Uploading Stimuli</a></li>
+<li class="chapter" data-level="3.6" data-path="stimuli.html"><a href="stimuli.html#using-stimuli"><i class="fa fa-check"></i><b>3.6</b> Using Stimuli</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="stimuli.html"><a href="stimuli.html#htmlstim"><i class="fa fa-check"></i><b>3.6.1</b> Using Stimuli Items In Questionnaires, Set and Component Introductions</a></li>
+<li class="chapter" data-level="3.6.2" data-path="stimuli.html"><a href="stimuli.html#assigning-stimuli-to-experimental-trials"><i class="fa fa-check"></i><b>3.6.2</b> Assigning Stimuli to Experimental Trials</a></li>
+<li class="chapter" data-level="3.6.3" data-path="stimuli.html"><a href="stimuli.html#using-stimuli-in-questionnaires"><i class="fa fa-check"></i><b>3.6.3</b> Using Stimuli in Questionnaires</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="planning-your-project.html"><a href="planning-your-project.html"><i class="fa fa-check"></i><b>4</b> Planning Your Project</a><ul>
+<li class="chapter" data-level="4.1" data-path="planning-your-project.html"><a href="planning-your-project.html#overview-2"><i class="fa fa-check"></i><b>4.1</b> Overview</a></li>
+<li class="chapter" data-level="4.2" data-path="planning-your-project.html"><a href="planning-your-project.html#planning-your-project-1"><i class="fa fa-check"></i><b>4.2</b> Planning Your Project</a></li>
+<li class="chapter" data-level="4.3" data-path="planning-your-project.html"><a href="planning-your-project.html#agegender-limitations"><i class="fa fa-check"></i><b>4.3</b> Age/Gender Limitations</a></li>
+<li class="chapter" data-level="4.4" data-path="stimuli.html"><a href="stimuli.html#stimuli"><i class="fa fa-check"></i><b>4.4</b> Stimuli</a></li>
+<li class="chapter" data-level="4.5" data-path="planning-your-project.html"><a href="planning-your-project.html#individual-components"><i class="fa fa-check"></i><b>4.5</b> Individual Components</a></li>
+<li class="chapter" data-level="4.6" data-path="planning-your-project.html"><a href="planning-your-project.html#sets-and-supersets"><i class="fa fa-check"></i><b>4.6</b> Sets and Supersets</a></li>
+<li class="chapter" data-level="4.7" data-path="planning-your-project.html"><a href="planning-your-project.html#info_sheet"><i class="fa fa-check"></i><b>4.7</b> Information Sheet</a></li>
+<li class="chapter" data-level="4.8" data-path="planning-your-project.html"><a href="planning-your-project.html#debrief"><i class="fa fa-check"></i><b>4.8</b> Debriefing</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="questionnaire-components.html"><a href="questionnaire-components.html"><i class="fa fa-check"></i><b>5</b> Questionnaire Components</a><ul>
+<li class="chapter" data-level="5.1" data-path="questionnaire-components.html"><a href="questionnaire-components.html#overview-3"><i class="fa fa-check"></i><b>5.1</b> Overview</a></li>
+<li class="chapter" data-level="5.2" data-path="questionnaire-components.html"><a href="questionnaire-components.html#new-questionnaire"><i class="fa fa-check"></i><b>5.2</b> New Questionnaire</a></li>
+<li class="chapter" data-level="5.3" data-path="questionnaire-components.html"><a href="questionnaire-components.html#save-questionnaire-and-reset-buttons"><i class="fa fa-check"></i><b>5.3</b> Save Questionnaire and Reset Buttons</a></li>
+<li class="chapter" data-level="5.4" data-path="questionnaire-components.html"><a href="questionnaire-components.html#accessing-and-editing-previously-saved-questionnaires"><i class="fa fa-check"></i><b>5.4</b> Accessing and Editing Previously Saved Questionnaires</a></li>
+<li class="chapter" data-level="5.5" data-path="questionnaire-components.html"><a href="questionnaire-components.html#questionnaire-information"><i class="fa fa-check"></i><b>5.5</b> Questionnaire Information</a></li>
+<li class="chapter" data-level="5.6" data-path="questionnaire-components.html"><a href="questionnaire-components.html#questionnaire-tab"><i class="fa fa-check"></i><b>5.6</b> Questionnaire Tab</a></li>
+<li class="chapter" data-level="5.7" data-path="questionnaire-components.html"><a href="questionnaire-components.html#feedback-tab"><i class="fa fa-check"></i><b>5.7</b> Feedback Tab</a></li>
+<li class="chapter" data-level="5.8" data-path="questionnaire-components.html"><a href="questionnaire-components.html#addingdeleting-questions"><i class="fa fa-check"></i><b>5.8</b> Adding/Deleting Questions</a><ul>
+<li class="chapter" data-level="5.8.1" data-path="questionnaire-components.html"><a href="questionnaire-components.html#adding-individually"><i class="fa fa-check"></i><b>5.8.1</b> Adding Individually</a></li>
+<li class="chapter" data-level="5.8.2" data-path="questionnaire-components.html"><a href="questionnaire-components.html#addfromspreadsheet"><i class="fa fa-check"></i><b>5.8.2</b> Adding in Bulk</a></li>
+<li class="chapter" data-level="5.8.3" data-path="questionnaire-components.html"><a href="questionnaire-components.html#re-order-questions"><i class="fa fa-check"></i><b>5.8.3</b> Re-Order Questions</a></li>
+<li class="chapter" data-level="5.8.4" data-path="questionnaire-components.html"><a href="questionnaire-components.html#deleting-questions"><i class="fa fa-check"></i><b>5.8.4</b> Deleting Questions</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9" data-path="questionnaire-components.html"><a href="questionnaire-components.html#quest_types"><i class="fa fa-check"></i><b>5.9</b> Questionnaire Types</a><ul>
+<li class="chapter" data-level="5.9.1" data-path="questionnaire-components.html"><a href="questionnaire-components.html#mixed-questionnaire"><i class="fa fa-check"></i><b>5.9.1</b> Mixed Questionnaire</a><ul>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#attributes"><i class="fa fa-check"></i>Attributes</a></li>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#changing-question-and-response-type"><i class="fa fa-check"></i>Changing Question and Response Type</a></li>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#question-types"><i class="fa fa-check"></i>Question Types</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9.2" data-path="questionnaire-components.html"><a href="questionnaire-components.html#radiopage"><i class="fa fa-check"></i><b>5.9.2</b> Radiopage</a><ul>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#attributes-1"><i class="fa fa-check"></i>Attributes</a></li>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#fwdrev"><i class="fa fa-check"></i>Forward and Reverse Scoring</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9.3" data-path="questionnaire-components.html"><a href="questionnaire-components.html#rank-order"><i class="fa fa-check"></i><b>5.9.3</b> Rank Order</a><ul>
+<li class="chapter" data-level="" data-path="questionnaire-components.html"><a href="questionnaire-components.html#attributes-2"><i class="fa fa-check"></i>Attributes</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5.10" data-path="questionnaire-components.html"><a href="questionnaire-components.html#assignstimquest"><i class="fa fa-check"></i><b>5.10</b> Using Stimuli with Questionnaires</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="experimental-components.html"><a href="experimental-components.html"><i class="fa fa-check"></i><b>6</b> Experimental Components</a><ul>
+<li class="chapter" data-level="6.1" data-path="experimental-components.html"><a href="experimental-components.html#overview-4"><i class="fa fa-check"></i><b>6.1</b> Overview</a></li>
+<li class="chapter" data-level="6.2" data-path="experimental-components.html"><a href="experimental-components.html#creating-a-new-component"><i class="fa fa-check"></i><b>6.2</b> Creating a New Component</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="experimental-components.html"><a href="experimental-components.html#experiment-information"><i class="fa fa-check"></i><b>6.2.1</b> Experiment Information</a><ul>
+<li class="chapter" data-level="6.2.1.1" data-path="experimental-components.html"><a href="experimental-components.html#experiment-info-what-are-these-tabs"><i class="fa fa-check"></i><b>6.2.1.1</b> Experiment info: what are these tabs?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="experimental-components.html"><a href="experimental-components.html#saving-your-component"><i class="fa fa-check"></i><b>6.3</b> Saving your Component</a></li>
+<li class="chapter" data-level="6.4" data-path="experimental-components.html"><a href="experimental-components.html#accessing-and-editing-previously-saved-experiments"><i class="fa fa-check"></i><b>6.4</b> Accessing and Editing Previously Saved Experiments</a></li>
+<li class="chapter" data-level="6.5" data-path="experimental-components.html"><a href="experimental-components.html#exp_types"><i class="fa fa-check"></i><b>6.5</b> Types of Experiments</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="experimental-components.html"><a href="experimental-components.html#afc"><i class="fa fa-check"></i><b>6.5.1</b> 2-AFC</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#twoafc_notes"><i class="fa fa-check"></i>Notes Specific to 2-AFC</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.2" data-path="experimental-components.html"><a href="experimental-components.html#afc-with-8-button-strength-of-choice-jnd"><i class="fa fa-check"></i><b>6.5.2</b> 2-AFC with 8-Button Strength of Choice (JND)</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-2-afc-with-8-button-strength-of-choice"><i class="fa fa-check"></i>Notes Specific to 2-AFC with 8-Button Strength of Choice</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-1"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.3" data-path="experimental-components.html"><a href="experimental-components.html#labelled-buttons"><i class="fa fa-check"></i><b>6.5.3</b> Labelled Buttons</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-labelled-buttons"><i class="fa fa-check"></i>Notes Specific to Labelled Buttons</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-2"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.4" data-path="experimental-components.html"><a href="experimental-components.html#sliders"><i class="fa fa-check"></i><b>6.5.4</b> Sliders</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-sliders"><i class="fa fa-check"></i>Notes Specific to Sliders</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-3"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.5" data-path="experimental-components.html"><a href="experimental-components.html#x-alternative-forced-choice-x-afc"><i class="fa fa-check"></i><b>6.5.5</b> X-Alternative Forced Choice (X-AFC)</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-x-afc"><i class="fa fa-check"></i>Notes Specific to X-AFC</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-4"><i class="fa fa-check"></i>Participant view</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.6" data-path="experimental-components.html"><a href="experimental-components.html#sorting"><i class="fa fa-check"></i><b>6.5.6</b> Sorting</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-sorting-components"><i class="fa fa-check"></i>Notes Specific to Sorting Components</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-5"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5.7" data-path="experimental-components.html"><a href="experimental-components.html#slideshow"><i class="fa fa-check"></i><b>6.5.7</b> Slideshow</a><ul>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#notes-specific-to-slideshows"><i class="fa fa-check"></i>Notes Specific to Slideshows</a></li>
+<li class="chapter" data-level="" data-path="experimental-components.html"><a href="experimental-components.html#participant-view-6"><i class="fa fa-check"></i>Participant View</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="experimental-components.html"><a href="experimental-components.html#assignstimexp"><i class="fa fa-check"></i><b>6.6</b> Assigning Stimuli to Trials</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="quick-reference-guide.html"><a href="quick-reference-guide.html#sets"><i class="fa fa-check"></i><b>7</b> Sets</a><ul>
+<li class="chapter" data-level="7.1" data-path="sets.html"><a href="sets.html"><i class="fa fa-check"></i><b>7.1</b> Overview</a></li>
+<li class="chapter" data-level="7.2" data-path="sets.html"><a href="sets.html#new_sets"><i class="fa fa-check"></i><b>7.2</b> Creating a New Set</a></li>
+<li class="chapter" data-level="7.3" data-path="sets.html"><a href="sets.html#saving-your-sets"><i class="fa fa-check"></i><b>7.3</b> Saving Your Sets</a></li>
+<li class="chapter" data-level="7.4" data-path="sets.html"><a href="sets.html#viewing-and-editing-existing-sets"><i class="fa fa-check"></i><b>7.4</b> Viewing and Editing Existing Sets</a></li>
+<li class="chapter" data-level="7.5" data-path="sets.html"><a href="sets.html#adding-components-to-your-set"><i class="fa fa-check"></i><b>7.5</b> Adding Components to Your Set</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="sets.html"><a href="sets.html#component-statuses"><i class="fa fa-check"></i><b>7.5.1</b> Component Statuses</a></li>
+</ul></li>
+<li class="chapter" data-level="7.6" data-path="sets.html"><a href="sets.html#supersets"><i class="fa fa-check"></i><b>7.6</b> Supersets: Sets of Sets</a></li>
+<li class="chapter" data-level="7.7" data-path="sets.html"><a href="sets.html#setsuperset-structure"><i class="fa fa-check"></i><b>7.7</b> Set/Superset Structure</a><ul>
+<li class="chapter" data-level="7.7.1" data-path="sets.html"><a href="sets.html#type_rules"><i class="fa fa-check"></i><b>7.7.1</b> “Type” Rules</a></li>
+<li class="chapter" data-level="7.7.2" data-path="sets.html"><a href="sets.html#participant-view-7"><i class="fa fa-check"></i><b>7.7.2</b> Participant View</a></li>
+<li class="chapter" data-level="7.7.3" data-path="sets.html"><a href="sets.html#info_page_structure"><i class="fa fa-check"></i><b>7.7.3</b> Info Page View</a></li>
+<li class="chapter" data-level="7.7.4" data-path="sets.html"><a href="sets.html#sample_order"><i class="fa fa-check"></i><b>7.7.4</b> Sample Order</a></li>
+</ul></li>
+<li class="chapter" data-level="7.8" data-path="sets.html"><a href="sets.html#filtering-participants-using-sets"><i class="fa fa-check"></i><b>7.8</b> Filtering Participants Using Sets</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="projs.html"><a href="projs.html"><i class="fa fa-check"></i><b>8</b> Projects: Making your study go!</a><ul>
+<li class="chapter" data-level="8.1" data-path="projs.html"><a href="projs.html#overview-6"><i class="fa fa-check"></i><b>8.1</b> Overview</a></li>
+<li class="chapter" data-level="8.2" data-path="projs.html"><a href="projs.html#creating-a-new-project"><i class="fa fa-check"></i><b>8.2</b> Creating a New Project</a></li>
+<li class="chapter" data-level="8.3" data-path="projs.html"><a href="projs.html#viewing-and-editing-existing-projects"><i class="fa fa-check"></i><b>8.3</b> Viewing and Editing Existing Projects</a></li>
+<li class="chapter" data-level="8.4" data-path="projs.html"><a href="projs.html#adding-sets-and-components"><i class="fa fa-check"></i><b>8.4</b> Adding Sets and Components</a><ul>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#component-statuses-1"><i class="fa fa-check"></i>Component Statuses</a></li>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#filtering"><i class="fa fa-check"></i>Filtering Participants Using Sets</a></li>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#icons"><i class="fa fa-check"></i>Icons</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="projs.html"><a href="projs.html#debriefs"><i class="fa fa-check"></i><b>8.5</b> Debriefs</a></li>
+<li class="chapter" data-level="8.6" data-path="projs.html"><a href="projs.html#project-urls"><i class="fa fa-check"></i><b>8.6</b> Project URLs</a></li>
+<li class="chapter" data-level="8.7" data-path="projs.html"><a href="projs.html#project_structure"><i class="fa fa-check"></i><b>8.7</b> Project Structure</a></li>
+<li class="chapter" data-level="8.8" data-path="projs.html"><a href="projs.html#testingyourstudy"><i class="fa fa-check"></i><b>8.8</b> Testing Your Study</a><ul>
+<li class="chapter" data-level="8.8.1" data-path="projs.html"><a href="projs.html#examining-structure"><i class="fa fa-check"></i><b>8.8.1</b> Examining Structure</a><ul>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#participant_view"><i class="fa fa-check"></i>Participant View</a></li>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#info-page-view"><i class="fa fa-check"></i>Info Page View</a></li>
+<li class="chapter" data-level="" data-path="projs.html"><a href="projs.html#sample-order"><i class="fa fa-check"></i>Sample Order</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8.9" data-path="projs.html"><a href="projs.html#activating-projects-1"><i class="fa fa-check"></i><b>8.9</b> Activating Projects</a><ul>
+<li class="chapter" data-level="8.9.1" data-path="projs.html"><a href="projs.html#checlist"><i class="fa fa-check"></i><b>8.9.1</b> “Is my study ready?”: Student Checklist</a></li>
+</ul></li>
+<li class="chapter" data-level="8.10" data-path="projs.html"><a href="projs.html#anon"><i class="fa fa-check"></i><b>8.10</b> Anonymous Participation</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>9</b> Data</a><ul>
+<li class="chapter" data-level="9.1" data-path="data.html"><a href="data.html#data-formats"><i class="fa fa-check"></i><b>9.1</b> Data Formats</a><ul>
+<li class="chapter" data-level="9.1.1" data-path="data.html"><a href="data.html#data-outputs"><i class="fa fa-check"></i><b>9.1.1</b> Data Outputs</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="data.html"><a href="data.html#downloading-your-data"><i class="fa fa-check"></i><b>9.2</b> Downloading Your Data</a><ul>
+<li class="chapter" data-level="9.2.1" data-path="data.html"><a href="data.html#from-individual-components"><i class="fa fa-check"></i><b>9.2.1</b> From Individual Components</a></li>
+<li class="chapter" data-level="9.2.2" data-path="data.html"><a href="data.html#from-the-entire-project"><i class="fa fa-check"></i><b>9.2.2</b> From the Entire Project</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="data.html"><a href="data.html#test-data"><i class="fa fa-check"></i><b>9.3</b> Test Data</a></li>
+<li class="chapter" data-level="9.4" data-path="data.html"><a href="data.html#number-of-participants"><i class="fa fa-check"></i><b>9.4</b> Number of Participants</a></li>
+<li class="chapter" data-level="9.5" data-path="data.html"><a href="data.html#help-with-data"><i class="fa fa-check"></i><b>9.5</b> Help with Data</a><ul>
+<li class="chapter" data-level="9.5.1" data-path="data.html"><a href="data.html#commoncode"><i class="fa fa-check"></i><b>9.5.1</b> Commonly Used Code</a><ul>
+<li class="chapter" data-level="" data-path="data.html"><a href="data.html#first-completion-only"><i class="fa fa-check"></i>First completion only</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html"><i class="fa fa-check"></i>FAQs</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#overview-7"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#about-support"><i class="fa fa-check"></i>About Support</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#i-emailed-an-admin-and-havent-received-a-response"><i class="fa fa-check"></i>I emailed an admin and haven’t received a response</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#about-accounts"><i class="fa fa-check"></i>About Accounts</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#i-have-requested-researcher-status-and-havent-received-it"><i class="fa fa-check"></i>I have requested researcher status and haven’t received it</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#my-supervisor-approved-my-researcher-status-but-my-account-doesnt-have-updated-privileges"><i class="fa fa-check"></i>My supervisor approved my researcher status, but my account doesn’t have updated privileges</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#i-have-lost-my-password"><i class="fa fa-check"></i>I have lost my password</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#about-study-constructionactivation"><i class="fa fa-check"></i>About Study Construction/Activation</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#my-questionnaireresponses-to-questions-wont-save"><i class="fa fa-check"></i>My questionnaire/responses to questions won’t save</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#can-the-system-make-studies-which-branch-depending-on-the-responses-given-by-participants"><i class="fa fa-check"></i>Can the system make studies which branch depending on the responses given by participants?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#i-edited-my-study-and-it-changed-from-active-to-test.-how-do-i-change-it-back"><i class="fa fa-check"></i>I edited my study and it changed from active to test. How do I change it back?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#my-studycomponents-of-my-study-are-set-to-test.-how-do-i-make-it-active"><i class="fa fa-check"></i>My study/components of my study are set to test. How do I make it active?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#where-do-i-put-my-informationdebrief-sheet"><i class="fa fa-check"></i>Where do I put my information/debrief sheet?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#can-i-have-multiple-response-scales-on-a-single-radiopage-questionnaire"><i class="fa fa-check"></i>Can I have multiple response scales on a single radiopage questionnaire?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#does-my-experimentum-questionnaire-need-to-look-exactly-like-the-paper-version"><i class="fa fa-check"></i>Does my Experimentum questionnaire need to look exactly like the paper version?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#about-study-participation"><i class="fa fa-check"></i>About Study Participation</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#can-participants-skip-questions"><i class="fa fa-check"></i>Can participants skip questions?</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#my-participants-are-not-being-allowed-to-take-part-in-my-studya-part-of-my-study"><i class="fa fa-check"></i>My participants are not being allowed to take part in my study/a part of my study</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#about-data"><i class="fa fa-check"></i>About Data</a><ul>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#missing-data"><i class="fa fa-check"></i>Missing Data</a></li>
+<li class="chapter" data-level="" data-path="faqs.html"><a href="faqs.html#where-is-my-data-stored"><i class="fa fa-check"></i>Where is my data stored?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html"><i class="fa fa-check"></i>Known Issues, Bugs and Common Errors</a><ul>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#overview-8"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#common-errors"><i class="fa fa-check"></i>Common Errors</a><ul>
+<li class="chapter" data-level="9.5.2" data-path="knownissues.html"><a href="knownissues.html#data-not-being-saved-despite-questions-being-completed."><i class="fa fa-check"></i><b>9.5.2</b> Data not being saved despite questions being completed.</a></li>
+<li class="chapter" data-level="9.5.3" data-path="knownissues.html"><a href="knownissues.html#n-in-question-names-in-downloaded-data"><i class="fa fa-check"></i><b>9.5.3</b> <code>/n</code> in Question Names in Downloaded Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#issues"><i class="fa fa-check"></i>Issues…</a><ul>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#which-do-not-interfere-with-the-operation-of-the-site"><i class="fa fa-check"></i>Which do NOT interfere with the operation of the site</a><ul>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#notfound"><i class="fa fa-check"></i>“The supervisor or supervised could not be found” when changing account type</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#which-do-interfere-with-the-operation-of-the-site"><i class="fa fa-check"></i>Which DO interfere with the operation of the site</a><ul>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#missing-data-1"><i class="fa fa-check"></i>Missing Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#my-questionnaireresponses-to-questions-wont-save-1"><i class="fa fa-check"></i>My questionnaire/responses to questions won’t save</a><ul>
+<li><a href="knownissues.html#user_age"><code>user_age</code> displayed as “2020.1”</a></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#video-stimuli-is-not-loading"><i class="fa fa-check"></i>Video stimuli is not loading</a></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#email-notifications"><i class="fa fa-check"></i>Email Notifications</a></li>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#cannot-share-ownership-of-components-with-students"><i class="fa fa-check"></i>Cannot Share Ownership of Components With Students</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5.4" data-path="knownissues.html"><a href="knownissues.html#solved-issues"><i class="fa fa-check"></i><b>9.5.4</b> Solved Issues</a><ul>
+<li class="chapter" data-level="" data-path="knownissues.html"><a href="knownissues.html#oneofequal"><i class="fa fa-check"></i>One of (equal) preventing sets from running</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html"><i class="fa fa-check"></i>Supervisor Cheatsheet</a><ul>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#overview-9"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#roles"><i class="fa fa-check"></i>Admins</a><ul>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#admin-responsibilities"><i class="fa fa-check"></i>Admin Responsibilities</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#supervisor-responsibilities"><i class="fa fa-check"></i>Supervisor Responsibilities</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#accessing-supervisees-projects-sets-and-components"><i class="fa fa-check"></i>Accessing Supervisees Projects, Sets and Components</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#approving-student-and-researcher-status-requests-1"><i class="fa fa-check"></i>Approving Student and Researcher Status Requests</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#activating"><i class="fa fa-check"></i>Activating Studies</a><ul>
+<li class="chapter" data-level="9.5.5" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#is-this-study-ready-student-checklist"><i class="fa fa-check"></i><b>9.5.5</b> Is this study ready?: Student Checklist</a></li>
+<li class="chapter" data-level="9.5.6" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#making-a-study-active"><i class="fa fa-check"></i><b>9.5.6</b> Making a Study Active</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#sharing-components"><i class="fa fa-check"></i>Sharing Components</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#resetting-passwords"><i class="fa fa-check"></i>Resetting Passwords</a></li>
+<li class="chapter" data-level="" data-path="supervisor-cheatsheet.html"><a href="supervisor-cheatsheet.html#autologin-links"><i class="fa fa-check"></i>Autologin Links</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html"><i class="fa fa-check"></i>Appendices</a><ul>
+<li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html#appendices-1"><i class="fa fa-check"></i>Appendices</a><ul>
+<li class="chapter" data-level="9.5.7" data-path="appendices.html"><a href="appendices.html#image-sources"><i class="fa fa-check"></i><b>9.5.7</b> Image Sources</a></li>
+<li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html#software"><i class="fa fa-check"></i>Software</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html#references"><i class="fa fa-check"></i>References</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Experimentum: Web-based Software for Psychological Studies</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="sets" class="section level1">
+<h1><span class="header-section-number">Chapter 7</span> Sets</h1>
+<div id="overview-5" class="section level2">
+<h2><span class="header-section-number">7.1</span> Overview</h2>
+<p>Learning to use sets and supersets will be a reality for the majority of Experimentum users. Individual questionnaire or experimental components alone are not much use.</p>
+<p>In order to make our studies we will always need to group components together to make them work. We do this by placing them in sets, another type of component, which also allow us to make decisions on which participants see what components and the order of their presentation.</p>
+<p>A <strong>set</strong> here refers to a set which contains only questionnaire and experimental components. A <strong>superset</strong> is a set which contains other sets nested inside of it, which may or may not also hold individual questionnaire or experimental components with those sets.</p>
+</div>
+<div id="new_sets" class="section level2">
+<h2><span class="header-section-number">7.2</span> Creating a New Set</h2>
+<p>To create a set, navigate to the researcher’s section of the site using the menu at the right side of the page and click on sets.</p>
+<center>
+<img src="images/screenshots/sets_1.png" />
+</center>
+<p>Next, click on the “New set” button at the top of the page to create a new set:</p>
+<center>
+<img src="images/screenshots/sets_2.png" />
+</center>
+<p>You will be brought to a page which allows you to enter information about your set:</p>
+<center>
+<img src="images/screenshots/sets_3.png" />
+</center>
+<p>This is very similar to the questionnaire and experiment information you would have completed for each of your individual components. The information requested is as follows:</p>
+<ul>
+<li><strong>Name for researchers</strong>: This is the name of the set that will be displayed to the researchers. Make sure that it is informative and appropriate.</li>
+<li><strong>Name for Participants</strong>: This is the name of the set that will be displayed to participants. Make sure that it is informative and appropriate.</li>
+<li><strong>Type</strong>: This rule determines how the participants will see the items within this set only:
+<ul>
+<li><strong>Fixed order</strong>: participants will do each component of the set in the order they are placed in the set by you.</li>
+<li><strong>Random order</strong>: participants will do each component of the set, but in an order randomly generated by the system.</li>
+<li><strong>One of (random)</strong>: participants will do only one of the items in the set, determined randomly by the system.</li>
+</ul></li>
+<li><strong>Show to</strong>: gender limitations of this set. If you are allowing for anonymous participation you should not be setting gender limitations.</li>
+<li><strong>Age limits</strong>: Age range limitations. If you are allowing for anonymous participation you should not be setting age limitations.</li>
+<li><strong>Labnotes</strong>: this is a note to tell yourself, your supervisor, other researchers and the admins exactly what this set is about. Please complete this to the fullest of your ability.</li>
+<li><strong>General feedback</strong>: equivalent to the feedback tab in a questionnaire or experiment component. See the Debriefing section before filling in any feedback on components or sets.</li>
+</ul>
+<div class="info">
+<p>
+It may be that you construct a set for each condition of your IV and have participants randomly assigned to them.
+</p>
+<p>
+You should note that we are not able to guarantee <strong>equal numbers</strong> across each of these. You may need to monitor your study carefully and ask your supervisor or the admins to archive parts of your study to try to achieve approximately equal numbers.
+</p>
+</div>
+</div>
+<div id="saving-your-sets" class="section level2">
+<h2><span class="header-section-number">7.3</span> Saving Your Sets</h2>
+<p>When you create a set you will be asked to fill in the set information, as detailed above. When you have done this and populated the set with the components that you require click on the “Save” button on the top left of the page.</p>
+<center>
+<img src="images/screenshots/sets_3.png" />
+</center>
+<p>Just like questionnaire and experimental components, sets are assigned a number for future reference.</p>
+</div>
+<div id="viewing-and-editing-existing-sets" class="section level2">
+<h2><span class="header-section-number">7.4</span> Viewing and Editing Existing Sets</h2>
+<p>To view the sets that you have previously made navigate to the “Sets” area of the “Researchers” area of the website by clicking the button:</p>
+<center>
+<img src="images/screenshots/sets_1.png" />
+</center>
+<p>Here you will see the sets that you have made and can click on them to be taken to their information page.</p>
+<center>
+<img src="images/screenshots/sets_9.png" />
+</center>
+<p>Alternatively, if you remember the number of the set, you can type the number into the box in the button to be taken directly to it.</p>
+<center>
+<img src="images/screenshots/sets_11.PNG" />
+</center>
+<center>
+<img src="images/screenshots/sets_12.PNG" />
+</center>
+<p>To edit the set, press the “Edit” button on the top left of the page.</p>
+</div>
+<div id="adding-components-to-your-set" class="section level2">
+<h2><span class="header-section-number">7.5</span> Adding Components to Your Set</h2>
+<p>At the bottom of the set page you will see that the page is split into two sections. On the left you have a part which shows you things you can put into your set and on the right the current contents of the set. This new set is empty.</p>
+<center>
+<img src="images/screenshots/sets_4.png" />
+</center>
+<p>I can use the buttons next to “View Items” on the right to show me the available experimental components, questionnaire components and other sets (more in <a href="sets.html#supersets">“Supersets: sets of sets”</a>). By clicking on the appropriate button, I can switch views between the different types of components that I want to place in my set:</p>
+<center>
+<img src="images/screenshots/sets_5.png" />
+</center>
+<p>I can use the search box to either search by using the number assigned to the components I have created or search for the name for researchers that I gave them earlier:</p>
+<center>
+<img src="images/screenshots/sets_6.png" />
+</center>
+<p>I can then click on the one that I want which will place it into the current Set List on the right-hand side. I can do this with multiple items to fill the set out:</p>
+<center>
+<img src="images/screenshots/sets_7.png" />
+</center>
+<p>In the example above I might place a slideshow followed by an X-AFC experimental component to be presented in a fixed order. This might be a useful setup for testing recall of faces, where the slideshow presents a selection of visual stimuli and then participant recall is tested using an X-AFC test.</p>
+<div id="component-statuses" class="section level3">
+<h3><span class="header-section-number">7.5.1</span> Component Statuses</h3>
+<p>This page also allows you to see the current status of the items you can place in your set. The A relates to items which are active, and the T denotes those which are still in test mode and cannot be viewed by participants:</p>
+<center>
+<img src="images/screenshots/sets_8.png" />
+</center>
+</div>
+</div>
+<div id="supersets" class="section level2">
+<h2><span class="header-section-number">7.6</span> Supersets: Sets of Sets</h2>
+<p>Sometimes a single set is not enough. Sometimes you need to use a combination of different <a href="sets.html#new_sets">“type” rules</a> to structure a research project to achieve your study’s design.</p>
+<p>This will require you to create sets with your individual questionnaire or experimental components inside, but to also put these sets within other sets.</p>
+<p>These sets of sets are referred to as “supersets”. They can also contain individual components with other sets.</p>
+<p>Using a combination of components, sets, supersets and type rules you can come up with lots of combinations of study designs, allowing the system to meet a wide range of researcher’s needs.</p>
+</div>
+<div id="setsuperset-structure" class="section level2">
+<h2><span class="header-section-number">7.7</span> Set/Superset Structure</h2>
+<div id="type_rules" class="section level3">
+<h3><span class="header-section-number">7.7.1</span> “Type” Rules</h3>
+</div>
+<div id="participant-view-7" class="section level3">
+<h3><span class="header-section-number">7.7.2</span> Participant View</h3>
+<p>You should run through your study as if you were a participant. Instructions on how to do this are in the <a href="projs.html#participant_view">testing your study</a> section.</p>
+</div>
+<div id="info_page_structure" class="section level3">
+<h3><span class="header-section-number">7.7.3</span> Info Page View</h3>
+<p>You can examine the overall set/superset structure by selecting the set you want to look at from the “Sets” menu in the Researchers section of the website and scrolling down to the bottom of the page:</p>
+<center>
+<img src="images/screenshots/sets_13.png" />
+</center>
+<p>Here you can see that the current set (734) contains other sets (set 666 and superset 735). These two sets are presented in a fixed order. Each set’s own type rules are displayed under the “Type” column, which allows you to work out the order of presentation of all the components and sets within.</p>
+<p>It can be interpreted as follows:</p>
+<ul>
+<li>Participants enter into set 734 and are passed into set 666, where they will complete components quest_1790 and 1791 in fixed order.</li>
+<li>Participants are then passed to set 735, which contains set 292 and set 293, presented in random order. Participants will complete one and then the other in a randomised order.
+<ul>
+<li>Both set 292 and 293 are “random”, which means that the components within them are presented in a randomised order within that set.</li>
+</ul></li>
+</ul>
+<p>This is a simple example, but the same principles apply to more complex designs with more components and sets.</p>
+<p>Similar information is provided on <a href="projs.html#project_structure">Project</a> information pages, which allow you to make the same deductions about the delivery of your whole project.</p>
+</div>
+<div id="sample_order" class="section level3">
+<h3><span class="header-section-number">7.7.4</span> Sample Order</h3>
+<p>It is also advisable to use the “Test” button at the top of the page to get a “sample order” of the delivery of the project.</p>
+<p>Pressing this button simulates how participants willmove through the set:</p>
+<center>
+<img src="images/screenshots/sets_14.PNG" />
+</center>
+<p>Here you can get a run down of what participants will see and in what order. I pressed the button and I can see that participants complete:</p>
+<ol style="list-style-type: decimal">
+<li>quest_1790 (consent form)</li>
+<li>quest_1791 (demographics)</li>
+<li>They are passed to set 293, where participants complete:
+<ol style="list-style-type: decimal">
+<li>quest_1 (mixed questionnaire test)</li>
+<li>quest_650 (rank questionnaire test)</li>
+<li>quest_2 (radiopage questionnaire test)</li>
+</ol></li>
+<li>Participants are then passed to set 292, where they complete:
+<ol style="list-style-type: decimal">
+<li>exp 178 (2-AFC test)</li>
+<li>exp 180 (labelled buttons test)</li>
+<li>exp 179 (2-AFC with 8 button strength of choice test)</li>
+<li>exp 186 (sorting test)</li>
+<li>exp 184 (X-AFC test)</li>
+</ol></li>
+<li>Finally, participants then are presented with feedback from set 734. This is our top-most set and the feedback section of this contains our debriefing information. See <a href="planning-your-project.html#debrief">Debriefing</a> for more information on this part.</li>
+</ol>
+</div>
+</div>
+<div id="filtering-participants-using-sets" class="section level2">
+<h2><span class="header-section-number">7.8</span> Filtering Participants Using Sets</h2>
+<p>As the system does not allow for server side calculations we normally cannot filter participants based on any scoring from questionnaires, experiments or any other sort of criteria.</p>
+<p>There is, however, one simple filteration you can do using sets where participants, upon immediately entering the study, will be asked to self-select into one category or another.</p>
+<p>See the section in <a href="projs.html#filtering">Projects</a> for more information on how this is done.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="experimental-components.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="projs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
