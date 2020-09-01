@@ -1,5 +1,5 @@
 {
-    "description": "Reproducibly create online experiments.", 
+    "description": "Web-based software for building, deploying, and managing psychology studies.", 
     "license": "MIT", 
     "title": "Experimentum: ", 
     "version": "0.2",
