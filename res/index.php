@@ -88,9 +88,13 @@ $page->displayBody();
 
 <div id="dash"><?= $dash ?></div>
 
-<p>Citation: Lisa DeBruine, Rebecca Lai, Benedict Jones, Rifah Abdullah, Gaby Mahrholz. (2020). Experimentum (Version v.0.2). Zenodo. <a href="http://doi.org/10.5281/zenodo.2634355">doi:10.5281/zenodo.2634355</a></p>
-
 <?= linkList($links, 'bigbuttons resbuttons', 'ul', $class) ?>
+
+<p>Please cite Experimentum in any research using the platform: <br>
+    Lisa DeBruine, Rebecca Lai, Benedict Jones, Rifah Abdullah, Gaby Mahrholz. (2020). 
+    Experimentum (Version v.0.2). Zenodo. 
+    <a href="http://doi.org/10.5281/zenodo.2634355">doi:10.5281/zenodo.2634355</a></p>
+
 
 <script>
     //$("#dash").prependTo('ul.resbuttons');

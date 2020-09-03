@@ -9,15 +9,19 @@ $endtime = date('Y-m-d H:i:s');
 $order = array_flip(explode(",", $clean['order']));
 
 // start project session id if not started
+/*
 if (empty($_SESSION['session_id'])) {
-    $qtext = sprintf("INSERT INTO session (project_id, user_id, dt) VALUES (%d, %d, '%s')",
-        $_SESSION['project_id'],
-        $_SESSION['user_id'],
-        $clean['starttime'] //$endtime
+    $q = new myQuery();
+    $q->prepare("INSERT INTO session (project_id, user_id, dt) VALUES (?, ?, ?)",
+                array('iis',
+                      $_SESSION['project_id'],
+                      $_SESSION['user_id'],
+                      $clean['starttime'] //$endtime
+                )
     );
-    $q = new myQuery($qtext);
     $_SESSION['session_id'] = $q->get_insert_id();
 }
+*/
 
 // record data in quest_data
 foreach ($_POST as $qu => $a) {

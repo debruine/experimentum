@@ -415,6 +415,9 @@ class page {
 
 <footer id="footer">
     <small><?= FOOTERTEXT ?></small>
+    <!--
+    <?php if (!empty($_SESSION['session_id'])) { echo '<button id="quit_study">Quit Study</button>'; } ?>
+    -->
 </footer> 
 
 <!-- END OF FOOTER -->

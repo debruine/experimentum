@@ -610,7 +610,7 @@ class experiment {
         $text .= '
             if ($("#question").length > 0 && typeof(question) !== "undefined") $("#question").html(question[trialOrder[trial]]);
             $("#trial_n").html(trial);
-            $("#footer").text("Trial "+ trial +" of " + (trialOrder.length-1));
+            $("#footer small").text("Trial "+ trial +" of " + (trialOrder.length-1));
             
             var currentTime = new Date();
             beginTrial = currentTime.getTime();

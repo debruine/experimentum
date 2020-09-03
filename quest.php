@@ -75,9 +75,7 @@ $title = array(
     $q->get_name()
 );
 
-$styles = array(
-    '#dialog-confirm' => 'display: none;'
-);
+$styles = array();
 
 $page = new page($title);
 $page->set_menu(false);
@@ -91,7 +89,7 @@ $q->print_form();
 
 ?>
 
-<div id='dialog-confirm'>
+<div id='dialog-confirm' class='dialog'>
     <p>You have not answered some questions. Are you sure you want to submit?</p>
 </div>
 

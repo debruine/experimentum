@@ -320,6 +320,12 @@ tr.radiorow_values a:active {
     color: var(--theme); 
 }
 
+#quit_study { 
+    position: absolute;
+    right: 1em;
+    padding: 0.25em 0.5em;
+}
+
 tr.radiorow_values a {
     border:none;
 }
@@ -1317,7 +1323,8 @@ td.anchor {
     border-color: yellow;
 }
 
-#help { display: none; }
+<!-- dialog boxes -->
+.dialog, #help { display: none; }
 
 .helpbutton {
     float: right;

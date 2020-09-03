@@ -32,9 +32,10 @@ $page->displayBody();
 <h2><a href="#">Who runs this website?</a></h2>
 <div>
 <p>The University of Glasgow School of Psychology and Institute of Neuroscience and Psychology.</p>
-<p>Citation:</p>
-<p>DeBruine. L.M. (2019, April 9). Experimentum: Beta release 1 (Version v.0.1). Zenodo. 
-    <a href="http://doi.org/10.5281/zenodo.2634356">http://doi.org/10.5281/zenodo.2634356</a></p>
+<p>Please cite Experimentum in any research using the platform:</p>
+<p>Lisa DeBruine, Rebecca Lai, Benedict Jones, Rifah Abdullah, Gaby Mahrholz. (2020). 
+   Experimentum (Version v.0.2). Zenodo. 
+   <a href="http://doi.org/10.5281/zenodo.2634355">doi:10.5281/zenodo.2634355</a></p>
 </div>
 
 <h2><a href="#">How do you use cookies?</a></h2>

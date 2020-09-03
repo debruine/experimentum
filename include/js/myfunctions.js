@@ -166,7 +166,7 @@ $(function() {
     }
     
     // give button styles to all inputs in a buttons div
-    $('.buttons input, .buttons a, .buttons button').button();
+    $('.buttons input, .buttons a, .buttons button, #quit_study').button();
     
     // format all datepicker types
     $( ".datepicker[yearrange][mindate][maxdate]" ).each( function() {
@@ -197,6 +197,46 @@ $(function() {
                 $(this).attr('title', '');
             }
         }).attr("title", "Click on the slider to show the handle");
+    });
+    
+    // quit study button
+    $('#quit_study').click(function() {
+        console.log("Quit Study Clicked");
+        $('<div />').dialog({
+            title: 'Do you want to quit the study?',
+            modal: false,
+            position: ['center', 100],
+            width: 500,
+            buttons: {
+                "Cancel": function() {
+                    $(this).dialog('close');
+                },
+                "Quit and Keep Data in Study": function() {
+                    $.ajax({
+                        url: '/include/scripts/session_end',
+                        type: 'POST',
+                        data: { keep: true },
+                        success: function(data) {
+                            window.location = "/";
+                        }
+                    });
+    
+                    $(this).dialog('close');
+                },
+                "Quit and Remove Data from Study": function() {
+                    $.ajax({
+                        url: '/include/scripts/session_end',
+                        type: 'POST',
+                        data: { keep: false },
+                        success: function(data) {
+                            window.location = "/";
+                        }
+                    });
+    
+                    $(this).dialog('close');
+                }
+            }
+        });
     });
 
  /*   

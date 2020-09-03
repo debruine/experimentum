@@ -2,7 +2,6 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 require_once DOC_ROOT . '/include/classes/Parsedown.php';
-unset($_SESSION['session_id']);
 
 /****************************************************
  * Get Project Info
@@ -25,6 +24,8 @@ if (count($_GET) > 0) {
     
     $_SESSION['project'] = $projectname;
     $project = $myproject->get_one_array();
+    // set new session if project has changed
+    if ($_SESSION['project_id'] != $project['id']) { unset($_SESSION['session_id']); }
     $_SESSION['project_id'] = $project['id'];
     
     $exclusions = array();
@@ -138,6 +139,22 @@ if (!empty($_SESSION['status'])) {
         );
     }
     echo '</ul>';
+    
+    // start project session id if not started
+    if (empty($_SESSION['session_id'])) {
+        $q = new myQuery();
+        $q->prepare("INSERT INTO session (project_id, user_id, dt) VALUES (?, ?, NOW())",
+                    array('ii', $_SESSION['project_id'], $_SESSION['user_id']));
+        $_SESSION['session_id'] = $q->get_insert_id();
+    }
+    
+    // insert credit id
+    if (array_key_exists('credit', $_GET)) {
+        $_SESSION['credit'] = $_GET['credit'];
+        $q = new myQuery();
+        $q->prepare("INSERT IGNORE INTO credit (credit, project_id) VALUES (?, ?)",
+                    array('si', $_GET['credit'], $_SESSION['project_id']));
+    }
 } else if (array_key_exists("auto", $_GET)) {
     ?>
     <script>

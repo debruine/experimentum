@@ -17,17 +17,20 @@
     }
 
     // start project session id if not started
+    /*
     if (empty($_SESSION['session_id'])) {
-        $qtext = sprintf("INSERT INTO session (project_id, user_id, dt) VALUES (%d, %d, '%s')",
-            $_SESSION['project_id'],
-            $_SESSION['user_id'],
-            $starttime
+        $q = new myQuery();
+        $q->prepare("INSERT INTO session (project_id, user_id, dt) VALUES (?, ?, ?)",
+                    array('iis',
+                          $_SESSION['project_id'],
+                          $_SESSION['user_id'],
+                          $clean['starttime'] //$endtime
+                    )
         );
-        $q = new myQuery($qtext);
         $_SESSION['session_id'] = $q->get_insert_id();
     }
+    */
     
-
     $newq = sprintf("INSERT INTO exp_data 
                     (exp_id, user_id, session_id, trial_n, 
                     dv, rt, side, `order`, dt) VALUES 

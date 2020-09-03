@@ -35,13 +35,21 @@ if (array_key_exists('set_item_number', $_SESSION) && array_key_exists('set_list
 }
 
 // record end of session
-
 if (!empty($_SESSION['session_id'])) {
-    $q = new myQuery("UPDATE session SET endtime = NOW() WHERE user_id = {$_SESSION['user_id']} and id = {$_SESSION['session_id']}");
+    $q = new myQuery();
+    $q->prepare("UPDATE session SET endtime = NOW() WHERE user_id = ? AND id = ?",
+               array('ii', $_SESSION['user_id'], $_SESSION['session_id']));
     $session = $_SESSION['session_id'];
     unset($_SESSION['session_id']);
 } else {
     $session = 0;
+}
+
+// record end of credit
+if (array_key_exists('credit', $_SESSION)) {
+    $q = new myQuery();
+    $q->prepare("UPDATE credit SET percent_complete = 100 WHERE credit = ? AND project_id = ?",
+                array('si', $_SESSION['credit'], $_SESSION['project_id']));
 }
 
 // !if ineligible to do that item, return to homepage
