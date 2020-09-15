@@ -50,6 +50,8 @@ if (array_key_exists('credit', $_SESSION)) {
     $q = new myQuery();
     $q->prepare("UPDATE credit SET percent_complete = 100 WHERE credit = ? AND project_id = ?",
                 array('si', $_SESSION['credit'], $_SESSION['project_id']));
+                
+    
 }
 
 // !if ineligible to do that item, return to homepage
@@ -65,6 +67,22 @@ if (is_numeric($_GET['id'])
     $q = new myQuery('SELECT name, feedback_general, feedback_specific, feedback_query 
                         FROM ' . $_GET['type'] . ' WHERE id=' . $_GET['id']);
     $fbdata = $q->get_assoc(0);
+    
+    // project/credit feedback
+    $q->prepare("SELECT id, url, contact FROM project where id = ?",
+                array('i', $_SESSION['project_id']));
+    $pi = $q->get_one_row();
+    $project_fb = "";
+    $credit_fb = "";
+    if (empty($pi['contact'])) { $pi['contact'] = ADMIN_EMAIL; }
+    $project_fb = sprintf('<p>Please contact <a href="mailto:%s?subject=Experimentum project %s (%s)">%s</a> 
+                           with any questions about this study.</p>', 
+                               $pi['contact'], $pi['url'], $pi['id'], $pi['contact']);
+    
+    if (array_key_exists('credit', $_SESSION)) {
+        $credit_fb = sprintf("<p class='feature'>" . CREDITFB . "</p>\n\n", $_SESSION['credit'], $pi['contact']);
+    }
+    
     
     // general feedback
     //$general_fb = parsePara($fbdata['feedback_general']);
@@ -110,8 +128,10 @@ $page->displayHead();
 $page->displayBody();
 
 echo "<div class='fb_text'>\n";
+echo $credit_fb;
 echo $general_fb;
 echo $specific_fb;
+echo $project_fb;
  
 ?>
 

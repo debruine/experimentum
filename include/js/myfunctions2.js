@@ -1,3 +1,5 @@
+console.log("myfunctions loading");
+
 var KEYCODE = {
     'backspace' : 8,
     'tab' : 9,
@@ -149,9 +151,9 @@ $(function() {
     stripe('tbody');
     
     $('.warning').on('dblclick', function() {$(this).remove(); })
+    $('.dialog').hide();
     
     // set up help dialog box
-    console.log("Checking for help");
     if ($('#help').length > 0) {
         $('<div />')
             .html('help')

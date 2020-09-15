@@ -48,6 +48,7 @@ echo $q->get_result_as_table();
 </ul>
 
 <script>
+    console.log("Testing console logging");
     function windowdim() {
         $('#wwidth').html($(window).width());
         $('#wheight').html($(window).height());

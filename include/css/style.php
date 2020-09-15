@@ -1680,7 +1680,7 @@ PAD STYLES
         width: 100%;
         min-height: 10px;
         right: 0;
-        min-width: none;
+        min-width: 0;
         padding: 0px;   
     }
     
@@ -1851,7 +1851,7 @@ MOBILE STYLES
         min-width: 100%;
         min-height: 2.5em;
         max-width: 100%;
-        max-height: auto;
+        max-height: none;
         padding-left: 2em;
         background: var(--theme) 10px no-repeat;
         background-size: 1.5em auto;
@@ -1940,7 +1940,7 @@ MOBILE STYLES
         max-width: 75%;
         display: block;
     }
-    #low_anchor, {
+    #low_anchor {
         text-align: left;
     }
     #high_anchor {

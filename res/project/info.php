@@ -68,6 +68,7 @@ $page->displayBody();
         </td></tr>
     <tr><td>Labnotes:</td><td id='labnotes'> ...</td></tr>
     <tr><td>URL:</td><td><span id='url'>...</span></td></tr>
+    <tr><td>Contact email:</td><td><span id='contact'>...</span></td></tr>
     <tr><td>Completion:</td><td id='completion'><span id='users'>...</span> users started <span id='sessions'>...</span> sessions</td></tr>
     <tr><td>Restrictions:</td><td><span id='sex'>...</span> ages <span id='lower_age'>...</span> to <span id='upper_age'>...</span> years</td></tr>
     <tr><td>Blurb:</td><td id='blurb'>...</td></tr>
@@ -79,7 +80,7 @@ $page->displayBody();
     used in other projects, data collected via the other projects will not count 
     towards the participant numbers below (but will count towards the timing estimates).</p>
 
-<button id="info-status">Guest/Registered Only</button>
+<button id="info-status">change</button> <span id="info-status-label">Guest/Registered Only</span>
 
 <table id="setitems">
     <thead>
@@ -133,11 +134,10 @@ $page->displayBody();
 <div id="help" title="Set Info Help">
     
     <ul>
-        <li>The table shows information about each item in the set.</li>
+        <li>The table shows information about each item in the project.</li>
         <li>Subsets are indented under their set name.</li>
         <li>The totals at the bottom are for every item, even if all or some of the subsets are &ldquo;one of&rdquo; types.</li>
-        <li>Click the &ldquo;Test&rdquo; button to generate a sample order.</li>
-        <li>Click the &ldquo;Go&rdquo; button to participate in the set.</li>
+        <li>Click the &ldquo;Go&rdquo; button to participate in the project.</li>
     </ul>
 </div>
 
@@ -184,6 +184,7 @@ $page->displayBody();
                     $('#status').html(data.info.status);
                     $('#create_date').html(data.info.create_date);
                     $('#url').html(data.info.url);
+                    $('#contact').html(data.info.contact);
                     $('#labnotes').html(data.info.labnotes || '<span class="error">Please add labnotes</span>');
                     $('#users').html(data.info.users);
                     $('#sessions').html(data.info.sessions);
@@ -199,7 +200,7 @@ $page->displayBody();
                     $('#owner-add-input').autocomplete('option', 'source', data.owners.source);
                     
                     $('#project_items').html(data.project_items);
-                    item_stats(data.items_for_data, $('#item_id').val(), $('#info-status').html() == "All");
+                    item_stats(data.items_for_data, $('#item_id').val(), $('#info-status-label').html() == "All");
                     items_for_data = data.items_for_data;
                     
                     $('span.set_nest').click( function() {
@@ -219,12 +220,13 @@ $page->displayBody();
     getProjectInfo();
     
     $('#info-status').button().click(function() {
-        if ($(this).html() == "All") {
-            $(this).html("Guest/Registered Only");
+        var isl = $('#info-status-label');
+        if (isl.html() == "All") {
+            isl.html("Guest/Registered Only");
         } else {
-            $(this).html("All");
+            isl.html("All");
         }
-        item_stats(items_for_data, $('#item_id').val(), $('#info-status').html() == "All");
+        item_stats(items_for_data, $('#item_id').val(), $('#info-status-label').html() == "All");
     });
 
     

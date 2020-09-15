@@ -62,12 +62,18 @@ if (isset($_GET['checkurl'])) {
     $id = my_clean($_GET['id']);
     if (is_numeric($id) & $id>0) {
         $q = new myQuery("SELECT id AS project_id, name as 'project_name', 
-                          res_name, url, intro, sex, lower_age, upper_age, 
+                          res_name, url, contact, intro, sex, lower_age, upper_age, 
                           blurb, labnotes, status 
                           FROM project WHERE id='{$id}'");
         
         if ($q->get_num_rows() == 0) { header('Location: /res/project/'); }
         $project_info = $q->get_assoc(0);
+        
+        if (empty($project_info['contact'])) {
+            // set contact to current user email
+            $q->prepare("SELECT email FROM res WHERE user_id=?", array('i', $_SESSION['user_id']));
+            $project_info['contact'] = $q->get_one();
+        }
         
         $q->set_query("SELECT item_type as type, item_id as id, icon, 
             IF(item_type='exp', exp.res_name, 
@@ -133,6 +139,10 @@ $table_setup['url'] = new input('url', 'url', $project_info['url']);
 $table_setup['url']->set_width($input_width);
 $table_setup['url']->set_placeholder('shortname');
 $table_setup['url']->set_question('URL');
+
+$table_setup['contact'] = new input('contact', 'contact', $project_info['contact']);
+$table_setup['contact']->set_width($input_width);
+$table_setup['contact']->set_question('Contact email');
 
 $table_setup['url_fb'] = new msgRow('url_fb', 'url_fb', '&nbsp;');
 $table_setup['url_fb']->set_question(' ');

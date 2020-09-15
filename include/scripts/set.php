@@ -6,7 +6,7 @@ auth(0);
 $item_list = array();
 
 function get_set_items($id) {
-    global $item_list;
+    $item_list = array();
 
     $q = new myQuery('SELECT type FROM sets WHERE id=' . $id);
     $type = $q->get_one();
@@ -33,7 +33,7 @@ function get_set_items($id) {
                     ORDER BY item_n');
     $items = $q->get_assoc();
     
-    if (count($items > 0)) {
+    if (count($items) > 0) {
         if ($type == 'random') {
             // randomise order of items
             shuffle($items);        
@@ -106,11 +106,13 @@ function get_set_items($id) {
             get_set_items($item['item_id']); // recurses if item is another set
         }
     }
+    
+    return($item_list);
 }
 
 
 if (validID($_GET['id'])) {
-    get_set_items($_GET['id']);
+    $item_list = get_set_items($_GET['id']);
 }
 
 // send to feedback last
@@ -125,7 +127,11 @@ if (   !empty($fb['feedback_general'])
 }
 
 if (array_key_exists("test", $_GET)) {
-    htmlArray($item_list);
+    echo "<ul>\n";
+    foreach ($item_list as $item) {
+        echo "    <li>" . $item . "</li>\n";
+    }
+    echo "</ul>\n\n";
 } else {
     $_SESSION['set_list'] = $item_list;
     $_SESSION['set_item_number'] = 0;

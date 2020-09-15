@@ -260,7 +260,7 @@ class page {
     <script src="<?= JQUERY ?>"></script> 
     <script src="<?= JQUERYUI ?>"></script>
     <script src="/include/js/jquery.ui.touch-punch.min.js"></script>
-    <script src="/include/js/myfunctions.js"></script>  
+    <script src="/include/js/myfunctions2.js"></script>  
 
 <?php
         if ($header) {

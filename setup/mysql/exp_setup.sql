@@ -130,6 +130,7 @@ CREATE TABLE `project` (
   `lower_age` tinyint(2) unsigned DEFAULT NULL,
   `upper_age` tinyint(2) unsigned DEFAULT NULL,
   `blurb` text DEFAULT NULL,
+  `contact` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `url` (`url`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
