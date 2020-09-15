@@ -21,6 +21,19 @@ if (array_key_exists('within_adapt_number', $_SESSION) && array_key_exists('with
 
 // !Next item in set, if set list exists
 if (array_key_exists('set_item_number', $_SESSION) && array_key_exists('set_list', $_SESSION)) {
+    // record credit
+    if (array_key_exists('credit', $_SESSION)) {
+        // account for feedback item if present
+        $total = count($_SESSION['set_list']);
+        if (substr($_SESSION['set_list'][$total-1], 0, 4) == '/fb?') { $total--; }
+        
+        $percent_complete = round(100*($_SESSION['set_item_number']+1)/$total);
+        $q = new myQuery();
+        $q->prepare("UPDATE credit SET percent_complete = ? WHERE credit = ? AND project_id = ?",
+                    array('isi', $percent_complete, $_SESSION['credit'], $_SESSION['project_id']));
+    }
+    
+    // increment
     $_SESSION['set_item_number']++;
     $next_in_list = $_SESSION['set_list'][$_SESSION['set_item_number']];
     if (!empty($next_in_list)) {
@@ -50,9 +63,9 @@ if (array_key_exists('credit', $_SESSION)) {
     $q = new myQuery();
     $q->prepare("UPDATE credit SET percent_complete = 100 WHERE credit = ? AND project_id = ?",
                 array('si', $_SESSION['credit'], $_SESSION['project_id']));
-                
-    
 }
+
+
 
 // !if ineligible to do that item, return to homepage
 if (array_key_exists('ineligible', $_GET)) {
