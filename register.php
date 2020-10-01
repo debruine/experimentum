@@ -383,7 +383,7 @@ echo '<h3>This website requires cookies to allow you to log in.<br>Registering i
     function register() {
         var theData = $('#myInformation_form').serialize();
         if (theData.indexOf("sex=") == -1) {
-            growl('You must select a sex.');
+            growl('You must select a gender.');
         } else {
             $.ajax({
                 url: '?register',
@@ -391,9 +391,11 @@ echo '<h3>This website requires cookies to allow you to log in.<br>Registering i
                 dataType: 'json',
                 data: theData,
                 success: function(data) {
+                    
                     if (data.error || isNaN(data.user_id)) {
                         alert(data.error);
                     } else {
+                        if (data.msg) { alert(data.msg); }
                         window.location='<?= ifEmpty($_SESSION['return_to'], '/') ?>';
                     }
                 }
