@@ -67,7 +67,12 @@ $page->displayBody();
             <?php } ?>
         </td></tr>
     <tr><td>Labnotes:</td><td id='labnotes'> ...</td></tr>
-    <tr><td>URL:</td><td><span id='url'>...</span></td></tr>
+    <tr><td>URL:</td><td><ul>
+        <li>Requires account: <button class='url tinybutton'>...</button></li>
+        <li>Auto-login: <button class='url auto tinybutton'>...</button></li>
+        <li>Guest login: <button class='url guest tinybutton'>...</button></li>
+        <li>All options: <button class='url all tinybutton'>...</button></li>
+    </ul></td></tr>
     <tr><td>Contact email:</td><td><span id='contact'>...</span></td></tr>
     <tr><td>Completion:</td><td id='completion'><span id='users'>...</span> users started <span id='sessions'>...</span> sessions</td></tr>
     <tr><td>Restrictions:</td><td><span id='sex'>...</span> ages <span id='lower_age'>...</span> to <span id='upper_age'>...</span> years</td></tr>
@@ -183,7 +188,10 @@ $page->displayBody();
                     $('#res_name').html(data.info.res_name);
                     $('#status').html(data.info.status);
                     $('#create_date').html(data.info.create_date);
-                    $('#url').html(data.info.url);
+                    $('.url').html(data.info.url);
+                    $('.url.auto').html(data.info.url + '&amp;auto');
+                    $('.url.guest').html(data.info.url + '&amp;guest');
+                    $('.url.all').html(data.info.url + '&amp;all');
                     $('#contact').html(data.info.contact);
                     $('#labnotes').html(data.info.labnotes || '<span class="error">Please add labnotes</span>');
                     $('#users').html(data.info.users);
@@ -218,6 +226,17 @@ $page->displayBody();
     }
     
     getProjectInfo();
+    
+    $('button.url').click(function() {
+        var inp = document.createElement('input');
+        document.body.appendChild(inp)
+        inp.value = this.textContent;
+        inp.select();
+        document.execCommand('copy',false);
+        inp.remove();
+        
+        growl("Copied: " + this.textContent, 500);
+    });
     
     $('#info-status').button().click(function() {
         var isl = $('#info-status-label');
