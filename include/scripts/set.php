@@ -6,7 +6,7 @@ auth(0);
 $item_list = array();
 
 function get_set_items($id) {
-    $item_list = array();
+    global $item_list;
 
     $q = new myQuery('SELECT type FROM sets WHERE id=' . $id);
     $type = $q->get_one();
@@ -112,7 +112,7 @@ function get_set_items($id) {
 
 
 if (validID($_GET['id'])) {
-    $item_list = get_set_items($_GET['id']);
+    get_set_items($_GET['id']);
 }
 
 // send to feedback last

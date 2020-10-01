@@ -23,12 +23,19 @@ if (array_key_exists('within_adapt_number', $_SESSION) && array_key_exists('with
 if (array_key_exists('set_item_number', $_SESSION) && array_key_exists('set_list', $_SESSION)) {
     // record credit
     if (array_key_exists('credit', $_SESSION)) {
+        $q = new myQuery();
+        $q->prepare("SELECT percent_complete FROM credit WHERE credit = ? AND project_id = ?",
+                    array('si', $_SESSION['credit'], $_SESSION['project_id']));
+        $pc = $q->get_one();
+        
         // account for feedback item if present
         $total = count($_SESSION['set_list']);
         if (substr($_SESSION['set_list'][$total-1], 0, 4) == '/fb?') { $total--; }
+        $finished = $_SESSION['set_item_number']+1;
         
-        $percent_complete = round(100*($_SESSION['set_item_number']+1)/$total);
-        $q = new myQuery();
+        // can't go backwards
+        $percent_complete = max($pc, round(100*$finished/$total));
+        
         $q->prepare("UPDATE credit SET percent_complete = ? WHERE credit = ? AND project_id = ?",
                     array('isi', $percent_complete, $_SESSION['credit'], $_SESSION['project_id']));
     }
