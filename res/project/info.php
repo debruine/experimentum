@@ -153,7 +153,7 @@ $page->displayBody();
 
 <script>
     $( "#view-project" ).click(function() {
-        window.location = $('#url').text();
+        window.location = $('button.url.all').text();
     });
     
     $('#owner-add-input').autocomplete({
