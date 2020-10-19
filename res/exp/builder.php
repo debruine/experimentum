@@ -311,7 +311,7 @@ $info['trial_order']->set_options(array(
 
 // side
 $info['side'] = new radio('side', 'side', $eInfo['side']);
-$info['side']->set_question('Image Side');
+$info['side']->set_question('Stimulus Side');
 $info['side']->set_options(array(
     'random' => 'Random',
     'fixed' => 'Fixed'
@@ -325,9 +325,9 @@ $random_stim = new input('random_stim', 'random_stim', $eInfo['random_stim']);
 $random_stim->set_width(50);
 $random_stim->set_type('number');
 $random_stim->set_eventHandlers(array('onchange' => '$(\'#random_stim_top\').html(this.value);'));
-$ci = "Show " . $random_stim->get_element() . ' of ' . $total_stim->get_element() . ' total images';
+$ci = "Show " . $random_stim->get_element() . ' of ' . $total_stim->get_element() . ' total stimuli';
 $info['images'] = new formElement('images','images');
-$info['images']->set_question("Images");
+$info['images']->set_question("Stimuli");
 $info['images']->set_custom_input($ci);
 
 // set up limits: sex, lower_age, upper_age
@@ -395,7 +395,7 @@ if (is_array($trialInfo) && array_key_exists('nimages', $trialInfo)) {
 }
 
 $info['nImages'] = new selectnum('nImages', 'nImages', $nImages);
-$info['nImages']->set_question('Number of Images to Display');
+$info['nImages']->set_question('Number of Stimuli to Display');
 $info['nImages']->set_options(array(), $min_max_images[$eInfo['exptype']][0], $min_max_images[$eInfo['exptype']][1]);
 $info['nImages']->set_null(false);
 

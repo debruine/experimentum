@@ -29,7 +29,7 @@ $styles = array(
     '.setlists li:hover'            => 'color:hsl(0, 100%, 40%); cursor:default;',
     '.setlists li+li'               => 'border-top:0;',
     '#new_set'                      => '',
-    '#new_set li'                   => 'list-style-position: outside; margin-left:30px; cursor: url(/images/icons/ns-move), ns-resize;',
+    '#new_set li'                   => 'list-style-position: outside; margin-left:30px; cursor: ns-resize;',
     '#labnotes'                     => 'vertical-align: text-top;',
     '.search'                       => 'width: 94%; margin: 0 .5em;'
 );
@@ -45,6 +45,8 @@ $set_info = array(
 );
 
 $item_list = array();
+
+$return = array('error' => false);
 
 if (array_key_exists('id', $_GET)) {
     // get a set's information
@@ -116,6 +118,8 @@ if (array_key_exists('save', $_GET)) {
     // get new set ID if a new set
     if ('NULL' == $clean['set_id']) $clean['set_id'] = $q->get_insert_id();
     
+    $return['id'] = $clean['set_id'];
+    
     // delete old items from set list
     $q = new myQuery('DELETE FROM set_items WHERE set_id=' . $clean['set_id']);
     
@@ -132,7 +136,8 @@ if (array_key_exists('save', $_GET)) {
     // add to access list
     $q = new myQuery("REPLACE INTO access (type, id, user_id) VALUES ('sets', {$clean['set_id']}, {$_SESSION['user_id']})");
     
-    echo 'Set Saved'; exit;
+    scriptReturn($return);
+    exit;
 } else if (array_key_exists('delete', $_GET) && validID($_POST['set_id'])) {
     // delete the set
     $q = new myQuery('DELETE FROM sets WHERE id=' . $_POST['set_id']);
@@ -172,25 +177,26 @@ $table_setup['set_type']->set_options(array(
     #'one_equal' => 'One of (equal)'
 ));
 
-$table_setup['sex'] = new select('sex', 'sex', $project_info['sex']);
-$table_setup['sex']->set_options(array(
+// set up sex and age limits
+$sex = new select('sex', 'sex', $project_info['sex']);
+$sex->set_options(array(
     'both' => 'All genders',
     'male' => 'Men only',
     'female' => 'Women only'
 ));
-$table_setup['sex']->set_null(false);
-$table_setup['sex']->set_question("Show to");
+$sex->set_null(false);
 
-// set up age limits
 $lower_age = new selectnum('lower_age', 'lower_age', $project_info['lower_age']);
 $lower_age->set_options(array('NULL'=>'any'), 0, 100);
 $lower_age->set_null(false);
 $upper_age = new selectnum('upper_age', 'upper_age', $project_info['upper_age']);
 $upper_age->set_options(array('NULL'=>'any'), 0, 100);
 $upper_age->set_null(false);
-$ci = $lower_age->get_element() . ' to ' . $upper_age->get_element();
+$ci = $sex->get_element() . 
+    ' aged ' . $lower_age->get_element() . 
+    ' to ' . $upper_age->get_element();
 $table_setup['limits'] = new formElement('limits','limits');
-$table_setup['limits']->set_question('Age limits');
+$table_setup['limits']->set_question('Limited to');
 $table_setup['limits']->set_custom_input($ci);
 
 $table_setup['labnotes'] = new textarea('labnotes', 'labnotes', $set_info['labnotes']);
@@ -431,11 +437,13 @@ $(function() {
             url: './builder?save',
             type: 'POST',
             data: serial,
+            dataType: 'json',
             success: function(data) {
-                if (data == "Set Saved") {
+                if (data.error == false) {
                     growl("Set Saved", 500);
+                    window.location='/res/set/info?id=' + data.id;
                 } else {
-                    $('<div />').html(data).dialog();
+                    $('<div />').html(data.error).dialog();
                 }
             }
         });

@@ -815,9 +815,16 @@ foreach ($questions as $n => $q) {
                 theSelect.html('');
                 $('<option />').attr({'value':'NULL'}).html('').appendTo(theSelect);
                 theSelect.parent().find('input').each( function(i) {
-                    optVal = $(this).val().split(':');
-                    if (optVal.length == 2) {
-                        $('<option />').attr({'value': optVal[0]}).html(optVal[1]).appendTo(theSelect);
+                    var opt = $(this).val().split(':');
+                    if (opt.length == 1) {
+                        optVal = opt[0].trim();
+                        optDisplay = opt[0].trim();
+                    } else if (opt.length > 1) {
+                        optVal = opt[0].trim();
+                        optDisplay = opt.slice(1, opt.length).join(':').trim();
+                    }
+                    if (optVal != '') {
+                        $('<option />').attr({'value': optVal}).html(optDisplay).appendTo(theSelect);
                     }
                     $(this).remove();
                 });
@@ -915,17 +922,23 @@ foreach ($questions as $n => $q) {
                 theRadio.html('');
                 theRadio.parent().find('input').each( function(i) {
                     optVal = $(this).val().split(':');
-                    if (optVal.length == 2) {
-                        var newRadio = $('<input />')  .attr({ 'value': optVal[0],
+                    if (optVal.length == 1) {
+                        ov = optVal[0];
+                        disp = optVal[0];
+                    } else if (optVal.length > 1) {
+                        ov = optVal[0]
+                        disp = optVal.slice(1, optVal.length).join(':');
+                    }
+                    if (optVal != '') {
+                        var newRadio = $('<input />')  .attr({ 'value': ov,
                                                 'type': 'radio',
-                                                'id': theName + '_' + optVal[0],
+                                                'id': theName + '_' + ov,
                                                 'name': theName });
                                         
-                        var newLabel = $('<label />')  .attr('for', theName + '_' + optVal[0])
-                                        .html(optVal[1]);
+                        var newLabel = $('<label />')  .attr('for', theName + '_' + ov)
+                                        .html(disp);
                                         
                         $('<li />').append(newRadio).append(newLabel).appendTo(theRadio);
-                                        
                     }
                     $(this).remove();
                 });
@@ -990,7 +1003,8 @@ foreach ($questions as $n => $q) {
         var theInput = $('#q' + qid);
         var theInputCell = $('#row_' + qid + ' td.input');
         var newInput = null;
-        var newID = '#q' + qid;
+        var newID = 'q' + qid;
+        console.log("changing:", theType);
             
         if (theType == 'select') { 
             // !        Change to select
@@ -1252,6 +1266,9 @@ foreach ($questions as $n => $q) {
             var newType = $("#type_" + new_q_id).val();
             var theInput = $('#q' + new_q_id);
             
+            console.log($('#row_' + new_q_id).html());
+            console.log(new_q_id, newType, theInput.length);
+            
             // set maxlength
             if ($.inArray('maxlength', headers) > -1 && cells[$.inArray('maxlength', headers)] != '') {
                 var ml = cells[$.inArray('maxlength', headers)];
@@ -1279,19 +1296,26 @@ foreach ($questions as $n => $q) {
                     
                     $.each(opts, function(i) {
                         var opt = opts[i].split(':');
-                        var optVal = opt[0].trim();
-                        var optDisplay = opt[1].trim();
+                        if (opt.length == 1) {
+                            optVal = opt[0].trim();
+                            optDisplay = opt[0].trim();
+                        } else if (opt.length > 1) {
+                            optVal = opt[0].trim();
+                            optDisplay = opt.slice(1, opt.length).join(':').trim();
+                        }
                     
-                        var newLi = $('<li />');
-                        $('<input />') .attr('type', 'radio')
-                                        .attr('name', 'q' + new_q_id)
-                                        .attr('id', 'q' + new_q_id + '_' + optVal)
-                                        .val(optVal)
-                                        .appendTo(newLi);
-                        $('<label />').html(optDisplay)
-                                        .attr('for', 'q' + new_q_id + '_' + optVal)
-                                        .appendTo(newLi);
-                        theInput.append(newLi);
+                        if (optVal != '') {
+                            var newLi = $('<li />');
+                            $('<input />') .attr('type', 'radio')
+                                            .attr('name', 'q' + new_q_id)
+                                            .attr('id', 'q' + new_q_id + '_' + optVal)
+                                            .val(optVal)
+                                            .appendTo(newLi);
+                            $('<label />').html(optDisplay)
+                                            .attr('for', 'q' + new_q_id + '_' + optVal)
+                                            .appendTo(newLi);
+                            theInput.append(newLi);
+                        }
                     });
                     theInput.buttonset();
                 } else if (newType == 'select') {
@@ -1301,10 +1325,17 @@ foreach ($questions as $n => $q) {
                     
                     $.each(opts, function(i) {
                         var opt = opts[i].split(':');
-                        var optVal = opt[0].trim();
-                        var optDisplay = opt[1].trim();
-
-                        $('<option />').attr('value', optVal).html(optDisplay).appendTo(theInput);
+                        if (opt.length == 1) {
+                            optVal = opt[0].trim();
+                            optDisplay = opt[0].trim();
+                        } else if (opt.length > 1) {
+                            optVal = opt[0].trim();
+                            optDisplay = opt.slice(1, opt.length).join(':').trim();
+                        }
+                        
+                        if (optVal != '') {
+                            $('<option />').attr({'value': optVal}).html(optDisplay).appendTo(theInput);
+                        }
                     });
                 }
             }
