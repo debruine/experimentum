@@ -1532,6 +1532,13 @@ table.jnd {
     user-select: none;          /* Likely future */
 }
 
+#experiment input, #experiment textarea {
+    -webkit-user-select: text;  /* Chrome all / Safari all */
+    -moz-user-select: text;     /* Firefox all */
+    -ms-user-select: text;      /* IE 10+ */
+    user-select: text;          /* Likely future */
+}
+
 .jnd .input_interface td { 
     font-size: 90%; 
     border: 2px solid var(--theme); 
