@@ -1392,6 +1392,10 @@ table.info {
 EXPERIMENT STYLES
 -------------------------------------------------*/
 
+.noconsent {
+    margin-top: 5em !important;
+}
+
 #experiment {
     margin-top: 1em;
     text-align: center;
