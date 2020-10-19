@@ -153,8 +153,15 @@ $page->displayBody();
                     contentType: false,
                     processData: false,
                     success: function(data) {
+                        console.log("uploaded", data);
+                        newdir = data.subdir.dir.replace(data.mydir.dir + "/", "");
+                        if ($('#subdir').val() != newdir) {
+                            $('#subdir').val(newdir);
+                            growl('Directory name changed to ' + newdir);
+                        }
                     },
-                    error: function() {
+                    error: function(e) {
+                        console.log("error", e.responseText);
                     },
                     complete: function() {
                         console.log("complete");

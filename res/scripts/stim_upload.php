@@ -13,7 +13,7 @@ if (count($_FILES) > 0) {
     
     if (!is_dir($mydir)) mkdir($mydir, 0775);
     
-    chmod($mydir, 0775);
+    #chmod($mydir, 0775);
     
     $return['mydir'] = array(
         'dir' => $mydir,
