@@ -44,6 +44,7 @@ if ($_SESSION['status'] == 'admin') {
                 r.email as Email,
                 s.user_id as Supervisor,
                 status as Status,
+                DATE(u.regdate) as `Date`,
                 r.supervisor_id as ` `
            FROM res AS r 
       LEFT JOIN user AS u   ON u.user_id = r.user_id
@@ -56,6 +57,7 @@ if ($_SESSION['status'] == 'admin') {
                 r.email as Email,
                 CONCAT(s.lastname, ", ", s.firstname) as Supervisor,
                 status as Status,
+                DATE(u.regdate) as `Date`,
                 r.supervisor_id as ` `
            FROM res AS r
       LEFT JOIN user AS u   ON u.user_id = r.user_id
@@ -167,7 +169,7 @@ function changeSupervisor(sel, the_id) {
 
 function changeResStatus(sel, the_id) {
     var $sel = $(sel);
-    $sel.css('color', 'red');
+    var $span = $sel.siblings('span');
     $.ajax({
         url: '/res/scripts/resstatus',
         type: 'POST',
@@ -182,22 +184,26 @@ function changeResStatus(sel, the_id) {
                     width: 600
                 }).html(data.error);
             } else {
+                $span.text($sel.val());
                 if (sel.value == "test") {
-                    $sel.css('color', 'var(--rainbow1)');
+                    $span.css('color', 'var(--rainbow1)');
                 } else if (sel.value == "guest") {
-                    $sel.css('color', 'var(--rainbow2)');
+                    $span.css('color', 'var(--rainbow2)');
                 } else if (sel.value == "registered") {
-                    $sel.css('color', 'var(--rainbow3)');
+                    $span.css('color', 'var(--rainbow3)');
                 } else if (sel.value == "student") {
-                    $sel.css('color', 'var(--rainbow4)');
+                    $span.css('color', 'var(--rainbow4)');
                 } else if (sel.value == "res") {
-                    $sel.css('color', 'var(--rainbow5)');
+                    $span.text("researcher").css('color', 'var(--rainbow5)');
                 } else if (sel.value == "super") {
-                    $sel.css('color', 'var(--rainbow6)');
+                    $span.text("supervisor").css('color', 'var(--rainbow6)');
                 } else if (sel.value == "admin") {
-                    $sel.css('color', 'black');
+                    $span.css('color', 'black');
                 }
             }
+        },
+        complete: function() {
+            $sel.blur();
         }
     });
 }
@@ -264,31 +270,44 @@ $('table.query tbody tr').each( function(i) {
                         .html("Remove").button().click( function() {
                             removeRes(this, the_id);
                         });
-    $(this).find('td:nth-child(6)').html("").append($mailbutton).append($rembutton);
+    $(this).find('td:nth-child(7)').html("").append($mailbutton).append($rembutton);
     
     
     // replace status with drop-down menu
     var status_cell = $(this).find('td:nth-child(5)');
     var the_status = status_cell.html();
-    status_cell.html(status_menu);
+    status_cell.html("<span>"+the_status+"</span>" + status_menu);
     $sel = status_cell.find('select');
+    $span = status_cell.find('span');
     $sel.show().val(the_status).change(function() {
         changeResStatus(this, the_id);
+    }).blur(function() {
+        var $span = $(this).siblings("span");
+        var v = $span.text();
+        if (v == "researcher") v = 'res';
+        if (v == "supervisor") v = "super";
+            
+        $(this).val(v).hide();
+        $span.show();
+    }).hide();
+    $span.text(the_status).click(function() {
+        $(this).siblings('select').show();
+        $(this).hide();
     });
     if (the_status == "test") {
-        $sel.css('color', 'var(--rainbow1)');
+        $span.css('color', 'var(--rainbow1)');
     } else if (the_status == "guest") {
-        $sel.css('color', 'var(--rainbow2)');
+        $span.css('color', 'var(--rainbow2)');
     } else if (the_status == "registered") {
-        $sel.css('color', 'var(--rainbow3)');
+        $span.css('color', 'var(--rainbow3)');
     } else if (the_status == "student") {
-        $sel.css('color', 'var(--rainbow4)');
+        $span.css('color', 'var(--rainbow4)');
     } else if (the_status == "res") {
-        $sel.css('color', 'var(--rainbow5)');
+        $span.text("researcher").css('color', 'var(--rainbow5)');
     } else if (the_status == "super") {
-        $sel.css('color', 'var(--rainbow6)');
+        $span.text("supervisor").css('color', 'var(--rainbow6)');
     } else if (the_status == "admin") {
-        $sel.css('color', 'black');
+        $span.css('color', 'black');
     }
 <?php if ($_SESSION['status'] == 'admin') { ?>
     // get supervisor list
