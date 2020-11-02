@@ -8,6 +8,16 @@ auth($RES_STATUS);
 if (validID($_GET['id']) && !permit('project', $_GET['id'])) header('Location: /res/');
 $item_id = $_GET['id'];
 
+// get download stats
+$q = new myQuery();
+$q->prepare("SELECT email, dt
+               FROM downloads 
+               LEFT JOIN res USING (user_id)
+               WHERE type = 'project' AND id = ?
+               ORDER BY dt, email",
+           array('i', $item_id));
+$downloads = $q->get_result_as_table(true, true);
+
 $title = array(
     '/res/' => 'Researchers',
     '/res/project/' => 'Projects',
@@ -48,6 +58,7 @@ $page->displayBody();
         echo '<button id="delete-item">Delete</button>';
         echo '<button id="duplicate-item">Duplicate</button>';
         echo '<button id="download-exp">Exp Data</button>';
+        //echo '<button id="delete-test-data">Delete Test Data</button>';
         echo '<button id="download-quest">Quest Data</button>';
         echo '<button id="get-json">Structure</button>';
     ?></div>
@@ -72,13 +83,28 @@ $page->displayBody();
         <li>Auto-login: <button class='url auto tinybutton'>...</button></li>
         <li>Guest login: <button class='url guest tinybutton'>...</button></li>
         <li>All options: <button class='url all tinybutton'>...</button></li>
+        <li>Test: <button class='url test tinybutton'>...</button></li>
     </ul></td></tr>
     <tr><td>Contact email:</td><td><span id='contact'>...</span></td></tr>
     <tr><td>Completion:</td><td id='completion'><span id='users'>...</span> users started <span id='sessions'>...</span> sessions</td></tr>
     <tr><td>Restrictions:</td><td><span id='sex'>...</span> ages <span id='lower_age'>...</span> to <span id='upper_age'>...</span> years</td></tr>
     <tr><td>Blurb:</td><td id='blurb'>...</td></tr>
-    <tr><td>Intro:</td><td id='intro'>...</td></tr>
 </table>
+
+<div class="accordion">
+    <h4>Intro</h4>
+    <div id="intro">...</div>
+</div>
+
+<div class="accordion">
+    <h4>Debrief</h4>
+    <div id="debrief">...</div>
+</div>
+
+<div class="accordion">
+    <h4>Downloads</h4>
+    <div><?= $downloads ?></div>
+</div>
 
 <p class="fullwidth">The table below shows the number of total completions 
     (and unique participants) for the items from this project. If the items are 
@@ -97,6 +123,7 @@ $page->displayBody();
             <td>People</td>
             <td>Men</td>
             <td>Women</td>
+            <td>NB</td>
             <td>Median Time</td>
             <td>90th Percentile</td>
         </tr>
@@ -110,6 +137,7 @@ $page->displayBody();
         <td id="compl_people">...</td>
         <td id="compl_men">...</td>
         <td id="compl_women">...</td>
+        <td id="compl_nb">...</td>
         <td id="compl_median">...</td>
         <td id="compl_upper">...</td>
     </tfoot>
@@ -121,6 +149,7 @@ $page->displayBody();
         <td id="total_people">...</td>
         <td id="total_men">...</td>
         <td id="total_women">...</td>
+        <td id="total_nb">...</td>
         <td id="total_median">...</td>
         <td id="total_upper">...</td>
     </tfoot>
@@ -153,7 +182,7 @@ $page->displayBody();
 
 <script>
     $( "#view-project" ).click(function() {
-        window.location = $('button.url.all').text();
+        window.location = $('button.url.test').text();
     });
     
     $('#owner-add-input').autocomplete({
@@ -192,6 +221,7 @@ $page->displayBody();
                     $('.url.auto').html(data.info.url + '&amp;auto');
                     $('.url.guest').html(data.info.url + '&amp;guest');
                     $('.url.all').html(data.info.url + '&amp;all');
+                    $('.url.test').html(data.info.url + '&amp;test');
                     $('#contact').html(data.info.contact);
                     $('#labnotes').html(data.info.labnotes || '<span class="error">Please add labnotes</span>');
                     $('#users').html(data.info.users);
@@ -200,6 +230,7 @@ $page->displayBody();
                     $('#lower_age').html(data.info.lower_age);
                     $('#upper_age').html(data.info.upper_age);
                     $('#intro').html(data.info.intro);
+                    $('#debrief').html(data.info.debrief);
                     $('#blurb').html(data.info.blurb);
                     $('#status-select').html(data.status);
                     
@@ -210,6 +241,8 @@ $page->displayBody();
                     $('#project_items').html(data.project_items);
                     item_stats(data.items_for_data, $('#item_id').val(), $('#info-status-label').html() == "All");
                     items_for_data = data.items_for_data;
+                    
+                    $( ".accordion" ).accordion({ collapsible: true, active : 'none' });
                     
                     $('span.set_nest').click( function() {
                         var hide = !$(this).hasClass("hide_set");
@@ -226,6 +259,24 @@ $page->displayBody();
     }
     
     getProjectInfo();
+    
+    $( "#delete-test-data" ).click(function() {
+        console.log("delete-test-data");
+        $.ajax({
+            url: '/res/scripts/project_delete_test_data',
+            type: 'POST',
+            dataType: 'json',
+            data: {project_id: <?= $item_id ?>},
+            success: function(data) {
+                if (data.error) {
+                    $('<div />').dialog({ width: 600 }).html(data.error);
+                } else {
+                    console.log("Test Data Deleted");
+                    window.location.reload(false);
+                }
+            }
+        });
+    });
     
     $('button.url').click(function() {
         var inp = document.createElement('input');
@@ -245,7 +296,7 @@ $page->displayBody();
         } else {
             isl.html("All");
         }
-        item_stats(items_for_data, $('#item_id').val(), $('#info-status-label').html() == "All");
+        item_stats(items_for_data, <?= $item_id ?>, $('#info-status-label').html() == "All");
     });
 
     

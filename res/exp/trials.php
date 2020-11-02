@@ -324,7 +324,8 @@ $page->displayBody();
         </span>
     </div>
     
-    <div class="toolbar-line">              
+    <div class="toolbar-line">
+        <button id="fill-trial-names">Trial Names from Stimuli</button>
         <button id="fill-from-list">Fill From List</button>
         Common Path: <span id="common_path"></span>
         
@@ -598,6 +599,33 @@ foreach ($trials as $trial) {
             buttons: {
                 'Start Exp': function() { window.location = '/exp?id=<?= $exp_id ?>'; },
                 'Exp Info': function() { window.location = '/res/exp/info?id=<?= $exp_id ?>'; },
+            }
+        });
+        
+        
+        $( "#fill-trial-names" ).button().click(function() { 
+            var rows = $('div.trial span.imgname').map(function() {
+                return($(this).text());
+            }).get();
+            
+            var common_path = rows[0].split("/");
+            for (var i=0; i < rows.length; i++) {
+                spl = rows[i].split("/");
+                
+                for (var j=common_path.length-1; j >= 0 ; j--) {
+                    if (spl.length <= j || common_path[j] != spl[j]) {
+                        common_path.pop();
+                    }
+                }
+            }
+            
+            common_path = common_path.join("/") + "/";
+            console.log(common_path);
+                        
+            for (var i=0; i < rows.length; i++) {
+                var c = '#name_' + (i+1);
+                var nm = rows[i].replace(common_path, "");
+                if ($(c).length > 0 ) { $(c).html(nm); }
             }
         });
         

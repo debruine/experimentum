@@ -25,8 +25,8 @@ if ($q->get_num_rows() > 0 && $q->get_one() != $clean['project_id']) {
 }
 
 $proj_query = sprintf('REPLACE INTO project (id, name, res_name, url, contact,
-                          intro, labnotes, sex, lower_age, upper_age, blurb, create_date) 
-                        VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
+                          intro, labnotes, sex, lower_age, upper_age, blurb, debrief, create_date) 
+                        VALUES (%s, "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", NOW())',
                         $clean['project_id'],
                         $clean['project_name'],
                         $clean['res_name'],
@@ -37,7 +37,8 @@ $proj_query = sprintf('REPLACE INTO project (id, name, res_name, url, contact,
                         $clean['sex'],
                         $clean['lower_age'],
                         $clean['upper_age'],
-                        $clean['blurb']);
+                        $clean['blurb'],
+                        $clean['debrief']);
 
 $proj_query = str_replace('""', 'NULL', $proj_query);
 $proj_query = str_replace('"NULL"', 'NULL', $proj_query);

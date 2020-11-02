@@ -108,6 +108,16 @@ foreach($questlist as $q) {
     $questlist_info .= "<tr><td>q{$q['id']}</td><td>{$q['name']}</td><td>{$q['question']}</td><td><ul><li>{$q['option_list']}</li></ul></td></tr>" . ENDLINE;
 }
 
+// get download stats
+$q = new myQuery();
+$q->prepare("SELECT email, dt
+               FROM downloads 
+               LEFT JOIN res USING (user_id)
+               WHERE type = 'quest' AND id = ?
+               ORDER BY email, dt",
+           array('i', $item_id));
+$downloads = $q->get_result_as_table(true, true);
+
 // get status changer for researchers
 if (in_array($_SESSION['status'], array('res', 'super', 'admin'))) {
     $status_chooser = new select('status', 'status', $itemdata['status']);
@@ -223,8 +233,33 @@ $page->displayBody();
                                 <?= number_format($data['total_female']) ?> women</td></tr>
     <tr><td>Last completion:</td> <td><?= $data['last_completion'] ?></td></tr>
     <tr><td>Time to complete:<div class="note">(excluding slowest 5%)</div></td> <td><div id="time_container"></div></td></tr>
-    
-    <tr><td>Type:</td> <td><?= $itemdata['questtype'] ?></td></tr>
+    <tr><td>Restrictions:</td> <td><?= $itemdata['sex'] ?> 
+        ages <?= is_null($itemdata['lower_age']) ? 'any' : $itemdata['lower_age'] ?> 
+        to <?= is_null($itemdata['upper_age']) ? 'any' : $itemdata['upper_age'] ?> years</td></tr>
+</table>
+
+<div class="accordion">
+    <h4>Instructions</h4>
+    <div><?= $itemdata['instructions'] ?></div>
+</div>
+
+<?php if ($itemdata['feedback_general'] != "" || $itemdata['feedback_specific'] != "") { ?>
+<div class="accordion">
+    <h4>Feedback</h4>
+    <div>
+        <?= $itemdata['feedback_general'] ?>
+        <br>
+        <?= $itemdata['feedback_specific'] ?>
+    </div>
+</div>
+<?php } ?>
+
+<div class="accordion">
+    <h4>Questions</h4>
+    <div>
+        
+        <table class='info'>
+            <tr><td>Type:</td> <td><?= $itemdata['questtype'] ?></td></tr>
     <?php 
         if ($itemdata['questtype'] != 'info') { 
             echo '    <tr><td>Order:</td> <td>' . $itemdata['quest_order'] . '</td></tr>' . ENDLINE;
@@ -233,21 +268,23 @@ $page->displayBody();
             echo '    <tr><td>URL:</td> <td>' . $itemdata['url'] . '</td></tr>' . ENDLINE;
         } 
     ?>
-    <tr><td>Restrictions:</td> <td><?= $itemdata['sex'] ?> 
-        ages <?= is_null($itemdata['lower_age']) ? 'any' : $itemdata['lower_age'] ?> 
-        to <?= is_null($itemdata['upper_age']) ? 'any' : $itemdata['upper_age'] ?> years</td></tr>
-    <tr><td>Instructions:</td> <td><pre><?= $itemdata['instructions'] ?></pre></td></tr>
-    <tr><td>Feedback:</td> <td><?= $itemdata['feedback_general'] ?><br><?= $itemdata['feedback_specific'] ?></td></tr>
-</table>
+        </table>
 
-<table class="question_info">
-<thead>
-    <tr><th>Qid</th><th>DV name</th><th>Question</th><th>Options</th></tr>
-</thead>
-<tbody>
-    <?= $questlist_info ?>
-</tbody>
-</table>
+        <table class="question_info">
+        <thead>
+            <tr><th>Qid</th><th>DV name</th><th>Question</th><th>Options</th></tr>
+        </thead>
+        <tbody>
+            <?= $questlist_info ?>
+        </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="accordion">
+    <h4>Downloads</h4>
+    <div><?= $downloads ?></div>
+</div>
 
 <!--*************************************************-->
 <!-- !Javascripts for this page -->
@@ -290,6 +327,7 @@ $page->displayBody();
         }
     }).data('id', 0);
     
+    $( ".accordion" ).accordion({ collapsible: true, active : 'none' });
     
 </script>
 

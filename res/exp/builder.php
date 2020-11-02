@@ -249,8 +249,8 @@ $info['exptype']->set_eventHandlers(array('onchange' => "change_exptype(this.val
 */
 
 // subtype
-$info['subtype'] = new hiddenInput('subtype', 'subtype', 'large_n');
-/*
+//$info['subtype'] = new hiddenInput('subtype', 'subtype', 'large_n');
+
 $info['subtype'] = new select('subtype', 'subtype', $eInfo['subtype']);
 $info['subtype']->set_question('Subtype');
 $info['subtype']->set_null(false);
@@ -262,7 +262,6 @@ $subtype_options = array(
 
 if ("2afc" == $eInfo['exptype'] || "buttons" == $eInfo['exptype']) { $subtype_options['speeded'] = 'Speeded'; }
 $info['subtype']->set_options($subtype_options);
-*/
 
 // design
 $info['design'] = new select('design', 'design', $eInfo['design']);
@@ -657,6 +656,8 @@ Trial x of <span id="random_stim_top"><?= $eInfo['random_stim'] ?></span>
     <ul>
         <li>Click on the title, instructions, and question to edit them.</li>
         <li>You can increase or decrease the number of images shown on each trial (for some types of experiments) by clicking on the + and - buttons in the lower right corner.</li>
+        <li>For the speeded 2AFC interface, the left image is chosen with the F key and the right with the J key. You need to explain this to subjects in the instructions.</li>
+        <li>For the speeded Buttons interface, set each button label to a single unique character (the recorded DV can be the same or different). Explain what options are available to subjects in the instructions and consider adding this to the question at the top of the page. The buttons themselves will not be visible on a speeded experiment.</li>
     </ul>
 </div>
 

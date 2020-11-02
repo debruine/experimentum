@@ -7,13 +7,13 @@ auth($RES_STATUS);
 
 $return = array('error' => false);
 
-if (validID($_GET['id']) && !permit('project', $_GET['id'])) {
-    $return['error'] = "You are not authorised to access this project.";
+$item_id = intval($_POST['id']);
+
+if (validID($item_id) && !permit('project', $item_id)) {
+    $return['error'] = loc("You are not authorised to access this project.");
     scriptReturn($return);
     exit;
 }
-
-$item_id = $_POST['id'];
 
 
 /***************************************************/
@@ -41,6 +41,7 @@ $itemdata = $myset->get_one_array();
 // convert markdown sections
 $Parsedown = new Parsedown();
 $itemdata['intro'] = $Parsedown->text($itemdata['intro']);
+$itemdata['debrief'] = $Parsedown->text($itemdata['debrief']);
 $itemdata['url'] = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/project?" . $itemdata['url'];
 
 $itemdata['sex'] = array(
@@ -218,7 +219,7 @@ function generate_set($id, $class="") {
             $subset -= 1;
         } else {
             $items_for_data[] = $table;
-            $itemlist .= "<td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>\n";
+            $itemlist .= "<td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>\n";
         }
     }
     return $itemlist;

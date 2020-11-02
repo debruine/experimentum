@@ -166,7 +166,7 @@ function generate_set($id, $class="") {
             $subset -= 1;
         } else {
             $items_for_data[] = $table;
-            $itemlist .= "<td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>\n";
+            $itemlist .= "<td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>\n";
         }
     }
     return $itemlist;

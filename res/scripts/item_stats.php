@@ -3,13 +3,12 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/include/main_func.php';
 auth($RES_STATUS);
 
-$proj_id = (array_key_exists('proj', $_GET)) ? intval($_GET['proj']) : 'project_id';
-
-$status = (array_key_exists('all', $_GET)) ? 'status=status' : 'status>1 AND status<4';
+$proj_id = (array_key_exists('proj', $_POST)) ? intval($_POST['proj']) : 'project_id';
+$status = ($_POST['all'] == "true") ? 'status=status' : 'user.status IN ("registered", "guest")';
 
 // get stats on participant completion of the experiment
-if (substr($_GET['item'],0,4) == "exp_") {
-     $exp_id = intval(substr($_GET['item'],4));
+if (substr($_POST['item'],0,4) == "exp_") {
+     $exp_id = intval(substr($_POST['item'],4));
      $equery = new myQuery('SELECT subtype, random_stim FROM exp WHERE id=' . $exp_id);
      $einfo = $equery->get_assoc(0);
      
@@ -33,13 +32,15 @@ if (substr($_GET['item'],0,4) == "exp_") {
                 COUNT(DISTINCT user_id) as total_dist,
                 COUNT(DISTINCT IF(sex='male',session_id,NULL)) as total_male,
                 COUNT(DISTINCT IF(sex='female',session_id,NULL)) as total_female,
+                COUNT(DISTINCT IF(sex='nonbinary',session_id,NULL)) as total_nb,
                 COUNT(DISTINCT IF(sex='male',user_id,NULL)) as dist_male,
-                COUNT(DISTINCT IF(sex='female',user_id,NULL)) as dist_female
+                COUNT(DISTINCT IF(sex='female',user_id,NULL)) as dist_female,
+                COUNT(DISTINCT IF(sex='nonbinary',user_id,NULL)) as dist_nb
            FROM tmp_exp"
     );
     if ($mydata->get_num_rows() == 0) {
-        $data = array('total_c' => 0, 'total_male' => 0, 'total_female' => 0, 
-                      'total_dist' => 0, 'dist_male' => 0, 'dist_female' => 0);
+        $data = array('total_c' => 0, 'total_male' => 0, 'total_female' => 0, 'total_nb' => 0,
+                      'total_dist' => 0, 'dist_male' => 0, 'dist_female' => 0, 'dist_nb' => 0);
     } else {
         $data = $mydata->get_one_array();
     }
@@ -101,19 +102,18 @@ if (substr($_GET['item'],0,4) == "exp_") {
 }
 
 
-
-
-
-
-$quest_id = intval(substr($_GET['item'],6));
+// if not an experiment, then must be a questionnaire
+$quest_id = intval(substr($_POST['item'],6));
 
 $mydata = new myQuery(
     "SELECT COUNT(DISTINCT session.id) as total_c,
             COUNT(DISTINCT user.user_id) as total_dist,
             COUNT(DISTINCT IF(sex='male',session.id,NULL)) as total_male,
             COUNT(DISTINCT IF(sex='female',session.id,NULL)) as total_female,
+            COUNT(DISTINCT IF(sex='nonbinary',session.id,NULL)) as total_nb,
             COUNT(DISTINCT IF(sex='male',user.user_id,NULL)) as dist_male,
-            COUNT(DISTINCT IF(sex='female',user.user_id,NULL)) as dist_female
+            COUNT(DISTINCT IF(sex='female',user.user_id,NULL)) as dist_female,
+            COUNT(DISTINCT IF(sex='nonbinary',user.user_id,NULL)) as dist_nb
        FROM quest_data 
   LEFT JOIN user USING (user_id)
   LEFT JOIN session ON session.id=quest_data.session_id
@@ -124,8 +124,8 @@ $mydata = new myQuery(
 );
 
 if ($mydata->get_num_rows() == 0) {
-    $data = array('total_c' => 0, 'total_male' => 0, 'total_female' => 0, 
-                  'total_dist' => 0, 'dist_male' => 0, 'dist_female' => 0);
+    $data = array('total_c' => 0, 'total_male' => 0, 'total_female' => 0, 'total_nb' => 0,
+                  'total_dist' => 0, 'dist_male' => 0, 'dist_female' => 0, 'dist_nb' => 0);
 } else {
     $data = $mydata->get_one_array();
 }

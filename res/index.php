@@ -17,7 +17,8 @@ $links = array(
     '/res/set/'      => 'Sets',
     '/res/project/'  => 'Projects',
     '/res/stimuli/'  => 'Stimuli',
-    '/res/tutorial/'  => 'Tutorial',
+    '/res/tutorial/' => 'Tutorial',
+    '/res/news'      => 'News'
 );
 
 if (in_array($_SESSION['status'], array('res', 'super', 'admin'))) {
@@ -31,7 +32,8 @@ $class = array(
     '/res/set/'      => 'set',
     '/res/project/'  => 'project',
     '/res/admin/'    => 'admin',
-    '/res/tutorial/' => 'tutorial'
+    '/res/tutorial/' => 'tutorial',
+    '/res/news'      => 'news'
 );
 
 $q = new myQuery();
@@ -86,9 +88,13 @@ $page->displayBody();
 
 ?>
 
+<p>I'll be making a lot of upgrades over the next week, check the new News tab below.</p>
+
 <div id="dash"><?= $dash ?></div>
 
 <?= linkList($links, 'bigbuttons resbuttons', 'ul', $class) ?>
+
+
 
 <p>Please cite Experimentum in any research using the platform: <br>
     Lisa DeBruine, Rebecca Lai, Benedict Jones, Rifah Abdullah, Gaby Mahrholz. (2020). 

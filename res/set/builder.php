@@ -178,7 +178,7 @@ $table_setup['set_type']->set_options(array(
 ));
 
 // set up sex and age limits
-$sex = new select('sex', 'sex', $project_info['sex']);
+$sex = new select('sex', 'sex', $set_info['sex']);
 $sex->set_options(array(
     'both' => 'All genders',
     'male' => 'Men only',
@@ -186,10 +186,10 @@ $sex->set_options(array(
 ));
 $sex->set_null(false);
 
-$lower_age = new selectnum('lower_age', 'lower_age', $project_info['lower_age']);
+$lower_age = new selectnum('lower_age', 'lower_age', $set_info['lower_age']);
 $lower_age->set_options(array('NULL'=>'any'), 0, 100);
 $lower_age->set_null(false);
-$upper_age = new selectnum('upper_age', 'upper_age', $project_info['upper_age']);
+$upper_age = new selectnum('upper_age', 'upper_age', $set_info['upper_age']);
 $upper_age->set_options(array('NULL'=>'any'), 0, 100);
 $upper_age->set_null(false);
 $ci = $sex->get_element() . 

@@ -99,7 +99,7 @@ CREATE TABLE `question` (
   `n` int(3) NOT NULL DEFAULT 0,
   `name` varchar(32) DEFAULT NULL,
   `question` text DEFAULT NULL,
-  `type` enum('radio','select','selectnum','datemenu','text','radiorow','radiorev','radioanchor','ranking','countries','slider') DEFAULT NULL,
+  `type` enum('radio','select','selectnum','datemenu','text','textarea','radiorow','radiorev','radioanchor','ranking','countries','slider') DEFAULT NULL,
   `startnum` double DEFAULT NULL,
   `endnum` double DEFAULT NULL,
   `step` double DEFAULT NULL,
@@ -131,6 +131,7 @@ CREATE TABLE `project` (
   `upper_age` tinyint(2) unsigned DEFAULT NULL,
   `blurb` text DEFAULT NULL,
   `contact` varchar(255) DEFAULT NULL,
+  `debrief` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `url` (`url`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
@@ -337,6 +338,14 @@ CREATE TABLE `login` (
   KEY `user_id` (`user_id`),
   KEY `ip` (`ip`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `credit`;
+CREATE TABLE `credit` (
+  `project_id` int(11) unsigned NOT NULL,
+  `credit` VARCHAR(255) NOT NULL,
+  `percent_complete` tinyint(3) unsigned DEFAULT 0,
+  UNIQUE KEY `credit_id` (`credit`, `project_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `access`;

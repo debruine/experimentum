@@ -1,7 +1,8 @@
 $('#function_buttonset').buttonset();
 
 $( "#view-item" ).click(function() {
-    window.location = '/' + $('#item_type').val() + '?id=' + $('#item_id').val();
+    var url = '/' + $('#item_type').val() + '?id=' + $('#item_id').val();
+    window.open(url, '_blank');
 });
 
 $( "#edit-item" ).click(function() {
@@ -290,30 +291,33 @@ function item_stats(items, proj_id, all_status = false) {
         people: 0,
         men: 0,
         women: 0,
+        nb: 0,
         peopled: 0,
         mend: 0,
         womend: 0,
+        nbd: 0,
         median: 0,
         upper: 0
     };
     
     if (typeof proj_id !== "undefined") {
-        var proj_url = '/res/scripts/proj_stats?id=' + proj_id;
-        if (all_status == true) proj_url += "&all";
-        
+        console.log('proj_id', proj_id);
         // get project stats
         $.ajax({
-            url: proj_url,
-            type: 'GET',
+            url: '/res/scripts/proj_stats',
+            type: 'POST',
+            data: {id: proj_id, all: all_status},
             dataType: 'json',
             success: function(data) {
                 $('#total_people').html(data.total.people + " (" + data.total.peopled + ")");
                 $('#total_men').html(data.total.men + " (" + data.total.mend + ")");
                 $('#total_women').html(data.total.women + " (" + data.total.womend + ")");
+                $('#total_nb').html(data.total.nb + " (" + data.total.nbd + ")");
                 
                 $('#compl_people').html(data.compl.people + " (" + data.compl.peopled + ")");
                 $('#compl_men').html(data.compl.men + " (" + data.compl.mend + ")");
                 $('#compl_women').html(data.compl.women + " (" + data.compl.womend + ")");
+                $('#compl_nb').html(data.compl.nb + " (" + data.compl.nbd + ")");
                 
                 $('#compl_median').html(data.timings.median);
                 $('#compl_upper').html(data.timings.upper);
@@ -323,17 +327,17 @@ function item_stats(items, proj_id, all_status = false) {
     
     // get stats for each item
     $.each(items, function(idx, item) {
-        var url = '/res/scripts/item_stats?item=' + item;
-        if (typeof proj_id !== "undefined") url += '&proj=' + proj_id;
-        if (all_status == true) url += "&all";
+        var theData = {item: item, all: all_status}
+        if (typeof proj_id !== "undefined") theData.proj = proj_id;
         
         $.ajax({
-            url: url,
-            type: 'GET',
+            url: '/res/scripts/item_stats',
+            type: 'POST',
+            data: theData,
             dataType: 'json',
             success: function(data) {
                 if (data.median != "No info") totals.median += parseInt(data.median * 10);
-                if (data.upper != "No info")totals.upper += parseInt(data.upper * 10);
+                if (data.upper != "No info") totals.upper += parseInt(data.upper * 10);
                 
                 console.log($('#itemtype').text().substr(0, 3));
                 if ($('#itemtype').text().substr(0, 3) == "One") {
@@ -349,8 +353,9 @@ function item_stats(items, proj_id, all_status = false) {
                 cells[4].innerHTML = data.total_c      + " (" + data.total_dist + ")";
                 cells[5].innerHTML = data.total_male   + " (" + data.dist_male + ")";
                 cells[6].innerHTML = data.total_female + " (" + data.dist_female + ")";
-                cells[7].innerHTML = data.median;
-                cells[8].innerHTML = data.upper;
+                cells[7].innerHTML = data.total_nb + " (" + data.dist_nb + ")";
+                cells[8].innerHTML = data.median;
+                cells[9].innerHTML = data.upper;
             }
         });
     });

@@ -62,7 +62,7 @@ if (isset($_GET['checkurl'])) {
     $id = my_clean($_GET['id']);
     if (is_numeric($id) & $id>0) {
         $q = new myQuery("SELECT id AS project_id, name as 'project_name', 
-                          res_name, url, contact, intro, sex, lower_age, upper_age, 
+                          res_name, url, contact, intro, debrief, sex, lower_age, upper_age, 
                           blurb, labnotes, status 
                           FROM project WHERE id='{$id}'");
         
@@ -154,6 +154,10 @@ $table_setup['blurb']->set_question('Blurb');
 $table_setup['intro'] = new textarea('intro', 'intro', $project_info['intro']);
 $table_setup['intro']->set_dimensions($input_width, 40, true, 40, 300);
 $table_setup['intro']->set_question('Intro');
+
+$table_setup['debrief'] = new textarea('debrief', 'debrief', $project_info['debrief']);
+$table_setup['debrief']->set_question('Debrief <div class="note">If blank, the feedback from the last item will be displayed to participants.</div>');
+$table_setup['debrief']->set_dimensions($input_width, 40, true, 40, 300);
 
 $table_setup['sex'] = new select('sex', 'sex', $project_info['sex']);
 $table_setup['sex']->set_options(array(
@@ -412,7 +416,7 @@ $(function() {
         $('#iconView').show();
     });
 
-    $('.setlists ul li').click(function() { add(this); });
+    $('#expView ul li, #questView ul li, #setView ul li').click(function() { add(this); });
     
     $('#url').on("keyup", function() {
         var nonWord = $('#url').val().replace(/^(\w|-)+$/, '');

@@ -140,7 +140,7 @@ function generate_set($id, $class="") {
             $subset -= 1;
         } else {
             $items_for_data[] = $table;
-            $itemlist .= "<td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>\n";
+            $itemlist .= "<td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>\n";
         }
     }
     return $itemlist;
@@ -217,6 +217,7 @@ $page->displayBody();
             <td>People</td>
             <td>Men</td>
             <td>Women</td>
+            <td>NB</td>
             <td>Median Time</td>
             <td>90th Percentile</td>
         </tr>
@@ -234,6 +235,7 @@ $page->displayBody();
         <td id="total_people">...</td>
         <td id="total_men">...</td>
         <td id="total_women">...</td>
+        <td id="total_nb">...</td>
         <td id="total_median">...</td>
         <td id="total_upper">...</td>
 </table>

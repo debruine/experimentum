@@ -170,6 +170,81 @@ $mytable = new myQuery($table_query);
 $trial_table = $mytable->get_result_as_table();
 $trial_table = str_replace($common_path, '', $trial_table);
 
+
+$stim_table = "";
+foreach ($trials as $t) {
+    
+    $stim_table .= '        <div class="trial">' . ENDLINE;
+    $stim_table .= '            <span class="trialname">t' . $t['trial_n'] . ': ' . $t['name'] . '</span>' . ENDLINE;
+    
+    // show images
+    if (!empty($t['left_stim'])) {
+        if ($t['ltype'] == 'image') {
+            $stim_table .= '            <img src="' . $t['left_stim'] . '" title="' . $t['left_stim'] . '" />' . ENDLINE;
+        } else if ($t['ltype'] == 'audio') {
+            $shortname = str_replace($common_path, '',$t['left_stim']);
+            $stim_table .= "            1: $shortname<br><audio controls>
+                    <source src='{$t['left_stim']}.mp3' type='audio/mp3' autoplay='false' />
+                </audio><br>" . ENDLINE;
+        } else if ($t['ltype'] == 'video') {
+            $shortname = str_replace($common_path, '',$t['left_stim']);
+            $stim_table .= "            1: $shortname<br><video controls>
+                    <source src='{$t['left_stim']}' type='video/mp4' autoplay='false' />
+                </video><br>" . ENDLINE;
+        }
+    }
+    if (!empty($t['center_stim'])) {
+        if ($t['ctype'] == 'image') {
+            $stim_table .= '            <img src="' . $t['center_stim'] . '" title="' . $t['center_stim'] . '" />' . ENDLINE;
+        } else if ($t['ctype'] == 'audio') {
+            $shortname = str_replace($common_path, '',$t['center_stim']);
+            $stim_table .= "            $shortname<br><audio controls>
+                    <source src='{$t['center_stim']}.mp3' type='audio/mp3' autoplay='false' />
+                </audio><br>" . ENDLINE;
+        } else if ($t['ctype'] == 'video') {
+            $shortname = str_replace($common_path, '',$t['center_stim']);
+            $stim_table .= "            $shortname<br><video controls>
+                    <source src='{$t['center_stim']}' type='video/mp4' autoplay='false' />
+                </video><br>" . ENDLINE;
+        }
+    }
+    if (!empty($t['right_stim'])) {
+        if ($t['rtype'] == 'image') {
+            $stim_table .= '            <img src="' . $t['right_stim'] . '" title="' . $t['right_stim'] . '" />' . ENDLINE;
+        } else if ($t['rtype'] == 'audio') {
+            $shortname = str_replace($common_path, '',$t['right_stim']);
+            $stim_table .= "            0: $shortname<br><audio controls>
+                    <source src='{$t['right_stim']}.mp3' type='audio/mp3' autoplay='false' />
+                </audio><br>" . ENDLINE;
+        } else if ($t['rtype'] == 'video') {
+            $shortname = str_replace($common_path, '',$t['right_stim']);
+            $stim_table .= "            0: $shortname<br><video controls>
+                    <source src='{$t['right_stim']}' type='video/mp4' autoplay='false' />
+                </video><br>" . ENDLINE;
+        }
+    }
+    if (!empty($t['xafc'])) {
+        $x = explode(';', $t['xafc']);
+        foreach ($x as $img) {
+            $stim_table .= "            <img src='$img' title='$img' />" . ENDLINE;
+        }
+    }
+    
+    $stim_table .= '        </div>' . ENDLINE;
+}
+
+
+// get download stats
+$q = new myQuery();
+$q->prepare("SELECT email, dt
+               FROM downloads 
+               LEFT JOIN res USING (user_id)
+               WHERE type = 'exp' AND id = ?
+               ORDER BY email, dt",
+           array('i', $item_id));
+$downloads = $q->get_result_as_table(true, true);
+
+
 // get stats on participant completion of the experiment
 $mydata = new myQuery(
     'SELECT COUNT(*) as total_c,
@@ -292,10 +367,9 @@ $page->displayBody();
     <tr><td>Last completion:</td> <td><?= $data['last_completion'] ?></td></tr>
     <tr><td>Time to complete:<div class="note">(excluding slowest 5%)</div></td> <td><div id="time_container"></div></td></tr>
     
-    <tr><td>Trials:</td> <td><?= $itemdata['random_stim'] ?> of <?= count($trials) ?></td></tr>
-    <tr><td>Stimulus Path:</td> <td><?= $common_path ?></td></tr>
-    
     <tr><td>Type:</td> <td><?= $itemdata['subtype'] ?> <?= $itemdata['exptype'] ?> with <?= $itemdata['orient'] ?> image orientation</td></tr>
+    <tr><td>Question:</td> <td><?= ifEmpty($itemdata['question'], '<i>Varies by trial</i>') ?></td></tr>
+    
     <?php if (is_array($exposure) && count($exposure) > 0) { ?>
         <tr><td>Adapt time:</td> <td><?= implode(', ', array_keys($exposure)) ?> ms per trial</td></tr>
     <?php } 
@@ -313,95 +387,62 @@ $page->displayBody();
     <?php if ($itemdata['rating_range']>0) { ?>
         <tr><td>Rating range:</td> <td>    <?= $itemdata['rating_range'] ?></td></tr>
     <?php } ?>
+    
     <tr><td>Design:</td> <td><?= $itemdata['design'] ?>-subjects</td></tr>
-    <tr><td>Order:</td> <td><?= $itemdata['trial_order'] ?></td></tr>
-    <tr><td>Side:</td> <td><?= $itemdata['side'] ?></td></tr>
     <tr><td>Restrictions:</td> <td><?= $itemdata['sex'] ?> 
         ages <?= is_null($itemdata['lower_age']) ? 'any' : $itemdata['lower_age'] ?> 
         to <?= is_null($itemdata['upper_age']) ? 'any' : $itemdata['upper_age'] ?> years</td></tr>
-    <tr><td>Instructions:</td> <td><pre><?= $itemdata['instructions'] ?></pre></td></tr>
-    <tr><td>Question:</td> <td><?= ifEmpty($itemdata['question'], '<i>Varies by trial</i>') ?></td></tr>
-    <tr><td>Feedback:</td> <td><?= $itemdata['feedback_general'] ?><br><?= $itemdata['feedback_specific'] ?></td></tr>
 </table>
 
-<div class='toolbar'>
-    <div id="image_list_toggle">
-        <input type="radio" id="image_toggle" name="radio" checked="checked" /><label for="image_toggle">Stimuli</label><input type="radio" id="list_toggle" name="radio" /><label for="list_toggle">List</label>
+<div class="accordion">
+    <h4>Instructions</h4>
+    <div><?= $itemdata['instructions'] ?></div>
+</div>
+
+<?php if ($itemdata['feedback_general'] != "" || $itemdata['feedback_specific'] != "") { ?>
+<div class="accordion">
+    <h4>Feedback</h4>
+    <div>
+        <?= $itemdata['feedback_general'] ?>
+        <br>
+        <?= $itemdata['feedback_specific'] ?>
     </div>
 </div>
+<?php } ?>
+
+<div class="accordion">
+    <h4>Stimuli</h4>
+    <div>
+
+        <table class="info">
+            <tr><td>Trials:</td> <td><?= $itemdata['random_stim'] ?> of <?= count($trials) ?></td></tr>
+            <tr><td>Stimulus Path:</td> <td><?= $common_path ?></td></tr>
+            <tr><td>Order:</td> <td><?= $itemdata['trial_order'] ?></td></tr>
+            <tr><td>Side:</td> <td><?= $itemdata['side'] ?></td></tr>
+        </table>
+
+        <div class='toolbar'>
+            <div id="image_list_toggle">
+                <input type="radio" id="image_toggle" name="radio" checked="checked" /><label for="image_toggle">Stimuli</label><input type="radio" id="list_toggle" name="radio" /><label for="list_toggle">List</label>
+            </div>
+        </div>
     
-<div id="trial_list">
-    <div id="trial_table">
-        <?= $trial_table ?>
+        <div id="trial_list">
+            <div id="trial_table">
+                <?= $trial_table ?>
+            </div>
+        
+            <div id="stim_table">
+                <?= $stim_table ?>
+            </div>
     </div>
+</div>
 
-    <div id="stim_table">
-<?php
+</div>
 
-foreach ($trials as $t) {
-    
-    echo '        <div class="trial">' . ENDLINE;
-    echo '            <span class="trialname">t' . $t['trial_n'] . ': ' . $t['name'] . '</span>' . ENDLINE;
-    
-    // show images
-    if (!empty($t['left_stim'])) {
-        if ($t['ltype'] == 'image') {
-            echo '            <img src="' . $t['left_stim'] . '" title="' . $t['left_stim'] . '" />' . ENDLINE;
-        } else if ($t['ltype'] == 'audio') {
-            $shortname = str_replace($common_path, '',$t['left_stim']);
-            echo "            1: $shortname<br><audio controls>
-                    <source src='{$t['left_stim']}.mp3' type='audio/mp3' autoplay='false' />
-                </audio><br>" . ENDLINE;
-        } else if ($t['ltype'] == 'video') {
-            $shortname = str_replace($common_path, '',$t['left_stim']);
-            echo "            1: $shortname<br><video controls>
-                    <source src='{$t['left_stim']}' type='video/mp4' autoplay='false' />
-                </video><br>" . ENDLINE;
-        }
-    }
-    if (!empty($t['center_stim'])) {
-        if ($t['ctype'] == 'image') {
-            echo '            <img src="' . $t['center_stim'] . '" title="' . $t['center_stim'] . '" />' . ENDLINE;
-        } else if ($t['ctype'] == 'audio') {
-            $shortname = str_replace($common_path, '',$t['center_stim']);
-            echo "            $shortname<br><audio controls>
-                    <source src='{$t['center_stim']}.mp3' type='audio/mp3' autoplay='false' />
-                </audio><br>" . ENDLINE;
-        } else if ($t['ctype'] == 'video') {
-            $shortname = str_replace($common_path, '',$t['center_stim']);
-            echo "            $shortname<br><video controls>
-                    <source src='{$t['center_stim']}' type='video/mp4' autoplay='false' />
-                </video><br>" . ENDLINE;
-        }
-    }
-    if (!empty($t['right_stim'])) {
-        if ($t['rtype'] == 'image') {
-            echo '            <img src="' . $t['right_stim'] . '" title="' . $t['right_stim'] . '" />' . ENDLINE;
-        } else if ($t['rtype'] == 'audio') {
-            $shortname = str_replace($common_path, '',$t['right_stim']);
-            echo "            0: $shortname<br><audio controls>
-                    <source src='{$t['right_stim']}.mp3' type='audio/mp3' autoplay='false' />
-                </audio><br>" . ENDLINE;
-        } else if ($t['rtype'] == 'video') {
-            $shortname = str_replace($common_path, '',$t['right_stim']);
-            echo "            0: $shortname<br><video controls>
-                    <source src='{$t['right_stim']}' type='video/mp4' autoplay='false' />
-                </video><br>" . ENDLINE;
-        }
-    }
-    if (!empty($t['xafc'])) {
-        $x = explode(';', $t['xafc']);
-        foreach ($x as $img) {
-            echo "            <img src='$img' title='$img' />" . ENDLINE;
-        }
-    }
-    
-    echo '        </div>' . ENDLINE;
-}
-
-?>
-
-    </div>
+<div class="accordion">
+    <h4>Downloads</h4>
+    <div><?= $downloads ?></div>
 </div>
 
 <!--*************************************************-->
@@ -464,6 +505,8 @@ foreach ($trials as $t) {
     }).data('id', 0);
     
     $('#list_toggle').click();
+    
+    $( ".accordion" ).accordion({ collapsible: true, active : 'none' });
     
 </script>
 

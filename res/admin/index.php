@@ -21,6 +21,7 @@ $styles = array(
 	'.bigbuttons li a.usage' => 'background-image: url("/images/linearicons/users?c=FFF");',
 	'.bigbuttons li a.supervise' => 'background-image: url("/images/linearicons/eye?c=FFFFFF");',
 	'.bigbuttons li a.query' => 'background-image: url("/images/linearicons/database?c=FFFFFF");',
+	'.bigbuttons li a.downloads' => 'background-image: url("/images/linearicons/0206-clipboard-down.php?c=FFFFFF");',
 );
 
 $page = new page($title);
@@ -36,6 +37,7 @@ $links = array(
     'access' => 'Access',
     'stimuli' => 'Update Stimuli',
     'usage' => 'Usage',
+    'downloads' => 'Downloads',
 	'debug' => 'Debug',
 	#'yoke' => 'Yoke',
 	#'functions' => 'Periodic Functions',
@@ -53,6 +55,7 @@ $classes = array(
 	'upload' => 'upload',
 	'yoke' => 'yoke',
 	'usage' => 'usage',
+	'downloads' => 'downloads',
 	'query' => 'query',
 	'functions' => 'functions',
 	'processlist' => 'processlist'
