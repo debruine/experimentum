@@ -92,6 +92,7 @@ sorttable = {
 	      dean_addEvent(headrow[i],"click", function(e) {
 
           if (this.className.search(/\bsorttable_sorted\b/) != -1) {
+            console.log('sorted already, so reversing');
             // if we're already sorted by this column, just 
             // reverse the table, which is quicker
             sorttable.reverse(this.sorttable_tbody);
@@ -105,6 +106,7 @@ sorttable = {
             return;
           }
           if (this.className.search(/\bsorttable_sorted_reverse\b/) != -1) {
+            console.log('revsorted already, so forwardng');
             // if we're already sorted by this column in reverse, just 
             // re-reverse the table, which is quicker
             sorttable.reverse(this.sorttable_tbody);
@@ -117,6 +119,8 @@ sorttable = {
             this.appendChild(sortfwdind);
             return;
           }
+          
+          console.log('sorting...');
           
           // remove sorttable_sorted classes
           theadrow = this.parentNode;
@@ -160,6 +164,7 @@ sorttable = {
 	        delete row_array;
 	        
 	        stripe('table.sortable tbody');
+	        console.log('sorted...');
 	      });
 	    }
     }

@@ -1,4 +1,4 @@
-console.log("myfunctions loading");
+//console.log("myfunctions loading");
 
 var KEYCODE = {
     'backspace' : 8,
@@ -165,7 +165,6 @@ $(function() {
                 position: ['center', 50]
             }); });
         $('#help').hide();
-        console.log("Hid help");
     }
     
     // give button styles to all inputs in a buttons div
@@ -312,16 +311,18 @@ function textarea_expand(ta, min, max) {
     
     if (ta.clientHeight < min) ta.style.height= min+"px";
     if (ta.clientHeight > max && max>0) ta.style.height= max+"px";
+    console.log(ta.id, ta.style.height);
 }
 
 function logout() {
-    console.log('logging out');
+    console.log('logout()');
     $.get("/include/scripts/logout", function (response) {
         window.location = window.location;
     });
 }
 
 function login() {
+    console.log('login()');
     var un = $("#login_username").val();
     var pw = $("#login_password").val();
     console.log('logging in ' + un);
@@ -367,8 +368,33 @@ function reset_password() {
     });
 }
 
+function guestLoginNodemog(project_id) {
+    console.log('guestLoginNodemog()');
+
+    $.ajax({
+        url: '/include/scripts/login_guest',
+        type: 'POST',
+        data: {
+            sex: null,
+            age: null
+        },
+        dataType: 'json',
+        success: function(data) {
+            console.log(data);
+            if (data.login == true) {
+                window.location.reload(false);
+            } else {
+                $("div").html( data.error ).dialog();
+            }
+        }
+    });
+}
+
 function guestLogin(project_id) {
-    $('<div />').append('<p>Please indicate your age and gender. Providing this information is optional, but some studies have restrictions or different versions depending on this information.</p>\n')
+    console.log('guestLogin()');
+    var $modal = $('<div />')
+                .append('<p class="err"></p>')
+                .append('<p>Please indicate your age and gender. Providing this information is optional, but some studies have restrictions or different versions depending on this information.</p>\n')
                 .append('<table><tr><td>Age:</td><td><input id="guest_age" name="guest_age" type="number" min="0" max="120" /></td></tr>\n' +
                         "<tr><td>Gender:</td><td><select name='guest_sex' id='guest_sex'>\n" +
                         "    <option value='NULL'></option>\n" +
@@ -376,8 +402,9 @@ function guestLogin(project_id) {
                         "    <option value='female'>female</option>\n" + 
                         "    <option value='nonbinary'>non-binary</option>\n" + 
                         "    <option value='na'>prefer not to answer</option>\n" + 
-                        "</select></td></tr></table>\n")
-                .dialog({
+                        "</select></td></tr></table>\n");
+                        
+    $modal.dialog({
         title: 'Guest Login',
         modal: true,
         position: ['center', 100],
@@ -394,17 +421,13 @@ function guestLogin(project_id) {
                         sex: $('#guest_sex').val(),
                         age: $('#guest_age').val()
                     },
+                    dataType: 'json',
                     success: function(data) {
-                        if (data == "login") {
-                            $("#login_error_header").dialog("close").css('background', 'none');
+                        console.log(data);
+                        if (data.login == true) {
                             window.location.reload(false);
                         } else {
-                            var parsedResponse = data.split(":");
-                            if (parsedResponse[0] == "newpage") {
-                                window.location = parsedResponse[1];
-                            } else {
-                                $("#login_error_header").html( data ).css('background', 'none').dialog("open");;
-                            }
+                            $modal.find('p.err').html( data.error );
                         }
                     }
                 });
@@ -414,6 +437,94 @@ function guestLogin(project_id) {
         }
     });
 }
+
+function testLogin(project_id) {
+    console.log('testLogin()');
+    var $modal = $('<div />')
+                .append('<p class="err"></p>')
+                .append('<p>Test responses are recorded for testing purposes, but are marked as test so that researchers know to exclude them from analysis.</p><p>Use the age and gender options to test restrictions. Cancel to use another account.</p>\n')
+                .append('<table><tr><td>Age:</td><td><input id="test_age" name="test_age" type="number" min="0" max="120" /></td></tr>\n' +
+                        "<tr><td>Gender:</td><td><select name='test_sex' id='test_sex'>\n" +
+                        "    <option value='NULL'></option>\n" +
+                        "    <option value='male'>male</option>\n" +
+                        "    <option value='female'>female</option>\n" + 
+                        "    <option value='nonbinary'>non-binary</option>\n" + 
+                        "    <option value='na'>prefer not to answer</option>\n" + 
+                        "</select></td></tr></table>\n");
+    
+    $modal.dialog({
+        title: 'Test Login',
+        modal: true,
+        position: ['center', 100],
+        width: 500,
+        height: 450,
+        buttons: {
+            "Cancel": function() {
+                window.location = window.location.href.replace("&test", "&all");
+            },
+            "Login": function() {
+                $.ajax({
+                    url: '/include/scripts/login_test',
+                    type: 'POST',
+                    data: {
+                        sex: $('#test_sex').val(),
+                        age: $('#test_age').val()
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log(data);
+                        if (data.login == true) {
+                            window.location.reload(false);
+                        } else {
+                            $modal.find('p.err').html( data.error );
+                        }
+                    }
+                });
+
+                
+            }
+        }
+    });
+}
+
+function modalLogin(project_id) {
+    var $modal = $('<div />')
+                .append('<p class="err"></p>')
+                .append('<table><tr><td>Username:</td><td><input id="username" name="username" type="text"/></td></tr>\n' +
+                        '<tr><td>Password:</td><td><input id="password" name="password" type="password"/></td></tr></table>\n');
+   
+   $modal.dialog({
+        title: 'Registered User Login',
+        modal: true,
+        position: ['center', 100],
+        width: 500,
+        buttons: {
+            "Cancel": function() {
+                $(this).dialog('close');
+            },
+            "Login": function() {
+                $.ajax({
+                    url: '/include/scripts/login',
+                    type: 'POST',
+                    data: {
+                        username: $('#username').val(),
+                        password: $('#password').val()
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.login == "login") {
+                            window.location.reload(false);
+                        } else {
+                            console.log(data.error);
+                            $modal.find('p.err').html( data.error );
+                        }
+                    }
+                });
+            }
+        }
+    });
+}
+
 
 // download without leaving the page
 function postIt(url, data) {

@@ -413,6 +413,58 @@ function guestLogin(project_id) {
     });
 }
 
+
+function testLogin(project_id) {
+    $('<div />').append('<p>Please indicate your age and gender. Providing this information is optional, but some studies have restrictions or different versions depending on this information.</p>\n')
+                .append('<table><tr><td>Age:</td><td><input id="test_age" name="test_age" type="number" min="0" max="120" /></td></tr>\n' +
+                        "<tr><td>Gender:</td><td><select name='test_sex' id='test_sex'>\n" +
+                        "    <option value='NULL'></option>\n" +
+                        "    <option value='male'>male</option>\n" +
+                        "    <option value='female'>female</option>\n" + 
+                        "    <option value='nonbinary'>non-binary</option>\n" + 
+                        "    <option value='na'>prefer not to answer</option>\n" + 
+                        "</select></td></tr></table>\n")
+                .dialog({
+        title: 'Test Login',
+        modal: true,
+        position: ['center', 100],
+        width: 500,
+        buttons: {
+            "Cancel": function() {
+                $(this).dialog('close');
+            },
+            "Login": function() {
+                $.ajax({
+                    url: '/include/scripts/login_test',
+                    type: 'POST',
+                    data: {
+                        sex: $('#test_sex').val(),
+                        age: $('#test_age').val()
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        if (data == "login") {
+                            $("#login_error_header").dialog("close").css('background', 'none');
+                            window.location.reload(false);
+                        } else {
+                            var parsedResponse = data.split(":");
+                            if (parsedResponse[0] == "newpage") {
+                                window.location = parsedResponse[1];
+                            } else {
+                                $("#login_error_header").html( data ).css('background', 'none').dialog("open");;
+                            }
+                        }
+                    }
+                });
+
+                $(this).dialog('close');
+            }
+        }
+    });
+}
+
+
+
 // download without leaving the page
 function postIt(url, data) {
     $('#jQueryPostItForm').remove();

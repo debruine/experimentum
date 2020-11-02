@@ -681,8 +681,9 @@ function editBox(actual) {
         var md = ($(actual).hasClass("md")) ? "Md" : "";
         var contents = unescape($('#i_' + $(actual).attr('id')).val());
         var id = $(actual).attr('id');
+        var w = (md == "Md") ? 'width: 40em;' : 'width: ' + $(actual).width() + 'px;';
         $(actual).html('<textarea name="textarea" id="' + id + '_field" '
-            + 'style="min-width: 5em; width: ' + $(actual).width() + 'px;" '
+            + 'style="min-width: 5em; ' + w + '" '
             + 'oninput="textarea_expand(this, 0, 0)" '
             + 'onfocus="highLight(this); textarea_expand(this, 0, 0)" '
             + 'onblur="noLight(this); return fieldBlur'+md+'(this,\'' + id + '\');">'

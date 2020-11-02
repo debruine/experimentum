@@ -7,10 +7,20 @@ $return = array(
     'error' => ''
 );
 
+if (array_key_exists('user_id', $_SESSION)) {
+    // record logout time but don't clear php session
+    $query = new myQuery("UPDATE login SET logoutime=NOW() 
+    	WHERE user_id='{$_SESSION['user_id']}' 
+        	AND logoutime IS NULL 
+        	ORDER BY id DESC LIMIT 1");
+    
+    $_SESSION = array(); //clear session from globals
+}
+
 // set up user object and login
 $user = new user();
-$user->set_username('Guest');
-$user->set_status('guest');
+$user->set_username('Test');
+$user->set_status('test');
 $user->set_sex($_POST['sex']);
 if ($_POST['age']) {
     $year = date('Y') - intval($_POST['age']);

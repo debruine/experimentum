@@ -89,7 +89,7 @@ if (is_numeric($_GET['id'])
     $fbdata = $q->get_assoc(0);
     
     // project/credit feedback
-    $q->prepare("SELECT id, url, contact FROM project where id = ?",
+    $q->prepare("SELECT id, url, contact, debrief FROM project where id = ?",
                 array('i', $_SESSION['project_id']));
     $pi = $q->get_one_row();
     $project_fb = "";
@@ -97,36 +97,41 @@ if (is_numeric($_GET['id'])
     if (empty($pi['contact'])) { $pi['contact'] = ADMIN_EMAIL; }
     $project_fb = sprintf('<p>Please contact <a href="mailto:%s?subject=Experimentum project %s (%s)">%s</a> 
                            with any questions about this study.</p>', 
-                               $pi['contact'], $pi['url'], $pi['id'], $pi['contact']);
+                           $pi['contact'], $pi['url'], $pi['id'], $pi['contact']);
     
     if (array_key_exists('credit', $_SESSION)) {
         $credit_fb = sprintf("<p class='feature'>" . CREDITFB . "</p>\n\n", $_SESSION['credit'], $pi['contact']);
     }
     
-    
-    // general feedback
-    //$general_fb = parsePara($fbdata['feedback_general']);
-    $Parsedown = new Parsedown();
-    $general_fb= $Parsedown->text($fbdata['feedback_general']);
-    
-    // specific feedback
-    if (!empty($fbdata['feedback_specific'])) {
-        if (!empty($fbdata['feedback_query'])) {
-            $me = new myQuery("SET @uid={$_SESSION['user_id']}");
-            $sess = new myQuery("SET @mysess={$session}");
-            $fb = new myQuery($fbdata['feedback_query'], true);
-            $myfb = $fb->get_assoc(0);
-        }
-    
-        //$spec_trans = parsePara($fbdata['feedback_specific']);
+    // general feedback / debrief
+    if (!empty($pi['debrief'])) { 
         $Parsedown = new Parsedown();
-        $spec_trans = $Parsedown->text($fbdata['feedback_specific']);
-    
-        $number_of_replacements = substr_count($spec_trans, "\$s") + substr_count($spec_trans, "\$d");
-        if (!is_array($myfb)) $myfb = array(); // make sure $myfb is an array
-        $myfb = array_pad($myfb, $number_of_replacements, "**"); // pad this out to the right number
+        $general_fb = $Parsedown->text($pi['debrief']);
+    } else {
+        // feedback from last component
+        $Parsedown = new Parsedown();
+        $general_fb = $Parsedown->text($fbdata['feedback_general']);
+        
+        // specific feedback
+        if (!empty($fbdata['feedback_specific'])) {
+            if (!empty($fbdata['feedback_query'])) {
+                $me   = new myQuery("SET @uid={$_SESSION['user_id']}");
+                $sess = new myQuery("SET @mysess={$session}");
+                $fb   = new myQuery($fbdata['feedback_query'], true);
+                $myfb = $fb->get_assoc(0);
+            }
+        
+            $Parsedown = new Parsedown();
+            $spec_trans = $Parsedown->text($fbdata['feedback_specific']);
+        
+            $number_of_replacements = substr_count($spec_trans, "\$s") + substr_count($spec_trans, "\$d");
+            if (!is_array($myfb)) $myfb = array(); // make sure $myfb is an array
+            $myfb = array_pad($myfb, $number_of_replacements, "**"); // pad this out to the right number
+                
+            $specific_fb =  vsprintf($spec_trans, $myfb);
             
-        $specific_fb =  vsprintf($spec_trans, $myfb);
+            $general_fb .= $specific_fb;
+        }
     }
 } else {
     header('Location: /');
@@ -150,7 +155,6 @@ $page->displayBody();
 echo "<div class='fb_text'>\n";
 echo $credit_fb;
 echo $general_fb;
-echo $specific_fb;
 echo $project_fb;
  
 ?>

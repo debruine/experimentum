@@ -23,12 +23,14 @@ function get_set_items($id) {
                     LEFT JOIN sets AS s ON (item_type="set" AND s.id=item_id)
                     WHERE set_id=' . $id . ' 
                     GROUP BY item_type, item_id, item_n
-                    HAVING "' . $_SESSION['status'] . '" IN("student","res","super","admin") OR 
-                    (
-                        status !="archive" AND status !="test"
-                        AND (sex="both" OR sex="' . $_SESSION['sex'] . '")
-                        AND (upper_age IS NULL OR ' . $_SESSION['age'] . '<= upper_age)
-                        AND (lower_age IS NULL OR ' . $_SESSION['age'] . '>= lower_age)
+                    HAVING ("' . $_SESSION['status'] . '" IN("student","res","super","admin", "test") OR 
+                        status !="archive" AND status !="test") AND
+                    ("' . $_SESSION['status'] . '" IN("student","res","super","admin") OR 
+                        (
+                            (sex="both" OR sex="' . $_SESSION['sex'] . '")
+                            AND (upper_age IS NULL OR ' . $_SESSION['age'] . '<= upper_age)
+                            AND (lower_age IS NULL OR ' . $_SESSION['age'] . '>= lower_age)
+                        )
                     )
                     ORDER BY item_n');
     $items = $q->get_assoc();

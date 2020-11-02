@@ -185,11 +185,14 @@ class experiment {
             $text .= "    <input type='button' id='beginExp' onclick='beginExp();' value='" . loc('Begin the Experiment') . "' />" . ENDLINE;
         } else if ($this->subtype == 'speeded') {
             $text .= "    <div>" . loc('Place your fingers on the keys<br>and press the space bar<br>to consent &amp; begin the experiment') . "</div>" . ENDLINE;
+            $text .= "    <input class='noconsent' type='button' onclick='noConsent();' value='" . loc('I Do Not Consent, Return to the Home Page') . "' />" . ENDLINE;
+
         } else {
             $text .= '<p>' . loc("Please indicate whether you consent to this experiment by clicking on the appropriate button below.") . '</p>';
             $text .= "    <input type='button' id='beginExp' onclick='beginExp();' value='" . loc('I Consent, Begin the Experiment') . "' />" . ENDLINE;
+            $text .= "    <input class='noconsent' type='button' onclick='noConsent();' value='" . loc('I Do Not Consent, Return to the Home Page') . "' />" . ENDLINE;
+
         }
-        $text .= "    <input class='noconsent' type='button' onclick='noConsent();' value='" . loc('I Do Not Consent, Return to the Home Page') . "' />" . ENDLINE;
         
         $text .= "</div>" . ENDLINE;
         

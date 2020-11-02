@@ -160,7 +160,7 @@ Edit the first example for your test server. The important parts are getting the
 
 ```
 <VirtualHost *:80>
-    ServerAdmin lisa.debruine@glasgow.ac.uk
+    ServerAdmin experimentum@glasgow.ac.uk
     DocumentRoot "/Users/lisad/html/experimentum"
     ServerName experimentum.test
     ErrorLog "/private/var/log/apache2/experimentum-error_log"

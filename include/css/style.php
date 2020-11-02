@@ -405,6 +405,7 @@ tr.radiorow_values a {
 .resbuttons li a.project { background-image: url("/images/linearicons/briefcase?c=FFF"); }
 .resbuttons li a.stimuli { background-image: url("/images/linearicons/picture?c=FFF"); }
 .resbuttons li a.tutorial{ background-image: url("/images/linearicons/0215-reading?c=FFF"); }
+.resbuttons li a.news    { background-image: url("/images/linearicons/0214-news.php?c=FFFFFF"); }
 .resbuttons li a.admin   { background-image: url("/images/linearicons/graduation-hat?c=FFF"); }
 
 .resbuttons li a.exp:hover { background-color: var(--rainbow1); }
@@ -513,6 +514,9 @@ p.fullwidth { width:auto; max-width:100%; }
 
 .modal { display: none; }
 
+.accordion .ui-accordion-header { text-align: left; max-width: 100%; }
+.accordion .ui-accordion-content { padding: 0 1em; }
+
 /* feature boxes for making information stand out */
 .feature {
     max-width:30em;
@@ -590,7 +594,7 @@ hr.invisible { height:0; margin:0; }
 #faq h2 { background-color: var(--theme); }
 #faq h2 a { border: none; color: white; }
 #faq h2 a:active { background-color: transparent; }
-div.ui-accordion-content { max-width: 40em; }
+#faq div.ui-accordion-content { max-width: 40em; }
 
 #faq h2:nth-child(1):hover, #faq h2.ui-state-active:nth-child(1) { background-color: var(--rainbow1); }
 #faq h2:nth-child(3):hover, #faq h2.ui-state-active:nth-child(3) { background-color: var(--rainbow2); }
@@ -723,11 +727,11 @@ ul.bigbuttons {
 .bigbuttons > li:nth-child(11) a:hover { background-color: var(--rainbow5); }
 .bigbuttons > li:nth-child(12) a:hover { background-color: var(--rainbow6); }
 
-.bigbuttons li.hide, .bigbuttons li.test, .bigbuttons li.archive {
+.bigbuttons li.hide, .bigbuttons li.restricted {
     display: none;
 }
 
-.bigbuttons li.hide.res, .bigbuttons li.test.res, .bigbuttons li.archive.res {
+.bigbuttons.resuser li.hide, .bigbuttons.resuser li.restricted {
     display: inline-block;
 }
 
@@ -736,20 +740,12 @@ ul.bigbuttons {
     background-color: hsl(200, 10%, 50%);
 }
 
-.bigbuttons li.hide a, .bigbuttons li.hide.done a {
-    background-color: #990000;
-    background-color: hsl(0, 100%, 30%);
+.bigbuttons li.restricted a {
+    background-color: #953ac7;
 }
+.bigbuttons li.test a { border-color: #edea28; }
+.bigbuttons li.archive a { border-color: #3e86cf; }
 
-.bigbuttons li.archive a, .bigbuttons li.test a {
-    background-color: #809900;
-    background-color: hsl(70, 100%, 30%);
-}
-
-.bigbuttons li.archive a:hover, .bigbuttons li.test a:hover {
-    background-color: #AACC00 !important;
-    background-color: hsl(70, 100%, 40%) !important;
-}
 
 .bigbuttons li a .corner {
     font-size: 70%; 
@@ -1071,6 +1067,10 @@ table.questionnaire textarea {
     min-height: 7em;
 }
 
+table.questionnaire .editText textarea {
+    width: auto;
+    min-height: auto;
+}
 .radiorow_options {
     background-color: var(--theme) !important;
     color: var(--text-on-theme);
