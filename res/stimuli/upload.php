@@ -96,7 +96,7 @@ $page->displayBody();
             var selFiles = [];
             var isdir = false;
             
-            $('#finder li.file.ui-selected').each( function(i) {
+            $('#finder li.file.ui-selected:visible').each( function(i) {
                 selFiles[i] = $(this).attr('url');
             });
             
@@ -105,31 +105,57 @@ $page->displayBody();
                 
                 var openDir = $('#finder li.folder:not(.closed)').last();
                 
-                if (openDir.find('>ul li').length > 0) { 
-                    growl("Folders must be empty to delete", 3000);
-                    return false;
-                } else {
+                //if (openDir.find('>ul li').length > 0) { 
+                //    growl("Folders must be empty to delete", 3000);
+                //    return false;
+                //} else {
                     selFiles = openDir.attr('url');
                     isdir = true;
-                }
+                //}
+                
+                var txt = "<p>Do you want to delete the directory " + openDir.attr('url') + "?</p>";
+            } else {
+                var txt = "<p>Do you want to delete these files?<p> <ul><li>" + selFiles.join("</li><li>") + "</li></ul>";
             }
-            
-            $.ajax({
-                url: "/res/scripts/stim_delete",
-                dataType: 'json',
-                data: {
-                    file: selFiles,
-                    isdir: isdir
-                },
-                success: function(data) {
-                    if (data.error) {
-                        $('<div />').html(JSON.stringify(data.error)).dialog();
+
+            $( "<div/>").html(txt).dialog({
+                title: "Delete Item",
+                position: ['center', 200],
+                modal: true,
+                buttons: {
+                    Cancel: function() {
+                        $( this ).dialog( "close" );
+                    },
+                    "Delete": function() {
+                        $( this ).dialog( "close" );
+                        $.ajax({
+                            url: "/res/scripts/stim_delete",
+                            dataType: 'json',
+                            data: {
+                                file: selFiles,
+                                isdir: isdir
+                            },
+                            success: function(data) {
+                                if (data.error !== false) {
+                                    var errText = "<ul>\n";
+                                    $.each(data.error, function(file, err) {
+                                        errText = errText + "    <li>" + file + ": " + JSON.stringify(err) + "</li>\n";
+                                    });
+                                    errText = errText + "</ul>\n";
+                                    
+                                    $('<div />').html(errText).dialog({
+                                        title: "Deletion Errors",
+                                        width: 600
+                                    });
+                                }
+                            },
+                            error: function() {
+                            },
+                            complete: function() {
+                                reloadFinder();
+                            }
+                        });
                     }
-                },
-                error: function() {
-                },
-                complete: function() {
-                    reloadFinder();
                 }
             });
         });

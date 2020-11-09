@@ -33,6 +33,7 @@ $( "#download-exp" ).click(function() {
 });
 
 $( "#get-json" ).click(function() { 
+    console.log('get-json', $('#item_type').val(), $('#item_id').val())
     postIt('/res/scripts/get_json', {
         table: $('#item_type').val(),
         id: $('#item_id').val()
