@@ -1,0 +1,19 @@
+message: "If you use experimentum, please cite it as below."
+
+authors:
+- family-names: "DeBruine"
+  given-names: "Lisa"
+  orcid: "https://orcid.org/0000-0002-7523-5539"
+- family names: Lai
+  given-names: Rebecca
+- family names: Jones
+  given-names: Benedict
+- family names: Abdullah
+  given-names: Rifah
+- family names: Mahrholz
+  given-names: Gaby
+title: "Experimentum"
+version: 0.2
+date-released: 2020-09-01
+url: "https://github.com/debruine/experimentum/"
+doi: "10.5281/zenodo.4010579"
